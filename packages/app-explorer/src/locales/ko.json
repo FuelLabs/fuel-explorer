@@ -42,7 +42,12 @@
     "size": "크기",
     "gas": "가스",
     "fee": "수수료",
-    "block_link": "블록 {{number}}"
+    "block_link": "블록 {{number}}",
+    "peak_tps": "최고 TPS",
+    "avg_tps": "평균 TPS",
+    "day_peak": "일일 최고",
+    "error_title": "트랜잭션을 불러올 수 없습니다",
+    "error_description": "최신 트랜잭션을 불러오지 못했습니다. 다시 시도해 주세요."
   },
   "ecosystem": {
     "eyebrow": "Fuel 생태계",
@@ -126,7 +131,6 @@
     "title": "Fuel 네트워크 보안에 참여",
     "read_docs": "문서",
     "open_rig": "The Rig 열기",
-    "docs": "Fuel 문서",
     "tab_rig": "The Rig 리퀴드 스테이킹",
     "tab_ethereum": "Ethereum 스테이킹",
     "rig_card_title": "The Rig 리퀴드 스테이킹",
@@ -137,7 +141,246 @@
     "validators": "밸리데이터",
     "transactions": "내 트랜잭션",
     "wallet_disconnected": "지갑이 연결되지 않음",
-    "connect_positions": "스테이킹 포지션을 보려면 지갑을 연결하세요."
+    "connect_positions": "스테이킹 포지션을 보려면 지갑을 연결하세요.",
+    "history": {
+      "status_label": "상태별 필터",
+      "status_action": "조치 필요",
+      "status_progress": "진행 중",
+      "status_completed": "완료",
+      "status_failed": "실패",
+      "type_label": "유형별 필터",
+      "type_all": "모든 유형",
+      "refresh": "목록 새로고침",
+      "no_match": "필터와 일치하는 트랜잭션이 없습니다.",
+      "clear": "필터 지우기"
+    },
+    "account": {
+      "connect_wallet": "지갑 연결",
+      "copied": "복사됨",
+      "copied_toast": "주소를 클립보드에 복사했습니다",
+      "copy": "주소 복사",
+      "disconnect": "연결 해제",
+      "switch": "네트워크 전환",
+      "unsupported": "지원하지 않는 네트워크"
+    },
+    "balance": {
+      "ethereum": "이더리움 잔액",
+      "ethereum_tip": "검증자에게 스테이킹할 수 있는 이더리움 네트워크의 잔액입니다.",
+      "rewards": "획득한 보상",
+      "rewards_tip": "스테이킹 포지션에서 얻은 현재 보상입니다. 수령하려면 \"현재 포지션\" 탭으로 이동하세요.",
+      "sequencer": "시퀀서 잔액",
+      "sequencer_tip": "Fuel 시퀀서 체인에서 사용할 수 있는 잔액입니다. 검증자에게 스테이킹하거나 이더리움 네트워크로 출금할 수 있습니다.",
+      "vesting": "베스팅 중인 토큰",
+      "vesting_tip": "V1에서 FUEL로 전환하여 받은 잠긴 FUEL 토큰입니다.\n\n베스팅 기간 동안 이 토큰은 '시퀀서 잔액'으로 점진적으로 풀립니다. 별도로 수령할 필요가 없습니다.",
+      "withdraw": "출금"
+    },
+    "dialog": {
+      "amount_to_claim": "수령할 금액",
+      "approval": "승인",
+      "approve_body": "스테이킹을 계속하려면 이 컨트랙트가 이더리움 잔액의 토큰을 사용하도록 허용해야 합니다.",
+      "approve_title": "FUEL 사용 승인",
+      "approved": "FUEL 토큰 사용이 승인되었습니다.",
+      "approving": "승인 중...",
+      "claim_pending": "보상 수령 대기 중",
+      "claim_rewards": "보상 수령",
+      "claiming_now": "수령 중",
+      "from_account": "보내는 계정",
+      "have_claimed": "수령 완료",
+      "have_redelegated": "재위임 완료",
+      "have_staked": "스테이킹 완료",
+      "have_undelegated": "위임 해제 완료",
+      "have_withdrawn": "출금 완료",
+      "how_much_redelegate": "얼마를 재위임하시겠습니까?",
+      "how_much_stake": "얼마를 스테이킹하시겠습니까?",
+      "how_much_undelegate": "얼마를 위임 해제하시겠습니까?",
+      "how_much_withdraw": "얼마를 출금하시겠습니까?",
+      "please_wait": "잠시 기다려 주세요",
+      "redelegate": "재위임",
+      "redelegating_now": "재위임 중",
+      "review": "검토",
+      "review_claim": "검토: 보상 수령",
+      "review_redelegate": "검토: 재위임",
+      "review_stake": "검토: 스테이킹",
+      "review_undelegate": "검토: 위임 해제",
+      "review_withdraw": "검토: 출금",
+      "search_validator": "검증자 검색 또는 선택",
+      "selected_validator": "선택한 검증자",
+      "sourced_from": "자금 출처",
+      "stake": "스테이킹",
+      "stake_unavailable": "현재 스테이킹을 사용할 수 없음",
+      "staking_now": "스테이킹 중",
+      "step_of": "{{total}}단계 중 {{current}}단계",
+      "submit_redelegate": "재위임 제출",
+      "submit_stake": "스테이킹 제출",
+      "submit_undelegate": "위임 해제 제출",
+      "submit_withdraw": "출금 제출",
+      "to_which_validator": "어느 검증자에게?",
+      "two_tx_body": "이 트랜잭션은 '이더리움 잔액'과 '시퀀서 잔액'에서 함께 충당됩니다. 따라서 두 개의 별도 트랜잭션을 실행해야 합니다.",
+      "two_tx_title": "이 스테이킹 작업에는 두 개의 트랜잭션이 필요합니다.",
+      "undelegate": "위임 해제",
+      "undelegate_unavailable": "현재 위임 해제를 사용할 수 없음",
+      "undelegating_now": "위임 해제 중",
+      "withdraw": "출금",
+      "withdraw_unavailable": "현재 출금을 사용할 수 없음",
+      "withdrawal": "출금",
+      "withdrawing_now": "출금 중"
+    },
+    "empty": {
+      "positions": "현재 활성 스테이킹 포지션이 없습니다.",
+      "start": "스테이킹 시작",
+      "transactions": "아직 트랜잭션이 없습니다."
+    },
+    "faucet": {
+      "button": "Fuel 토큰 파우셋",
+      "error": "Fuel 토큰 수령 오류"
+    },
+    "pagination": {
+      "next": "다음 페이지",
+      "page": "{{page}} 페이지",
+      "previous": "이전 페이지",
+      "records": "건",
+      "show": "표시"
+    },
+    "position": {
+      "claim": "수령",
+      "menu": "위임 항목",
+      "redelegate": "재위임",
+      "undelegate": "위임 해제"
+    },
+    "review": {
+      "approve": "승인",
+      "back": "뒤로",
+      "balance_ethereum": "(이더리움 잔액)",
+      "balance_sequencer": "(시퀀서 잔액)",
+      "checking": "확인 중...",
+      "fee": "네트워크 수수료",
+      "from": "보내는 곳",
+      "my_account": "내 계정",
+      "retry": "다시 시도",
+      "submitting": "제출 중...",
+      "time_to_complete": "완료까지 시간",
+      "to": "받는 곳"
+    },
+    "status": {
+      "at": "{{date}} {{time}}",
+      "error": "오류",
+      "eta": "예상 완료 시간",
+      "finalize_withdraw": "출금 확정",
+      "funds_staked_on": "스테이킹 일시",
+      "label": "상태",
+      "loading": "로딩 중...",
+      "redelegated_on": "재위임 일시",
+      "rewards_claimed_on": "보상 수령 일시",
+      "step_sent": "트랜잭션 전송됨",
+      "step_sync_failed": "동기화 실패",
+      "step_unbonding": "언본딩 대기 중",
+      "step_waiting_sync": "동기화 대기 중",
+      "step_withdraw_commit": "시퀀서가 L1에 커밋 중...",
+      "step_withdraw_finalization": "확정 대기 중...",
+      "step_withdraw_ready": "출금 준비 완료...",
+      "step_withdraw_sent": "출금 트랜잭션 전송됨...",
+      "step_withdraw_sync": "시퀀서와 동기화 중...",
+      "sync_failed_body": "동기화 시점에 잔액을 사용할 수 없었기 때문일 가능성이 높습니다. 동기화가 성공해야 한다고 생각되면 <discord>Discord</discord>에서 Fuel 지원팀에 문의하세요.",
+      "undelegation_completed_on": "위임 해제 완료 일시",
+      "waiting_confirmation": "트랜잭션 확인 대기 중",
+      "waiting_user": "사용자 작업 대기 중",
+      "withdrawal_finalized_on": "출금 확정 일시"
+    },
+    "table": {
+      "commission": "수수료율",
+      "delegated": "위임된 토큰",
+      "name": "이름",
+      "power": "투표력",
+      "rewards": "획득한 보상",
+      "date": "날짜",
+      "type": "유형",
+      "amount": "금액",
+      "status": "상태"
+    },
+    "upgrade": {
+      "allowance": "토큰 허용량",
+      "available": "사용 가능",
+      "claim": "토큰 수령",
+      "claim_submitted": "베스팅 수령을 제출했습니다",
+      "cliff_end": "클리프 종료",
+      "close_hint": "이 대화상자를 닫고 나중에 다시 돌아오셔도 됩니다.",
+      "convert": "FUEL로 업그레이드",
+      "cta": "Fuel V1 토큰 업그레이드",
+      "dialog_title": "V1을 FUEL 토큰으로 업그레이드",
+      "go_staking": "스테이킹으로 이동",
+      "grant_title": "V1 토큰 지급",
+      "liquid": "유동 {{version}} 토큰",
+      "migration_submitted": "마이그레이션을 제출했습니다",
+      "next": "다음",
+      "receive": "받게 될 수량",
+      "release_end": "릴리스 종료",
+      "start_date": "시작일",
+      "step_allowance": "허용량",
+      "step_upgrade": "업그레이드",
+      "submit": "업그레이드",
+      "total_claimed": "총 수령량",
+      "total_grant": "총 지급량",
+      "total_vesting": "총 베스팅",
+      "unclaimed": "미수령 토큰",
+      "v1_amount": "V1 수량",
+      "vesting_fuel": "FUEL 토큰 베스팅",
+      "waiting_allowance": "토큰 허용량 확인을 기다리는 중입니다."
+    },
+    "validator": {
+      "load_error": "검증자를 불러오지 못했습니다. 문제가 발생했으니 나중에 다시 시도해 주세요.",
+      "stake": "스테이킹",
+      "stake_disabled": "다른 스테이킹 작업이 대기 중인 동안에는 스테이킹할 수 없습니다."
+    },
+    "lanes_label": "스테이킹 경로",
+    "lane_rig": "The Rig",
+    "lane_ethereum": "Ethereum",
+    "lane_rig_figure": "청구 가능",
+    "lane_ethereum_figure": "스테이킹됨",
+    "board": {
+      "title": "처리 대기 중",
+      "count_other": "{{count}}개 항목",
+      "col_lane": "경로",
+      "col_what": "내용",
+      "col_amount": "금액",
+      "col_status": "상태",
+      "rig_claim": "stFUEL 청구",
+      "claim_rewards": "보상 청구",
+      "ready": "지금 가능",
+      "action_needed": "조치 필요",
+      "time_left": "약 {{eta}} 남음",
+      "in_progress": "진행 중",
+      "claim": "청구",
+      "continue": "계속",
+      "details": "세부 정보"
+    },
+    "event_type": {
+      "stake": "스테이크",
+      "redelegate": "재위임",
+      "undelegate": "위임 해제",
+      "claim_rewards": "보상 청구",
+      "withdraw": "출금"
+    },
+    "toast": {
+      "stake_submitted": "스테이킹 요청이 제출되었습니다",
+      "undelegate_submitted": "위임 해제 트랜잭션이 제출되었습니다",
+      "redelegate_submitted": "재위임 요청이 제출되었습니다",
+      "claim_reward_submitted": "보상 수령 트랜잭션이 제출되었습니다",
+      "withdraw_submitted": "출금 요청이 제출되었습니다",
+      "finalize_submitted": "출금을 확정하는 트랜잭션이 제출되었습니다",
+      "fuel_claimed": "Fuel 토큰을 수령했습니다. 곧 지갑에 반영됩니다.",
+      "view_explorer": "익스플로러에서 보기"
+    },
+    "eta": {
+      "less_than_minute": "1분 미만",
+      "days_other": "{{count}}일",
+      "hours_other": "{{count}}시간",
+      "minutes_other": "{{count}}분",
+      "join": "{{first}} {{second}}"
+    },
+    "apr": {
+      "value": "~{{apy}}% APR",
+      "tip": "토큰을 Fuel 검증인에게 위임하여 Fuel 시퀀싱 보안에 기여하세요."
+    }
   },
   "errors": {
     "not_found": "페이지를 찾을 수 없습니다",
@@ -151,7 +394,592 @@
   "bridge": {
     "board": {
       "expand": "전송 보기",
-      "collapse": "전송 숨기기"
+      "collapse": "전송 숨기기",
+      "title": "진행 중인 전송",
+      "count_other": "{{count}}건 진행 중",
+      "col_what": "내용",
+      "col_amount": "금액",
+      "col_status": "상태",
+      "deposit": "입금",
+      "withdraw": "출금",
+      "route_deposit": "Ethereum에서 Fuel로",
+      "route_withdraw": "Fuel에서 Ethereum으로",
+      "action_needed": "조치 필요",
+      "continue": "계속",
+      "details": "세부 정보",
+      "connect": "전송 내역을 보려면 Fuel 지갑을 연결하세요.",
+      "connect_button": "지갑 연결",
+      "none": "아직 전송 내역이 없습니다. 입금과 출금이 여기에 표시됩니다.",
+      "empty": "진행 중인 항목이 없습니다. 완료된 전송은 기록에 있습니다.",
+      "open_history": "기록 열기",
+      "loading": "전송 내역 불러오는 중"
+    },
+    "title": "브리지",
+    "read_docs": "문서 보기",
+    "panel_transfer": "전송",
+    "panel_history": "기록"
+  },
+  "core": {
+    "retry": "다시 시도",
+    "view_mode": {
+      "label": "보기 모드",
+      "standard": "표준",
+      "simple": "간단히",
+      "advanced": "고급",
+      "simple_disabled": "이 트랜잭션에는 간단히 보기를 사용할 수 없습니다"
+    },
+    "pagination": {
+      "previous": "이전 페이지",
+      "next": "다음 페이지",
+      "range": "{{start}} - {{end}} / {{total}}"
+    },
+    "empty": {
+      "assets_title": "자산 없음",
+      "assets_description": "이 {{entity}}에는 자산이 없습니다.",
+      "nfts_title": "NFT 없음",
+      "nfts_description": "이 {{entity}}에는 NFT가 없습니다.",
+      "transactions_title": "트랜잭션 없음",
+      "transactions_description": "이 {{entity}}에는 트랜잭션이 없습니다."
+    },
+    "entity": {
+      "account": "계정",
+      "contract": "컨트랙트",
+      "assets": "자산",
+      "block": "블록"
+    },
+    "sync_status": {
+      "message": "인덱서에 문제가 발생했습니다. Fuel 팀이 수정 작업 중입니다. 일부 데이터가 오래되었거나 표시되지 않을 수 있습니다."
+    },
+    "code_block": {
+      "code": "코드"
+    },
+    "copy": {
+      "copy": "복사"
+    },
+    "info_hint": {
+      "label": "자세한 정보"
+    },
+    "upgrade": {
+      "title": "토큰 매니저",
+      "subtitle": "기여자 보조금과 Fuel 토큰 릴리스 일정을 관리합니다.",
+      "stake_tokens": "Fuel 토큰 스테이킹"
     }
+  },
+  "block": {
+    "title": "블록",
+    "blocks_title": "블록",
+    "breadcrumb_label": "이동 경로",
+    "breadcrumb_home": "홈",
+    "breadcrumb_all_blocks": "모든 블록 보기",
+    "height": "높이",
+    "producer": "생성자",
+    "created": "생성 시각",
+    "tx_count": "트랜잭션 수",
+    "transactions": "트랜잭션",
+    "total_fee": "총 수수료",
+    "col_block": "블록",
+    "col_blockhash": "블록 해시",
+    "col_transactions": "트랜잭션",
+    "col_rewards": "보상",
+    "col_producer": "생성자",
+    "col_efficiency": "효율",
+    "col_time": "시간",
+    "col_blockhash_hint": "블록 데이터를 해시하여 생성한 이 블록의 고유 식별자입니다.",
+    "col_rewards_hint": "이 블록을 생성한 검증자에게 분배된 총 보상입니다.",
+    "col_efficiency_hint": "트랜잭션이 사용한 블록 리소스의 비율입니다.",
+    "no_mint_amount": "발행량 없음",
+    "view": "보기",
+    "not_found_title": "블록을 찾을 수 없습니다",
+    "not_found_description": "요청한 블록을 찾을 수 없습니다.",
+    "not_found_meta_title": "블록을 찾을 수 없음 - Fuel Explorer",
+    "error_title": "블록을 불러올 수 없습니다",
+    "error_description": "블록 상세 정보를 불러오지 못했습니다.",
+    "error_meta_title": "오류 - Fuel Explorer",
+    "loading_meta_title": "블록 불러오는 중 - Fuel Explorer",
+    "meta_title": "블록 {{height}} - Fuel Explorer",
+    "meta_description": "Fuel 블록체인의 블록 {{height}} 상세 정보 보기",
+    "list_error_title": "블록을 불러올 수 없습니다",
+    "list_error_description": "블록 목록을 불러오지 못했습니다. 다시 시도해 주세요.",
+    "pager_previous": "이전",
+    "pager_next": "다음"
+  },
+  "portal": {
+    "wallet": {
+      "connect": "지갑 연결",
+      "address_copied": "주소를 클립보드에 복사했습니다",
+      "switch_network": "네트워크 전환",
+      "my_account": "내 계정",
+      "copy_address": "주소 복사",
+      "bridge_history": "브리지 내역",
+      "disconnect": "연결 해제"
+    },
+    "account": {
+      "disconnect": "연결 해제",
+      "connected_wallet": "{{network}}: 연결된 지갑",
+      "change_wallet": "지갑 변경"
+    },
+    "bridge": {
+      "from": "보내는 곳",
+      "to": "받는 곳",
+      "deposit": "입금",
+      "withdraw": "출금",
+      "deposit_tab": "입금 탭",
+      "withdraw_tab": "출금 탭",
+      "history": "내역",
+      "back": "뒤로",
+      "back_to_home": "홈으로 돌아가기",
+      "transaction_history": "트랜잭션 내역",
+      "layerswap": "LayerSwap으로 빠른 브리징",
+      "custom_address_notice": "사용자 지정 Fuel 계정으로 전송 중:",
+      "non_native_notice": "참고: EVM/SVM 주소는 <strong>Fuel 프레디케이트 주소</strong>와 다릅니다. 정상적인 동작입니다.",
+      "manage_assets_in": "자산은 다음에서 관리할 수 있습니다:",
+      "my_account": "내 계정",
+      "max_tooltip": "최대 = 잔액 - 수수료",
+      "allowance": "허용량",
+      "no_gas_warning": "가스비를 지불할 Fuel의 ETH가 없습니다. 다른 자산을 브리지하기 전에 ETH를 먼저 브리지하는 것을 권장합니다.",
+      "withdraw_delay": "이더리움으로의 출금에는 최대 {{time}}이 걸립니다.",
+      "withdraw_threshold": "이 출금은 이 자산의 주간 한도의 {{percentage}}%를 초과합니다. 큰 출금은 릴레이 중 차단될 수 있으며, 더 작은 트랜잭션으로 나누면 주간 한도에 도달하기 전에 더 많은 금액을 출금할 수 있습니다.",
+      "withdraw_limit": "이 출금은 이 자산의 주간 한도를 초과하여 릴레이 중 차단됩니다. 더 작은 트랜잭션으로 나누면 주간 한도에 도달하기 전에 더 많은 금액을 출금할 수 있습니다.",
+      "withdraw_warning_label": "출금 경고",
+      "withdraw_warning_accept": "이 출금이 주간 한도를 초과하여 릴레이 중 차단된다는 점을 이해합니다. 그래도 진행하겠습니다.",
+      "terms_label": "서비스 약관",
+      "terms_accept": "업데이트된 다음 내용을 읽고 동의합니다:",
+      "terms_link": "서비스 약관"
+    },
+    "overview": {
+      "transaction_id": "트랜잭션 ID",
+      "transaction_id_label": "트랜잭션 ID: {{id}}",
+      "from": "보내는 곳",
+      "to": "받는 곳",
+      "age": "경과 시간",
+      "direction": "방향",
+      "direction_deposit": "(입금)",
+      "direction_withdraw": "(출금)",
+      "alt_deposit": "입금",
+      "alt_withdrawal": "출금",
+      "asset": "자산",
+      "add_to_wallet": "지갑에 추가",
+      "alt_asset": "자산 {{symbol}}",
+      "asset_amount": "자산 수량"
+    },
+    "steps": {
+      "step_status": "단계 {{name}}: {{status}}"
+    },
+    "dialog": {
+      "close": "닫기",
+      "confirm_transaction": "트랜잭션 확인",
+      "connect_eth_wallet": "이더리움 지갑 연결",
+      "progress": "트랜잭션 진행률"
+    },
+    "assets": {
+      "back": "뒤로",
+      "select_token": "토큰 선택",
+      "manage_token_list": "토큰 목록 관리",
+      "search_placeholder": "검색어를 입력하세요",
+      "no_asset_found": "\"{{query}}\"에 대한 자산을 찾을 수 없습니다",
+      "unnamed": "이름 없음",
+      "name_label": "{{symbol}} 이름",
+      "symbol_label": "{{symbol}} 심볼",
+      "balance_label": "{{symbol}} 잔액",
+      "faucet_label": "{{symbol}} 파우셋"
+    },
+    "history": {
+      "empty": "아직 활동이 없습니다. 트랜잭션을 진행하면 여기에 표시됩니다.",
+      "not_connected": "지갑이 감지되지 않았습니다. 트랜잭션을 보려면 지갑을 연결하세요.",
+      "connect_fuel_wallet": "Fuel 지갑 연결",
+      "action_required": "조치 필요",
+      "settled": "완료",
+      "processing": "처리 중",
+      "show_more": "더 보기",
+      "slow_loading": "예상보다 오래 걸리고 있습니다. 계정에 트랜잭션이 많으면 몇 분이 걸릴 수 있습니다.",
+      "slow_loading_detail": "Fuel 브리지 트랜잭션 전용 인덱서를 도입하여 이 경험을 개선하기 위해 노력하고 있습니다."
+    },
+    "paused": {
+      "tag": "일시 중지됨",
+      "title": "작업이 일시적으로 중지되었습니다.",
+      "dialog_title": "작업이 일시적으로 중지되었습니다",
+      "module_updating": "{{name}} 모듈을 현재 업데이트하는 중입니다.",
+      "no_action": "별도의 조치는 필요하지 않습니다.",
+      "close": "닫기",
+      "bridge_message": "점검을 위해 출금이 잠시 중단되었습니다. 자금은 안전하며, 재개되는 즉시 마무리할 수 있습니다."
+    },
+    "bridge_button": {
+      "connect_wallet": "{{chain}} 지갑 연결",
+      "bridge_anyway": "그래도 자산 브릿지",
+      "approve": "승인",
+      "loading_allowance": "토큰 허용량 가져오는 중...",
+      "loading_submit": "트랜잭션 제출 중...",
+      "select_network_from": "브릿지할 출발 네트워크 선택",
+      "select_network_to": "브릿지할 도착 네트워크 선택",
+      "pick_asset": "자산 선택",
+      "enter_amount": "금액 입력",
+      "insufficient_funds": "잔액 부족"
+    },
+    "bridge_steps": {
+      "submit_to_bridge": "브릿지에 제출",
+      "settlement": "정산",
+      "confirm_transaction": "트랜잭션 확인",
+      "receive_on_ethereum": "이더리움에서 수령",
+      "receive_on_fuel": "Fuel에서 수령",
+      "done": "완료",
+      "waiting": "대기 중",
+      "automatic": "자동",
+      "action": "작업",
+      "action_required": "작업 필요",
+      "time_left": "약 {{time}} 남음"
+    },
+    "bridge_toast": {
+      "deposit_started": "입금이 시작되었습니다. 팝업을 닫으셔도 됩니다.",
+      "withdraw_started": "출금이 시작되었습니다. 팝업을 닫으셔도 됩니다.",
+      "user_rejected": "사용자가 트랜잭션을 거부했습니다"
+    }
+  },
+  "tx": {
+    "details_title": "트랜잭션 상세",
+    "not_found_title": "트랜잭션을 찾을 수 없습니다",
+    "not_found_body": "찾는 트랜잭션이 없거나 아직 인덱싱되지 않았습니다.",
+    "error_title": "오류",
+    "error_body": "트랜잭션 상세를 불러오지 못했습니다",
+    "retry": "다시 시도",
+    "bridge_notice": "브리지 트랜잭션은 여기에 표시되지 않습니다. 지갑을 연결한 뒤 <history/>에서 확인하세요.",
+    "bridge_history_link": "브리지 > 내역",
+    "status": {
+      "success": "성공",
+      "failed": "실패",
+      "pending": "대기 중",
+      "squeezed_out": "밀려남",
+      "info": "정보",
+      "waiting": "대기"
+    },
+    "transfer": "전송",
+    "predicate": "프리디케이트",
+    "timestamp": "타임스탬프",
+    "block": "블록",
+    "network_fee": "네트워크 수수료",
+    "gas_used": "사용된 가스: {{gas}}",
+    "fee": "수수료",
+    "to": "수신",
+    "token_transfers": "토큰 전송",
+    "also_called": "기타 호출",
+    "on": "대상",
+    "account": "계정",
+    "signed_with_session_key": "세션 키로 서명됨",
+    "reverted_notice": "이 트랜잭션은 되돌려졌습니다. 이 작업들은 반영되지 않았습니다.",
+    "inputs": "입력",
+    "outputs": "출력",
+    "operations": "작업",
+    "minted_assets": "발행된 자산",
+    "minted": "발행",
+    "minted_help": "이 트랜잭션에서 발행된 수량입니다",
+    "input_contract": "입력 컨트랙트",
+    "tx_pointer_label": "Tx 포인터",
+    "no_inputs": "입력 없음",
+    "no_inputs_body": "이 트랜잭션에는 입력이 없습니다.",
+    "no_outputs": "출력 없음",
+    "no_outputs_body": "이 트랜잭션에는 출력이 없습니다.",
+    "no_operations": "작업 없음",
+    "no_operations_body": "이 트랜잭션에는 작업이 없습니다.",
+    "no_scripts": "스크립트 없음",
+    "no_scripts_body": "이 트랜잭션에는 스크립트가 없습니다.",
+    "collapse": "접기",
+    "expand": "펼치기",
+    "show_details": "상세 보기",
+    "hide_details": "상세 숨기기",
+    "input_type": {
+      "coin": "코인",
+      "message": "메시지",
+      "contract": "컨트랙트"
+    },
+    "output_type": {
+      "contract": "컨트랙트",
+      "created": "생성됨",
+      "variable": "가변",
+      "change": "잔액",
+      "coin": "코인",
+      "unknown": "알 수 없음"
+    },
+    "account_type": {
+      "wallet": "지갑",
+      "contract": "컨트랙트",
+      "predicate": "프리디케이트"
+    },
+    "contract_created": "컨트랙트 생성됨",
+    "asset": "자산",
+    "spent": "사용: {{amount}}",
+    "utxo": "UTXO",
+    "input": "입력",
+    "index": "인덱스:",
+    "id_prefix": "ID:",
+    "asset_prefix": "자산:",
+    "from_prefix": "보낸 주소:",
+    "to_prefix": "받는 주소:",
+    "sender_prefix": "발신자:",
+    "recipient_prefix": "수신자:",
+    "nonce_prefix": "논스:",
+    "data_prefix": "데이터:",
+    "address_prefix": "주소:",
+    "utxo_id_prefix": "UTXO ID:",
+    "balance_root_prefix": "잔액 루트:",
+    "tx_pointer": "Tx 포인터:",
+    "method_prefix": "메서드:",
+    "event_prefix": "이벤트:",
+    "policies": "정책",
+    "policy": {
+      "tip": {
+        "name": "팁",
+        "description": "블록 생성자에게 주는 선택적 팁"
+      },
+      "witness_limit": {
+        "name": "위트니스 한도",
+        "description": "트랜잭션에 허용되는 위트니스 데이터의 최대량"
+      },
+      "maturity": {
+        "name": "만료 대기",
+        "description": "이 블록 높이에 도달하기 전에는 트랜잭션이 포함될 수 없습니다"
+      },
+      "max_fee": {
+        "name": "최대 수수료",
+        "description": "발신자가 지불할 최대 수수료"
+      },
+      "owner": {
+        "name": "소유자",
+        "description": "트랜잭션 소유자로 지정된 입력 인덱스"
+      },
+      "bytes": "{{bytes}} 바이트",
+      "none": "없음",
+      "block": "블록 #{{height}}",
+      "input": "입력 #{{index}}",
+      "input_typed": "입력 #{{index}} ({{type}})",
+      "unknown": "알 수 없음"
+    },
+    "expand_more_other": "(+{{count}}개 작업)",
+    "op": {
+      "call_other": "호출",
+      "log_other": "로그",
+      "transfer_other": "전송",
+      "message_other": "메시지",
+      "mint_other": "발행",
+      "burn_other": "소각",
+      "return_other": "반환",
+      "result_other": "결과",
+      "error_other": "오류"
+    },
+    "transaction_label": "트랜잭션",
+    "activity": {
+      "label": {
+        "order_placed": "주문 접수",
+        "filled": "체결",
+        "order_cancelled": "주문 취소",
+        "order_expired": "주문 만료",
+        "order_removed": "주문 제거",
+        "order_stopped": "주문 중단",
+        "take_profit": "이익 실현",
+        "stop_loss": "손절",
+        "trigger_order": "트리거 주문",
+        "triggered": "발동",
+        "trigger_cancelled": "트리거 취소",
+        "fees": "수수료",
+        "settled": "정산",
+        "withdrawn": "출금",
+        "session_added": "세션 키 추가",
+        "session_revoked": "세션 키 해지",
+        "rejected": "거부됨",
+        "called": "호출"
+      },
+      "part": {
+        "and": " 및 ",
+        "place_head": "{{type}} {{side}} ",
+        "with_limit_price": " 한도 가격 ",
+        "at": " 가격 ",
+        "bought": "매수 ",
+        "sold": "매도 ",
+        "order": "주문 ",
+        "by_market": " (마켓에 의해)",
+        "resting_order": "대기 중인 주문 ",
+        "below_minimum": " 최소 수량 미만입니다",
+        "out_of_gas": " 매칭 중 가스가 부족했습니다",
+        "stopped_with": " 중단, 남은 수량 ",
+        "unfilled": " 미체결",
+        "side_prefix": "{{side}} ",
+        "filled_amount": "체결된 수량",
+        "when_reaches": " 가격이 다음에 도달하면 ",
+        "when_rises": " 가격이 다음까지 오르면 ",
+        "when_falls": " 가격이 다음까지 내리면 ",
+        "trigger_order": "트리거 주문 ",
+        "reached_price": " 가격에 도달했습니다",
+        "fees_collected": " 마켓에서 징수",
+        "moved_to": " 이동 대상 ",
+        "moved_to_trade_account": " 거래 계정으로 이동",
+        "to": " 수신 ",
+        "key": "키 ",
+        "validation_failed": "검증 실패"
+      },
+      "order_type": {
+        "limit": "지정가",
+        "post_only": "포스트온리",
+        "fill_or_kill": "FOK (전량 체결 또는 취소)",
+        "market": "시장가"
+      },
+      "side": {
+        "buy": "매수",
+        "sell": "매도"
+      },
+      "side_cap": {
+        "buy": "매수",
+        "sell": "매도"
+      },
+      "ejection": {
+        "cancelled_by_user": "이(가) 트레이더에 의해 취소되었습니다",
+        "force_canceled": "이(가) 강제 취소되었습니다",
+        "sibling_activated": "이(가) 연결된 주문이 발동되어 취소되었습니다",
+        "not_enough_funds": "이(가) 자금 부족으로 제거되었습니다",
+        "ejected_by_admin": "이(가) 관리자에 의해 제거되었습니다",
+        "parent_canceled": "이(가) 상위 주문과 함께 취소되었습니다",
+        "removed": "이(가) 제거되었습니다"
+      },
+      "phrase": {
+        "triggered_past": "{{rest}} 발동",
+        "triggered_base": "{{rest}} 발동",
+        "placed_past": "{{rest}} 접수",
+        "placed_base": "{{rest}} 접수",
+        "set_past": "{{rest}} 설정",
+        "set_base": "{{rest}} 설정",
+        "cancelled_past": "{{rest}} 취소",
+        "cancelled_base": "{{rest}} 취소",
+        "filled_past": "{{rest}} 체결",
+        "filled_base": "{{rest}} 체결",
+        "withdrew_past": "{{rest}} 출금",
+        "withdrew_base": "{{rest}} 출금",
+        "changed_past": "{{rest}} 변경",
+        "changed_base": "{{rest}} 변경"
+      },
+      "noun": {
+        "order_other": "주문 {{count}}건",
+        "trigger_order_other": "트리거 주문 {{count}}건",
+        "trade_other": "체결 {{count}}건",
+        "asset_other": "자산 {{count}}개",
+        "take_profit": "이익 실현",
+        "stop_loss": "손절",
+        "order_with_protection": "{{orders}} ({{protection}} 포함)",
+        "session_key": "세션 키"
+      },
+      "headline": {
+        "on_market": " ({{market}})",
+        "a_contract": "컨트랙트",
+        "failed_interact": "{{target}}와(과)의 상호작용에 실패했습니다",
+        "interacted": "{{target}}와(과) 상호작용했습니다",
+        "sentence": "{{list}}{{where}}{{plus}}",
+        "failed_sentence": "{{list}}{{where}} 실패{{plus}}",
+        "plus_calls_other": ", 다른 컨트랙트 {{count}}개 호출 포함"
+      },
+      "list_comma": "{{a}}, {{b}}",
+      "list_and": "{{head}} 및 {{last}}"
+    }
+  },
+  "account": {
+    "title": "계정",
+    "my_account": "내 계정",
+    "exchange": "거래소",
+    "tabs": {
+      "assets": "자산",
+      "nfts": "NFT",
+      "transactions": "트랜잭션",
+      "predicate": "프리디케이트"
+    },
+    "error_balances": "계정 잔액을 불러오는 중 오류가 발생했습니다",
+    "error_nfts": "계정 NFT를 불러오는 중 오류가 발생했습니다",
+    "error_predicate": "계정 프리디케이트를 불러오는 중 오류가 발생했습니다",
+    "error_transactions": "계정 트랜잭션을 불러오는 중 오류가 발생했습니다"
+  },
+  "contract": {
+    "title": "컨트랙트",
+    "title_named": "컨트랙트: {{name}}",
+    "tabs": {
+      "minted_assets": "발행된 자산",
+      "assets": "자산",
+      "transactions": "트랜잭션",
+      "source_code": "소스 코드"
+    },
+    "bytecode": "바이트코드",
+    "no_assets_title": "자산 없음",
+    "no_assets_body": "이 컨트랙트에는 자산이 없습니다.",
+    "no_minted_title": "발행된 자산 없음",
+    "no_minted_body": "이 컨트랙트에는 발행된 자산이 없습니다.",
+    "error_assets": "컨트랙트 자산을 불러오지 못했습니다",
+    "error_minted": "발행된 자산을 불러오지 못했습니다",
+    "error_transactions": "컨트랙트 트랜잭션을 불러오지 못했습니다",
+    "error_code": "컨트랙트 데이터를 불러오지 못했습니다"
+  },
+  "asset": {
+    "verified": "인증된 자산",
+    "suspicious": "이 자산은 의심스러운 자산으로 표시되었습니다. 다른 자산을 모방했을 수 있으니 주의하세요.",
+    "unknown": "알 수 없는 자산",
+    "nft_tag": "NFT",
+    "utxos": "UTXO ({{count}})",
+    "show_utxos": "UTXO 보기",
+    "hide_utxos": "UTXO 숨기기"
+  },
+  "meta": {
+    "home": {
+      "title": "Fuel Explorer",
+      "description": "Fuel Ignition의 블록, 트랜잭션, 실시간 네트워크 통계."
+    },
+    "bridge_history": {
+      "title": "브리지 내역 · Fuel Explorer",
+      "description": "Ethereum과 Fuel 간 대기 중이거나 완료된 전송."
+    },
+    "bridge": {
+      "title": "브리지 · Fuel Explorer",
+      "description": "Ethereum과 Fuel Ignition 간 자산 이동."
+    },
+    "staking_on_ethereum": {
+      "title": "이더리움 스테이킹 · Fuel Explorer",
+      "description": "이더리움에서 FUEL을 스테이킹하고 포지션, 검증자, 트랜잭션을 추적하세요."
+    },
+    "staking": {
+      "title": "스테이킹 · Fuel Explorer",
+      "description": "FUEL을 검증자에게 위임하거나 The Rig로 리퀴드 스테이킹하세요."
+    },
+    "ecosystem": {
+      "title": "에코시스템 · Fuel Explorer",
+      "description": "Fuel 기반의 앱, 지갑, 인프라."
+    },
+    "blocks": {
+      "title": "블록 · Fuel Explorer",
+      "description": "Fuel Ignition의 최근 블록."
+    },
+    "block": {
+      "title": "블록 {{height}} · Fuel Explorer",
+      "description": "Fuel Ignition의 블록 {{height}}."
+    },
+    "tx": {
+      "title": "트랜잭션 · Fuel Explorer",
+      "description": "Fuel Ignition의 트랜잭션."
+    },
+    "account": {
+      "title": "계정 · Fuel Explorer",
+      "description": "Fuel 계정의 자산, 트랜잭션, NFT."
+    },
+    "contract": {
+      "title": "컨트랙트 · Fuel Explorer",
+      "description": "Fuel 컨트랙트의 자산, 코드, 트랜잭션."
+    },
+    "upgrade": {
+      "title": "토큰 매니저 · Fuel Explorer",
+      "description": "기여자 보조금과 Fuel 토큰 릴리스 일정."
+    },
+    "account_assets": "계정 자산 {{id}} - Fuel Explorer",
+    "account_transactions": "계정 트랜잭션 {{id}} - Fuel Explorer",
+    "account_nfts": "계정 NFT {{id}} - Fuel Explorer",
+    "account_predicate": "계정 프레디케이트 {{id}} - Fuel Explorer",
+    "contract_assets": "컨트랙트 자산 {{id}} - Fuel Explorer",
+    "contract_minted_assets": "컨트랙트 발행 자산 {{id}} - Fuel Explorer",
+    "contract_transactions": "컨트랙트 트랜잭션 {{id}} - Fuel Explorer",
+    "contract_code": "컨트랙트 코드 {{id}} - Fuel Explorer",
+    "tx_loading": "트랜잭션 불러오는 중 - Fuel Explorer",
+    "tx_not_found": "트랜잭션을 찾을 수 없음 - Fuel Explorer",
+    "error": "오류 - Fuel Explorer",
+    "tx_title": "트랜잭션 {{id}}... - Fuel Explorer",
+    "tx_description": "Fuel 블록체인의 트랜잭션 {{id}} 상세 정보 보기"
   }
 }

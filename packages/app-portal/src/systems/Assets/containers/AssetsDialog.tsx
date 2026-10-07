@@ -4,15 +4,14 @@ import {
   Dialog,
   Flex,
   IconButton,
-  Input,
   ScrollArea,
   Spinner,
-  Text,
 } from '@fuels/ui';
-import { IconArrowLeft, IconCoins } from '@fuels/ui';
+import { IconArrowLeft, IconSearch } from '@fuels/ui';
 import { IS_ETH_DEV_CHAIN, IS_ETH_SEPOLIA_CHAIN } from 'app-commons';
-import { useMemo, useState } from 'react';
+import { type CSSProperties, useMemo, useState } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { Services, store } from '~portal/store';
 import { bridgeSelectors, useBridge } from '~portal/systems/Bridge/hooks';
@@ -28,6 +27,7 @@ import { useAssets } from '../hooks';
 import { getAssetEthCurrentChain } from '../utils';
 
 export function AssetsDialog() {
+  const { t } = useTranslation();
   const classes = styles();
   const { isConnected: isConnectedFuel } = useFuelAccountConnection();
   const { isConnected: isConnectedEth } = useEthAccountConnection();
@@ -62,21 +62,29 @@ export function AssetsDialog() {
     handlers: { faucetErc20 },
   } = useFaucetErc20();
 
+  // If the asset doesn't have an address in this network, hide it.
+  const visibleAssets = assets.flatMap((asset) => {
+    const ethAsset = getAssetEthCurrentChain(asset);
+    const isEth = ethAsset?.symbol === 'ETH';
+    if (!isEth && !ethAsset?.address && asset.symbol !== 'FUEL') return [];
+    return [{ asset, ethAsset, isEth }];
+  });
+
   return (
     <>
-      <Dialog.Title>
-        <Flex className="items-center gap-3 font-semibold text-xl">
-          {editable ? (
+      <Dialog.Title className="mb-0 pr-10">
+        <Flex className="fuel-label items-center gap-3 text-[var(--fuel-element-high-em)]">
+          {editable && (
             <IconButton
-              aria-label="Set editable to false"
+              aria-label={t('portal.assets.back')}
               variant="link"
               icon={IconArrowLeft}
               onClick={() => setEditable(false)}
             />
-          ) : (
-            <IconCoins stroke={1} className="text-muted" />
           )}
-          {!editable ? 'Select token' : 'Manage token list'}
+          {!editable
+            ? t('portal.assets.select_token')
+            : t('portal.assets.manage_token_list')}
         </Flex>
       </Dialog.Title>
       <Controller
@@ -85,20 +93,31 @@ export function AssetsDialog() {
         render={(props) => {
           return (
             <>
-              <Input
-                className={classes.headerInput()}
-                size="3"
-                {...props.field}
-                placeholder="Type here to search"
-              >
-                {isLoading && (
-                  <Input.Slot side="right">
-                    <Spinner />
-                  </Input.Slot>
-                )}
-              </Input>
+              <label className={classes.search()}>
+                <IconSearch
+                  size={16}
+                  stroke={1.75}
+                  className={classes.searchIcon()}
+                />
+                <input
+                  type="text"
+                  autoComplete="off"
+                  className={classes.input()}
+                  {...props.field}
+                  placeholder={t('portal.assets.search_placeholder')}
+                  aria-label={t('portal.assets.search_placeholder')}
+                />
+                <span
+                  className={classes.spinnerSlot()}
+                  data-visible={isLoading}
+                >
+                  <Spinner />
+                </span>
+              </label>
               {!!isSearchResultsEmpty && (
-                <Text>No asset found for your search "{assetQuery}"</Text>
+                <p className={classes.empty()}>
+                  {t('portal.assets.no_asset_found', { query: assetQuery })}
+                </p>
               )}
             </>
           );
@@ -111,15 +130,7 @@ export function AssetsDialog() {
             scrollbars="vertical"
           >
             <CardList isClickable={!editable} gap="2">
-              {assets.map((asset, i) => {
-                const ethAsset = getAssetEthCurrentChain(asset);
-                const isEth = ethAsset?.symbol === 'ETH';
-
-                // if the asset doesn't have address in this network, hide it
-                if (!isEth && !ethAsset?.address && asset.symbol !== 'FUEL') {
-                  return <></>;
-                }
-
+              {visibleAssets.map(({ asset, ethAsset, isEth }, i) => {
                 const isSepoliaFaucetable =
                   IS_ETH_SEPOLIA_CHAIN && ethAsset?.symbol === 'USDe';
                 const isDevFaucetable = IS_ETH_DEV_CHAIN && !!ethAsset?.address;
@@ -133,6 +144,7 @@ export function AssetsDialog() {
                     key={`${ethAsset.address || ''}${
                       ethAsset.symbol || ''
                     }${String(i)}`}
+                    style={enterDelay(i)}
                     asset={asset}
                     isFaucetLoading={isFaucetable && isLoadingFaucet}
                     external={isEth}
@@ -172,13 +184,25 @@ export function AssetsDialog() {
   );
 }
 
+// Rows enter one after another, capped so a long list does not drag.
+const enterDelay = (index: number) =>
+  ({ '--fuel-enter-delay': `${Math.min(index, 8) * 30}ms` }) as CSSProperties;
+
 const styles = tv({
   slots: {
-    actionButton: 'w-full',
-    controllerWrapper: 'pb-2 mb-4 mt-2 w-full',
     contentWrapper: 'mr-[-12px]',
-    contentScrollable: 'h-[535px] pr-[12px]',
-    formControl: 'w-full',
-    headerInput: 'my-4',
+    contentScrollable: 'max-h-[min(535px,60vh)] pr-[12px]',
+    search:
+      'group relative my-4 flex h-11 items-center border border-[var(--fuel-line)] bg-transparent',
+    searchIcon:
+      'ml-4 shrink-0 text-[var(--fuel-element-low-em)] transition-colors duration-200 group-focus-within:text-[var(--fuel-primary)] motion-reduce:transition-none',
+    input: [
+      'h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[13px] text-heading outline-none',
+      'placeholder:text-[var(--fuel-element-low-em)]',
+    ],
+    spinnerSlot:
+      'mr-3 flex shrink-0 opacity-0 transition-opacity duration-150 data-[visible=true]:opacity-100 motion-reduce:transition-none',
+    empty:
+      'fuel-appear m-0 mb-4 text-base text-[var(--fuel-element-low-em)] [overflow-wrap:anywhere]',
   },
 });

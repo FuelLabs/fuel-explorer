@@ -37,14 +37,7 @@ function BridgeFaq() {
     },
   ];
 
-  return (
-    <ToolFaq
-      items={faq}
-      openFirst={false}
-      docsLabel={t('docs')}
-      docsUrl={BRIDGE_DOCS_URL}
-    />
-  );
+  return <ToolFaq items={faq} />;
 }
 
 // Easing shared with the design system's entrances.

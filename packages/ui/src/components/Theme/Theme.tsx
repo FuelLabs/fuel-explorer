@@ -39,7 +39,7 @@ export const Theme = createComponent<ThemeProps, typeof RadixTheme>({
   defaultProps: {
     grayColor: 'slate',
     accentColor: 'grass',
-    radius: 'medium',
+    radius: 'none',
     panelBackground: 'translucent',
     scaling: '100%',
   },

@@ -1,18 +1,17 @@
 import {
-  Alert,
   AnimatedHeight,
   Button,
   HStack,
   InputAmount,
   LoadingBox,
   LoadingWrapper,
-  Separator,
   VStack,
 } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS } from 'app-commons';
 import type { BN } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
 import { useController } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import type { Address } from 'viem';
 import {
   type StepAllowanceFormValues,
@@ -44,6 +43,7 @@ export const StepAllowance = ({
   isContractPaused,
   onNext,
 }: StepAllowanceProps) => {
+  const { t } = useTranslation();
   const [txHashTokenAllowance, setTxHashTokenAllowance] = useState<
     Address | undefined
   >();
@@ -136,7 +136,6 @@ export const StepAllowance = ({
           }}
         >
           <InputAmount.Field
-            color="green"
             value={amount.field.value}
             onChange={amount.field.onChange}
             className={input({ error: Boolean(errorMsg) })}
@@ -148,19 +147,20 @@ export const StepAllowance = ({
           <HStack gap="2" justify="between">
             <LoadingWrapper
               isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-36 h-5" />}
+              loadingEl={<LoadingBox className="w-36 h-5 !rounded-none" />}
               regularEl={
                 <InputAmount.Balance
-                  color="blue"
-                  label="Token Allowance"
+                  label={t('staking.upgrade.allowance')}
                   balance={allowance}
                 />
               }
             />
             <LoadingWrapper
               isLoading={!balance}
-              loadingEl={<LoadingBox className="w-36 h-5" />}
-              regularEl={<InputAmount.Balance label="Available" />}
+              loadingEl={<LoadingBox className="w-36 h-5 !rounded-none" />}
+              regularEl={
+                <InputAmount.Balance label={t('staking.upgrade.available')} />
+              }
             />
           </HStack>
         </InputAmount>
@@ -168,21 +168,28 @@ export const StepAllowance = ({
         <AnimatedError error={errorMsg} />
 
         <AnimatedHeight enabled={isWaitingTokenApproval}>
-          <Alert variant="outline" color="blue" className="text-xs mt-3">
-            Waiting for token allowance confirmation.
-            <br />
-            You can close this dialog and come back later.
-          </Alert>
+          <div
+            role="status"
+            className="mt-3 flex items-start gap-3 border-t border-[var(--fuel-border)] pt-3"
+          >
+            <span
+              aria-hidden
+              className="mt-[3px] size-2 shrink-0 border border-[var(--fuel-indicator-border)] bg-transparent"
+            />
+            <p className="m-0 text-[14px] leading-[18px] text-[var(--fuel-element-low-em)]">
+              {t('staking.upgrade.waiting_allowance')}
+              <br />
+              {t('staking.upgrade.close_hint')}
+            </p>
+          </div>
         </AnimatedHeight>
       </VStack>
-      <Separator size="4" className="my-5" />
+      <div className="my-5 border-t border-[var(--fuel-border)]" />
 
       {isContractPaused ? (
         <PausedContractAlertStaking />
       ) : (
         <Button
-          variant="solid"
-          color="green"
           isLoading={
             isApproving ||
             isWaitingTokenApproval ||
@@ -191,7 +198,9 @@ export const StepAllowance = ({
           className="w-full"
           disabled={isInvalid}
         >
-          {!needsApproval || isInvalid ? 'Next' : 'Approve'}
+          {!needsApproval || isInvalid
+            ? t('staking.upgrade.next')
+            : t('staking.review.approve')}
         </Button>
       )}
     </form>

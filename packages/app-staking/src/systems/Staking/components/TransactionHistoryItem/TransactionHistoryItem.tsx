@@ -2,6 +2,7 @@ import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
 import { Button, LoadingBox, LoadingWrapper, Text, Tooltip } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   CELL_PADDING,
   LIST_SEPARATOR_BORDER,
@@ -13,7 +14,7 @@ import {
   stakingTxDialogStore,
 } from '~staking/systems/Staking/store/stakingTxDialogStore';
 import { TransactionHistoryItemStatus } from './TransactionHistoryItemStatus';
-import { typeLabel, withdrawType } from './constants';
+import { typeLabelKey, withdrawType } from './constants';
 import type { TransactionHistoryItemProps } from './types';
 const v2 = TOKENS[FuelToken.V2];
 const { symbol, decimals } = v2;
@@ -23,6 +24,7 @@ const _TransactionHistoryItem = ({
   hideSeparator,
   isLoading,
 }: TransactionHistoryItemProps) => {
+  const { t } = useTranslation();
   const openModal = () => {
     stakingTxDialogStore.send(
       stakingTxDialogEvents.open(withdrawType[event.type], event.id),
@@ -36,12 +38,12 @@ const _TransactionHistoryItem = ({
   return (
     <div
       key={event.id}
-      className={`w-full flex align-center ${LIST_SEPARATOR_BORDER} ${hideSeparator ? '' : 'border-b'}`}
+      className={`fuel-hover-fill w-full flex align-center ${LIST_SEPARATOR_BORDER} ${hideSeparator ? '' : 'border-b'}`}
       role="row"
       tabIndex={0}
     >
       <div
-        className={`${transactionHistoryItemClassNames.dateCol} font-semibold min-h-[54px] `}
+        className={`${transactionHistoryItemClassNames.dateCol} font-medium text-heading min-h-[54px]`}
         role="cell"
       >
         <LoadingWrapper
@@ -50,21 +52,21 @@ const _TransactionHistoryItem = ({
             event.statusInfo?.[GQLWithdrawStatusType.TransactionSent]?.ethTx
               .timestamp,
           )}
-          loadingEl={<LoadingBox className="w-28 h-6" />}
+          loadingEl={<LoadingBox className="w-28 h-6 !rounded-none" />}
         />
       </div>
       <div
-        className={`${transactionHistoryItemClassNames.typeCol} font-semibold min-h-[52px] `}
+        className={`${transactionHistoryItemClassNames.typeCol} font-medium text-heading min-h-[52px]`}
         role="cell"
       >
         <LoadingWrapper
           isLoading={isLoading}
-          regularEl={typeLabel[event.type]}
-          loadingEl={<LoadingBox className="w-16 h-6" />}
+          regularEl={t(typeLabelKey[event.type])}
+          loadingEl={<LoadingBox className="w-16 h-6 !rounded-none" />}
         />
       </div>
       <div
-        className={`${transactionHistoryItemClassNames.amountCol} font-semibold`}
+        className={`${transactionHistoryItemClassNames.amountCol} font-medium text-heading`}
         role="cell"
       >
         <LoadingWrapper
@@ -81,17 +83,17 @@ const _TransactionHistoryItem = ({
               </div>
             </Tooltip>
           }
-          loadingEl={<LoadingBox className="w-16 h-6" />}
+          loadingEl={<LoadingBox className="w-16 h-6 !rounded-none" />}
         />
       </div>
       <div
-        className={`${transactionHistoryItemClassNames.etaCol} font-semibold`}
+        className={`${transactionHistoryItemClassNames.etaCol} font-medium text-heading`}
         role="cell"
       >
         <LoadingWrapper
           isLoading={isLoading}
           regularEl={<TransactionHistoryItemStatus event={event} />}
-          loadingEl={<LoadingBox className="w-28 h-6" />}
+          loadingEl={<LoadingBox className="w-28 h-6 !rounded-none" />}
         />
       </div>
       <div className={transactionHistoryItemClassNames.actionsCol} role="cell">
@@ -103,12 +105,14 @@ const _TransactionHistoryItem = ({
               variant="ghost"
               size="2"
               onClick={openModal}
-              className="max-h-[30px]"
+              className="fuel-appear max-h-[30px]"
             >
-              <Text className="text-sm text-heading">Details</Text>
+              <Text className="text-sm text-heading">
+                {t('staking.board.details')}
+              </Text>
             </Button>
           }
-          loadingEl={<LoadingBox className="w-[75px] h-6" />}
+          loadingEl={<LoadingBox className="w-[75px] h-6 !rounded-none" />}
         />
       </div>
     </div>

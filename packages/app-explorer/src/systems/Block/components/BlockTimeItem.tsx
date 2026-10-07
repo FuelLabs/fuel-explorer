@@ -1,4 +1,4 @@
-import { Text, VStack } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 
 type BlockTimeItemProps = {
   time: Date;
@@ -6,23 +6,21 @@ type BlockTimeItemProps = {
 };
 
 export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
+  const { i18n } = useTranslation();
   const timeDate = new Date(time);
 
-  const formattedTime = timeDate.toLocaleString('en-US', {
+  const formattedTime = timeDate.toLocaleString(i18n.language, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: true,
   });
 
   return (
-    <VStack gap="0px">
-      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">{timeAgo}</Text>
-      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f] whitespace-nowrap">
-        {formattedTime}
-      </Text>
-    </VStack>
+    <div className="flex flex-col text-[11px] text-[var(--fuel-element-low-em)] leading-[16px]">
+      <span>{timeAgo}</span>
+      <span className="whitespace-nowrap">{formattedTime}</span>
+    </div>
   );
 }

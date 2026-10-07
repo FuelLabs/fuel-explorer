@@ -2,6 +2,7 @@ import { Button } from '@fuels/ui';
 import { IconArrowBack, IconHistory } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import { RollingLabel } from '../RollingLabel/RollingLabel';
@@ -29,6 +30,7 @@ const iconVariants = {
 };
 
 export const BridgeHistoryToggle = () => {
+  const { t } = useTranslation();
   const classes = styles();
   const location = useLocation();
   const reduce = useReducedMotion();
@@ -45,7 +47,11 @@ export const BridgeHistoryToggle = () => {
       color="gray"
       variant="ghost"
       className={classes.toggle()}
-      aria-label={isBridgeHistory ? 'Back to home' : 'Transaction History'}
+      aria-label={
+        isBridgeHistory
+          ? t('portal.bridge.back_to_home')
+          : t('portal.bridge.transaction_history')
+      }
     >
       <span className={classes.icon()}>
         <AnimatePresence mode="popLayout" initial={false} custom={direction}>
@@ -64,7 +70,9 @@ export const BridgeHistoryToggle = () => {
         </AnimatePresence>
       </span>
       <RollingLabel
-        text={isBridgeHistory ? 'Back' : 'History'}
+        text={
+          isBridgeHistory ? t('portal.bridge.back') : t('portal.bridge.history')
+        }
         direction={direction}
       />
     </Button>
@@ -73,7 +81,7 @@ export const BridgeHistoryToggle = () => {
 
 const styles = tv({
   slots: {
-    toggle: 'h-9 shrink-0 rounded-md min-w-[96px] justify-center gap-1.5',
+    toggle: 'h-9 shrink-0 min-w-[96px] justify-center gap-1.5',
     icon: 'relative inline-flex size-[14px] items-center justify-center',
   },
 });

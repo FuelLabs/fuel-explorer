@@ -42,7 +42,12 @@
     "size": "大小",
     "gas": "Gas",
     "fee": "手续费",
-    "block_link": "区块 {{number}}"
+    "block_link": "区块 {{number}}",
+    "peak_tps": "峰值 TPS",
+    "avg_tps": "平均 TPS",
+    "day_peak": "日峰值",
+    "error_title": "无法加载交易",
+    "error_description": "最新交易加载失败,请重试。"
   },
   "ecosystem": {
     "eyebrow": "Fuel 生态",
@@ -126,7 +131,6 @@
     "title": "帮助保障 Fuel 网络安全",
     "read_docs": "查看文档",
     "open_rig": "打开 The Rig",
-    "docs": "Fuel 文档",
     "tab_rig": "通过 The Rig 流动性质押",
     "tab_ethereum": "在 Ethereum 上质押",
     "rig_card_title": "在 The Rig 上流动性质押",
@@ -137,7 +141,246 @@
     "validators": "验证者",
     "transactions": "你的交易",
     "wallet_disconnected": "钱包未连接",
-    "connect_positions": "请连接钱包以查看你的质押持仓。"
+    "connect_positions": "请连接钱包以查看你的质押持仓。",
+    "history": {
+      "status_label": "按状态筛选",
+      "status_action": "需要操作",
+      "status_progress": "进行中",
+      "status_completed": "已完成",
+      "status_failed": "失败",
+      "type_label": "按类型筛选",
+      "type_all": "所有类型",
+      "refresh": "刷新列表",
+      "no_match": "没有符合筛选条件的交易。",
+      "clear": "清除筛选"
+    },
+    "account": {
+      "connect_wallet": "连接钱包",
+      "copied": "已复制",
+      "copied_toast": "地址已复制到剪贴板",
+      "copy": "复制地址",
+      "disconnect": "断开连接",
+      "switch": "切换网络",
+      "unsupported": "不支持的网络"
+    },
+    "balance": {
+      "ethereum": "以太坊余额",
+      "ethereum_tip": "以太坊网络上可用于质押给验证者的余额。",
+      "rewards": "已获得奖励",
+      "rewards_tip": "这是您从质押仓位获得的当前奖励。如需领取,请前往“当前仓位”标签页。",
+      "sequencer": "排序器内余额",
+      "sequencer_tip": "Fuel 排序器链上的可用余额,可用于质押给验证者或提取到以太坊网络。",
+      "vesting": "归属中的代币",
+      "vesting_tip": "V1 转换为 FUEL 后锁定的 FUEL 代币。\n\n在归属期内,这些代币会逐步释放到您的“排序器内余额”。无需手动领取。",
+      "withdraw": "提取"
+    },
+    "dialog": {
+      "amount_to_claim": "待领取金额",
+      "approval": "授权",
+      "approve_body": "要继续质押,您需要授权此合约使用您以太坊余额中的代币。",
+      "approve_title": "授权使用 FUEL",
+      "approved": "FUEL 代币使用已授权。",
+      "approving": "授权中...",
+      "claim_pending": "奖励领取待处理",
+      "claim_rewards": "领取奖励",
+      "claiming_now": "正在领取",
+      "from_account": "来源账户",
+      "have_claimed": "已领取",
+      "have_redelegated": "已重新委托",
+      "have_staked": "已质押",
+      "have_undelegated": "已取消委托",
+      "have_withdrawn": "已提取",
+      "how_much_redelegate": "您想重新委托多少?",
+      "how_much_stake": "您想质押多少?",
+      "how_much_undelegate": "您想取消委托多少?",
+      "how_much_withdraw": "您想提取多少?",
+      "please_wait": "请稍候",
+      "redelegate": "重新委托",
+      "redelegating_now": "正在重新委托",
+      "review": "查看",
+      "review_claim": "确认:领取奖励",
+      "review_redelegate": "确认:重新委托",
+      "review_stake": "确认:质押",
+      "review_undelegate": "确认:取消委托",
+      "review_withdraw": "确认:提取",
+      "search_validator": "搜索或选择验证者",
+      "selected_validator": "所选验证者",
+      "sourced_from": "资金来源",
+      "stake": "质押",
+      "stake_unavailable": "当前无法质押",
+      "staking_now": "正在质押",
+      "step_of": "第 {{current}} 步,共 {{total}} 步",
+      "submit_redelegate": "提交重新委托",
+      "submit_stake": "提交质押",
+      "submit_undelegate": "提交取消委托",
+      "submit_withdraw": "提交提取",
+      "to_which_validator": "质押给哪个验证者?",
+      "two_tx_body": "此交易将同时使用您的“以太坊余额”和“排序器内余额”。因此,该操作需要执行两笔独立的交易。",
+      "two_tx_title": "此质押操作需要两笔交易。",
+      "undelegate": "取消委托",
+      "undelegate_unavailable": "当前无法取消委托",
+      "undelegating_now": "正在取消委托",
+      "withdraw": "提取",
+      "withdraw_unavailable": "当前无法提取",
+      "withdrawal": "提取",
+      "withdrawing_now": "正在提取"
+    },
+    "empty": {
+      "positions": "您目前没有有效的质押仓位。",
+      "start": "开始质押",
+      "transactions": "您还没有任何交易。"
+    },
+    "faucet": {
+      "button": "领取 Fuel 测试代币",
+      "error": "领取 Fuel 代币出错"
+    },
+    "pagination": {
+      "next": "下一页",
+      "page": "第 {{page}} 页",
+      "previous": "上一页",
+      "records": "条记录",
+      "show": "显示"
+    },
+    "position": {
+      "claim": "领取",
+      "menu": "委托项目",
+      "redelegate": "重新委托",
+      "undelegate": "取消委托"
+    },
+    "review": {
+      "approve": "授权",
+      "back": "返回",
+      "balance_ethereum": "(以太坊余额)",
+      "balance_sequencer": "(排序器内余额)",
+      "checking": "检查中...",
+      "fee": "网络费用",
+      "from": "来源",
+      "my_account": "我的账户",
+      "retry": "重试",
+      "submitting": "提交中...",
+      "time_to_complete": "完成所需时间",
+      "to": "目标"
+    },
+    "status": {
+      "at": "{{date}} {{time}}",
+      "error": "错误",
+      "eta": "预计完成时间",
+      "finalize_withdraw": "确认提取",
+      "funds_staked_on": "质押时间",
+      "label": "状态",
+      "loading": "加载中...",
+      "redelegated_on": "重新委托时间",
+      "rewards_claimed_on": "奖励领取时间",
+      "step_sent": "交易已发送",
+      "step_sync_failed": "同步失败",
+      "step_unbonding": "等待解绑",
+      "step_waiting_sync": "等待同步",
+      "step_withdraw_commit": "排序器正在提交到 L1...",
+      "step_withdraw_finalization": "等待最终确认...",
+      "step_withdraw_ready": "可以提取...",
+      "step_withdraw_sent": "提取交易已发送...",
+      "step_withdraw_sync": "正在与排序器同步...",
+      "sync_failed_body": "可能是因为同步时余额不可用。如果您认为同步应当成功,请在 <discord>Discord</discord> 上联系 Fuel 支持。",
+      "undelegation_completed_on": "取消委托完成时间",
+      "waiting_confirmation": "等待交易确认",
+      "waiting_user": "等待用户操作",
+      "withdrawal_finalized_on": "提取确认时间"
+    },
+    "table": {
+      "commission": "佣金",
+      "delegated": "已委托代币",
+      "name": "名称",
+      "power": "投票权重",
+      "rewards": "已获奖励",
+      "date": "日期",
+      "type": "类型",
+      "amount": "金额",
+      "status": "状态"
+    },
+    "upgrade": {
+      "allowance": "代币授权额度",
+      "available": "可用",
+      "claim": "领取代币",
+      "claim_submitted": "归属领取已提交",
+      "cliff_end": "悬崖期结束",
+      "close_hint": "您可以关闭此对话框,稍后再回来。",
+      "convert": "升级为 FUEL",
+      "cta": "升级您的 Fuel V1 代币",
+      "dialog_title": "将 V1 升级为 FUEL 代币",
+      "go_staking": "前往质押",
+      "grant_title": "V1 代币授予",
+      "liquid": "流动 {{version}} 代币",
+      "migration_submitted": "迁移已提交",
+      "next": "下一步",
+      "receive": "您将收到",
+      "release_end": "释放结束",
+      "start_date": "开始日期",
+      "step_allowance": "授权额度",
+      "step_upgrade": "升级",
+      "submit": "升级",
+      "total_claimed": "已领取总额",
+      "total_grant": "授予总额",
+      "total_vesting": "归属总额",
+      "unclaimed": "未领取代币",
+      "v1_amount": "V1 数量",
+      "vesting_fuel": "FUEL 代币归属",
+      "waiting_allowance": "正在等待代币授权确认。"
+    },
+    "validator": {
+      "load_error": "获取验证者失败。出现问题,请稍后再试。",
+      "stake": "质押",
+      "stake_disabled": "其他质押操作待处理期间,无法质押。"
+    },
+    "lanes_label": "质押路径",
+    "lane_rig": "The Rig",
+    "lane_ethereum": "Ethereum",
+    "lane_rig_figure": "待领取",
+    "lane_ethereum_figure": "已质押",
+    "board": {
+      "title": "待您处理",
+      "count_other": "{{count}} 项",
+      "col_lane": "路径",
+      "col_what": "内容",
+      "col_amount": "金额",
+      "col_status": "状态",
+      "rig_claim": "领取 stFUEL",
+      "claim_rewards": "领取奖励",
+      "ready": "现已就绪",
+      "action_needed": "需要操作",
+      "time_left": "剩余约 {{eta}}",
+      "in_progress": "进行中",
+      "claim": "领取",
+      "continue": "继续",
+      "details": "详情"
+    },
+    "event_type": {
+      "stake": "质押",
+      "redelegate": "重新委托",
+      "undelegate": "取消委托",
+      "claim_rewards": "领取奖励",
+      "withdraw": "提取"
+    },
+    "toast": {
+      "stake_submitted": "质押请求已提交",
+      "undelegate_submitted": "取消委托交易已提交",
+      "redelegate_submitted": "重新委托请求已提交",
+      "claim_reward_submitted": "领取奖励交易已提交",
+      "withdraw_submitted": "提取请求已提交",
+      "finalize_submitted": "确认提取的交易已提交",
+      "fuel_claimed": "Fuel 代币已领取，即将显示在你的钱包中。",
+      "view_explorer": "在浏览器中查看"
+    },
+    "eta": {
+      "less_than_minute": "不到 1 分钟",
+      "days_other": "{{count}} 天",
+      "hours_other": "{{count}} 小时",
+      "minutes_other": "{{count}} 分钟",
+      "join": "{{first}}{{second}}"
+    },
+    "apr": {
+      "value": "~{{apy}}% APR",
+      "tip": "将代币委托给 Fuel 验证者，帮助保障 Fuel 排序的安全。"
+    }
   },
   "errors": {
     "not_found": "页面未找到",
@@ -151,7 +394,592 @@
   "bridge": {
     "board": {
       "expand": "显示转账",
-      "collapse": "隐藏转账"
+      "collapse": "隐藏转账",
+      "title": "进行中的转账",
+      "count_other": "{{count}} 笔进行中",
+      "col_what": "内容",
+      "col_amount": "金额",
+      "col_status": "状态",
+      "deposit": "存入",
+      "withdraw": "提取",
+      "route_deposit": "从 Ethereum 到 Fuel",
+      "route_withdraw": "从 Fuel 到 Ethereum",
+      "action_needed": "需要操作",
+      "continue": "继续",
+      "details": "详情",
+      "connect": "连接 Fuel 钱包以查看您的转账。",
+      "connect_button": "连接钱包",
+      "none": "暂无转账。您的存入和提取会显示在这里。",
+      "empty": "没有进行中的转账。已完成的转账在历史记录中。",
+      "open_history": "打开历史记录",
+      "loading": "正在加载您的转账"
+    },
+    "title": "跨链桥",
+    "read_docs": "查看文档",
+    "panel_transfer": "转账",
+    "panel_history": "历史记录"
+  },
+  "core": {
+    "retry": "重试",
+    "view_mode": {
+      "label": "查看模式",
+      "standard": "标准",
+      "simple": "简易",
+      "advanced": "高级",
+      "simple_disabled": "此交易不支持简易模式"
+    },
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页",
+      "range": "{{start}} - {{end}} / {{total}}"
+    },
+    "empty": {
+      "assets_title": "暂无资产",
+      "assets_description": "此{{entity}}没有任何资产。",
+      "nfts_title": "暂无 NFT",
+      "nfts_description": "此{{entity}}没有任何 NFT。",
+      "transactions_title": "暂无交易",
+      "transactions_description": "此{{entity}}没有任何交易。"
+    },
+    "entity": {
+      "account": "账户",
+      "contract": "合约",
+      "assets": "资产",
+      "block": "区块"
+    },
+    "sync_status": {
+      "message": "索引器出现问题,Fuel 团队正在修复。部分数据可能已过期或暂时无法获取。"
+    },
+    "code_block": {
+      "code": "代码"
+    },
+    "copy": {
+      "copy": "复制"
+    },
+    "info_hint": {
+      "label": "更多信息"
+    },
+    "upgrade": {
+      "title": "代币管理器",
+      "subtitle": "管理您的贡献者授予和 Fuel 代币释放计划。",
+      "stake_tokens": "质押您的 Fuel 代币"
     }
+  },
+  "block": {
+    "title": "区块",
+    "blocks_title": "区块",
+    "breadcrumb_label": "面包屑导航",
+    "breadcrumb_home": "首页",
+    "breadcrumb_all_blocks": "查看所有区块",
+    "height": "高度",
+    "producer": "生产者",
+    "created": "创建时间",
+    "tx_count": "交易数量",
+    "transactions": "交易",
+    "total_fee": "总手续费",
+    "col_block": "区块",
+    "col_blockhash": "区块哈希",
+    "col_transactions": "交易",
+    "col_rewards": "奖励",
+    "col_producer": "生产者",
+    "col_efficiency": "效率",
+    "col_time": "时间",
+    "col_blockhash_hint": "通过对区块数据进行哈希运算生成的唯一标识符。",
+    "col_rewards_hint": "因生成此区块而分配给验证者的总奖励。",
+    "col_efficiency_hint": "交易占用的区块资源百分比。",
+    "no_mint_amount": "无铸造数量",
+    "view": "查看",
+    "not_found_title": "未找到区块",
+    "not_found_description": "找不到所请求的区块。",
+    "not_found_meta_title": "未找到区块 - Fuel Explorer",
+    "error_title": "无法加载区块",
+    "error_description": "加载区块详情失败。",
+    "error_meta_title": "错误 - Fuel Explorer",
+    "loading_meta_title": "正在加载区块 - Fuel Explorer",
+    "meta_title": "区块 {{height}} - Fuel Explorer",
+    "meta_description": "查看 Fuel 区块链上区块 {{height}} 的详情",
+    "list_error_title": "无法加载区块列表",
+    "list_error_description": "区块列表加载失败,请重试。",
+    "pager_previous": "上一页",
+    "pager_next": "下一页"
+  },
+  "portal": {
+    "wallet": {
+      "connect": "连接钱包",
+      "address_copied": "地址已复制到剪贴板",
+      "switch_network": "切换网络",
+      "my_account": "我的账户",
+      "copy_address": "复制地址",
+      "bridge_history": "跨链桥记录",
+      "disconnect": "断开连接"
+    },
+    "account": {
+      "disconnect": "断开连接",
+      "connected_wallet": "{{network}}: 已连接的钱包",
+      "change_wallet": "更换钱包"
+    },
+    "bridge": {
+      "from": "来源",
+      "to": "目标",
+      "deposit": "存入",
+      "withdraw": "提取",
+      "deposit_tab": "存入标签页",
+      "withdraw_tab": "提取标签页",
+      "history": "记录",
+      "back": "返回",
+      "back_to_home": "返回首页",
+      "transaction_history": "交易记录",
+      "layerswap": "使用 LayerSwap 快速跨链",
+      "custom_address_notice": "正在发送到自定义 Fuel 账户：",
+      "non_native_notice": "请注意：EVM/SVM 地址与您的 <strong>Fuel 谓词地址</strong>不同，这是正常现象。",
+      "manage_assets_in": "您可以在以下位置管理资产：",
+      "my_account": "我的账户",
+      "max_tooltip": "最大 = 余额 - 手续费",
+      "allowance": "授权额度",
+      "no_gas_warning": "您在 Fuel 上没有用于支付 Gas 的 ETH。建议先桥接一些 ETH，再桥接其他资产。",
+      "withdraw_delay": "提取回以太坊最多需要 {{time}}。",
+      "withdraw_threshold": "此次提取超过该资产每周限额的 {{percentage}}%。大额提取可能在中继时被拦截，拆分为较小的交易可在达到每周限额前提取更多总额。",
+      "withdraw_limit": "此次提取超过该资产的每周限额，将在中继时被拦截。拆分为较小的交易可在达到每周限额前提取更多总额。",
+      "withdraw_warning_label": "提取警告",
+      "withdraw_warning_accept": "我了解此次提取超过每周限额，将在中继时被拦截，但仍要继续。",
+      "terms_label": "服务条款",
+      "terms_accept": "我已阅读并同意更新后的",
+      "terms_link": "服务条款"
+    },
+    "overview": {
+      "transaction_id": "交易 ID",
+      "transaction_id_label": "交易 ID：{{id}}",
+      "from": "来源",
+      "to": "目标",
+      "age": "时间",
+      "direction": "方向",
+      "direction_deposit": "(存入)",
+      "direction_withdraw": "(提取)",
+      "alt_deposit": "存入",
+      "alt_withdrawal": "提取",
+      "asset": "资产",
+      "add_to_wallet": "添加到钱包",
+      "alt_asset": "资产 {{symbol}}",
+      "asset_amount": "资产数量"
+    },
+    "steps": {
+      "step_status": "步骤 {{name}}：{{status}}"
+    },
+    "dialog": {
+      "close": "关闭",
+      "confirm_transaction": "确认交易",
+      "connect_eth_wallet": "连接以太坊钱包",
+      "progress": "交易进度"
+    },
+    "assets": {
+      "back": "返回",
+      "select_token": "选择代币",
+      "manage_token_list": "管理代币列表",
+      "search_placeholder": "在此输入搜索",
+      "no_asset_found": "未找到与“{{query}}”匹配的资产",
+      "unnamed": "未命名",
+      "name_label": "{{symbol}} 名称",
+      "symbol_label": "{{symbol}} 符号",
+      "balance_label": "{{symbol}} 余额",
+      "faucet_label": "{{symbol}} 水龙头"
+    },
+    "history": {
+      "empty": "暂无活动。发起交易后将显示在这里。",
+      "not_connected": "未检测到钱包。连接钱包以查看您的交易。",
+      "connect_fuel_wallet": "连接 Fuel 钱包",
+      "action_required": "需要操作",
+      "settled": "已完成",
+      "processing": "处理中",
+      "show_more": "显示更多",
+      "slow_loading": "处理时间比预期更长，如果账户交易较多，可能需要几分钟。",
+      "slow_loading_detail": "我们正在为 Fuel 跨链桥交易开发专用索引器，以改善此体验。"
+    },
+    "paused": {
+      "tag": "已暂停",
+      "title": "操作已暂时暂停。",
+      "dialog_title": "操作已暂时暂停",
+      "module_updating": "{{name}} 模块正在更新中。",
+      "no_action": "您无需进行任何操作。",
+      "close": "关闭",
+      "bridge_message": "因维护暂停提取。您的资金是安全的，恢复后即可完成。"
+    },
+    "bridge_button": {
+      "connect_wallet": "连接 {{chain}} 钱包",
+      "bridge_anyway": "仍然桥接资产",
+      "approve": "授权",
+      "loading_allowance": "正在获取代币授权额度...",
+      "loading_submit": "正在提交交易...",
+      "select_network_from": "选择桥接来源网络",
+      "select_network_to": "选择桥接目标网络",
+      "pick_asset": "选择资产",
+      "enter_amount": "输入金额",
+      "insufficient_funds": "余额不足"
+    },
+    "bridge_steps": {
+      "submit_to_bridge": "提交至桥",
+      "settlement": "结算",
+      "confirm_transaction": "确认交易",
+      "receive_on_ethereum": "在以太坊接收",
+      "receive_on_fuel": "在 Fuel 接收",
+      "done": "完成",
+      "waiting": "等待中",
+      "automatic": "自动",
+      "action": "操作",
+      "action_required": "需要操作",
+      "time_left": "约剩 {{time}}"
+    },
+    "bridge_toast": {
+      "deposit_started": "充值已发起。您现在可以关闭弹窗。",
+      "withdraw_started": "提现已发起。您现在可以关闭弹窗。",
+      "user_rejected": "用户拒绝了交易"
+    }
+  },
+  "tx": {
+    "details_title": "交易详情",
+    "not_found_title": "未找到交易",
+    "not_found_body": "你查找的交易不存在，或尚未被索引。",
+    "error_title": "错误",
+    "error_body": "加载交易详情失败",
+    "retry": "重试",
+    "bridge_notice": "跨链桥交易不会显示在这里。请连接钱包，并前往<history/>查看你的跨链桥交易。",
+    "bridge_history_link": "桥 > 历史",
+    "status": {
+      "success": "成功",
+      "failed": "失败",
+      "pending": "待处理",
+      "squeezed_out": "被挤出",
+      "info": "信息",
+      "waiting": "等待中"
+    },
+    "transfer": "转账",
+    "predicate": "谓词",
+    "timestamp": "时间戳",
+    "block": "区块",
+    "network_fee": "网络费用",
+    "gas_used": "已用 Gas：{{gas}}",
+    "fee": "费用",
+    "to": "至",
+    "token_transfers": "代币转账",
+    "also_called": "其他调用",
+    "on": "于",
+    "account": "账户",
+    "signed_with_session_key": "使用会话密钥签名",
+    "reverted_notice": "此交易已回滚，这些操作均未生效。",
+    "inputs": "输入",
+    "outputs": "输出",
+    "operations": "操作",
+    "minted_assets": "已铸造资产",
+    "minted": "铸造",
+    "minted_help": "此交易中铸造的数量",
+    "input_contract": "输入合约",
+    "tx_pointer_label": "Tx 指针",
+    "no_inputs": "无输入",
+    "no_inputs_body": "此交易没有任何输入。",
+    "no_outputs": "无输出",
+    "no_outputs_body": "此交易没有任何输出。",
+    "no_operations": "无操作",
+    "no_operations_body": "此交易没有任何操作。",
+    "no_scripts": "无脚本",
+    "no_scripts_body": "此交易没有任何脚本。",
+    "collapse": "收起",
+    "expand": "展开",
+    "show_details": "显示详情",
+    "hide_details": "隐藏详情",
+    "input_type": {
+      "coin": "代币",
+      "message": "消息",
+      "contract": "合约"
+    },
+    "output_type": {
+      "contract": "合约",
+      "created": "已创建",
+      "variable": "可变",
+      "change": "找零",
+      "coin": "代币",
+      "unknown": "未知"
+    },
+    "account_type": {
+      "wallet": "钱包",
+      "contract": "合约",
+      "predicate": "谓词"
+    },
+    "contract_created": "合约已创建",
+    "asset": "资产",
+    "spent": "已花费：{{amount}}",
+    "utxo": "UTXO",
+    "input": "输入",
+    "index": "索引：",
+    "id_prefix": "ID：",
+    "asset_prefix": "资产：",
+    "from_prefix": "来自：",
+    "to_prefix": "发送至：",
+    "sender_prefix": "发送方：",
+    "recipient_prefix": "接收方：",
+    "nonce_prefix": "Nonce：",
+    "data_prefix": "数据：",
+    "address_prefix": "地址：",
+    "utxo_id_prefix": "UTXO ID：",
+    "balance_root_prefix": "余额根：",
+    "tx_pointer": "Tx 指针：",
+    "method_prefix": "方法：",
+    "event_prefix": "事件：",
+    "policies": "策略",
+    "policy": {
+      "tip": {
+        "name": "小费",
+        "description": "给区块生产者的可选小费"
+      },
+      "witness_limit": {
+        "name": "见证上限",
+        "description": "交易允许的见证数据最大量"
+      },
+      "maturity": {
+        "name": "成熟高度",
+        "description": "在此区块高度之前，交易不能被打包"
+      },
+      "max_fee": {
+        "name": "最高费用",
+        "description": "发送方愿意支付的最高费用"
+      },
+      "owner": {
+        "name": "所有者",
+        "description": "被指定为交易所有者的输入索引"
+      },
+      "bytes": "{{bytes}} 字节",
+      "none": "无",
+      "block": "区块 #{{height}}",
+      "input": "输入 #{{index}}",
+      "input_typed": "输入 #{{index}}（{{type}}）",
+      "unknown": "未知"
+    },
+    "expand_more_other": "（+{{count}} 项操作）",
+    "op": {
+      "call_other": "调用",
+      "log_other": "日志",
+      "transfer_other": "转账",
+      "message_other": "消息",
+      "mint_other": "铸造",
+      "burn_other": "销毁",
+      "return_other": "返回",
+      "result_other": "结果",
+      "error_other": "错误"
+    },
+    "transaction_label": "交易",
+    "activity": {
+      "label": {
+        "order_placed": "已下单",
+        "filled": "已成交",
+        "order_cancelled": "订单已取消",
+        "order_expired": "订单已过期",
+        "order_removed": "订单已移除",
+        "order_stopped": "订单已停止",
+        "take_profit": "止盈",
+        "stop_loss": "止损",
+        "trigger_order": "触发订单",
+        "triggered": "已触发",
+        "trigger_cancelled": "触发已取消",
+        "fees": "手续费",
+        "settled": "已结算",
+        "withdrawn": "已提取",
+        "session_added": "已添加会话密钥",
+        "session_revoked": "已撤销会话密钥",
+        "rejected": "已拒绝",
+        "called": "调用"
+      },
+      "part": {
+        "and": "和",
+        "place_head": "{{type}}{{side}} ",
+        "with_limit_price": " 限价 ",
+        "at": " 价格 ",
+        "bought": "买入 ",
+        "sold": "卖出 ",
+        "order": "订单 ",
+        "by_market": "（由市场）",
+        "resting_order": "挂单 ",
+        "below_minimum": " 低于最小数量",
+        "out_of_gas": " 在撮合时耗尽 Gas",
+        "stopped_with": " 已停止，剩余 ",
+        "unfilled": " 未成交",
+        "side_prefix": "{{side}} ",
+        "filled_amount": "已成交数量",
+        "when_reaches": " 当价格达到 ",
+        "when_rises": " 当价格上涨至 ",
+        "when_falls": " 当价格下跌至 ",
+        "trigger_order": "触发订单 ",
+        "reached_price": " 已达到触发价",
+        "fees_collected": " 由市场收取",
+        "moved_to": " 已转至 ",
+        "moved_to_trade_account": " 已转至交易账户",
+        "to": " 至 ",
+        "key": "密钥 ",
+        "validation_failed": "验证失败"
+      },
+      "order_type": {
+        "limit": "限价",
+        "post_only": "只做 Maker",
+        "fill_or_kill": "全部成交或取消",
+        "market": "市价"
+      },
+      "side": {
+        "buy": "买入",
+        "sell": "卖出"
+      },
+      "side_cap": {
+        "buy": "买入",
+        "sell": "卖出"
+      },
+      "ejection": {
+        "cancelled_by_user": "已被交易者取消",
+        "force_canceled": "已被强制取消",
+        "sibling_activated": "因关联订单已触发而被取消",
+        "not_enough_funds": "因资金不足被移除",
+        "ejected_by_admin": "已被管理员移除",
+        "parent_canceled": "随其父订单一同被取消",
+        "removed": "已被移除"
+      },
+      "phrase": {
+        "triggered_past": "触发了{{rest}}",
+        "triggered_base": "触发{{rest}}",
+        "placed_past": "下了{{rest}}",
+        "placed_base": "下达{{rest}}",
+        "set_past": "设置了{{rest}}",
+        "set_base": "设置{{rest}}",
+        "cancelled_past": "取消了{{rest}}",
+        "cancelled_base": "取消{{rest}}",
+        "filled_past": "成交了{{rest}}",
+        "filled_base": "成交{{rest}}",
+        "withdrew_past": "提取了{{rest}}",
+        "withdrew_base": "提取{{rest}}",
+        "changed_past": "更改了{{rest}}",
+        "changed_base": "更改{{rest}}"
+      },
+      "noun": {
+        "order_other": "{{count}} 个订单",
+        "trigger_order_other": "{{count}} 个触发订单",
+        "trade_other": "{{count}} 笔成交",
+        "asset_other": "{{count}} 项资产",
+        "take_profit": "止盈",
+        "stop_loss": "止损",
+        "order_with_protection": "{{orders}}（含{{protection}}）",
+        "session_key": "会话密钥"
+      },
+      "headline": {
+        "on_market": "（{{market}}）",
+        "a_contract": "合约",
+        "failed_interact": "与 {{target}} 交互失败",
+        "interacted": "与 {{target}} 进行了交互",
+        "sentence": "{{list}}{{where}}{{plus}}",
+        "failed_sentence": "{{list}}{{where}}失败{{plus}}",
+        "plus_calls_other": "，另含对 {{count}} 个其他合约的调用"
+      },
+      "list_comma": "{{a}}，{{b}}",
+      "list_and": "{{head}}和{{last}}"
+    }
+  },
+  "account": {
+    "title": "账户",
+    "my_account": "我的账户",
+    "exchange": "交易所",
+    "tabs": {
+      "assets": "资产",
+      "nfts": "NFT",
+      "transactions": "交易",
+      "predicate": "谓词"
+    },
+    "error_balances": "加载账户余额出错",
+    "error_nfts": "加载账户 NFT 出错",
+    "error_predicate": "加载账户谓词出错",
+    "error_transactions": "加载账户交易出错"
+  },
+  "contract": {
+    "title": "合约",
+    "title_named": "合约：{{name}}",
+    "tabs": {
+      "minted_assets": "已铸造资产",
+      "assets": "资产",
+      "transactions": "交易",
+      "source_code": "源代码"
+    },
+    "bytecode": "字节码",
+    "no_assets_title": "无资产",
+    "no_assets_body": "此合约没有任何资产。",
+    "no_minted_title": "无已铸造资产",
+    "no_minted_body": "此合约没有任何已铸造资产。",
+    "error_assets": "加载合约资产失败",
+    "error_minted": "加载已铸造资产失败",
+    "error_transactions": "加载合约交易失败",
+    "error_code": "加载合约数据失败"
+  },
+  "asset": {
+    "verified": "已验证资产",
+    "suspicious": "此资产已被标记为可疑，可能在模仿其他资产，请谨慎操作。",
+    "unknown": "未知资产",
+    "nft_tag": "NFT",
+    "utxos": "UTXO（{{count}}）",
+    "show_utxos": "显示 UTXO",
+    "hide_utxos": "隐藏 UTXO"
+  },
+  "meta": {
+    "home": {
+      "title": "Fuel Explorer",
+      "description": "Fuel Ignition 的区块、交易和实时网络统计。"
+    },
+    "bridge_history": {
+      "title": "跨链桥历史 · Fuel Explorer",
+      "description": "以太坊与 Fuel 之间待处理和已完成的转账。"
+    },
+    "bridge": {
+      "title": "跨链桥 · Fuel Explorer",
+      "description": "在以太坊与 Fuel Ignition 之间转移资产。"
+    },
+    "staking_on_ethereum": {
+      "title": "在以太坊质押 · Fuel Explorer",
+      "description": "在以太坊质押 FUEL，并追踪仓位、验证者和交易。"
+    },
+    "staking": {
+      "title": "质押 · Fuel Explorer",
+      "description": "将 FUEL 委托给验证者，或通过 The Rig 进行流动性质押。"
+    },
+    "ecosystem": {
+      "title": "生态系统 · Fuel Explorer",
+      "description": "基于 Fuel 构建的应用、钱包和基础设施。"
+    },
+    "blocks": {
+      "title": "区块 · Fuel Explorer",
+      "description": "Fuel Ignition 的最新区块。"
+    },
+    "block": {
+      "title": "区块 {{height}} · Fuel Explorer",
+      "description": "Fuel Ignition 的区块 {{height}}。"
+    },
+    "tx": {
+      "title": "交易 · Fuel Explorer",
+      "description": "Fuel Ignition 上的一笔交易。"
+    },
+    "account": {
+      "title": "账户 · Fuel Explorer",
+      "description": "Fuel 账户的资产、交易和 NFT。"
+    },
+    "contract": {
+      "title": "合约 · Fuel Explorer",
+      "description": "Fuel 合约的资产、代码和交易。"
+    },
+    "upgrade": {
+      "title": "代币管理器 · Fuel Explorer",
+      "description": "贡献者授予与 Fuel 代币释放计划。"
+    },
+    "account_assets": "账户资产 {{id}} - Fuel Explorer",
+    "account_transactions": "账户交易 {{id}} - Fuel Explorer",
+    "account_nfts": "账户 NFT {{id}} - Fuel Explorer",
+    "account_predicate": "账户断言 {{id}} - Fuel Explorer",
+    "contract_assets": "合约资产 {{id}} - Fuel Explorer",
+    "contract_minted_assets": "合约铸造资产 {{id}} - Fuel Explorer",
+    "contract_transactions": "合约交易 {{id}} - Fuel Explorer",
+    "contract_code": "合约代码 {{id}} - Fuel Explorer",
+    "tx_loading": "正在加载交易 - Fuel Explorer",
+    "tx_not_found": "未找到交易 - Fuel Explorer",
+    "error": "错误 - Fuel Explorer",
+    "tx_title": "交易 {{id}}... - Fuel Explorer",
+    "tx_description": "查看 Fuel 区块链上交易 {{id}} 的详情"
   }
 }

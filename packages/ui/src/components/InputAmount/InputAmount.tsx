@@ -242,10 +242,13 @@ export const InputAmountBalance = createComponent<
       <Tooltip content={complete} delayDuration={0}>
         <Badge
           variant="ghost"
-          color="green"
+          color="gray"
           size="1"
-          radius="full"
-          className={clsx('self-start', className)}
+          radius="none"
+          className={clsx(
+            'fuel-label self-start bg-transparent px-0 text-[var(--fuel-element-mid-em)]',
+            className,
+          )}
           aria-label={label}
           {...props}
         >
@@ -379,7 +382,7 @@ const styles = tv({
       'flex-row flex-wrap bg-clip-border w-auto h-auto py-3',
       'first-child:flex-1 first-child:basis-2/5 first-child:indent-[var(--space-3)]',
     ],
-    maxBalance: ['font-medium text-sm', 'h-6 px-2', 'mr-2', 'rounded-md'],
+    maxBalance: ['fuel-hover-fill', 'h-6 px-2', 'mr-2', 'rounded-none'],
     coinSelector: 'gap-2 text-xs py-1 px-3',
   },
 });

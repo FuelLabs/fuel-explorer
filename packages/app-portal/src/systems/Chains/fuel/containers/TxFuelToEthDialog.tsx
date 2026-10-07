@@ -12,13 +12,11 @@ import {
   Button,
   Copyable,
   Dialog,
-  HStack,
   VStack,
 } from '@fuels/ui';
-import { IconX } from '@fuels/ui';
 import { WarningToast } from 'app-commons';
-import clsx from 'clsx';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { useAssets } from '~portal/systems/Assets';
 import { BridgeTxProgress } from '~portal/systems/Bridge/components/BridgeTxProgress/BridgeTxProgress';
@@ -34,7 +32,10 @@ interface ErrorAlert {
   alertIcon: string;
 }
 
-export function TxFuelToEthDialog({ onClose }: { onClose: () => void }) {
+const RED_ICON = 'text-[var(--red-11)]';
+
+export function TxFuelToEthDialog() {
+  const { t } = useTranslation();
   const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { metadata } = useOverlay<{ txId: string }>();
@@ -57,7 +58,7 @@ export function TxFuelToEthDialog({ onClose }: { onClose: () => void }) {
     isLoadingTxResult,
     error,
   } = useTxFuelToEth({
-    txId: metadata.txId,
+    txId: metadata?.txId,
   });
   const { handlers: assetsHandlers } = useAssets();
 
@@ -71,27 +72,23 @@ export function TxFuelToEthDialog({ onClose }: { onClose: () => void }) {
     if (error instanceof WarningToast) {
       return {
         errorMessage: error.message,
-        alertColor: 'orange',
-        alertIcon: 'text-orange-11',
+        alertColor: undefined,
+        alertIcon: '',
       };
     }
 
     // try to get details first to avoid showing big message from eth wallet
     const msg = 'details' in error ? (error.details as string) : error.message;
-    return { errorMessage: msg, alertColor: 'red', alertIcon: 'text-red-11' };
+    return { errorMessage: msg, alertColor: 'red', alertIcon: RED_ICON };
   }, [error]);
 
   return (
     <VStack className="max-w-md">
       <div>
-        <HStack justify="between" className="w-full">
-          <Dialog.Title className="mb-0 justify-between">Withdraw</Dialog.Title>
-          <IconX
-            className="cursor-pointer text-white"
-            onClick={onClose}
-            size={20}
-          />
-        </HStack>
+        <Dialog.Title className="mb-0 pr-10">
+          {t('portal.bridge.withdraw')}
+        </Dialog.Title>
+        <Dialog.CloseButton aria-label={t('portal.dialog.close')} />
         <BridgeTxProgress
           initial={date}
           duration={WITHDRAW_DURATION_MINUTES}
@@ -101,7 +98,7 @@ export function TxFuelToEthDialog({ onClose }: { onClose: () => void }) {
       <BridgeSteps steps={steps} />
       <BridgeTxOverview
         explorerLink={explorerLink}
-        transactionId={shortAddress(metadata.txId)}
+        transactionId={shortAddress(metadata?.txId)}
         date={date}
         isDeposit={false}
         asset={asset}
@@ -117,11 +114,11 @@ export function TxFuelToEthDialog({ onClose }: { onClose: () => void }) {
         }
       />
       {errorMessage && (
-        <Alert variant="outline" color={alertColor} className="text-sm">
+        <Alert color={alertColor} className="text-sm">
           <Copyable
             as="div"
             value={errorMessage}
-            iconClassName={clsx('mr-1', alertIcon)}
+            iconClassName={`mr-1 ${alertIcon}`}
           >
             <Alert.Text className="whitespace-pre-line">
               {errorMessage}
@@ -137,7 +134,7 @@ export function TxFuelToEthDialog({ onClose }: { onClose: () => void }) {
             isLoading={status.isConfirmTransactionLoading}
             onClick={handlers.relayToEth}
           >
-            Confirm Transaction
+            {t('portal.dialog.confirm_transaction')}
           </Button>
         ) : (
           <Button
@@ -145,7 +142,7 @@ export function TxFuelToEthDialog({ onClose }: { onClose: () => void }) {
             isLoading={isConnecting}
             onClick={ethHandlers.connect}
           >
-            Connect Ethereum Wallet
+            {t('portal.dialog.connect_eth_wallet')}
           </Button>
         ))}
     </VStack>

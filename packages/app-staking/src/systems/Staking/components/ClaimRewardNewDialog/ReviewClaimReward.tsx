@@ -1,29 +1,19 @@
-import {
-  Alert,
-  Avatar,
-  Button,
-  LoadingBox,
-  LoadingWrapper,
-  Separator,
-  Text,
-  TokenBadge,
-  Tooltip,
-  convertToUsd,
-} from '@fuels/ui';
-import { IconClock } from '@fuels/ui';
+import { LoadingBox, LoadingWrapper, convertToUsd } from '@fuels/ui';
 import { BN } from 'fuels';
-import { DECIMAL_WEI } from 'fuels';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
-import { ErrorInline } from '~staking/systems/Core/components/ErrorInline/ErrorInline';
-import { LogoCosmos } from '~staking/systems/Core/components/LogoCosmos/LogoCosmos';
-import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfoSection/RegularInfoSection';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
 import { useValidator } from '../../services/useValidator';
 import { useValidatorRewards } from '../../services/useValidatorRewards/useValidatorRewards';
-import { getValidatorImage } from '../../utils/validatorImages';
+import {
+  AccountRow,
+  NetworkFeeRow,
+  ReviewLayout,
+  ValidatorRow,
+} from '../ReviewLayout/ReviewLayout';
 
 interface Props {
   decimals: number;
@@ -54,6 +44,7 @@ function _ReviewClaimReward({
   isBlocked = false,
   blockingMessage,
 }: Props) {
+  const { t } = useTranslation();
   const { validator: validatorData, isLoading: isLoadingValidatorData } =
     useValidator(validator);
   const { address } = useAccount();
@@ -88,120 +79,55 @@ function _ReviewClaimReward({
     return formatAmount(rewardBN, decimals);
   }, [rewardBN, decimals]);
 
-  const {
-    formatted: formattedFee,
-    // original: originalFee,
-    // tooltip: tooltipFee,
-  } = useMemo(() => {
-    return formatAmount(fee, DECIMAL_WEI);
-  }, [fee]);
-
   const { formatted: formattedAmountUsd } = useMemo(() => {
     return convertToUsd(rewardBN || new BN(0), decimals, ratesData.token);
   }, [rewardBN, decimals, ratesData.token]);
 
-  const { formatted: formattedFeeUsd } = useMemo(() => {
-    if (isGettingReviewDetails) {
-      return { formatted: '0', original: new BN(0) };
-    }
-    return convertToUsd(fee, DECIMAL_WEI, ratesData.eth);
-  }, [fee, ratesData.eth, isGettingReviewDetails]);
-
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <Text size="3" weight="medium">
-            Amount to claim
-          </Text>
-          <div className="flex items-center gap-2">
-            <TokenBadge image="/assets/fuel.png" symbol={symbol} size="small" />
-            <Tooltip
-              content={`${originalAmount.display} ${symbol}`}
-              delayDuration={0}
-              open={tooltipAmount ? undefined : false}
-            >
-              <Text
-                weight="bold"
-                className="font-mono text-[24px] text-gray-12"
-              >
-                {formattedAmount.display}
-              </Text>
-            </Tooltip>
-            <LoadingWrapper
-              isLoading={isGettingReviewDetails}
-              loadingEl={<LoadingBox className="w-20 h-5" />}
-              regularEl={
-                <Text weight="regular" className="text-muted text-lg">
-                  ({formattedAmountUsd})
-                </Text>
-              }
-            />
-          </div>
-        </div>
-        <Separator size="4" />
-        <RegularInfoSection
-          header="From"
-          icon={
-            <Avatar
-              size="2"
-              src={getValidatorImage(validatorData?.description?.moniker)}
-              fallback={''}
-            />
-          }
-          text={validatorData?.description?.moniker}
-          isLoading={isLoadingValidatorData}
-          loadingEl={<LoadingBox className="w-36 h-6" />}
-        />
-        <Separator size="4" />
-        <RegularInfoSection
-          header="To"
-          text="My Account"
-          textSupport="(Balance in Sequencer)"
-          icon={<LogoCosmos />}
-        />
-        <Separator size="4" />
-        <RegularInfoSection
-          header="Network Fee"
-          text={formattedFeeUsd}
-          textSupport={
-            isGettingReviewDetails ? undefined : `(${formattedFee.display} ETH)`
-          }
-          // textSupportTooltip={
-          //   tooltipFee ? `${originalFee.display} ETH` : undefined
-          // }
+    <ReviewLayout
+      label={t('staking.dialog.amount_to_claim')}
+      symbol={symbol}
+      amount={formattedAmount.display}
+      fullAmount={tooltipAmount ? originalAmount.display : undefined}
+      usd={
+        <LoadingWrapper
           isLoading={isGettingReviewDetails}
+          loadingEl={<LoadingBox className="h-5 w-20 !rounded-none" />}
+          regularEl={`(${formattedAmountUsd})`}
         />
-      </div>
-      <div>
-        {isBlocked && (
-          <Alert color="orange" variant="surface" className="mb-4">
-            <Alert.Icon>
-              <IconClock size={18} className="text-orange-11" />
-            </Alert.Icon>
-            <Alert.Text className="text-orange-12">
-              <Text size="2" weight="medium" className="block mb-1">
-                Claim rewards pending
-              </Text>
-              <Text size="1">{blockingMessage}</Text>
-            </Alert.Text>
-          </Alert>
-        )}
-        <ErrorInline error={errorMsg} className="mb-1" />
-        <Button
-          type="button"
-          className="rounded-md w-full"
-          size="3"
-          onClick={onConfirm}
-          disabled={!isReady || isBlocked || isGettingReviewDetails}
-          isLoading={isSubmitting || isGettingReviewDetails}
-          loadingText={isGettingReviewDetails ? 'Checking...' : 'Submitting...'}
-          title={isBlocked ? blockingMessage : ''}
-        >
-          {errorMsg ? 'Retry' : 'Claim Rewards'}
-        </Button>
-      </div>
-    </div>
+      }
+      warning={
+        isBlocked
+          ? {
+              title: t('staking.dialog.claim_pending'),
+              message: blockingMessage,
+            }
+          : undefined
+      }
+      error={errorMsg}
+      confirmLabel={t('staking.dialog.claim_rewards')}
+      onConfirm={onConfirm}
+      isConfirmDisabled={!isReady || isBlocked || isGettingReviewDetails}
+      isLoading={isSubmitting || isGettingReviewDetails}
+      loadingText={
+        isGettingReviewDetails
+          ? t('staking.review.checking')
+          : t('staking.review.submitting')
+      }
+      confirmTitle={isBlocked ? blockingMessage : ''}
+    >
+      <ValidatorRow
+        header={t('staking.review.from')}
+        moniker={validatorData?.description?.moniker}
+        isLoading={isLoadingValidatorData}
+      />
+      <AccountRow header={t('staking.review.to')} kind="sequencer" />
+      <NetworkFeeRow
+        fee={fee}
+        ethRate={ratesData.eth}
+        isLoading={isGettingReviewDetails}
+      />
+    </ReviewLayout>
   );
 }
 

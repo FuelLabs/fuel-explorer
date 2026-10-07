@@ -5,9 +5,9 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  Text,
 } from '@fuels/ui';
 import { IconChevronLeft, IconChevronRight } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 
 interface ListPaginationProps {
   currentPage?: number;
@@ -30,23 +30,22 @@ export function ListPagination({
   isLoadingPrevPage = false,
   isLoadingNextPage = false,
 }: ListPaginationProps) {
+  const { t } = useTranslation();
   return (
     <Flex
       justify="between"
       align="center"
-      className="py-3 px-4 border-t border-[--gray-1] rounded-b-lg bg-gray-4 sticky bottom-0 left-0 right-0 z-10"
+      className="sticky bottom-0 left-0 right-0 z-10 border-t border-[var(--fuel-border)] bg-[var(--fuel-background)] py-3"
     >
       <Flex align="center" gap="2">
-        <Text size="2" color="gray">
-          Show:
-        </Text>
+        <span className="fuel-label">{t('staking.pagination.show')}</span>
         <Select
           value={String(perPage)}
           onValueChange={(value) => {
             onPerPageChange(Number(value));
           }}
         >
-          <SelectTrigger className="w-16 h-8 bg-gray-4" />
+          <SelectTrigger className="h-8 w-16 !rounded-none" />
           <SelectContent>
             {perPageOptions.map((option) => (
               <SelectItem key={option} value={String(option)}>
@@ -55,17 +54,15 @@ export function ListPagination({
             ))}
           </SelectContent>
         </Select>
-        <Text size="2" color="gray">
-          records
-        </Text>
+        <span className="fuel-label">{t('staking.pagination.records')}</span>
       </Flex>
 
       <Flex gap="4" align="center">
-        <Text size="2" color="gray">
-          Page {currentPage}
-        </Text>
+        <span className="fuel-label">
+          {t('staking.pagination.page', { page: currentPage })}
+        </span>
         <IconButton
-          aria-label="Previous page"
+          aria-label={t('staking.pagination.previous')}
           variant="ghost"
           color="gray"
           size="1"
@@ -77,7 +74,7 @@ export function ListPagination({
         />
 
         <IconButton
-          aria-label="Next page"
+          aria-label={t('staking.pagination.next')}
           variant="ghost"
           color="gray"
           size="1"

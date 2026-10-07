@@ -3,6 +3,7 @@ import { SHOW_CONVERT_BUTTON, TOKENS } from 'app-commons';
 import { FuelToken } from 'app-commons';
 
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { AccountButton } from '~staking/systems/Core/components/AccountButton/AccountButton';
@@ -24,6 +25,7 @@ const v1 = TOKENS[FuelToken.V1];
 const TAB_ORDER = ['positions', 'validators', 'transactions'];
 
 export const StakingPage = () => {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { data: releases } = useVestingReleases(address);
   const totalGrant = useFormatBalance(releases?.amount, v1.decimals);
@@ -59,11 +61,11 @@ export const StakingPage = () => {
         {hasV1Involvement && SHOW_CONVERT_BUTTON === 'true' && (
           <Link to="/upgrade" className="tablet:w-auto w-full">
             <Button
-              variant="outline"
+              variant="ghost"
               color="gray"
               className="laptop:w-auto w-full"
             >
-              Upgrade your Fuel V1 Tokens
+              {t('staking.upgrade.cta')}
             </Button>
           </Link>
         )}

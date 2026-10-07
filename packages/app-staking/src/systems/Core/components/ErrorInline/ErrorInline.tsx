@@ -1,5 +1,4 @@
 import { HStack } from '@fuels/ui';
-import { IconSquareLetterX } from '@fuels/ui';
 import { AnimatedError } from '~staking/systems/Core/components/AnimatedError/AnimatedError';
 
 interface ErrorInlineProps {
@@ -12,9 +11,9 @@ export const ErrorInline = ({ error, className = '' }: ErrorInlineProps) => {
 
   return (
     <HStack gap="2" className={`mb-3 items-center ${className}`}>
-      <IconSquareLetterX
-        size={18}
-        className="mt-[3px] mb-auto text-red-11 shrink-0"
+      <span
+        aria-hidden
+        className="mb-auto mt-[6px] size-2 shrink-0 border border-[var(--red-10)] bg-[var(--red-10)]"
       />
       <AnimatedError error={error} />
     </HStack>

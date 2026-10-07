@@ -8,7 +8,8 @@ import {
 
 import { Alert, Button, CardList } from '@fuels/ui';
 import { IconChevronDown, IconInfoCircle } from '@fuels/ui';
-import { useEffect, useState } from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import {
   BridgeListEmpty,
@@ -18,6 +19,7 @@ import {
 import { useBridgeTxs } from '../hooks';
 
 export const BridgeTxList = () => {
+  const { t } = useTranslation();
   const classes = styles();
   const { isConnecting, handlers: fuelHandlers } = useFuelAccountConnection();
   const [showDelayedLoader, setShowDelayedLoader] = useState(false);
@@ -29,6 +31,38 @@ export const BridgeTxList = () => {
     shouldShowEmpty,
     hasMorePages,
   } = useBridgeTxs();
+
+  // Keys of the rows already on screen, to tell first rows from added ones.
+  const seenKeys = useRef<Set<string> | null>(null);
+  const pagedRef = useRef(false);
+  const rowKeys = (bridgeTxs ?? []).map(rowKey);
+  const rowKeysId = rowKeys.join('|');
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: rowKeysId tracks the row set
+  useEffect(() => {
+    if (isLoading) {
+      seenKeys.current = null;
+      return;
+    }
+    const seen = seenKeys.current;
+    const grew = !!seen && rowKeys.some((key) => !seen.has(key));
+    seenKeys.current = new Set(rowKeys);
+    if (grew) pagedRef.current = false;
+  }, [isLoading, rowKeysId]);
+
+  function enterProps(key: string, index: number) {
+    const seen = seenKeys.current;
+    if (!seen) {
+      // First rows after the skeleton rise one after another.
+      if (index >= MAX_STAGGER) return {};
+      return {
+        className: 'fuel-rise',
+        style: { '--fuel-enter-delay': `${index * 40}ms` } as CSSProperties,
+      };
+    }
+    if (seen.has(key)) return {};
+    return { className: pagedRef.current ? 'fuel-appear' : 'fuel-row-new' };
+  }
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -45,18 +79,12 @@ export const BridgeTxList = () => {
       <>
         <BridgeTxItemsLoading />
         {showDelayedLoader && (
-          <Alert color="blue" className="mt-3 mb-6">
+          <Alert className="fuel-appear mt-3 mb-6">
             <Alert.Icon>
-              <IconInfoCircle size="md" />
+              <IconInfoCircle size={16} />
             </Alert.Icon>
-            <Alert.Text>
-              This process is taking longer than expected and may take a few
-              minutes, especially if your account has many transactions.
-            </Alert.Text>
-            <Alert.Text>
-              We are actively working on improving this experience by
-              implementing a dedicated indexer for the Fuel Bridge transactions.
-            </Alert.Text>
+            <Alert.Text>{t('portal.history.slow_loading')}</Alert.Text>
+            <Alert.Text>{t('portal.history.slow_loading_detail')}</Alert.Text>
           </Alert>
         )}
       </>
@@ -79,7 +107,8 @@ export const BridgeTxList = () => {
   return (
     <>
       <CardList isClickable gap="0" className={classes.cardList()}>
-        {bridgeTxs?.map((txDatum) => {
+        {bridgeTxs?.map((txDatum, index) => {
+          const key = rowKey(txDatum);
           if (
             isEthChain(txDatum.fromNetwork) &&
             isFuelChain(txDatum.toNetwork) &&
@@ -88,9 +117,10 @@ export const BridgeTxList = () => {
           ) {
             return (
               <TxListItemEthToFuel
-                key={`${txDatum.txHash}-${txDatum.nonce}`}
+                key={key}
                 txHash={txDatum.txHash}
                 messageSentEventNonce={txDatum.nonce}
+                {...enterProps(key, index)}
               />
             );
           }
@@ -101,8 +131,9 @@ export const BridgeTxList = () => {
           ) {
             return (
               <TxListItemFuelToEth
-                key={txDatum.txHash}
+                key={key}
                 txHash={txDatum.txHash}
+                {...enterProps(key, index)}
               />
             );
           }
@@ -112,20 +143,29 @@ export const BridgeTxList = () => {
       </CardList>
       {hasMorePages && (
         <Button
-          variant="link"
+          variant="ghost"
           size="2"
-          color="blue"
+          color="gray"
           className={classes.buttonShowMore()}
           rightIcon={IconChevronDown}
           iconSize={13}
-          onClick={handlers.showMore}
+          onClick={() => {
+            pagedRef.current = true;
+            handlers.showMore();
+          }}
         >
-          Show more
+          {t('portal.history.show_more')}
         </Button>
       )}
     </>
   );
 };
+
+const MAX_STAGGER = 8;
+
+function rowKey(tx: { txHash?: string; nonce?: unknown }) {
+  return `${tx.txHash}-${String(tx.nonce)}`;
+}
 
 const styles = tv({
   slots: {

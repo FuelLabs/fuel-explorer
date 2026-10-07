@@ -1,30 +1,15 @@
 import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
-import {
-  Alert,
-  AnimatedDialog,
-  Badge,
-  Button,
-  Copyable,
-  HStack,
-  LoadingBox,
-  LoadingWrapper,
-  Separator,
-  Text,
-  TokenBadge,
-  Tooltip,
-  VStack,
-} from '@fuels/ui';
-import { IconCircleMinus } from '@fuels/ui';
+import { Button } from '@fuels/ui';
 import { FuelToken, L1_DISABLE_WITHDRAW, TOKENS } from 'app-commons';
-import dayjs from 'dayjs';
 import { bn } from 'fuels';
+import { useTranslation } from 'react-i18next';
 import { useFormattedTokenAmount } from '~staking/systems/Core/hooks/useFormattedTokenAmount';
 import { formatETA } from '~staking/systems/Core/utils/eta';
 import { PausedContractAlertStaking } from '~staking/systems/Staking/components/PausedContractAlertStaking/PausedContractAlertStaking';
-import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { useWithdrawStatusDialog } from '~staking/systems/Staking/hooks/useWithdrawStatusDialog';
 import { useWithdrawStatusFlags } from '~staking/systems/Staking/hooks/useWithdrawStatusFlags';
 import { StatusItem } from '../StatusItem/StatusItem';
+import { type StatusKind, StatusLayout } from '../StatusLayout/StatusLayout';
 import { WITHDRAW_STEPS } from './constants';
 
 type WithdrawStatusDialogProps = {
@@ -37,6 +22,7 @@ export const WithdrawStatusDialog = ({
   identifier,
 }: WithdrawStatusDialogProps) => {
   if (!identifier) return null;
+  const { t } = useTranslation();
 
   const {
     stakingEvent,
@@ -68,159 +54,47 @@ export const WithdrawStatusDialog = ({
   const eta = stakingEvent?.timestampToFinish;
   const formattedEta = formatETA(eta);
 
-  const responsiveDialogStyle = responsiveDialogStyles();
-
   if (L1_DISABLE_WITHDRAW === 'true') return null;
 
   const isSkipped = stakingEvent?.status === GQLWithdrawStatusType.Skipped;
 
-  const getStatusColor = () => {
-    if (error) return 'red';
-    if (isSkipped) return 'red';
-    if (isFinalized) return 'green';
-    if (statusFlags.WaitingFinalization) return 'blue';
-    return 'yellow';
-  };
+  const statusKind: StatusKind = (() => {
+    if (error) return 'error';
+    if (isSkipped) return 'failed';
+    if (isFinalized) return 'completed';
+    if (statusFlags.WaitingFinalization) return 'action';
+    return 'progress';
+  })();
 
-  const getStatusText = () => {
-    if (error) return 'Error';
-    if (isSkipped) return 'Failed';
-    if (isFinalized) return 'Completed';
-    if (statusFlags.WaitingFinalization) return 'Waiting user action';
-    return 'In Progress';
-  };
+  const statusText = error
+    ? t('staking.status.error')
+    : isSkipped
+      ? t('staking.history.status_failed')
+      : isFinalized
+        ? t('staking.history.status_completed')
+        : statusFlags.WaitingFinalization
+          ? t('staking.status.waiting_user')
+          : t('staking.history.status_progress');
 
   return (
-    <AnimatedDialog.Content
-      open
-      aria-describedby="Withdraw"
-      className={responsiveDialogStyle.content({
-        sizing: 'auto',
-        // Grows with its content (a failed step adds a long message) and
-        // scrolls only when taller than the screen, so nothing is cropped.
-        className: 'min-h-[520px] max-h-[calc(100dvh-2rem)] overflow-y-auto',
-      })}
-    >
-      <VStack className="h-full" gap="7">
-        <AnimatedDialog.Title>Withdrawal</AnimatedDialog.Title>
-        <VStack gap="3">
-          <VStack gap="2">
-            <Text className="font-medium text-gray-12">
-              {isFinalized ? 'You have withdrawn' : `You're withdrawing`}
-            </Text>
-            <div className="flex items-center gap-2">
-              <TokenBadge
-                image="/assets/fuel.png"
-                symbol={symbol}
-                size="small"
-              />
-              <LoadingWrapper
-                isLoading={isLoading}
-                loadingEl={<LoadingBox className="w-28 h-6" />}
-                regularEl={
-                  <>
-                    <Tooltip
-                      content={`${originalAmount.display} ${symbol}`}
-                      delayDuration={0}
-                      open={tooltipAmount ? undefined : false}
-                    >
-                      <Text
-                        weight="bold"
-                        className="font-mono text-[24px] text-gray-12"
-                      >
-                        {formattedAmount.display}
-                      </Text>
-                    </Tooltip>
-                    <Text weight="regular" className="text-muted text-lg">
-                      ({formattedAmountUsd})
-                    </Text>
-                  </>
-                }
-              />
-            </div>
-          </VStack>
-          <Separator size="4" />
-          <HStack gap="3" align="center">
-            <Text className="font-medium text-gray-12">Status</Text>
-            <LoadingWrapper
-              isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-20 h-6" />}
-              regularEl={
-                <Badge
-                  color={getStatusColor()}
-                  size="1"
-                  variant="ghost"
-                  className="py-1 px-2"
-                >
-                  {getStatusText()}
-                </Badge>
-              }
-            />
-          </HStack>
-          <VStack gap="0">
-            {WITHDRAW_STEPS.filter((step) => {
-              if (step.status === GQLWithdrawStatusType.Skipped) {
-                return stakingEvent?.status === GQLWithdrawStatusType.Skipped;
-              }
-              return true;
-            }).map((step) => {
-              const isCompleted =
-                !!statusFlags[step.status as keyof typeof statusFlags];
-              const isCurrent = step.status === stakingEvent?.status;
-              const isReadyToProcess =
-                step.status === GQLWithdrawStatusType.ReadyToProcessWithdraw;
-              const eta =
-                isCurrent &&
-                (stakingEvent?.statusInfo as any)?.[step.status]
-                  ?.dateExpectedToComplete;
-              const txHash =
-                (stakingEvent?.statusInfo as any)?.[step.status]?.ethTx
-                  ?.txHash ||
-                (stakingEvent?.statusInfo as any)?.[step.status]?.sequencerTx
-                  ?.txHash;
-              const isActionNeeded =
-                isCurrent &&
-                isReadyToProcess &&
-                !isWaitingForReceipt &&
-                !isPaused;
-              const isProcessing =
-                isCurrent && !isError && !isActionNeeded && !isCompleted;
-
-              return (
-                <StatusItem
-                  key={step.status}
-                  step={step}
-                  isCompleted={isCompleted}
-                  isCurrent={isCurrent}
-                  statusInfo={stakingEvent?.statusInfo}
-                  currentTime={currentTime}
-                  eta={eta}
-                  isContractPaused={!!isPaused}
-                  isLoading={isLoading}
-                  txHash={txHash}
-                  isActionNeeded={isActionNeeded}
-                  isProcessing={isProcessing}
-                />
-              );
-            })}
-          </VStack>
-          {isError && !!error && (
-            <Alert color="red">
-              <Alert.Icon>
-                <IconCircleMinus size="md" />
-              </Alert.Icon>
-              <Copyable
-                as="div"
-                className="max-h-[150px] overflow-hidden"
-                value={error || ''}
-                iconClassName="mr-1"
-              >
-                <Alert.Text className="max-h-[120px] break-words overflow-hidden">
-                  {error}
-                </Alert.Text>
-              </Copyable>
-            </Alert>
-          )}
+    <StatusLayout
+      describedBy="Withdraw"
+      title={t('staking.dialog.withdrawal')}
+      label={
+        isFinalized
+          ? t('staking.dialog.have_withdrawn')
+          : t('staking.dialog.withdrawing_now')
+      }
+      symbol={symbol}
+      amount={formattedAmount.display}
+      fullAmount={tooltipAmount ? originalAmount.display : undefined}
+      usd={`(${formattedAmountUsd})`}
+      isLoading={isLoading}
+      statusKind={statusKind}
+      statusText={statusText}
+      error={isError ? error : undefined}
+      extra={
+        <>
           {!!isPaused && <PausedContractAlertStaking />}
           {!isPaused &&
             stakingEvent?.status ===
@@ -230,57 +104,62 @@ export const WithdrawStatusDialog = ({
                 isLoading={isFinalizing || isWaitingForReceipt}
                 loadingText={
                   isWaitingForReceipt
-                    ? 'Waiting for transaction confirmation'
-                    : 'Loading...'
+                    ? t('staking.status.waiting_confirmation')
+                    : t('staking.status.loading')
                 }
               >
-                Finalize Withdraw
+                {t('staking.status.finalize_withdraw')}
               </Button>
             )}
-          <VStack gap="3">
-            <LoadingWrapper
-              isLoading={isLoading}
-              loadingEl={
-                <>
-                  <Separator size="4" />
-                  <LoadingBox className="w-48 h-5" />
-                </>
-              }
-              regularEl={
-                <>
-                  {!!formattedEta && (
-                    <>
-                      <Separator size="4" />
-                      <HStack gap="2">
-                        <Text className="font-medium text-sm text-gray-10">
-                          Estimated completion time:
-                        </Text>
-                        <Text className="font-medium text-sm text-heading">
-                          {formattedEta}
-                        </Text>
-                      </HStack>
-                    </>
-                  )}
-                  {!!isFinalized && dateFinalized && (
-                    <>
-                      <Separator size="4" />
-                      <HStack gap="2">
-                        <Text className="font-medium text-sm text-gray-10">
-                          Withdrawal finalized on{' '}
-                        </Text>
-                        <Text className="font-medium text-sm text-heading">
-                          {dayjs(dateFinalized).format('MMMM D, YYYY')} at{' '}
-                          {dayjs(dateFinalized).format('h:mm A')}
-                        </Text>
-                      </HStack>
-                    </>
-                  )}
-                </>
-              }
-            />
-          </VStack>
-        </VStack>
-      </VStack>
-    </AnimatedDialog.Content>
+        </>
+      }
+      eta={formattedEta}
+      finalizedLabel={
+        isFinalized ? t('staking.status.withdrawal_finalized_on') : undefined
+      }
+      finalizedAt={dateFinalized}
+      minHeightClass="min-h-[520px]"
+    >
+      {WITHDRAW_STEPS.filter((step) => {
+        if (step.status === GQLWithdrawStatusType.Skipped) {
+          return stakingEvent?.status === GQLWithdrawStatusType.Skipped;
+        }
+        return true;
+      }).map((step) => {
+        const isCompleted =
+          !!statusFlags[step.status as keyof typeof statusFlags];
+        const isCurrent = step.status === stakingEvent?.status;
+        const isReadyToProcess =
+          step.status === GQLWithdrawStatusType.ReadyToProcessWithdraw;
+        const eta =
+          isCurrent &&
+          (stakingEvent?.statusInfo as any)?.[step.status]
+            ?.dateExpectedToComplete;
+        const txHash =
+          (stakingEvent?.statusInfo as any)?.[step.status]?.ethTx?.txHash ||
+          (stakingEvent?.statusInfo as any)?.[step.status]?.sequencerTx?.txHash;
+        const isActionNeeded =
+          isCurrent && isReadyToProcess && !isWaitingForReceipt && !isPaused;
+        const isProcessing =
+          isCurrent && !isError && !isActionNeeded && !isCompleted;
+
+        return (
+          <StatusItem
+            key={step.status}
+            step={step}
+            isCompleted={isCompleted}
+            isCurrent={isCurrent}
+            statusInfo={stakingEvent?.statusInfo}
+            currentTime={currentTime}
+            eta={eta}
+            isContractPaused={!!isPaused}
+            isLoading={isLoading}
+            txHash={txHash}
+            isActionNeeded={isActionNeeded}
+            isProcessing={isProcessing}
+          />
+        );
+      })}
+    </StatusLayout>
   );
 };

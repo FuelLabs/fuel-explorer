@@ -1,10 +1,12 @@
 import { ToggleGroup } from '@fuels/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { isEthChain, isFuelChain } from '~portal/systems/Chains';
 import { useBridge } from '../hooks';
 
 export const BridgeTabs = () => {
+  const { t } = useTranslation();
   const { handlers, fromNetwork } = useBridge();
   const classes = styles();
 
@@ -31,17 +33,17 @@ export const BridgeTabs = () => {
     >
       <ToggleGroup.Item
         value="deposit"
-        aria-label="Deposit Tab"
+        aria-label={t('portal.bridge.deposit_tab')}
         onClick={handleDeposit}
       >
-        Deposit
+        {t('portal.bridge.deposit')}
       </ToggleGroup.Item>
       <ToggleGroup.Item
         value="withdraw"
-        aria-label="Withdraw Tab"
+        aria-label={t('portal.bridge.withdraw_tab')}
         onClick={handleWithdraw}
       >
-        Withdraw
+        {t('portal.bridge.withdraw')}
       </ToggleGroup.Item>
     </ToggleGroup>
   );
@@ -49,6 +51,6 @@ export const BridgeTabs = () => {
 
 const styles = tv({
   slots: {
-    toggle: ['w-full rounded-md h-9', 'fuel-[ToggleGroupItem]:text-md'],
+    toggle: ['w-full h-9', 'fuel-[ToggleGroupItem]:text-md'],
   },
 });

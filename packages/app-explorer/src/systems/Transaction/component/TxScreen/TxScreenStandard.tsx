@@ -1,24 +1,15 @@
 import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql';
 import {
   Address,
-  Badge,
-  Box,
-  Card,
-  EntityItem,
-  Flex,
-  Grid,
   HStack,
-  Heading,
   HelperIcon,
-  Icon,
+  IconArrowUp,
   Link,
   LoadingBox,
   LoadingWrapper,
-  Text,
   Tooltip,
   VStack,
 } from '@fuels/ui';
-import { IconArrowDown, IconArrowUp, IconCoins } from '@fuels/ui';
 import { DECIMAL_FUEL, bn } from 'fuels';
 
 import { tv } from 'tailwind-variants';
@@ -27,17 +18,21 @@ import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 
 import { formatZeroUnits } from 'app-commons';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import type { InputContract } from '~/systems/Transaction/component/TxInput/TxInputContract/types';
 
 import { TxFullDateTimestamp } from '~/systems/Transaction/component/TxFullDateTimestamp/TxFullDateTimestamp';
 import { TxTimeAgoTimestamp } from '~/systems/Transaction/component/TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 import { useFormatBalance } from '~staking/systems/Core/hooks/useFormatBalance';
-import { CardInfo } from '../../../Core/components/CardInfo/CardInfo';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
 import type { TransactionNode, TxIconType, TxStatus } from '../../types';
-import { TX_INTENT_MAP, TxIcon } from '../TxIcon/TxIcon';
+import { TxIcon } from '../TxIcon/TxIcon';
+import { TxChip, type TxChipKind } from '../TxItem/TxChip';
+import { TxFact } from '../TxItem/TxFact';
+import { TxItem, TxItemGroup } from '../TxItem/TxItem';
+import { TxRise, TxSection } from '../TxItem/TxSection';
 import { TxItemLoader } from '../TxItemLoader';
 import { TxPolicies } from '../TxPolicies/TxPolicies';
 import { TxScripts } from '../TxScripts/TxScripts';
@@ -52,72 +47,65 @@ type TxScreenProps =
       isLoading: true;
     };
 
+const STATUS_CHIP: Record<string, { kind: TxChipKind; label: string }> = {
+  Success: { kind: 'success', label: 'tx.status.success' },
+  Failure: { kind: 'failed', label: 'tx.status.failed' },
+  Submitted: { kind: 'pending', label: 'tx.status.pending' },
+  Info: { kind: 'neutral', label: 'tx.status.info' },
+  Warning: { kind: 'pending', label: 'tx.status.waiting' },
+};
+
 export function TxScreenStandard({
   transaction: tx,
   isLoading,
 }: TxScreenProps) {
+  const { t } = useTranslation();
   const title = tx?.title as string;
-  const isMint = Boolean(tx?.isMint);
-  const classes = styles({ isMint });
+  const classes = styles();
+  const statusChip = STATUS_CHIP[tx?.statusType as string];
 
-  const cards = [
-    <CardInfo key="type">
-      <EntityItem>
-        <EntityItem.Slot>
-          <LoadingWrapper
-            isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-11 h-11 rounded-full" />}
-            regularEl={
-              <TxIcon
-                type={title as TxIconType}
-                size="lg"
-                status={
-                  tx?.hasPredicate ? 'Info' : (tx?.statusType as TxStatus)
-                }
-              />
-            }
-          />
-        </EntityItem.Slot>
-        <EntityItem.Info
-          title={
-            <LoadingWrapper
-              isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-20 h-6" />}
-              regularEl={title}
+  const facts = [
+    <TxFact key="type">
+      <div className="flex items-center gap-4">
+        <LoadingWrapper
+          isLoading={isLoading}
+          loadingEl={<LoadingBox className="size-11 rounded-full" />}
+          regularEl={
+            <TxIcon
+              type={title as TxIconType}
+              size="lg"
+              status={tx?.hasPredicate ? 'Info' : (tx?.statusType as TxStatus)}
             />
           }
-        >
-          <HStack gap="1">
-            {tx?.hasPredicate && (
-              <Badge color="blue" variant="ghost">
-                Predicate
-              </Badge>
-            )}
+        />
+        <div className="flex min-w-0 flex-col gap-2">
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={<LoadingBox className="h-6 w-20" />}
+            regularEl={<span className="font-medium">{title}</span>}
+          />
+          <HStack gap="1" className="flex-wrap">
+            {tx?.hasPredicate && <TxChip>{t('tx.predicate')}</TxChip>}
             <LoadingWrapper
               isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-20 h-6" />}
+              loadingEl={<LoadingBox className="h-6 w-20" />}
               regularEl={
-                <Badge
-                  color={
-                    TX_INTENT_MAP[tx?.statusType as keyof typeof TX_INTENT_MAP]
-                  }
-                  variant="ghost"
-                >
-                  {tx?.statusType}
-                </Badge>
+                <TxChip kind={statusChip?.kind}>
+                  {statusChip ? t(statusChip.label) : tx?.statusType}
+                </TxChip>
               }
             />
           </HStack>
-        </EntityItem.Info>
-      </EntityItem>
-    </CardInfo>,
-    <CardInfo
+        </div>
+      </div>
+    </TxFact>,
+    <TxFact
       key="timestamp"
-      name={'Timestamp'}
+      label={t('tx.timestamp')}
       description={
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-40 h-5 mt-1" />}
+          loadingEl={<LoadingBox className="mt-1 h-5 w-40" />}
           regularEl={
             <TxFullDateTimestamp timeStamp={tx?.time?.rawUnix as any} />
           }
@@ -126,20 +114,20 @@ export function TxScreenStandard({
     >
       <LoadingWrapper
         isLoading={isLoading}
-        loadingEl={<LoadingBox className="w-24 h-6" />}
+        loadingEl={<LoadingBox className="h-6 w-24" />}
         regularEl={
           <TxTimeAgoTimestamp
             timeStamp={tx?.time?.rawUnix as any}
-            loading={<LoadingBox className="w-24 h-6" />}
+            loading={<LoadingBox className="h-6 w-24" />}
           />
         }
       />
-    </CardInfo>,
+    </TxFact>,
     (tx?.blockHeight || isLoading) && (
-      <CardInfo key="block" name={'Block'}>
+      <TxFact key="block" label={t('tx.block')}>
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-28 h-6" />}
+          loadingEl={<LoadingBox className="h-6 w-28" />}
           regularEl={
             <Link
               href={`/block/${tx?.blockHeight}/simple`}
@@ -149,45 +137,50 @@ export function TxScreenStandard({
             </Link>
           }
         />
-      </CardInfo>
+      </TxFact>
     ),
-    <CardInfo
-      key={'fee'}
-      name={'Network Fee'}
+    <TxFact
+      key="fee"
+      label={t('tx.network_fee')}
       description={
         <LoadingWrapper
           isLoading={isLoading}
-          regularEl={
-            <>Gas used: {formatZeroUnits(tx?.gasCosts?.gasUsed || '')}</>
-          }
-          loadingEl={<LoadingBox className="w-28 h-4 mt-2" />}
+          regularEl={t('tx.gas_used', {
+            gas: formatZeroUnits(tx?.gasCosts?.gasUsed || ''),
+          })}
+          loadingEl={<LoadingBox className="mt-2 h-4 w-28" />}
         />
       }
     >
       <LoadingWrapper
         isLoading={isLoading}
-        loadingEl={<LoadingBox className="w-36 h-6" />}
+        loadingEl={<LoadingBox className="h-6 w-36" />}
         regularEl={
-          <HStack align="center">
-            <Text className="text-primary text-base" as="div">
-              {tx?.gasCosts?.feeInUsd}
-            </Text>
-            <Text className="text-secondary" as="div" size="2">
+          <div className="flex flex-wrap items-baseline gap-x-2">
+            <span>{tx?.gasCosts?.feeInUsd}</span>
+            <span className="text-[13px] text-[var(--fuel-element-low-em)]">
               ({bn(tx?.gasCosts?.fee ?? 0).format()} ETH)
-            </Text>
-          </HStack>
+            </span>
+          </div>
         }
       />
-    </CardInfo>,
+    </TxFact>,
     <TxPolicies key="policies" transaction={tx} isLoading={isLoading} />,
   ];
 
   return (
-    <Grid className={classes.wrapper()}>
-      <Box className={classes.cards()}>{cards}</Box>
+    <div className={classes.wrapper()}>
+      <TxRise>
+        <TxItemGroup className="fuel-edge">{facts}</TxItemGroup>
+      </TxRise>
       <ContentMain tx={tx} isLoading={isLoading} />
-    </Grid>
+    </div>
   );
+}
+
+// A 1px vertical line joins the sections where arrows used to be.
+function Connector() {
+  return <div aria-hidden className="mx-auto h-8 w-px bg-[var(--fuel-line)]" />;
 }
 
 function ContentMain({
@@ -197,6 +190,7 @@ function ContentMain({
   tx: TransactionNode | undefined;
   isLoading?: boolean;
 }) {
+  const { t } = useTranslation();
   const hasInputs = !!tx?.groupedInputs?.length;
   const hasOutputs = !!tx?.outputs?.length;
 
@@ -208,78 +202,76 @@ function ContentMain({
   );
 
   return (
-    <VStack>
-      <VStack>
-        <Heading as="h2" size="5" className="leading-none">
-          Inputs
-        </Heading>
+    <div className="flex min-w-0 flex-col">
+      <TxSection title={t('tx.inputs')} index={1}>
         <LoadingWrapper
           isLoading={isLoading}
           repeatLoader={2}
           noItems={!hasInputs}
           loadingEl={<TxItemLoader />}
-          regularEl={tx?.inputs?.map((input, i) => (
-            <TxInput
-              key={`${i}-${input?.__typename}`}
-              input={
-                input as
-                  | NonNullable<GQLTransactionItemFragment['inputs']>[number]
-                  | undefined
-              }
-            />
-          ))}
+          regularEl={
+            <TxItemGroup>
+              {tx?.inputs?.map((input, i) => (
+                <TxInput
+                  key={`${i}-${input?.__typename}`}
+                  input={
+                    input as
+                      | NonNullable<
+                          GQLTransactionItemFragment['inputs']
+                        >[number]
+                      | undefined
+                  }
+                />
+              ))}
+            </TxItemGroup>
+          }
           noItemsEl={
             <EmptyCard hideImage>
-              <EmptyCard.Title>No Inputs</EmptyCard.Title>
+              <EmptyCard.Title>{t('tx.no_inputs')}</EmptyCard.Title>
               <EmptyCard.Description>
-                This transaction does not have any inputs.
+                {t('tx.no_inputs_body')}
               </EmptyCard.Description>
             </EmptyCard>
           }
         />
-      </VStack>
-      <Flex justify="center">
-        <Icon icon={IconArrowDown} size={30} color="text-muted" />
-      </Flex>
-      <TxScripts tx={tx} isLoading={isLoading} />
-      <Flex justify="center">
-        <Icon icon={IconArrowDown} size={30} color="text-muted" />
-      </Flex>
-      <VStack>
-        {tx?.isMint ? (
-          <MintOutputs tx={tx} isLoading={Boolean(isLoading)} />
-        ) : (
-          <>
-            <Heading as="h2" size="5" className="leading-none">
-              Outputs
-            </Heading>
-            <LoadingWrapper
-              isLoading={isLoading}
-              repeatLoader={2}
-              noItems={!hasOutputs}
-              loadingEl={<TxItemLoader />}
-              regularEl={tx?.outputs?.map((output, i) => (
-                <TxOutput
-                  // here we use only index as key because this component will not change
-                  key={i}
-                  output={output}
-                  getContractByIndex={getContractByIndex}
-                  txStatus={tx?.statusType}
-                />
-              ))}
-              noItemsEl={
-                <EmptyCard hideImage>
-                  <EmptyCard.Title>No Outputs</EmptyCard.Title>
-                  <EmptyCard.Description>
-                    This transaction does not have any outputs.
-                  </EmptyCard.Description>
-                </EmptyCard>
-              }
-            />
-          </>
-        )}
-      </VStack>
-    </VStack>
+      </TxSection>
+      <Connector />
+      <TxScripts tx={tx} isLoading={isLoading} index={2} />
+      <Connector />
+      {tx?.isMint ? (
+        <MintOutputs tx={tx} isLoading={Boolean(isLoading)} />
+      ) : (
+        <TxSection title={t('tx.outputs')} index={3}>
+          <LoadingWrapper
+            isLoading={isLoading}
+            repeatLoader={2}
+            noItems={!hasOutputs}
+            loadingEl={<TxItemLoader />}
+            regularEl={
+              <TxItemGroup>
+                {tx?.outputs?.map((output, i) => (
+                  <TxOutput
+                    // here we use only index as key because this component will not change
+                    key={i}
+                    output={output}
+                    getContractByIndex={getContractByIndex}
+                    txStatus={tx?.statusType}
+                  />
+                ))}
+              </TxItemGroup>
+            }
+            noItemsEl={
+              <EmptyCard hideImage>
+                <EmptyCard.Title>{t('tx.no_outputs')}</EmptyCard.Title>
+                <EmptyCard.Description>
+                  {t('tx.no_outputs_body')}
+                </EmptyCard.Description>
+              </EmptyCard>
+            }
+          />
+        </TxSection>
+      )}
+    </div>
   );
 }
 
@@ -290,7 +282,7 @@ function MintOutputs({
   tx: TransactionNode;
   isLoading: boolean;
 }) {
-  const classes = styles();
+  const { t } = useTranslation();
   const inputContractId = tx.inputContract?.contractId;
   const hasInputContract = Boolean(inputContractId);
 
@@ -299,110 +291,83 @@ function MintOutputs({
   const { formatted, original } = useFormatBalance(amount, DECIMAL_FUEL);
 
   const content = (
-    <VStack>
-      <Heading as="h2" size="5" className="leading-none">
-        Minted Assets
-      </Heading>
-      <Card className="pb-3">
-        <Card.Header className={classes.header()}>
-          {tx.mintAssetId && tx.mintedAsset && (
-            <AssetItem
-              assetId={tx.mintAssetId}
-              prefix="Asset:"
-              asset={tx.mintedAsset}
-            >
-              <Address
-                prefix="Id:"
-                value={tx.mintAssetId}
-                linkProps={{
-                  href: Routes.accountAssets(tx.mintAssetId),
-                }}
-              />
-            </AssetItem>
-          )}
-          <HStack className="flex items-center gap-2">
-            <Flex className="items-center gap-2 flex-col tablet:flex-row">
-              <HStack className="items-center gap-1 tablet:gap-2">
-                <Icon color="text-success" icon={IconArrowUp} />
-                <Icon icon={IconCoins} size={18} />
-                <span className="text-primary">{tx.mintAmountUsd}</span>
-              </HStack>
-              <HStack className="items-center gap-1 flex-row-reverse tablet:gap-2 tablet:flex-row">
-                <Tooltip content={`${original.display} ETH`}>
-                  <span className="text-muted">({formatted.display} ETH)</span>
-                </Tooltip>
-                <HelperIcon message="This is the amount minted in the transaction" />
-              </HStack>
-            </Flex>
-          </HStack>
-        </Card.Header>
-        <Card.Body className="flex flex-col gap-1 border-t border-border pt-3">
-          {hasInputContract && (
-            <HStack>
-              <Text as="span" className="text-sm">
-                Input Contract
-              </Text>
-              <Address
-                value={inputContractId || ''}
-                linkProps={{
-                  href: Routes.accountAssets(inputContractId!),
-                }}
-              />
-            </HStack>
-          )}
-          {tx.txPointer && (
-            <HStack>
-              <Text as="span" className="text-sm">
-                Tx Pointer
-              </Text>
-              <Address full value={tx.txPointer} />
-            </HStack>
-          )}
-        </Card.Body>
-      </Card>
-    </VStack>
+    <TxItemGroup>
+      <TxItem
+        label={t('tx.minted')}
+        trailing={
+          <div className="flex flex-wrap items-center gap-2 tablet:justify-end">
+            <IconArrowUp
+              aria-hidden
+              size={16}
+              className="text-[var(--fuel-brand-text)]"
+            />
+            <span>{tx.mintAmountUsd}</span>
+            <Tooltip content={`${original.display} ETH`}>
+              <span className="text-[13px] text-[var(--fuel-element-low-em)]">
+                ({formatted.display} ETH)
+              </span>
+            </Tooltip>
+            <HelperIcon message={t('tx.minted_help')} />
+          </div>
+        }
+      >
+        {tx.mintAssetId && tx.mintedAsset && (
+          <AssetItem
+            assetId={tx.mintAssetId}
+            prefix={t('tx.asset_prefix')}
+            asset={tx.mintedAsset}
+          >
+            <Address
+              prefix={t('tx.id_prefix')}
+              value={tx.mintAssetId}
+              linkProps={{
+                href: Routes.accountAssets(tx.mintAssetId),
+              }}
+            />
+          </AssetItem>
+        )}
+      </TxItem>
+      {hasInputContract && (
+        <TxItem label={t('tx.input_contract')}>
+          <Address
+            value={inputContractId || ''}
+            linkProps={{
+              href: Routes.accountAssets(inputContractId!),
+            }}
+          />
+        </TxItem>
+      )}
+      {tx.txPointer && (
+        <TxItem label={t('tx.tx_pointer_label')}>
+          <Address full value={tx.txPointer} />
+        </TxItem>
+      )}
+    </TxItemGroup>
   );
 
   return (
-    <LoadingWrapper
-      isLoading={isLoading}
-      regularEl={content}
-      loadingEl={
-        <Card className="py-4 px-4 flex flex-col gap-2">
-          <HStack>
-            <LoadingBox className="w-20 h-6" />
-            <LoadingBox className="w-40 h-6" />
-          </HStack>
-          <HStack>
-            <LoadingBox className="w-20 h-6" />
-            <LoadingBox className="w-40 h-6" />
-          </HStack>
-          <HStack>
-            <LoadingBox className="w-20 h-6" />
-            <LoadingBox className="w-40 h-6" />
-          </HStack>
-        </Card>
-      }
-    />
+    <TxSection title={t('tx.minted_assets')} index={3}>
+      <LoadingWrapper
+        isLoading={isLoading}
+        regularEl={content}
+        loadingEl={
+          <TxItemGroup>
+            <VStack className="gap-2 px-4 py-3">
+              <LoadingBox className="h-6 w-40" />
+              <LoadingBox className="h-6 w-40" />
+              <LoadingBox className="h-6 w-40" />
+            </VStack>
+          </TxItemGroup>
+        }
+      />
+    </TxSection>
   );
 }
 
 const styles = tv({
   slots: {
-    header: 'group flex flex-row gap-4 justify-between items-center',
     wrapper: [
-      'grid-cols-1 gap-10 laptop:grid-cols-[300px_1fr] laptop:items-start',
+      'grid grid-cols-1 gap-10 laptop:grid-cols-[300px_1fr] laptop:items-start',
     ],
-    cards: [
-      'grid grid-cols-1 gap-4 tablet:grid-cols-2 tablet:gap-6 laptop:grid-cols-1',
-    ],
-  },
-  variants: {
-    isMint: {
-      true: {
-        wrapper: [''],
-        cards: [''],
-      },
-    },
   },
 });

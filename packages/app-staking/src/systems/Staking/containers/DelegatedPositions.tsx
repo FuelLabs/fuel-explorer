@@ -1,5 +1,6 @@
 import { useModal } from 'connectkit';
-import { AnimatePresence, type Variants, motion } from 'framer-motion';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import {
   AnimatedTable,
@@ -16,35 +17,20 @@ import {
   stakingTxDialogStore,
 } from '../store/stakingTxDialogStore';
 
-const animations: Variants = {
-  closed: {
-    opacity: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-  open: {
-    opacity: 1,
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
-
 const DELEGATED_POSITIONS_CELLS: Cell[] = [
   {
     id: 'name',
-    title: 'Name',
+    title: 'staking.table.name',
     className: `flex items-center basis-[120px] grow shrink min-w-0 text-sm laptop:basis-[340px] laptop:grow-0 laptop:shrink-0 ${CELL_PADDING}`,
   },
   {
     id: 'delegated',
-    title: 'Tokens Delegated',
+    title: 'staking.table.delegated',
     className: `flex items-center basis-[140px] grow shrink min-w-0 text-sm laptop:basis-[290px] laptop:grow-0 laptop:shrink-0 ${CELL_PADDING}`,
   },
   {
     id: 'rewards',
-    title: 'Rewards Earned',
+    title: 'staking.table.rewards',
     className: `hidden laptop:flex items-center basis-[150px] grow shrink text-sm ${CELL_PADDING}`,
   },
   {
@@ -62,6 +48,15 @@ export const DELEGATED_POSITIONS_CELLS_OBJ = DELEGATED_POSITIONS_CELLS.reduce<
 }, {});
 
 export const DelegatedPositions = () => {
+  const { t } = useTranslation();
+  const cells = useMemo(
+    () =>
+      DELEGATED_POSITIONS_CELLS.map((cell) => ({
+        ...cell,
+        title: cell.title ? t(cell.title) : '',
+      })),
+    [t],
+  );
   const { setOpen } = useModal();
   const { address, isConnected } = useAccount();
   const {
@@ -92,43 +87,33 @@ export const DelegatedPositions = () => {
   const shouldShowListContent = shouldShowList && hasPositions && !isLoading;
   const shouldShowListLoading = shouldShowList && isLoading;
 
+  if (!isConnected)
+    return <DelegatedPositionsConnect onConnect={handleConnect} />;
+
   return (
-    <AnimatePresence>
-      {isConnected ? (
-        <motion.div
-          key="list"
-          variants={animations}
-          initial="closed"
-          animate="open"
-          exit="closed"
-          className="flex flex-col gap-4"
-        >
-          {shouldShowList && (
-            <AnimatedTable headerCells={DELEGATED_POSITIONS_CELLS}>
-              {shouldShowListLoading &&
-                [1, 2, 3, 4, 5].map((i) => (
-                  <DelegatedPositionItem key={`load${i}`} isLoading />
-                ))}
-              {shouldShowListContent &&
-                positions?.map((position, idx) => (
-                  <DelegatedPositionItem
-                    key={position.consensus_pubkey.key}
-                    name={position.description.moniker}
-                    rate={position.commission.commission_rates.rate}
-                    validator={position.operator_address}
-                    size={availableValidatorsSize}
-                    isLast={idx === positions.length - 1}
-                  />
-                ))}
-            </AnimatedTable>
-          )}
-          {shouldShowEmpty && (
-            <DelegatedPositionsEmpty onStartStaking={handleStartStaking} />
-          )}
-        </motion.div>
-      ) : (
-        <DelegatedPositionsConnect onConnect={handleConnect} />
+    <div className="flex flex-col gap-4">
+      {shouldShowList && (
+        <AnimatedTable headerCells={cells}>
+          {shouldShowListLoading &&
+            [1, 2, 3, 4, 5].map((i) => (
+              <DelegatedPositionItem key={`load${i}`} isLoading />
+            ))}
+          {shouldShowListContent &&
+            positions?.map((position, idx) => (
+              <DelegatedPositionItem
+                key={position.consensus_pubkey.key}
+                name={position.description.moniker}
+                rate={position.commission.commission_rates.rate}
+                validator={position.operator_address}
+                size={availableValidatorsSize}
+                isLast={idx === positions.length - 1}
+              />
+            ))}
+        </AnimatedTable>
       )}
-    </AnimatePresence>
+      {shouldShowEmpty && (
+        <DelegatedPositionsEmpty onStartStaking={handleStartStaking} />
+      )}
+    </div>
   );
 };

@@ -1,11 +1,6 @@
 import type { BaseProps } from '@fuels/ui';
-import {
-  IconChecklist,
-  IconCodeAsterix,
-  IconCoins,
-  IconDatabase,
-} from '@fuels/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Routes } from '~/routes';
 import { NavigationTab } from '~/systems/Core/components/NavigationTab/NavigationTab';
@@ -15,6 +10,7 @@ type ContractTabsProps = BaseProps<{
 }>;
 
 export function ContractTabs({ contractId }: ContractTabsProps) {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const defaultValue = useMemo(() => {
     if (pathname.includes('code')) return 'code';
@@ -34,23 +30,19 @@ export function ContractTabs({ contractId }: ContractTabsProps) {
       items={[
         {
           value: 'minted-assets',
-          label: 'Minted Assets',
-          icon: IconDatabase,
+          label: t('contract.tabs.minted_assets'),
         },
         {
           value: 'assets',
-          label: 'Assets',
-          icon: IconCoins,
+          label: t('contract.tabs.assets'),
         },
         {
           value: 'transactions',
-          label: 'Transactions',
-          icon: IconChecklist,
+          label: t('contract.tabs.transactions'),
         },
         {
           value: 'code',
-          label: 'Source Code',
-          icon: IconCodeAsterix,
+          label: t('contract.tabs.source_code'),
         },
       ]}
     />

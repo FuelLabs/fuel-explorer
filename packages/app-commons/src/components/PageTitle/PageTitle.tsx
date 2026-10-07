@@ -1,4 +1,11 @@
-import { Flex, HStack, type HStackProps, SectionTitle, Text } from '@fuels/ui';
+import {
+  Flex,
+  HStack,
+  type HStackProps,
+  SectionTitle,
+  Text,
+  cx,
+} from '@fuels/ui';
 
 export type PageTitleProps = {
   title: React.ReactNode;
@@ -23,13 +30,17 @@ export function PageTitle({
   as = 'h1',
 }: PageTitleProps) {
   return (
-    <HStack justify="between" mb={mb} className={className}>
+    <HStack
+      justify="between"
+      mb={mb}
+      className={cx(as === 'h1' && 'pt-6', className)}
+    >
       <Flex gap="2" direction={inverse ? 'column-reverse' : 'column'}>
         <SectionTitle as={as} className="min-h-[34px]">
           {title}
         </SectionTitle>
         {subtitle && (
-          <Text as="div" color="gray" size="2">
+          <Text as="div" size="2" className="text-[var(--fuel-element-low-em)]">
             {subtitle}
           </Text>
         )}

@@ -1,46 +1,51 @@
-import { IconButton, VStack } from '@fuels/ui';
-import { IconRefresh } from '@fuels/ui';
+import { Button, VStack } from '@fuels/ui';
 import { useModal } from 'connectkit';
 import { type Variants, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import {
   AnimatedTable,
   type Cell,
 } from '~staking/systems/Core/components/AnimatedTable/AnimatedTable';
 import { CELL_ANIMATE_ACTIONS_SMALL } from '~staking/systems/Core/components/AnimatedTable/styles';
-// import { useTempStakingTransactions } from '../../hooks/useTempStakingTransactions';
 import { ListPagination } from '~staking/systems/Core/components/ListPagination/ListPagination';
 import { DelegatedPositionsConnect } from '../../components/DelegatedPositions/DelegatedPositionsConnect';
 import { TransactionHistoryEmpty } from '../../components/TransactionHistoryEmpty/TransactionHistoryEmpty';
 import {
+  type StatusFilter,
+  TransactionHistoryFilters,
+  type TypeFilter,
+} from '../../components/TransactionHistoryFilters/TransactionHistoryFilters';
+import {
   TransactionHistoryItem,
   transactionHistoryItemClassNames,
 } from '../../components/TransactionHistoryItem/TransactionHistoryItem';
-import type { UseStakingEventsPagination } from '../../hooks/useStakingEvents/types';
-import { useStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
+import { eventStatus } from '../../components/TransactionHistoryItem/constants';
+import { useAllStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
 import { stakingTxDialogEvents } from '../../store/stakingTxDialogStore';
 import { stakingTxDialogStore } from '../../store/stakingTxDialogStore';
+import type { StakingEventType } from '../../types/l1/events';
 
 const PENDING_TRANSACTIONS_CELLS: Cell[] = [
   {
     id: 'date',
-    title: 'Date',
+    title: 'staking.table.date',
     className: transactionHistoryItemClassNames.dateCol,
   },
   {
     id: 'type',
-    title: 'Type',
+    title: 'staking.table.type',
     className: transactionHistoryItemClassNames.typeCol,
   },
   {
     id: 'amount',
-    title: 'Amount',
+    title: 'staking.table.amount',
     className: transactionHistoryItemClassNames.amountCol,
   },
   {
     id: 'eta',
-    title: 'Status',
+    title: 'staking.table.status',
     className: transactionHistoryItemClassNames.etaCol,
   },
   {
@@ -73,85 +78,84 @@ const animations: Variants = {
   },
 };
 
+// The API cannot filter, so the tab reads the whole history once (shared with
+// the board) and filters and pages it here.
 export const TransactionHistory = () => {
+  const { t } = useTranslation();
   const { address, isConnected } = useAccount();
   const { setOpen } = useModal();
+  const {
+    data: events,
+    isPending,
+    isFetching,
+    refetch,
+  } = useAllStakingEvents(address);
+  const cells = useMemo(
+    () =>
+      PENDING_TRANSACTIONS_CELLS.map((cell) => ({
+        ...cell,
+        title: cell.title ? t(cell.title) : '',
+      })),
+    [t],
+  );
 
+  const [status, setStatus] = useState<StatusFilter>('all');
+  const [type, setType] = useState<TypeFilter>('all');
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pagination, setPagination] = useState<UseStakingEventsPagination>({
-    cursor: undefined,
-    direction: undefined,
-    itemsPerPage: itemsPerPage,
-  });
-  const {
-    data,
-    isPlaceholderData,
-    isFetching,
-    isLoading: isLoadingQuery,
-    isPending,
-    refetch,
-  } = useStakingEvents({
-    address,
-    pagination,
-  });
 
-  const handleRefresh = () => {
-    refetch();
+  const { counts, types, filtered } = useMemo(() => {
+    const all = events ?? [];
+    const ofType =
+      type === 'all' ? all : all.filter((event) => event.type === type);
+    const counts: Record<StatusFilter, number> = {
+      all: ofType.length,
+      action: 0,
+      progress: 0,
+      completed: 0,
+      failed: 0,
+    };
+    for (const event of ofType) counts[eventStatus(event)]++;
+    return {
+      counts,
+      types: Array.from(new Set(all.map((event) => event.type))),
+      filtered:
+        status === 'all'
+          ? ofType
+          : ofType.filter((event) => eventStatus(event) === status),
+    };
+  }, [events, status, type]);
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+  const page = Math.min(currentPage, pageCount);
+  const rows = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
+  const handleStatusChange = (next: StatusFilter) => {
+    setStatus(next);
+    setCurrentPage(1);
   };
-
+  const handleTypeChange = (next: TypeFilter) => {
+    setType(next);
+    setCurrentPage(1);
+  };
+  const clearFilters = () => {
+    handleStatusChange('all');
+    setType('all');
+  };
   const handleStartStaking = () => {
     stakingTxDialogStore.send(stakingTxDialogEvents.open('TxStakeNew'));
   };
   const handleConnect = () => {
     setOpen(true);
   };
-  const fetchPreviousPage = () => {
-    if (currentPage === 1) return;
-    if (currentPage === 2) {
-      setPagination({
-        cursor: undefined,
-        direction: 'prev',
-        itemsPerPage: itemsPerPage,
-      });
-      setCurrentPage(1);
-
-      return;
-    }
-
-    setPagination({
-      cursor: data?.pageInfo.startCursor,
-      direction: 'prev',
-      itemsPerPage: itemsPerPage,
-    });
-    setCurrentPage(currentPage - 1);
-  };
-
-  const fetchNextPage = () => {
-    setPagination({
-      cursor: data?.pageInfo.endCursor,
-      direction: 'next',
-      itemsPerPage: itemsPerPage,
-    });
-    setCurrentPage(currentPage + 1);
-  };
-
   const handlePerPageChange = (perPage: number) => {
     setItemsPerPage(perPage);
-    setPagination({
-      cursor: undefined,
-      direction: undefined,
-      itemsPerPage: perPage,
-    });
     setCurrentPage(1);
   };
 
-  const hasTransactions = (data?.nodes || []).length > 0;
-  const isLoading = isPending || isLoadingQuery || isFetching;
-  const shouldShowList = isConnected && (hasTransactions || isLoading);
-  const shouldShowEmpty = isConnected && !shouldShowList && !hasTransactions;
-  const shouldShowListContent = shouldShowList && hasTransactions && !isLoading;
-  const shouldShowListLoading = shouldShowList && isLoading;
+  const hasTransactions = (events ?? []).length > 0;
+  const shouldShowList = isConnected && (hasTransactions || isPending);
+  const shouldShowEmpty = isConnected && !isPending && !hasTransactions;
 
   return (
     <VStack gap="0">
@@ -166,20 +170,18 @@ export const TransactionHistory = () => {
         >
           {shouldShowList && (
             <>
-              <div className="flex relative">
-                <IconButton
-                  aria-label="Refresh list"
-                  variant="ghost"
-                  color="gray"
-                  size="1"
-                  icon={IconRefresh}
-                  isLoading={isLoading}
-                  onClick={handleRefresh}
-                  className="absolute right-0 top-2"
-                />
-              </div>
-              <AnimatedTable headerCells={PENDING_TRANSACTIONS_CELLS}>
-                {shouldShowListLoading &&
+              <TransactionHistoryFilters
+                status={status}
+                type={type}
+                counts={counts}
+                types={types as StakingEventType[]}
+                isRefreshing={isFetching}
+                onStatusChange={handleStatusChange}
+                onTypeChange={handleTypeChange}
+                onRefresh={() => refetch()}
+              />
+              <AnimatedTable headerCells={cells}>
+                {isPending &&
                   Array(itemsPerPage)
                     .fill(0)
                     .map((_, index) => (
@@ -191,36 +193,37 @@ export const TransactionHistory = () => {
                         hideSeparator={index === itemsPerPage - 1}
                       />
                     ))}
-                {shouldShowListContent &&
-                  data?.nodes.map((transaction, idx) => {
-                    return (
-                      <TransactionHistoryItem
-                        key={transaction.id}
-                        event={transaction}
-                        hideSeparator={idx === data.nodes.length - 1}
-                      />
-                    );
-                  })}
+                {!isPending &&
+                  rows.map((transaction, idx) => (
+                    <TransactionHistoryItem
+                      key={transaction.id}
+                      event={transaction}
+                      hideSeparator={idx === rows.length - 1}
+                    />
+                  ))}
               </AnimatedTable>
+              {!isPending && rows.length === 0 && (
+                <div className="fuel-appear flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] py-8 tablet:flex-row tablet:items-center tablet:justify-between">
+                  <p className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]">
+                    {t('staking.history.no_match')}
+                  </p>
+                  <Button
+                    size="2"
+                    variant="ghost"
+                    color="gray"
+                    onClick={clearFilters}
+                  >
+                    {t('staking.history.clear')}
+                  </Button>
+                </div>
+              )}
               <ListPagination
-                currentPage={currentPage}
-                isLoadingPrevPage={
-                  isFetching && pagination.direction === 'prev'
-                }
-                isLoadingNextPage={
-                  isFetching && pagination.direction === 'next'
-                }
+                currentPage={page}
                 onNextPage={
-                  isPlaceholderData ||
-                  !data?.pageInfo.hasPreviousPage ||
-                  isFetching
-                    ? undefined
-                    : fetchNextPage
+                  page < pageCount ? () => setCurrentPage(page + 1) : undefined
                 }
                 onPrevPage={
-                  isPlaceholderData || !data?.pageInfo.hasNextPage || isFetching
-                    ? undefined
-                    : fetchPreviousPage
+                  page > 1 ? () => setCurrentPage(page - 1) : undefined
                 }
                 perPage={itemsPerPage}
                 onPerPageChange={handlePerPageChange}

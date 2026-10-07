@@ -17,11 +17,11 @@ const containerVariants = tv({
   ],
   variants: {
     error: {
-      true: 'border-red-9',
-      false: 'border-gray-8',
+      true: 'border-[var(--red-10)]',
+      false: 'border-[var(--fuel-line)]',
     },
     selected: {
-      true: 'border-gray-12',
+      true: 'border-[var(--fuel-element-high-em)]',
     },
   },
   defaultVariants: {
@@ -31,38 +31,37 @@ const containerVariants = tv({
 
 const optionsListVariants = tv({
   base: [
-    'overflow-y-auto rounded-lg mt-0.5',
-    'border border-solid border-gray-5A',
+    'overflow-y-auto mt-0.5',
+    'border border-solid border-[var(--fuel-line)]',
     'max-h-[252px] min-w-[300px]',
-    'shadow-[0_4px_12px_rgba(0,0,0,0.15)]',
-    'bg-gray-3',
-    'animate-[fadeIn_0.2s_ease,scaleIn_0.2s_ease]',
+    'bg-[var(--fuel-background)]',
+    'animate-[fadeIn_0.2s_ease] motion-reduce:animate-none',
     '[&::-webkit-scrollbar]:w-[10px] [&::-webkit-scrollbar]:bg-transparent',
     '[&::-webkit-scrollbar-track]:bg-transparent',
-    '[&::-webkit-scrollbar-thumb]:bg-gray-8 [&::-webkit-scrollbar-thumb]:opacity-50',
+    '[&::-webkit-scrollbar-thumb]:bg-[var(--fuel-line)]',
     '[&::-webkit-scrollbar-thumb]:border-4 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-transparent',
-    '[&::-webkit-scrollbar-thumb]:rounded-xl [&::-webkit-scrollbar-thumb]:bg-clip-content',
-    '[&::-webkit-scrollbar-thumb:hover]:bg-gray-10',
+    '[&::-webkit-scrollbar-thumb]:bg-clip-content',
+    '[&::-webkit-scrollbar-thumb:hover]:bg-[var(--fuel-element-low-em)]',
   ],
 });
 
 const optionItemVariants = tv({
   base: [
-    'p-2 cursor-pointer bg-[var(--color-panel-solid)]',
-    'flex items-center w-full hover:bg-gray-3',
+    'p-2 cursor-pointer bg-[var(--fuel-background)]',
+    'flex items-center w-full fuel-hover-fill',
   ],
   variants: {
     selected: {
-      true: 'bg-gray-alpha-1',
+      true: 'bg-[var(--fuel-muted)]',
     },
   },
 });
 
 const inputVariants = tv({
   base: [
-    'bg-transparent text-gray-12 w-full outline-none pt-0 pb-0',
-    'placeholder:text-gray-9',
-    'disabled:text-gray-9 disabled:cursor-not-allowed',
+    'bg-transparent text-[var(--fuel-element-high-em)] w-full outline-none pt-0 pb-0',
+    'placeholder:text-[var(--fuel-element-low-em)]',
+    'disabled:text-[var(--fuel-element-disabled)] disabled:cursor-not-allowed',
     'focus:outline-none',
   ],
 });
@@ -72,15 +71,15 @@ const imageVariants = tv({
 });
 
 const fallbackImageVariants = tv({
-  base: 'w-7 h-7 rounded-full bg-[#2b3f2f] flex items-center justify-center',
+  base: 'w-7 h-7 rounded-full bg-[var(--fuel-muted)] flex items-center justify-center',
 });
 
 const monikerVariants = tv({
-  base: 'text-gray-12 font-medium leading-none inline-block align-middle ml-2',
+  base: 'text-[var(--fuel-element-high-em)] font-medium leading-none inline-block align-middle ml-2',
 });
 
 const commissionVariants = tv({
-  base: 'text-gray-8 ml-0.5 text-[15px] leading-none inline-block align-middle',
+  base: 'text-[var(--fuel-element-low-em)] ml-0.5 text-[15px] leading-none inline-block align-middle',
 });
 
 const selectedDisplayVariants = tv({

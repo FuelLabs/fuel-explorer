@@ -1,4 +1,4 @@
-import { Flex, HStack } from '@fuels/ui';
+import { Flex, HStack, LoadingBox } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
@@ -46,7 +46,7 @@ export function AccountHeader() {
         </HStack>
         <HStack>
           {balancesLoading ? (
-            <div className="h-10 bg-gray-200 rounded w-32 animate-pulse" />
+            <LoadingBox className="h-10 w-32" />
           ) : (
             <SendTransactionDialog
               balances={balances || []}

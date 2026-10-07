@@ -1,15 +1,10 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FUEL_INDEXER_API } from 'app-commons';
+import type { Address } from 'viem';
 import { api } from '~staking/systems/Core/utils/api';
 import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
-import type {
-  GetStakingEventsParams,
-  StakingEventsData,
-  UseStakingEventsPagination,
-  UseStakingEventsParams,
-} from './types';
-
-const DEFAULT_EVENTS_PER_PAGE = 10;
+import type { StakingEvent } from '../../types/l1/events';
+import type { GetStakingEventsParams, StakingEventsData } from './types';
 
 const buildStakingEventsUrl = (params: GetStakingEventsParams) => {
   const { address = '', before, after, itemsPerPage } = params;
@@ -36,26 +31,39 @@ export const getStakingEvents = async (
   return data;
 };
 
-const getCursorParams = (pagination: UseStakingEventsPagination) => {
-  const { direction, cursor, itemsPerPage } = pagination;
+// The API rejects a page size above 50.
+const ALL_EVENTS_PAGE_SIZE = 50;
+// Safety stop at 1000 events. Most accounts finish in the first request.
+const ALL_EVENTS_MAX_PAGES = 20;
 
-  return {
-    before: direction === 'next' ? cursor : undefined,
-    after: direction === 'prev' ? cursor : undefined,
-    itemsPerPage: itemsPerPage ?? DEFAULT_EVENTS_PER_PAGE,
-  };
-};
+// The whole history, newest first. An unfinished undelegate or withdraw can
+// sit behind many newer events, and filters need every event to count them.
+async function getAllStakingEvents(address: Address) {
+  const nodes: StakingEvent[] = [];
+  let before: number | undefined;
+  for (let page = 0; page < ALL_EVENTS_MAX_PAGES; page++) {
+    const data = await getStakingEvents({
+      address,
+      before,
+      after: undefined,
+      itemsPerPage: ALL_EVENTS_PAGE_SIZE,
+    });
+    nodes.push(...data.nodes);
+    if (!data.pageInfo.hasNextPage) break;
+    before = data.pageInfo.endCursor;
+  }
+  return nodes;
+}
 
-export const useStakingEvents = ({
-  address,
-  pagination,
-}: UseStakingEventsParams) => {
-  const { before, after, itemsPerPage } = getCursorParams(pagination);
-
-  return useQuery({
-    queryKey: QUERY_KEYS.stakingEvents(address, before, after, itemsPerPage),
-    queryFn: () => getStakingEvents({ address, before, after, itemsPerPage }),
-    placeholderData: keepPreviousData,
+// One cached read shared by the board and the transactions tab. The key starts
+// with the shared events key, so the existing invalidations refresh it.
+export const useAllStakingEvents = (address: Address | undefined) =>
+  useQuery({
+    queryKey: [
+      ...QUERY_KEYS.stakingEvents(undefined, undefined, undefined, undefined),
+      'all',
+      address,
+    ],
+    queryFn: () => getAllStakingEvents(address as Address),
     enabled: !!address,
   });
-};

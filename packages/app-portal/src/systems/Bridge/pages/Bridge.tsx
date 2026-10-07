@@ -10,7 +10,6 @@ import {
 
 import {
   Alert,
-  AnimatedHeight,
   Box,
   Button,
   HStack,
@@ -23,9 +22,11 @@ import {
 } from '@fuels/ui';
 import { IconAlertCircle, IconInfoCircleFilled } from '@fuels/ui';
 import { IconUserCircle } from '@fuels/ui';
+import { AnimatedHeight } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { Address } from 'fuels';
 import { useEffect } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { BridgeWithdrawWarning } from '../components/BridgeWithdrawWarning/BridgeWithdrawWarning';
 import { BridgeButton } from '../containers/BridgeButton';
 import { useBridge } from '../hooks';
@@ -33,6 +34,7 @@ import { useIsNonNativeConnector } from '../hooks/useIsNonNativeConnector';
 import { useWithdrawDelay } from '../hooks/useWithdrawDelay';
 
 export const Bridge = () => {
+  const { t } = useTranslation();
   const {
     ethAddress,
     fuelAddress,
@@ -71,10 +73,10 @@ export const Bridge = () => {
 
   const items = [
     <motion.div key="eth" layout>
-      <EthAccountConnection label={isEthFrom ? 'From' : 'To'} />
+      <EthAccountConnection side={isEthFrom ? 'from' : 'to'} />
     </motion.div>,
     <motion.div key="fuel" layout>
-      <FuelAccountConnection label={isFuelTo ? 'To' : 'From'} />
+      <FuelAccountConnection side={isFuelTo ? 'to' : 'from'} />
     </motion.div>,
   ];
 
@@ -89,51 +91,44 @@ export const Bridge = () => {
           <div>
             <VStack gap="2">
               <LayoutGroup>{getItemsOrder()}</LayoutGroup>
-              {isEthFrom && toCustomAddress && (
-                <Alert
-                  variant="soft"
-                  color="blue"
-                  size="1"
-                  className="border border-blue-6"
-                >
+              <AnimatedHeight enabled={isEthFrom && !!toCustomAddress}>
+                <Alert size="1">
                   <Alert.Icon>
-                    <IconInfoCircleFilled size="md" />
+                    <IconInfoCircleFilled size={16} />
                   </Alert.Icon>
 
                   <Alert.Text>
-                    Sending to a custom Fuel account: <br />
-                    <b>{shortAddress(toCustomAddress, 22, 20)}</b>
+                    {t('portal.bridge.custom_address_notice')} <br />
+                    <b className="font-mono">
+                      {shortAddress(toCustomAddress ?? '', 22, 20)}
+                    </b>
                   </Alert.Text>
                 </Alert>
-              )}
+              </AnimatedHeight>
             </VStack>
             <AnimatedHeight enabled={isNonNative === true}>
               <div className="pt-2">
-                <Alert
-                  variant="soft"
-                  color="blue"
-                  size="1"
-                  className="border border-blue-6"
-                >
+                <Alert size="1">
                   <Alert.Icon>
-                    <IconInfoCircleFilled size="md" />
+                    <IconInfoCircleFilled size={16} />
                   </Alert.Icon>
                   <Alert.Text>
-                    Please note: EVM/SVM addresses will differ from your{' '}
-                    <b>Fuel predicate address</b>. This is expected behavior.
+                    <Trans
+                      i18nKey="portal.bridge.non_native_notice"
+                      components={{ strong: <b /> }}
+                    />
                     <Box className="mt-2">
-                      You can manage your assets in{' '}
+                      {t('portal.bridge.manage_assets_in')}{' '}
                       <Button
                         as="a"
                         href={Routes.account(account || '', 'transactions')}
                         size="1"
-                        color="blue"
                         variant="link"
                         rightIcon={IconUserCircle}
-                        className="rounded-md mt-0 ml-0.5"
-                        aria-label="Transaction History"
+                        className="mt-0 ml-0.5"
+                        aria-label={t('portal.bridge.transaction_history')}
                       >
-                        My Account
+                        {t('portal.bridge.my_account')}
                       </Button>
                     </Box>
                   </Alert.Text>
@@ -146,7 +141,6 @@ export const Bridge = () => {
               <InputAmount.Field
                 disabled={!ethAddress && !fuelAddress}
                 value={assetAmount}
-                color="green"
                 onChange={(val) =>
                   handlers.changeAssetAmount({
                     assetAmount: val || undefined,
@@ -156,7 +150,7 @@ export const Bridge = () => {
               >
                 <InputAmount.Slot className="flex flex-row justify-end gap-2 sm:!flex sm:!flex-row sm:!flex-nowrap sm:!justify-end mobile:!gap-1 mobile:!ml-1">
                   {assetBalance?.gt(0) && asset?.symbol === 'ETH' ? (
-                    <Tooltip content={<>Max = balance - fee</>}>
+                    <Tooltip content={t('portal.bridge.max_tooltip')}>
                       <InputAmount.ButtonMaxBalance className="mobile:px-1" />
                     </Tooltip>
                   ) : (
@@ -180,8 +174,8 @@ export const Bridge = () => {
                 {isEthFrom && !!ethAssetAddress && (
                   <InputAmount.Balance
                     balance={allowance.tokensAllowance}
-                    color="blue"
-                    label={'Allowance'}
+                    className="fuel-label"
+                    label={t('portal.bridge.allowance')}
                   />
                 )}
               </HStack>
@@ -189,40 +183,40 @@ export const Bridge = () => {
 
             <BridgeWithdrawWarning />
 
-            {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
-              <Alert color="orange">
+            <AnimatedHeight
+              enabled={
+                isFuelChain(toNetwork) && !!balance?.eq(0) && !!ethAssetAddress
+              }
+            >
+              <Alert>
                 <Alert.Icon>
-                  <IconAlertCircle size="md" />
+                  <IconAlertCircle size={16} />
                 </Alert.Icon>
-                <Alert.Text>
-                  You don&apos;t have any ETH on Fuel to pay for gas. We
-                  recommend you bridge some ETH before you bridge any other
-                  assets.
-                </Alert.Text>
+                <Alert.Text>{t('portal.bridge.no_gas_warning')}</Alert.Text>
               </Alert>
-            )}
+            </AnimatedHeight>
           </VStack>
         </>
       ) : (
         <>
-          <LoadingBox className="w-full h-[160px]" />
+          <LoadingBox className="w-full h-[152px]" />
           <LoadingBox className="w-full h-[86px]" />
         </>
       )}
       <BridgeButton />
-      <Alert color="orange">
+      <Alert>
         <Alert.Icon>
-          <IconAlertCircle size="md" />
+          <IconAlertCircle size={16} />
         </Alert.Icon>
         <Alert.Text>
-          Withdrawals back to Ethereum take up to {timeToWithdrawFormatted}.{' '}
+          {t('portal.bridge.withdraw_delay', { time: timeToWithdrawFormatted })}{' '}
           <Link
             target="_blank"
             href="https://docs.fuel.network/docs/fuel-book/the-architecture/security-on-fuel/"
             rel="noreferrer"
             isExternal
           >
-            Docs
+            {t('footer.docs')}
           </Link>
         </Alert.Text>
       </Alert>

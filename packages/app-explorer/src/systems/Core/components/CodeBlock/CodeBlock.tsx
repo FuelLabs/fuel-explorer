@@ -1,13 +1,6 @@
-import {
-  Box,
-  Card,
-  HStack,
-  LoadingBox,
-  LoadingWrapper,
-  ScrollArea,
-  Text,
-} from '@fuels/ui';
+import { Box, HStack, LoadingBox, LoadingWrapper, ScrollArea } from '@fuels/ui';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 
 import CopyButton from '../CopyButton/CopyButton';
@@ -34,6 +27,7 @@ export function CodeBlock({
   isLoading,
   copy = true,
 }: CodeBlockProps) {
+  const { t } = useTranslation();
   const classes = styles();
   if (!value && !children && !isLoading) return null;
 
@@ -47,20 +41,18 @@ export function CodeBlock({
   function getTitle() {
     if (title !== undefined) return title;
     if (type === 'json') return 'JSON';
-    return 'Code';
+    return t('core.code_block.code');
   }
 
   return (
-    <Card className={classes.root()}>
-      <Card.Header className={classes.cardHeader()}>
+    <div className={classes.root()}>
+      <div className={classes.cardHeader()}>
         <LoadingWrapper
           isLoading={isLoading}
           loadingEl={<LoadingBox className="w-24 h-5" />}
           regularEl={
             <>
-              <Text size="1" weight="bold">
-                {getTitle()}
-              </Text>
+              <span className="fuel-label">{getTitle()}</span>
               {Boolean(rightEl || copy) && (
                 <HStack align="center">
                   {rightEl}
@@ -70,7 +62,7 @@ export function CodeBlock({
             </>
           }
         />
-      </Card.Header>
+      </div>
       <ScrollArea className={classes.cardMiddle()} style={{ height }}>
         <LoadingWrapper
           isLoading={isLoading}
@@ -87,33 +79,33 @@ export function CodeBlock({
                 />
               )}
               {type === 'raw' && (
-                <Text className={classes.codeText()}>
+                <div className={classes.codeText()}>
                   {typeof value === 'object' ? value.toString() : value}
-                </Text>
+                </div>
               )}
               {children && <div className={classes.codeText()}>{children}</div>}
             </>
           }
         />
       </ScrollArea>
-    </Card>
+    </div>
   );
 }
 
 const styles = tv({
   slots: {
     root: [
-      'block',
-      'group p-0',
+      'fuel-edge fuel-appear group block border border-[var(--fuel-line)] bg-[var(--fuel-background)] p-0',
       'transition-[max-height]',
       'data-[compact=true]:max-h-[210px]',
     ],
     cardHeader:
-      'border-b border-card-border py-3 flex-row items-center justify-between min-h-[53px]',
+      'flex min-h-[53px] flex-row items-center justify-between border-b border-[var(--fuel-line)] px-4 py-2',
     cardMiddle: [
       'flex-1 font-mono',
       '[&_.rt-ScrollAreaViewport_>div>div]:max-w-[1120px]', // avoid horizontal screen for JSON
     ],
-    codeText: 'text-sm text-gray-500 p-4 max-w-full break-all block',
+    codeText:
+      'block max-w-full break-all p-4 text-[13px] leading-[20px] text-[var(--fuel-element-low-em)]',
   },
 });

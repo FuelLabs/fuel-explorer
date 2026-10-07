@@ -8,6 +8,7 @@ import {
 } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import { LIST_SEPARATOR_BORDER } from '~staking/systems/Core/components/AnimatedTable/styles';
 import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
@@ -34,6 +35,7 @@ const _ValidatorListItem = ({
   isLast,
   isLoading,
 }: ValidatorListItemProps) => {
+  const { t } = useTranslation();
   const { disabledActions, disabledReasons } = useDisabledL1Actions(
     validator?.operator_address,
   );
@@ -44,19 +46,17 @@ const _ValidatorListItem = ({
   const disabled = disabledActions[PendingTransactionTypeL1.Delegate];
   const tooltipLabel =
     disabledReasons[PendingTransactionTypeL1.Delegate] ||
-    (disabled
-      ? 'Stake is disabled while other staking operations are pending.'
-      : undefined);
+    (disabled ? t('staking.validator.stake_disabled') : undefined);
 
   return (
     <div
       key={`${validator?.description?.moniker}-${validator?.rank}`}
-      className={`w-full flex align-center ${LIST_SEPARATOR_BORDER} ${isLast ? '' : 'border-b'}`}
+      className={`fuel-hover-fill w-full flex align-center ${LIST_SEPARATOR_BORDER} ${isLast ? '' : 'border-b'}`}
       role="row"
       tabIndex={index}
     >
       <div
-        className={`${VALIDATORS_CELLS_OBJ.name} font-semibold min-h-[52px] !pl-4`}
+        className={`${VALIDATORS_CELLS_OBJ.name} font-medium text-heading min-h-[52px] !pl-4`}
         role="cell"
       >
         <Avatar
@@ -67,12 +67,12 @@ const _ValidatorListItem = ({
         />
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-32 h-6" />}
+          loadingEl={<LoadingBox className="w-32 h-6 !rounded-none" />}
           regularEl={
             <Link
               href={validator?.description?.website}
               isExternal
-              className="text-gray-12"
+              className="fuel-appear text-heading"
               size="2"
             >
               {validator?.description?.moniker}
@@ -82,20 +82,20 @@ const _ValidatorListItem = ({
       </div>
 
       <div
-        className={`${VALIDATORS_CELLS_OBJ.power} font-semibold`}
+        className={`${VALIDATORS_CELLS_OBJ.power} font-medium text-heading`}
         role="cell"
       >
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-48 h-6" />}
+          loadingEl={<LoadingBox className="w-48 h-6 !rounded-none" />}
           regularEl={
             <Tooltip
               content={`${delegated.original.display} ${symbol}`}
               delayDuration={0}
             >
-              <span className="block whitespace-nowrap overflow-hidden text-ellipsis">
+              <span className="fuel-appear block whitespace-nowrap overflow-hidden text-ellipsis">
                 {toPercentage(validator?.rank?.toString() || '0')}
-                <span className="text-gray-10 ml-2">
+                <span className="ml-2 text-[var(--fuel-element-low-em)]">
                   ({delegated.formatted.display} {symbol})
                 </span>
               </span>
@@ -104,26 +104,28 @@ const _ValidatorListItem = ({
         />
       </div>
       <div
-        className={`${VALIDATORS_CELLS_OBJ.commission} font-semibold`}
+        className={`${VALIDATORS_CELLS_OBJ.commission} font-medium text-heading`}
         role="cell"
       >
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-24 h-6" />}
-          regularEl={toPercentage(
-            validator?.commission?.commission_rates?.rate || 0,
-          )}
+          loadingEl={<LoadingBox className="w-24 h-6 !rounded-none" />}
+          regularEl={
+            <span className="fuel-appear">
+              {toPercentage(validator?.commission?.commission_rates?.rate || 0)}
+            </span>
+          }
         />
       </div>
 
       <div
-        className={`${VALIDATORS_CELLS_OBJ.actions} font-semibold`}
+        className={`${VALIDATORS_CELLS_OBJ.actions} font-medium text-heading`}
         role="cell"
       >
         {isConnected ? (
           <LoadingWrapper
             isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-32 h-7" />}
+            loadingEl={<LoadingBox className="w-16 h-8 !rounded-none" />}
             regularEl={
               <Tooltip
                 content={tooltipLabel}
@@ -131,8 +133,6 @@ const _ValidatorListItem = ({
                 open={disabled ? undefined : false}
               >
                 <Button
-                  color="gray"
-                  variant="outline"
                   size="2"
                   onClick={() =>
                     stakingTxDialogStore.send({
@@ -141,10 +141,10 @@ const _ValidatorListItem = ({
                       data: validator?.operator_address,
                     })
                   }
-                  className="flex max-h-[30px]"
+                  className="fuel-appear flex"
                   disabled={disabled}
                 >
-                  Stake
+                  {t('staking.validator.stake')}
                 </Button>
               </Tooltip>
             }

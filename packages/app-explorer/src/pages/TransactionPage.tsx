@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { ETH_CHAIN_NAME } from 'app-commons';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Routes } from '~/routes';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
 import { TxHeader } from '~/systems/Transaction/component/TxHeader/TxHeader';
 import { TxScreenSimple } from '~/systems/Transaction/component/TxScreen/TxScreenSimple';
 import { ApiService } from '../services/api';
@@ -97,22 +99,19 @@ async function fetchTransactionWithActivity(id: string) {
 }
 
 function TransactionNotFound() {
+  const { t } = useTranslation();
   return (
-    <div className="text-center py-12">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-        Transaction Not Found
-      </h2>
-      <p className="text-gray-600">
-        The transaction you're looking for doesn't exist or hasn't been indexed
-        yet.
-      </p>
-    </div>
+    <PageState
+      title={t('tx.not_found_title')}
+      description={t('tx.not_found_body')}
+    />
   );
 }
 
 export function TransactionPage() {
   const { id, mode = 'simple' } = useParams<{ id: string; mode?: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // Redirect if no transaction ID
   if (!id) {
@@ -204,15 +203,41 @@ export function TransactionPage() {
       ETH_CHAIN_NAME,
     );
 
+  // Check if Simple view is available
+  const isSimpleDisabled =
+    !transaction?.activity &&
+    (!transaction?.summary || transaction.summary.length === 0);
+  const isHandledError =
+    !transaction ||
+    (typeof error === 'object' && error && String(error).includes('404')) ||
+    Boolean(error);
+  const isWaitingForSimple = isDecoding && !decodeWaitOver;
+  const redirectToStandard =
+    !isLoading &&
+    !isHandledError &&
+    mode === 'simple' &&
+    isSimpleDisabled &&
+    !isWaitingForSimple;
+
+  // Navigating during render is a side effect, so the redirect runs in an
+  // effect. The standard view shows meanwhile.
+  useEffect(() => {
+    if (redirectToStandard) {
+      navigate(Routes.txStandard(id), { replace: true });
+    }
+  }, [redirectToStandard, navigate, id]);
+
   if (isLoading) {
     return (
       <>
         <Helmet>
-          <title>Loading Transaction - Fuel Explorer</title>
+          <title>{t('meta.tx_loading')}</title>
         </Helmet>
         <div className="transaction-page">
           <TxHeader id={id} isSimple={mode === 'simple'} />
-          <TransactionLoadingContent mode={mode} />
+          <div key="loading">
+            <TransactionLoadingContent mode={mode} />
+          </div>
         </div>
       </>
     );
@@ -226,7 +251,7 @@ export function TransactionPage() {
     return (
       <>
         <Helmet>
-          <title>Transaction Not Found - Fuel Explorer</title>
+          <title>{t('meta.tx_not_found')}</title>
         </Helmet>
         <TransactionNotFound />
       </>
@@ -238,45 +263,44 @@ export function TransactionPage() {
     return (
       <>
         <Helmet>
-          <title>Error - Fuel Explorer</title>
+          <title>{t('meta.error')}</title>
         </Helmet>
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-semibold text-red-600 mb-2">Error</h2>
-          <p className="text-gray-600">Failed to load transaction details</p>
-          <Button className="mt-4" onClick={() => window.location.reload()}>
-            Retry
-          </Button>
-        </div>
+        <PageState
+          tone="error"
+          title={t('tx.error_title')}
+          description={t('tx.error_body')}
+          action={
+            <Button
+              variant="ghost"
+              color="gray"
+              onClick={() => window.location.reload()}
+            >
+              {t('tx.retry')}
+            </Button>
+          }
+        />
       </>
     );
   }
 
-  // Check if Simple view is available
-  const isSimpleDisabled =
-    !transaction?.activity &&
-    (!transaction?.summary || transaction.summary.length === 0);
-
-  // If Simple is disabled and user requested simple, redirect to standard
-  // Use navigate instead of Navigate to avoid flash
-  if (mode === 'simple' && isSimpleDisabled && isDecoding && !decodeWaitOver) {
+  // While Simple is unavailable and a decode may still fill it in, keep the loader.
+  if (mode === 'simple' && isSimpleDisabled && isWaitingForSimple) {
     return (
       <div className="transaction-page">
         <TxHeader id={id} isSimple />
-        <TransactionLoadingContent mode={mode} />
+        <div key="loading">
+          <TransactionLoadingContent mode={mode} />
+        </div>
       </div>
     );
   }
   if (mode === 'simple' && isSimpleDisabled) {
-    navigate(Routes.txStandard(id), { replace: true });
-    // Show standard view while redirecting
+    // The effect above navigates. Show the standard view in the meantime.
     return (
       <>
         <Helmet>
-          <title>{`Transaction ${id.slice(0, 8)}... - Fuel Explorer`}</title>
-          <meta
-            name="description"
-            content={`View details for transaction ${id} on the Fuel blockchain`}
-          />
+          <title>{t('meta.tx_title', { id: id.slice(0, 8) })}</title>
+          <meta name="description" content={t('meta.tx_description', { id })} />
         </Helmet>
 
         <div className="transaction-page">
@@ -286,7 +310,9 @@ export function TransactionPage() {
             isSimple={false}
             isSimpleDisabled={isSimpleDisabled}
           />
-          <TransactionContent transaction={transaction} mode="standard" />
+          <div key="standard" className="fuel-appear">
+            <TransactionContent transaction={transaction} mode="standard" />
+          </div>
         </div>
       </>
     );
@@ -295,11 +321,8 @@ export function TransactionPage() {
   return (
     <>
       <Helmet>
-        <title>{`Transaction ${id.slice(0, 8)}... - Fuel Explorer`}</title>
-        <meta
-          name="description"
-          content={`View details for transaction ${id} on the Fuel blockchain`}
-        />
+        <title>{t('meta.tx_title', { id: id.slice(0, 8) })}</title>
+        <meta name="description" content={t('meta.tx_description', { id })} />
       </Helmet>
 
       <div className="transaction-page">
@@ -310,11 +333,14 @@ export function TransactionPage() {
           isSimpleDisabled={isSimpleDisabled}
         />
 
-        <TransactionContent
-          transaction={transaction}
-          mode={mode || 'standard'}
-          isActivityLoading={expectsActivity}
-        />
+        {/* Keyed by mode so a switch fades in the new view without passing through the loader. */}
+        <div key={mode || 'standard'} className="fuel-appear">
+          <TransactionContent
+            transaction={transaction}
+            mode={mode || 'standard'}
+            isActivityLoading={expectsActivity}
+          />
+        </div>
       </div>
     </>
   );

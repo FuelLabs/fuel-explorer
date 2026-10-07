@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getChainName, useFuelAccountConnection } from '~portal/systems/Chains';
 
 import { BRIDGE_ACCEPT_TOS_STORAGE_KEY, BridgeStatus } from '../machines';
@@ -7,7 +8,32 @@ import { useToast } from '@fuels/ui';
 import { useVerifySelectedChain } from 'app-commons';
 import { useBridge } from './useBridge';
 
+// A function, not a module-level map: '../machines' and this hook import each
+// other, so BridgeStatus is still undefined while this module loads.
+function statusKey(status: BridgeStatus) {
+  switch (status) {
+    case BridgeStatus.waitingNetworkFrom:
+      return 'portal.bridge_button.select_network_from';
+    case BridgeStatus.waitingNetworkTo:
+      return 'portal.bridge_button.select_network_to';
+    case BridgeStatus.waitingConnectFrom:
+    case BridgeStatus.waitingConnectTo:
+      return 'portal.bridge_button.connect_wallet';
+    case BridgeStatus.waitingAsset:
+      return 'portal.bridge_button.pick_asset';
+    case BridgeStatus.waitingAssetAmount:
+      return 'portal.bridge_button.enter_amount';
+    case BridgeStatus.insufficientBalance:
+      return 'portal.bridge_button.insufficient_funds';
+    case BridgeStatus.ready:
+      return 'portal.bridge.deposit';
+    default:
+      return undefined;
+  }
+}
+
 export function useBridgeButton() {
+  const { t } = useTranslation();
   const { toast } = useToast();
 
   const { balance } = useFuelAccountConnection();
@@ -36,20 +62,24 @@ export function useBridgeButton() {
     switch (status) {
       case BridgeStatus.waitingConnectFrom:
         return {
-          text: status.replace('From', getChainName(fromNetwork)),
+          text: t('portal.bridge_button.connect_wallet', {
+            chain: getChainName(fromNetwork),
+          }),
           isLoading: isLoadingConnectFrom,
           action: handlers.connectFrom,
         };
       case BridgeStatus.waitingConnectTo:
         return {
-          text: status.replace('To', getChainName(toNetwork)),
+          text: t('portal.bridge_button.connect_wallet', {
+            chain: getChainName(toNetwork),
+          }),
           isLoading: isLoadingConnectTo,
           action: handlers.connectTo,
         };
       case BridgeStatus.ready:
         if (!isChainSupported) {
           return {
-            text: 'Switch Network',
+            text: t('portal.wallet.switch_network'),
             isLoading: false,
             action: async () => {
               try {
@@ -68,7 +98,7 @@ export function useBridgeButton() {
 
         if (isWithdraw) {
           return {
-            text: 'Withdraw',
+            text: t('portal.bridge.withdraw'),
             isLoading,
             action: handlers.startBridging,
             isDisabled: !agree,
@@ -77,10 +107,12 @@ export function useBridgeButton() {
 
         if (allowance.isInvalidAllowance || allowance.requiresAllowance) {
           return {
-            text: balance?.eq(0) ? 'Bridge asset anyway' : 'Approve',
+            text: balance?.eq(0)
+              ? t('portal.bridge_button.bridge_anyway')
+              : t('portal.bridge_button.approve'),
             isDisabled: allowance.isInvalidAllowance || !agree,
             isLoading: allowance.isLoadingAllowance,
-            loadingText: 'Getting token allowance...',
+            loadingText: t('portal.bridge_button.loading_allowance'),
             action: handlers.startBridging,
           };
         }
@@ -88,25 +120,25 @@ export function useBridgeButton() {
         return {
           text:
             !!ethAssetAddress && balance?.eq(0)
-              ? 'Bridge asset anyway'
-              : 'Deposit',
+              ? t('portal.bridge_button.bridge_anyway')
+              : t('portal.bridge.deposit'),
           isLoading,
-          loadingText: 'Submitting Transaction...',
+          loadingText: t('portal.bridge_button.loading_submit'),
           action: handlers.startBridging,
           isDisabled: !agree,
         };
       case BridgeStatus.waitingAssetAmount:
         return {
-          text: isDeposit
-            ? status.replace('operation', 'deposit')
-            : status.replace('operation', 'withdraw'),
+          text: t('portal.bridge_button.enter_amount'),
           isDisabled: true,
         };
-      default:
+      default: {
+        const key = statusKey(status);
         return {
-          text: status,
+          text: key ? t(key) : status,
           isDisabled: true,
         };
+      }
     }
   }, [
     allowance.isInvalidAllowance,
@@ -129,6 +161,7 @@ export function useBridgeButton() {
     toast,
     validateChain,
     agree,
+    t,
   ]);
 
   const { action, ...bridgeButton } = button;

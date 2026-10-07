@@ -1,15 +1,6 @@
-@keyframes spinner-loading {
-  0% {
-    stroke-dashoffset: calc(0.66 * var(--size));
-    transform: rotate(0deg);
-  }
-  50% {
-    stroke-dashoffset: calc(3.14 * var(--size));
-    transform: rotate(720deg);
-  }
-  100% {
-    stroke-dashoffset: calc(0.66 * var(--size));
-    transform: rotate(1080deg);
+@keyframes fuel-spinner-turn {
+  to {
+    transform: rotate(360deg);
   }
 }
 .fuel-Spinner {
@@ -22,22 +13,23 @@
   height: var(--size);
 }
 .fuel-Spinner__circle-animated {
-  z-index: 1;
   fill: transparent;
-  stroke: color-mix(in srgb, var(--color) 80%, transparent);
+  stroke: var(--color);
   stroke-width: calc(0.1 * var(--size));
-  stroke-linecap: round;
-  stroke-dasharray: calc(3.14 * var(--size));
-  transform-origin: calc(0.5px * var(--size)) calc(0.5px * var(--size)) 0;
-  animation: spinner-loading 2s linear infinite;
+  stroke-linecap: butt;
+  stroke-dasharray: calc(0.25 * var(--circumference)) var(--circumference);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fuel-spinner-turn 1.2s linear infinite;
 }
 .fuel-Spinner__circle-bg {
   fill: transparent;
-  stroke: var(--inverse-a3);
+  stroke: var(--fuel-line);
   stroke-width: calc(0.1 * var(--size));
-  stroke-linecap: round;
-  stroke-dasharray: var(--circumference);
+  stroke-linecap: butt;
 }
-.dark .fuel-Spinner__circle-bg {
-  stroke: var(--black-a8);
+@media (prefers-reduced-motion: reduce) {
+  .fuel-Spinner__circle-animated {
+    animation: none;
+  }
 }

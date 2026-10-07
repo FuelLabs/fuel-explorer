@@ -1,66 +1,68 @@
-import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
-import { HStack, Progress, Text, VStack } from '@fuels/ui';
-import { IconCircleCheck, IconHourglassEmpty, IconX } from '@fuels/ui';
-import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import type { StakingEvent } from '../../types/l1/events';
+import { type EventStatus, eventStatus } from './constants';
 
 interface TransactionHistoryItemStatusProps {
   event: StakingEvent;
 }
 
+const MARKER: Record<EventStatus, string> = {
+  completed: 'border-[var(--fuel-primary)] bg-[var(--fuel-primary)]',
+  action:
+    'border-[var(--fuel-element-high-em)] bg-[var(--fuel-element-high-em)]',
+  failed: 'border-[var(--red-10)] bg-[var(--red-10)]',
+  progress: 'border-[var(--fuel-indicator-border)] bg-transparent',
+};
+
+const LABEL: Record<EventStatus, string> = {
+  completed: 'staking.history.status_completed',
+  action: 'staking.history.status_action',
+  failed: 'staking.history.status_failed',
+  progress: 'staking.history.status_progress',
+};
+
 export const TransactionHistoryItemStatus = ({
   event,
 }: TransactionHistoryItemStatusProps) => {
-  const startDate = event.statusInfo?.TransactionSent?.ethTx.timestamp;
-  const endDate: string | undefined = event.timestampToFinish;
-  const isCompleted = event.status === GQLWithdrawStatusType.Finalized;
-  const isWaitingForAction =
-    event.status === GQLWithdrawStatusType.ReadyToProcessWithdraw;
-  const isSkipped = event.status === GQLWithdrawStatusType.Skipped;
+  const { t } = useTranslation();
+  const status = eventStatus(event);
+  const isInProgress = status === 'progress';
 
   const { eta, progress } = useETA({
-    startDate,
-    endDate,
+    startDate: event.statusInfo?.TransactionSent?.ethTx.timestamp,
+    endDate: event.timestampToFinish,
   });
 
-  const label = useMemo<string>(() => {
-    if (isCompleted) return 'Completed';
-    if (isWaitingForAction) return 'Action needed';
-    if (isSkipped) return 'Failed';
-    return 'In Progress';
-  }, [isCompleted, isWaitingForAction, isSkipped]);
-  const isInProgress = label === 'In Progress';
-
   return (
-    <VStack gap="1">
-      <HStack gap="1" align="center">
-        {isCompleted && (
-          <IconCircleCheck size={20} color="var(--brand-11)" className="mr-1" />
-        )}
-        {isWaitingForAction && (
-          <IconHourglassEmpty
-            size={20}
-            color="var(--blue-11)"
-            className="mr-1"
-          />
-        )}
-        {isSkipped && (
-          <IconX size={20} color="var(--red-11)" className="mr-1" />
-        )}
-        <Text className="text-sm">{label}</Text>
-        {isInProgress && eta && (
-          <Text className="text-sm text-muted">(~{eta} left)</Text>
-        )}
-      </HStack>
-      {isInProgress && (
-        <Progress
-          color="yellow"
-          value={progress}
-          className="w-full max-w-[150px]"
-          size="1"
+    <div className="flex min-w-0 flex-col gap-2">
+      <span className="flex items-center gap-2">
+        <span
+          aria-hidden
+          className={`size-2 shrink-0 border ${MARKER[status]}`}
         />
+        <span className="fuel-label text-[var(--fuel-element-mid-em)]">
+          {t(LABEL[status])}
+        </span>
+        {isInProgress && eta && (
+          <span className="fuel-label">
+            {t('staking.board.time_left', { eta })}
+          </span>
+        )}
+      </span>
+      {isInProgress && typeof progress === 'number' && (
+        <span
+          aria-hidden
+          className="block h-[2px] w-full max-w-[150px] bg-[var(--fuel-line)]"
+        >
+          <span
+            className="block h-full origin-left bg-[var(--fuel-primary)] transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+            style={{
+              transform: `scaleX(${Math.min(100, Math.max(0, progress)) / 100})`,
+            }}
+          />
+        </span>
       )}
-    </VStack>
+    </div>
   );
 };

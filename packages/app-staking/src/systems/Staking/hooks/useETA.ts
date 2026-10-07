@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { calculatePercentageProgress } from '~staking/systems/Core/utils/eta';
 import { formatSecondsToETA } from '~staking/systems/Core/utils/formatSecondsToETA';
 import { getDiffSecondsToNow, getSecondsBetweenDates } from '../utils/dateDiff';
@@ -11,6 +12,7 @@ interface UseETAParams {
 const INTERVAL_ETA_REFRESH = 10_000; // 10s
 
 export function useETA({ startDate, endDate }: UseETAParams) {
+  const { i18n } = useTranslation();
   const dateStartRef = useRef(new Date(startDate || ''));
   const dateFinishRef = useRef(new Date(endDate || ''));
 
@@ -21,6 +23,8 @@ export function useETA({ startDate, endDate }: UseETAParams) {
     return Boolean(eta) && typeof progress === 'number' && progress < 100;
   }, [eta, progress]);
 
+  // Runs again on a language switch so the ETA text is rebuilt in the new language.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: language is the trigger
   useEffect(() => {
     const durationInSeconds = getSecondsBetweenDates(
       dateStartRef.current,
@@ -57,7 +61,7 @@ export function useETA({ startDate, endDate }: UseETAParams) {
     }, INTERVAL_ETA_REFRESH);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [i18n.language]);
 
   return { eta, progress, hasEtaProgressBar };
 }

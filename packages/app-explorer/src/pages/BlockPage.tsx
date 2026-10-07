@@ -6,9 +6,11 @@ import type {
 import { Button } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { BlockScreenAdvanced } from '~/systems/Block/components/BlockScreenAdvanced';
 import { BlockScreenSimple } from '~/systems/Block/components/BlockScreenSimple';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
 import { ApiService } from '../services/api';
 
 function BlockContent({
@@ -44,18 +46,43 @@ function BlockLoadingContent({ mode, id }: { mode: string; id: string }) {
 }
 
 function BlockNotFound() {
+  const { t } = useTranslation();
   return (
-    <div className="text-center py-12">
-      <h2 className="text-2xl font-semibold text-gray-600 mb-2">
-        Block Not Found
-      </h2>
-      <p className="text-gray-500">The requested block could not be found.</p>
-    </div>
+    <>
+      <Helmet>
+        <title>{t('block.not_found_meta_title')}</title>
+      </Helmet>
+      <PageState
+        title={t('block.not_found_title')}
+        description={t('block.not_found_description')}
+      />
+    </>
+  );
+}
+
+function BlockError() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Helmet>
+        <title>{t('block.error_meta_title')}</title>
+      </Helmet>
+      <PageState
+        title={t('block.error_title')}
+        description={t('block.error_description')}
+        action={
+          <Button onClick={() => window.location.reload()}>
+            {t('core.retry')}
+          </Button>
+        }
+      />
+    </>
   );
 }
 
 export function BlockPage() {
   const { id, mode = 'simple' } = useParams<{ id: string; mode?: string }>();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
   // Get pagination params
@@ -105,7 +132,7 @@ export function BlockPage() {
     return (
       <>
         <Helmet>
-          <title>Loading Block - Fuel Explorer</title>
+          <title>{t('block.loading_meta_title')}</title>
         </Helmet>
         <div className="block-page">
           <BlockLoadingContent mode={mode || 'simple'} id={id} />
@@ -115,33 +142,17 @@ export function BlockPage() {
   }
 
   // Handle not found
-  if (!blockData?.block || blockError?.message?.includes('404')) {
-    return (
-      <>
-        <Helmet>
-          <title>Block Not Found - Fuel Explorer</title>
-        </Helmet>
-        <BlockNotFound />
-      </>
-    );
+  if (blockError?.message?.includes('404')) {
+    return <BlockNotFound />;
   }
 
   // Handle other errors
   if (blockError) {
-    return (
-      <>
-        <Helmet>
-          <title>Error - Fuel Explorer</title>
-        </Helmet>
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-semibold text-red-600 mb-2">Error</h2>
-          <p className="text-gray-600">Failed to load block details</p>
-          <Button className="mt-4" onClick={() => window.location.reload()}>
-            Retry
-          </Button>
-        </div>
-      </>
-    );
+    return <BlockError />;
+  }
+
+  if (!blockData?.block) {
+    return <BlockNotFound />;
   }
 
   const block = blockData.block;
@@ -151,20 +162,23 @@ export function BlockPage() {
   return (
     <>
       <Helmet>
-        <title>{`Block ${block.height} - Fuel Explorer`}</title>
+        <title>{t('block.meta_title', { height: block.height })}</title>
         <meta
           name="description"
-          content={`View details for block ${block.height} on the Fuel blockchain`}
+          content={t('block.meta_description', { height: block.height })}
         />
       </Helmet>
 
       <div className="block-page">
-        <BlockContent
-          block={block}
-          txs={txs}
-          mode={mode || 'simple'}
-          producer={producer}
-        />
+        {/* Keyed so a Simple/Advanced switch fades the new view in. */}
+        <div key={mode} className="fuel-appear">
+          <BlockContent
+            block={block}
+            txs={txs}
+            mode={mode || 'simple'}
+            producer={producer}
+          />
+        </div>
       </div>
     </>
   );

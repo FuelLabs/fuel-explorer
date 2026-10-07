@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 import { type Locale, locales } from './locales/locales';
+import { installLanguageScramble } from './systems/Core/utils/languageScramble';
 
 const LANGUAGE_KEY = 'fuel-explorer-language';
 const savedLanguage = localStorage.getItem(LANGUAGE_KEY) as Locale;
@@ -23,5 +24,7 @@ i18next
 i18next.on('languageChanged', (lng: string) => {
   localStorage.setItem(LANGUAGE_KEY, lng);
 });
+
+installLanguageScramble(i18next);
 
 export default i18next;

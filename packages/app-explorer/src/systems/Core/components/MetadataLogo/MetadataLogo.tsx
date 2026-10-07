@@ -37,11 +37,7 @@ export function MetadataLogo({
     return (
       <div>
         {isImageLoading && (
-          <Skeleton
-            height={`${size}px`}
-            width={`${size}px`}
-            className="rounded"
-          />
+          <Skeleton height={`${size}px`} width={`${size}px`} />
         )}
         <img
           ref={imgRef}
@@ -49,9 +45,7 @@ export function MetadataLogo({
           alt={name}
           width={size}
           height={size}
-          className={clsx('rounded', {
-            hidden: isImageLoading,
-          })}
+          className={clsx({ hidden: isImageLoading })}
           onLoad={() => setIsImageLoading(false)}
           onError={() => {
             setImageFallback(true);
@@ -61,5 +55,5 @@ export function MetadataLogo({
     );
   }
 
-  return <TxIcon type={type} status="Submitted" radius="large" />;
+  return <TxIcon type={type} status="Submitted" radius="none" />;
 }
