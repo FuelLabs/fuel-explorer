@@ -83,12 +83,33 @@ describe('passthrough: balances NFT fields', () => {
     expect(node.metadata).toBeNull();
   });
 
+  it('asks for metadata of an NFT outside the known collections', async () => {
+    (VerifiedAssets as any).instance = { fetch: async () => [] };
+    const nft = {
+      get: jest.fn(async () => ({
+        name: '@nelitow',
+        image: 'https://assets.bako.id/nelitow',
+      })),
+    };
+    const result = await passthroughResolvers.Query.balances(
+      null,
+      {},
+      nftCtx(hex(42), nft),
+    );
+    expect(nft.get).toHaveBeenCalledWith(hex(42), hex(881), hex(7));
+    expect(result.nodes[0].collection).toBeNull();
+    expect(JSON.parse(result.nodes[0].metadata)).toEqual({
+      name: '@nelitow',
+      image: 'https://assets.bako.id/nelitow',
+    });
+  });
+
   it('adds the token metadata as a JSON string when the collection has it', async () => {
     (VerifiedAssets as any).instance = { fetch: async () => [] };
     const calls: string[][] = [];
     const nft = {
-      get: async (contractId: string, subId: string) => {
-        calls.push([contractId, subId]);
+      get: async (contractId: string, subId: string, assetId: string) => {
+        calls.push([contractId, subId, assetId]);
         return { name: 'Pengu #881', image: 'https://x/881.png' };
       },
     };
@@ -97,7 +118,7 @@ describe('passthrough: balances NFT fields', () => {
       {},
       nftCtx(PENGUS, nft),
     );
-    expect(calls).toEqual([[PENGUS, hex(881)]]);
+    expect(calls).toEqual([[PENGUS, hex(881), hex(7)]]);
     expect(JSON.parse(result.nodes[0].metadata)).toEqual({
       name: 'Pengu #881',
       image: 'https://x/881.png',

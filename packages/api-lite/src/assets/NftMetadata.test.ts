@@ -172,4 +172,70 @@ describe('NftMetadata', () => {
     expect(await nft.get(FUEL_PUMPS, SUB_7)).toEqual({ name: 'x' });
     expect(gw.fetch).toHaveBeenCalledTimes(2);
   });
+
+  describe('on-chain metadata', () => {
+    const ASSET = `0x${'cd'.repeat(32)}`;
+    const BAFY_CID =
+      'bafybeihaphqpylne3ft7dlfh4qlisscgn7osd7d7avhgvcpfiskia6fx5i';
+    const reader = (
+      found: {
+        name: string | null;
+        image: string | null;
+        link: string | null;
+      } | null,
+    ) => ({ read: jest.fn(async () => found) });
+
+    it('uses the image the contract stores, with its SRC-20 name', async () => {
+      const src7 = reader({
+        name: '@nelitow',
+        image: 'https://assets.bako.id/nelitow',
+        link: null,
+      });
+      const nft = new NftMetadata({ gateway: gateway(), src7 });
+      expect(await nft.get(OTHER, SUB_7, ASSET)).toEqual({
+        name: '@nelitow',
+        image: 'https://assets.bako.id/nelitow',
+      });
+      expect(await nft.get(OTHER, SUB_7, ASSET)).toEqual({
+        name: '@nelitow',
+        image: 'https://assets.bako.id/nelitow',
+      });
+      expect(src7.read).toHaveBeenCalledTimes(1);
+      expect(src7.read).toHaveBeenCalledWith(OTHER, ASSET);
+    });
+
+    it('follows a metadata link to its JSON on IPFS', async () => {
+      const src7 = reader({
+        name: null,
+        image: null,
+        link: `https://${BAFY_CID}.ipfs.w3s.link/881`,
+      });
+      const gw = gateway(
+        json({ name: 'Bear #881', image: 'https://x/881.png' }),
+      );
+      const nft = new NftMetadata({ gateway: gw, src7 });
+      expect(await nft.get(OTHER, SUB_7, ASSET)).toEqual({
+        name: 'Bear #881',
+        image: 'https://x/881.png',
+      });
+      expect(gw.fetch).toHaveBeenCalledWith(`${BAFY_CID}/881`);
+    });
+
+    it('does not read on-chain without an asset id', async () => {
+      const src7 = reader(null);
+      const nft = new NftMetadata({ gateway: gateway(), src7 });
+      expect(await nft.get(OTHER, SUB_7)).toBeNull();
+      expect(src7.read).not.toHaveBeenCalled();
+    });
+
+    it('keeps the off-chain files of a known collection', async () => {
+      const src7 = reader(null);
+      const gw = gateway(json({ name: 'Pump #7' }));
+      const nft = new NftMetadata({ gateway: gw, src7 });
+      expect(await nft.get(FUEL_PUMPS, SUB_7, ASSET)).toEqual({
+        name: 'Pump #7',
+      });
+      expect(src7.read).not.toHaveBeenCalled();
+    });
+  });
 });

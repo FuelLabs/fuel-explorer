@@ -5,6 +5,7 @@ import {
   ipfsRef,
   publicGatewayUrl,
 } from './IpfsGateway';
+import type { Src7Reader } from './Src7Reader';
 
 // A collection without `files` has no reachable metadata source left and is
 // only named.
@@ -58,6 +59,9 @@ const COLLECTIONS: Record<string, Collection> = {
     files:
       'bafybeia65kpvylfbv7t2tg2qy54ivgckp3dhvcx7zbqvvn7xiedjbcbf6m/{subId}_AQF.json',
   },
+  '0x6a209d27a050740dc2539dcc41914f07c35ecb21f0c02279e85777353b474801': {
+    name: 'Bako ID',
+  },
   '0xc5c219d360dcddbdaad2e0a33afc3550794ed4dfc484efb13562023189a08851': {
     name: 'Alien Inva NFT',
     files:
@@ -84,6 +88,8 @@ type Opts = {
   // Base URL this api is served from; images are then served through its
   // /ipfs route instead of a public gateway.
   publicUrl?: string;
+  // Reads metadata the contract stores on-chain, for collections without files.
+  src7?: Pick<Src7Reader, 'read'>;
   now?: () => number;
 };
 
@@ -98,18 +104,24 @@ export class NftMetadata {
   private readonly inflight = new Map<string, Promise<Metadata | null>>();
   private readonly gateway: Pick<IpfsGateway, 'fetch'>;
   private readonly publicUrl?: string;
+  private readonly src7?: Pick<Src7Reader, 'read'>;
   private readonly now: () => number;
 
   constructor(opts: Opts) {
     this.gateway = opts.gateway;
     this.publicUrl = opts.publicUrl?.replace(/\/+$/, '');
+    this.src7 = opts.src7;
     this.now = opts.now ?? Date.now;
   }
 
   // A fetch keeps running and fills the cache after a caller stops waiting.
-  async get(contractId: string, subId: string): Promise<Metadata | null> {
+  async get(
+    contractId: string,
+    subId: string,
+    assetId?: string,
+  ): Promise<Metadata | null> {
     const files = COLLECTIONS[contractId.toLowerCase()]?.files;
-    if (!files) return null;
+    if (!files && !(this.src7 && assetId)) return null;
     const key = `${contractId.toLowerCase()}:${subId.toLowerCase()}`;
 
     const cached = this.cache.get(key);
@@ -122,8 +134,10 @@ export class NftMetadata {
     let pending = this.inflight.get(key);
     if (!pending) {
       const failures = cached && !cached.value ? cached.failures : 0;
-      const ref = files.replace('{subId}', BigInt(subId).toString());
-      pending = this.fetchJson(ref).then((value) => {
+      const source = files
+        ? this.fetchJson(files.replace('{subId}', BigInt(subId).toString()))
+        : this.fetchOnChain(contractId, assetId as string);
+      pending = source.then((value) => {
         this.inflight.delete(key);
         // The gateway was full, which says nothing about the content, so the
         // next request tries again.
@@ -150,6 +164,31 @@ export class NftMetadata {
       this.inflight.set(key, pending);
     }
     return pending;
+  }
+
+  private async fetchOnChain(
+    contractId: string,
+    assetId: string,
+  ): Promise<Metadata | null | typeof BUSY> {
+    let found: Awaited<ReturnType<Src7Reader['read']>>;
+    try {
+      found = (await this.src7?.read(contractId, assetId)) ?? null;
+    } catch (e) {
+      console.error(
+        `NftMetadata: on-chain read of ${assetId} failed: ${(e as Error).message}`,
+      );
+      return null;
+    }
+    if (!found) return null;
+    const name = found.name ? { name: found.name } : {};
+    if (found.image)
+      return this.withServedImage({ ...name, image: found.image });
+    const ref = found.link ? ipfsRef(found.link) : null;
+    if (ref) {
+      const json = await this.fetchJson(ref);
+      return json && json !== BUSY ? { ...name, ...json } : json;
+    }
+    return found.name ? name : null;
   }
 
   private async fetchJson(ref: string): Promise<Metadata | null | typeof BUSY> {
