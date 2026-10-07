@@ -223,13 +223,8 @@ function FailedGroup({ rows }: { rows: AttentionRow[] }) {
       <div className="flex items-center justify-between gap-4 px-6 py-4 tablet:px-10">
         <span className="flex min-w-0 items-center gap-3">
           <span aria-hidden className="size-2 shrink-0 bg-[var(--red-10)]" />
-          <span className="flex min-w-0 flex-col">
-            <span className="font-medium text-heading">
-              {t('staking.board.failed_group', { count: rows.length })}
-            </span>
-            <span className="text-[14px] leading-[18px] text-[var(--fuel-element-low-em)]">
-              {t('staking.board.failed_hint')}
-            </span>
+          <span className="font-medium text-heading">
+            {t('staking.board.failed_group', { count: rows.length })}
           </span>
         </span>
         <Button
@@ -285,11 +280,8 @@ export function AttentionBoard() {
 
   return (
     <section className="fuel-edge min-w-0" aria-labelledby="board-title">
-      <div className="flex items-baseline justify-between gap-4 px-6 pt-8 pb-6 tablet:px-10">
-        <h2
-          id="board-title"
-          className="m-0 font-medium text-heading text-[28px] leading-[32px] tracking-[-1.12px]"
-        >
+      <div className="flex items-center justify-between gap-4 px-6 py-4 tablet:px-10">
+        <h2 id="board-title" className="fuel-label m-0 text-heading">
           {t('staking.board.title')}
         </h2>
         {!needsConnect && !isLoading && (
@@ -299,16 +291,19 @@ export function AttentionBoard() {
         )}
       </div>
 
-      <div
-        aria-hidden
-        className={`fuel-label hidden min-[720px]:grid ${COLUMNS} py-3`}
-      >
-        <span>{t('staking.board.col_lane')}</span>
-        <span>{t('staking.board.col_what')}</span>
-        <span>{t('staking.board.col_amount')}</span>
-        <span>{t('staking.board.col_status')}</span>
-        <span />
-      </div>
+      {/* Column names only label item rows; the failed group names itself. */}
+      {openRows.length > 0 && (
+        <div
+          aria-hidden
+          className={`fuel-label hidden min-[720px]:grid ${COLUMNS} border-t border-[var(--fuel-border)] py-3`}
+        >
+          <span>{t('staking.board.col_lane')}</span>
+          <span>{t('staking.board.col_what')}</span>
+          <span>{t('staking.board.col_amount')}</span>
+          <span>{t('staking.board.col_status')}</span>
+          <span />
+        </div>
+      )}
 
       <ol className="m-0 list-none p-0">
         {openRows.map((row) => (

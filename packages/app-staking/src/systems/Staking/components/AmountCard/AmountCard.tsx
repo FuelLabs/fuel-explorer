@@ -31,7 +31,7 @@ export function AmountCard({
   secondaryTitle,
 }: AmountCardProps) {
   return (
-    <div className="flex min-w-0 flex-col justify-between gap-6 bg-[var(--fuel-background)] p-4 tablet:p-5">
+    <div className="flex min-w-0 flex-col justify-between gap-6 bg-[var(--fuel-background)] px-6 py-5 tablet:px-10">
       <div className="fuel-label flex items-center gap-2">
         {title}
         {infoTooltip ? (

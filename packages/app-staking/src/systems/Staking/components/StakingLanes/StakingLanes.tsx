@@ -18,7 +18,6 @@ type LaneProps = {
   active: boolean;
   logo: ReactNode;
   name: string;
-  lead: string;
   figureLabel: string;
   figure: string;
   unit: string;
@@ -38,7 +37,6 @@ function Lane({
   active,
   logo,
   name,
-  lead,
   figureLabel,
   figure,
   unit,
@@ -82,9 +80,6 @@ function Lane({
         <span className="font-medium text-heading text-[24px] leading-[28px] tracking-[-0.96px]">
           {name}
         </span>
-        <span className="max-w-[360px] text-[14px] leading-[18px] text-[var(--fuel-element-low-em)]">
-          {lead}
-        </span>
       </span>
       <span className="flex flex-col gap-1 min-[720px]:items-end">
         <span className="fuel-label">{figureLabel}</span>
@@ -122,7 +117,6 @@ export function StakingLanes() {
         active={!onEthereum}
         logo={<IconRig size={28} />}
         name={t('staking.tab_rig')}
-        lead={t('staking.lane_rig_lead')}
         figureLabel={t('staking.lane_rig_figure')}
         figure={rigFigure}
         unit="stFUEL"
@@ -138,7 +132,6 @@ export function StakingLanes() {
           />
         }
         name={t('staking.tab_ethereum')}
-        lead={t('staking.lane_ethereum_lead')}
         figureLabel={t('staking.lane_ethereum_figure')}
         figure={ethereumFigure}
         unit={symbol}

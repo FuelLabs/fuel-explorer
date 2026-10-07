@@ -13,7 +13,6 @@
     "building": "開發中: {{count}}",
     "window_24h": "24小時",
     "read_docs": "查看文件",
-    "one_day": "一天",
     "questions": "問題"
   },
   "nav": {
@@ -125,7 +124,6 @@
   },
   "staking": {
     "title": "幫助保障 Fuel 網絡安全",
-    "lead": "將代幣委託給 Fuel 驗證者，或通過 Ignition 上的 The Rig 進行流動性質押。",
     "read_docs": "查看文件",
     "open_rig": "打開 The Rig",
     "docs": "Fuel 文件",
@@ -149,5 +147,11 @@
     "unexpected": "出現問題",
     "unexpected_body": "發生了意外錯誤。請重新載入頁面。",
     "reload": "重新載入"
+  },
+  "bridge": {
+    "board": {
+      "expand": "顯示轉賬",
+      "collapse": "隱藏轉賬"
+    }
   }
 }

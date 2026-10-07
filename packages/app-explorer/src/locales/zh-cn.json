@@ -13,7 +13,6 @@
     "building": "开发中: {{count}}",
     "window_24h": "24小时",
     "read_docs": "查看文档",
-    "one_day": "一天",
     "questions": "问题"
   },
   "nav": {
@@ -125,7 +124,6 @@
   },
   "staking": {
     "title": "帮助保障 Fuel 网络安全",
-    "lead": "将代币委托给 Fuel 验证者，或通过 Ignition 上的 The Rig 进行流动性质押。",
     "read_docs": "查看文档",
     "open_rig": "打开 The Rig",
     "docs": "Fuel 文档",
@@ -149,5 +147,11 @@
     "unexpected": "出现问题",
     "unexpected_body": "发生了意外错误。请重新加载页面。",
     "reload": "重新加载"
+  },
+  "bridge": {
+    "board": {
+      "expand": "显示转账",
+      "collapse": "隐藏转账"
+    }
   }
 }

@@ -1,17 +1,13 @@
 {
   "docs": "브리지 문서",
   "faq": {
-    "duration": {
-      "question": "출금은 얼마나 걸리나요?",
-      "answer": "Fuel에 입금한 자산을 Ethereum으로 출금하려면 최대 {{delay}} 걸립니다. 이 대기 시간의 구조와 보안은 문서에 설명되어 있습니다."
-    },
     "assets": {
       "question": "어떤 자산을 브리지할 수 있나요?",
       "answer": "자산 선택기에 지원되는 자산이 모두 표시됩니다. 기본값은 ETH입니다."
     },
     "faster": {
       "question": "더 빠른 경로가 있나요?",
-      "answer": "양식 위 배너의 파트너 브리지는 Fuel Ignition으로의 빠른 브리지를 제공합니다."
+      "answer": "양식 위에 링크된 LayerSwap 같은 파트너 브리지는 Fuel Ignition으로의 빠른 브리지를 제공합니다."
     },
     "history": {
       "question": "지난 전송은 어디서 보나요?",

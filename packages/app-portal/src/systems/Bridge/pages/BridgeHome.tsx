@@ -1,98 +1,41 @@
-import { Box, Button } from '@fuels/ui';
-import { IconArrowBack, IconHistory } from '@fuels/ui';
+import { Box } from '@fuels/ui';
 import { BridgePausedBanner, PageTitle } from 'app-commons';
 import { Routes } from 'app-commons';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 import type { ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
+import { BridgeHistoryToggle } from '../components/BridgeHistoryToggle/BridgeHistoryToggle';
 import { LayerSwapBanner } from '../components/LayerSwapBanner/LayerSwapBanner';
-import { RollingLabel } from '../components/RollingLabel/RollingLabel';
+import { BridgeTabs } from '../containers/BridgeTabs';
 
 type BridgeHomeProps = {
   children: ReactNode;
 };
 
-const ICON_SPRING = {
-  type: 'spring',
-  stiffness: 420,
-  damping: 26,
-  mass: 0.6,
-} as const;
-
-// Entering history turns the clock back; leaving turns it forward.
-const iconVariants = {
-  enter: (direction: number) => ({
-    rotate: direction * 120,
-    scale: 0.4,
-    opacity: 0,
-  }),
-  center: { rotate: 0, scale: 1, opacity: 1 },
-  exit: (direction: number) => ({
-    rotate: direction * -120,
-    scale: 0.4,
-    opacity: 0,
-  }),
-};
-
+// The form needs no title: Deposit and Withdraw already name it, and History
+// sits beside them. History keeps a title so the list is labelled.
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const classes = styles();
   const location = useLocation();
-  const reduce = useReducedMotion();
-
   const isBridgeHistory = location.pathname === Routes.bridgeHistory();
-  const direction = isBridgeHistory ? 1 : -1;
-  const Icon = isBridgeHistory ? IconArrowBack : IconHistory;
 
   return (
     <Box className={classes.content()}>
       <BridgePausedBanner />
       <LayerSwapBanner />
-      <PageTitle
-        as="h2"
-        title={
-          <RollingLabel
-            text={isBridgeHistory ? 'History' : 'Transfer'}
-            direction={direction}
-          />
-        }
-      >
-        <Button
-          as={Link}
-          to={isBridgeHistory ? Routes.bridge() : Routes.bridgeHistory()}
-          size="1"
-          color="gray"
-          variant="ghost"
-          className={classes.toggle()}
-          aria-label={isBridgeHistory ? 'Back to home' : 'Transaction History'}
-        >
-          <span className={classes.icon()}>
-            <AnimatePresence
-              mode="popLayout"
-              initial={false}
-              custom={direction}
-            >
-              <motion.span
-                key={isBridgeHistory ? 'back' : 'history'}
-                custom={direction}
-                variants={iconVariants}
-                initial={reduce ? false : 'enter'}
-                animate="center"
-                exit={reduce ? undefined : 'exit'}
-                transition={ICON_SPRING}
-                className="flex"
-              >
-                <Icon size={14} />
-              </motion.span>
-            </AnimatePresence>
-          </span>
-          <RollingLabel
-            text={isBridgeHistory ? 'Back' : 'History'}
-            direction={direction}
-          />
-        </Button>
-      </PageTitle>
+      {isBridgeHistory ? (
+        <PageTitle as="h2" title="History" mb="4">
+          <BridgeHistoryToggle />
+        </PageTitle>
+      ) : (
+        <div className={classes.bar()}>
+          <div className="min-w-0 flex-1">
+            <BridgeTabs />
+          </div>
+          <BridgeHistoryToggle />
+        </div>
+      )}
       {children}
     </Box>
   );
@@ -101,8 +44,6 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 const styles = tv({
   slots: {
     content: 'flex w-full max-w-[520px] min-h-0 flex-1 flex-col',
-    toggle: 'rounded-md min-w-[96px] justify-center gap-1.5',
-    icon: 'relative inline-flex size-[14px] items-center justify-center',
-    tabs: 'ml-0 color-inherit decoration-none :active:text-success',
+    bar: 'mb-4 flex items-center gap-2',
   },
 });

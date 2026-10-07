@@ -1,17 +1,13 @@
 {
   "docs": "Bridge docs",
   "faq": {
-    "duration": {
-      "question": "How long does a withdrawal take?",
-      "answer": "Assets deposited to Fuel can take up to {{delay}} to withdraw back to Ethereum. The docs explain the architecture and security behind that window."
-    },
     "assets": {
       "question": "Which assets can I bridge?",
       "answer": "The asset selector lists every supported asset. ETH is selected by default."
     },
     "faster": {
       "question": "Is there a faster route?",
-      "answer": "Partner bridges, like the one in the banner above the form, offer fast bridging to Fuel Ignition."
+      "answer": "Partner bridges, like LayerSwap linked above the form, offer fast bridging to Fuel Ignition."
     },
     "history": {
       "question": "Where do I see past transfers?",

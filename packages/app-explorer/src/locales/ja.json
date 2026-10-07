@@ -13,7 +13,6 @@
     "building": "開発中: {{count}}",
     "window_24h": "24時間",
     "read_docs": "ドキュメント",
-    "one_day": "1日",
     "questions": "質問"
   },
   "nav": {
@@ -125,7 +124,6 @@
   },
   "staking": {
     "title": "Fuel ネットワークの安全を支える",
-    "lead": "FUEL をバリデータに委任するか、Ignition の The Rig でリキッドステークします。",
     "read_docs": "ドキュメント",
     "open_rig": "The Rig を開く",
     "docs": "Fuel ドキュメント",
@@ -149,5 +147,11 @@
     "unexpected": "問題が発生しました",
     "unexpected_body": "予期しないエラーが発生しました。ページを再読み込みしてください。",
     "reload": "再読み込み"
+  },
+  "bridge": {
+    "board": {
+      "expand": "送金を表示",
+      "collapse": "送金を隠す"
+    }
   }
 }

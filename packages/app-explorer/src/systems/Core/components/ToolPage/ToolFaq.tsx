@@ -9,11 +9,17 @@ export type ToolFaqItem = {
 
 type ToolFaqProps = {
   items: ToolFaqItem[];
+  openFirst?: boolean;
   docsLabel: string;
   docsUrl: string;
 };
 
-export function ToolFaq({ items, docsLabel, docsUrl }: ToolFaqProps) {
+export function ToolFaq({
+  items,
+  openFirst = true,
+  docsLabel,
+  docsUrl,
+}: ToolFaqProps) {
   const { t } = useTranslation();
   const classes = styles();
 
@@ -24,7 +30,7 @@ export function ToolFaq({ items, docsLabel, docsUrl }: ToolFaqProps) {
         {items.map((item, index) => (
           <details
             key={item.question}
-            open={index === 0}
+            open={openFirst && index === 0}
             className={classes.item()}
           >
             <summary className={classes.question()}>
