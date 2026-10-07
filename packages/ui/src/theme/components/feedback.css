@@ -1,0 +1,148 @@
+/* LoadingBox: a flat block with a quiet sweep. */
+@keyframes fuel-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.fuel-loading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: var(--fuel-muted);
+}
+
+.fuel-loading[data-brighter] {
+  background-color: color-mix(in oklab, var(--fuel-line) 55%, var(--fuel-muted));
+}
+
+.fuel-loading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--fuel-line), transparent);
+  animation: fuel-shimmer 1.6s linear infinite;
+}
+
+/* Alert: a flat surface with a 2px rule on the left. */
+.rt-CalloutRoot {
+  border-radius: 0;
+  box-shadow: none;
+  background-color: var(--fuel-card);
+  color: var(--fuel-element-mid-em);
+  border: 1px solid var(--fuel-border);
+  border-left: 2px solid var(--fuel-element-low-em);
+}
+
+.rt-CalloutRoot:where([data-accent-color="red"]) {
+  border-left-color: var(--red-10);
+}
+
+.rt-CalloutRoot:where(
+    [data-accent-color="green"],
+    [data-accent-color="grass"]
+  ) {
+  border-left-color: var(--fuel-primary);
+}
+
+.rt-CalloutIcon {
+  color: var(--fuel-element-low-em);
+}
+
+.rt-CalloutRoot:where([data-accent-color="red"]) .rt-CalloutIcon {
+  color: var(--red-11);
+}
+
+.rt-CalloutText {
+  color: inherit;
+}
+
+/* Collapsible content eases open and closed. Closed content leaves the
+   accessibility tree and tab order once the close transition ends. */
+.fuel-Collapsible {
+  border-radius: 0;
+}
+
+.fuel-Collapsible::before {
+  background-color: transparent;
+}
+
+.fuel-Collapsible::after {
+  box-shadow: inset 0 0 0 1px var(--fuel-line);
+}
+
+.fuel-collapsible-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 280ms cubic-bezier(0.4, 0, 0.2, 1), visibility
+    0s 280ms;
+}
+
+.fuel-collapsible-panel[data-state="opened"] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 400ms cubic-bezier(0.16, 1, 0.3, 1), visibility
+    0s;
+}
+
+/* Copyable: the copy icon crossfades to a check. */
+.fuel-copy-swap {
+  position: relative;
+  display: inline-flex;
+}
+
+.fuel-copy-swap > * {
+  transition: opacity 200ms;
+}
+
+.fuel-copy-swap > :last-child {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  color: var(--fuel-brand-text);
+}
+
+[data-copied] .fuel-copy-swap > :first-child {
+  opacity: 0;
+}
+
+[data-copied] .fuel-copy-swap > :last-child {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fuel-loading::before {
+    display: none;
+    animation: none;
+  }
+
+  .fuel-collapsible-panel,
+  .fuel-collapsible-panel[data-state="opened"] {
+    transition: none;
+  }
+}
+
+/* Skeleton: flat muted block. */
+.rt-Skeleton {
+  border-radius: 0;
+}
+
+@keyframes rt-skeleton-pulse {
+  from {
+    background-color: var(--fuel-muted);
+  }
+  to {
+    background-color: var(--fuel-line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rt-Skeleton {
+    animation: none !important;
+    background-color: var(--fuel-muted);
+  }
+}
