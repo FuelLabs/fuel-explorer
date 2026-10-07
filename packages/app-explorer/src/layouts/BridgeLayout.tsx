@@ -1,12 +1,10 @@
 import { Routes } from 'app-commons';
 import type React from 'react';
 import { Suspense, lazy, useLayoutEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { BridgeFormSkeleton } from '~/systems/Bridge/components/BridgeFormSkeleton';
 import { BridgePageShell } from '~/systems/Bridge/components/BridgePageShell';
 import { TransfersBoardSkeleton } from '~/systems/Bridge/components/TransfersBoardSkeleton';
-import { WithdrawDelayProvider } from '~/systems/Bridge/withdrawDelay';
 
 // Pulls in wagmi, viem and connectkit.
 const BridgePanelPage = lazy(() => import('~/pages/BridgePanelPage'));
@@ -19,7 +17,7 @@ const TransfersBoard = lazy(() =>
 
 const PANEL_HEIGHT_KEY = 'fuel:bridge-panel-height';
 // BridgeFormSkeleton's height, which is the form before a wallet connects.
-const DEFAULT_PANEL_HEIGHT = 830;
+const DEFAULT_PANEL_HEIGHT = 510;
 
 function readPanelHeight() {
   try {
@@ -33,12 +31,9 @@ function readPanelHeight() {
 // The child routes only match the URL; the panel renders here for both, so
 // it stays mounted and the form and history animate into each other.
 const BridgeLayout: React.FC = () => {
-  const { t } = useTranslation();
   const { pathname } = useLocation();
   const isHistory = pathname.startsWith(Routes.bridgeHistory());
   const panel = useRef<HTMLDivElement>(null);
-  const [reportedDelay, setWithdrawDelay] = useState<string>();
-  const withdrawDelay = reportedDelay || t('common.one_day');
   const [panelHeight, setPanelHeight] = useState(readPanelHeight);
 
   // The form sets the panel height. History takes the same box and scrolls
@@ -59,26 +54,23 @@ const BridgeLayout: React.FC = () => {
   }, [isHistory]);
 
   return (
-    <WithdrawDelayProvider value={setWithdrawDelay}>
-      <BridgePageShell
-        withdrawDelay={withdrawDelay}
-        board={
-          <Suspense fallback={<TransfersBoardSkeleton />}>
-            <TransfersBoard />
-          </Suspense>
-        }
+    <BridgePageShell
+      board={(rail) => (
+        <Suspense fallback={<TransfersBoardSkeleton />}>
+          <TransfersBoard {...rail} />
+        </Suspense>
+      )}
+    >
+      <div
+        ref={panel}
+        className="flex flex-col"
+        style={isHistory ? { height: panelHeight } : undefined}
       >
-        <div
-          ref={panel}
-          className="flex flex-col"
-          style={isHistory ? { height: panelHeight } : undefined}
-        >
-          <Suspense fallback={<BridgeFormSkeleton />}>
-            <BridgePanelPage />
-          </Suspense>
-        </div>
-      </BridgePageShell>
-    </WithdrawDelayProvider>
+        <Suspense fallback={<BridgeFormSkeleton />}>
+          <BridgePanelPage />
+        </Suspense>
+      </div>
+    </BridgePageShell>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Button, LoadingBox } from '@fuels/ui';
+import { Button, IconChevronRight, LoadingBox } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import {
   useTxEthToFuel,
   useTxFuelToEth,
 } from '~portal/systems/Chains';
+import type { TransfersRailProps } from './BridgePageShell';
 
 type Kind = 'loading' | 'action' | 'progress' | 'settled';
 
@@ -208,7 +209,10 @@ function WithdrawRow({ txHash, id, report }: ReportProps & { txHash: string }) {
   return <TransferRow data={data} kind={kind} />;
 }
 
-export function TransfersBoard() {
+export function TransfersBoard({
+  onCollapse,
+  onCountChange,
+}: Partial<TransfersRailProps>) {
   const { t } = useTranslation();
   const { handlers: fuelHandlers, isConnecting } = useFuelAccountConnection();
   const { bridgeTxs, isLoading, shouldShowNotConnected, shouldShowEmpty } =
@@ -269,21 +273,41 @@ export function TransfersBoard() {
     (e) => (kinds[e.id] ?? 'loading') === 'loading',
   );
   const showEmpty = !isLoading && !stillLoading && open.length === 0;
+  const known = !shouldShowNotConnected && !isLoading && !stillLoading;
+  const openCount = known ? open.length : 0;
+
+  useEffect(() => onCountChange?.(openCount), [onCountChange, openCount]);
 
   return (
     <section className="fuel-edge min-w-0" aria-labelledby="transfers-title">
-      <div className="flex items-baseline justify-between gap-4 px-6 pt-8 pb-6 tablet:px-10">
+      <div className="flex items-center justify-between gap-4 px-6 pt-8 pb-6 tablet:px-10">
         <h2
           id="transfers-title"
           className="m-0 font-medium text-heading text-[28px] leading-[32px] tracking-[-1.12px]"
         >
           {t('bridge.board.title')}
         </h2>
-        {!shouldShowNotConnected && !isLoading && !stillLoading && (
-          <span className="fuel-label" aria-live="polite">
-            {t('bridge.board.count', { count: open.length })}
-          </span>
-        )}
+        <span className="flex items-center gap-4">
+          {known && (
+            <span className="fuel-label" aria-live="polite">
+              {t('bridge.board.count', { count: open.length })}
+            </span>
+          )}
+          {onCollapse && (
+            <Button
+              size="2"
+              variant="ghost"
+              color="gray"
+              aria-label={t('bridge.board.collapse')}
+              aria-controls="transfers-board"
+              aria-expanded
+              onClick={onCollapse}
+              className="hidden desktop:inline-flex"
+            >
+              <IconChevronRight size={16} aria-hidden />
+            </Button>
+          )}
+        </span>
       </div>
 
       {!shouldShowNotConnected && open.length > 0 && (

@@ -1,17 +1,13 @@
 {
   "docs": "跨链桥文档",
   "faq": {
-    "duration": {
-      "question": "提现需要多久？",
-      "answer": "充值到 Fuel 的资产提现回 Ethereum 最多需要 {{delay}}。文档说明了这段等待背后的架构和安全性。"
-    },
     "assets": {
       "question": "可以桥接哪些资产？",
       "answer": "资产选择器列出所有支持的资产。默认选中 ETH。"
     },
     "faster": {
       "question": "有更快的路径吗？",
-      "answer": "表单上方横幅中的合作桥提供通往 Fuel Ignition 的快速桥接。"
+      "answer": "表单上方链接的 LayerSwap 等合作桥提供通往 Fuel Ignition 的快速桥接。"
     },
     "history": {
       "question": "在哪里查看历史转账？",

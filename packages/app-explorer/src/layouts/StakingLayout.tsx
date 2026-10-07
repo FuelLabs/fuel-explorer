@@ -69,7 +69,6 @@ export default function StakingLayout() {
     <>
       <VerifySelectedChainDialog />
       <ToolPageHeader
-        reserveBadge
         badge={
           <span
             aria-hidden={!isEthereumStaking}
@@ -79,7 +78,6 @@ export default function StakingLayout() {
           </span>
         }
         title={t('staking.title')}
-        lead={t('staking.lead')}
         actions={
           <>
             <Button

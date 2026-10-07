@@ -13,7 +13,6 @@
     "building": "Building: {{count}}",
     "window_24h": "24h",
     "read_docs": "Read docs",
-    "one_day": "a day",
     "questions": "Questions"
   },
   "nav": {
@@ -126,7 +125,6 @@
   },
   "staking": {
     "title": "Help secure the Fuel network",
-    "lead": "Delegate your tokens to Fuel validators, or liquid stake through The Rig on Ignition.",
     "read_docs": "Read docs",
     "open_rig": "Open The Rig",
     "docs": "Fuel docs",
@@ -144,8 +142,6 @@
     "lanes_label": "Staking paths",
     "lane_rig": "The Rig",
     "lane_ethereum": "Ethereum",
-    "lane_ethereum_lead": "Delegate FUEL to validators from your Ethereum wallet.",
-    "lane_rig_lead": "Liquid staking on Ignition. You hold stFUEL.",
     "lane_rig_figure": "To claim",
     "lane_ethereum_figure": "Staked",
     "board": {
@@ -165,7 +161,6 @@
       "failed": "Failed",
       "failed_group_one": "{{count}} failed transaction",
       "failed_group_other": "{{count}} failed transactions",
-      "failed_hint": "These did not complete. Open one for details.",
       "show": "Show",
       "hide": "Hide",
       "show_more_one": "Show {{count}} more",
@@ -181,7 +176,6 @@
   },
   "bridge": {
     "title": "Bridge",
-    "lead": "Move assets between Ethereum and Fuel Ignition.",
     "read_docs": "Read docs",
     "panel_transfer": "Transfer",
     "panel_history": "History",
@@ -204,7 +198,9 @@
       "none": "No transfers yet. Your deposits and withdrawals appear here.",
       "empty": "Nothing is in progress. Finished transfers are in History.",
       "open_history": "Open History",
-      "loading": "Loading your transfers"
+      "loading": "Loading your transfers",
+      "expand": "Show transfers",
+      "collapse": "Hide transfers"
     }
   },
   "errors": {

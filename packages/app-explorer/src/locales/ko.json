@@ -13,7 +13,6 @@
     "building": "개발 중: {{count}}",
     "window_24h": "24시간",
     "read_docs": "문서",
-    "one_day": "하루",
     "questions": "질문"
   },
   "nav": {
@@ -125,7 +124,6 @@
   },
   "staking": {
     "title": "Fuel 네트워크 보안에 참여",
-    "lead": "FUEL을 밸리데이터에 위임하거나, Ignition의 The Rig에서 리퀴드 스테이킹하세요.",
     "read_docs": "문서",
     "open_rig": "The Rig 열기",
     "docs": "Fuel 문서",
@@ -149,5 +147,11 @@
     "unexpected": "문제가 발생했습니다",
     "unexpected_body": "예기치 않은 오류가 발생했습니다. 페이지를 새로고침하세요.",
     "reload": "새로고침"
+  },
+  "bridge": {
+    "board": {
+      "expand": "전송 보기",
+      "collapse": "전송 숨기기"
+    }
   }
 }

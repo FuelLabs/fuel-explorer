@@ -64,8 +64,9 @@ export const Balance = () => {
   // Staked FUEL lives in the Ethereum lane cell, so it is not repeated here.
   if (!isConnected) return null;
 
+  // The strip spans the frame cell edge to edge, so its lines join the frame.
   return (
-    <div className="grid grid-cols-1 gap-px border border-[var(--fuel-line)] bg-[var(--fuel-line)] min-[560px]:grid-cols-2 laptop:grid-cols-3 min-[560px]:[&>:last-child]:col-span-2 laptop:[&>:last-child]:col-span-1">
+    <div className="grid grid-cols-1 gap-px border-y border-[var(--fuel-line)] bg-[var(--fuel-line)] min-[560px]:grid-cols-2 laptop:grid-cols-3 min-[560px]:[&>:last-child]:col-span-2 laptop:[&>:last-child]:col-span-1">
       <AmountCard
         title="Balance on Ethereum"
         symbol={symbol}

@@ -13,12 +13,10 @@ import {
   AnimatedHeight,
   Box,
   Button,
-  Card,
   HStack,
   InputAmount,
   Link,
   LoadingBox,
-  Text,
   Tooltip,
   VStack,
   shortAddress,
@@ -28,16 +26,13 @@ import { IconUserCircle } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { Address } from 'fuels';
 import { useEffect } from 'react';
-import { tv } from 'tailwind-variants';
 import { BridgeWithdrawWarning } from '../components/BridgeWithdrawWarning/BridgeWithdrawWarning';
 import { BridgeButton } from '../containers/BridgeButton';
-import { BridgeTabs } from '../containers/BridgeTabs';
 import { useBridge } from '../hooks';
 import { useIsNonNativeConnector } from '../hooks/useIsNonNativeConnector';
 import { useWithdrawDelay } from '../hooks/useWithdrawDelay';
 
 export const Bridge = () => {
-  const classes = styles();
   const {
     ethAddress,
     fuelAddress,
@@ -89,139 +84,129 @@ export const Bridge = () => {
 
   return (
     <VStack gap="4">
-      <BridgeTabs />
       {fromNetwork && toNetwork ? (
         <>
-          <Card>
-            <Card.Body>
-              <Text className={classes.textNetwork()}>Network</Text>
-              <VStack gap="2" className="mt-4">
-                <LayoutGroup>{getItemsOrder()}</LayoutGroup>
-                {isEthFrom && toCustomAddress && (
-                  <Alert
-                    variant="soft"
-                    color="blue"
-                    size="1"
-                    className="border border-blue-6"
-                  >
-                    <Alert.Icon>
-                      <IconInfoCircleFilled size="md" />
-                    </Alert.Icon>
-
-                    <Alert.Text>
-                      Sending to a custom Fuel account: <br />
-                      <b>{shortAddress(toCustomAddress, 22, 20)}</b>
-                    </Alert.Text>
-                  </Alert>
-                )}
-              </VStack>
-              <AnimatedHeight enabled={isNonNative === true}>
-                <div className="pt-2">
-                  <Alert
-                    variant="soft"
-                    color="blue"
-                    size="1"
-                    className="border border-blue-6"
-                  >
-                    <Alert.Icon>
-                      <IconInfoCircleFilled size="md" />
-                    </Alert.Icon>
-                    <Alert.Text>
-                      Please note: EVM/SVM addresses will differ from your{' '}
-                      <b>Fuel predicate address</b>. This is expected behavior.
-                      <Box className="mt-2">
-                        You can manage your assets in{' '}
-                        <Button
-                          as="a"
-                          href={Routes.account(account || '', 'transactions')}
-                          size="1"
-                          color="blue"
-                          variant="link"
-                          rightIcon={IconUserCircle}
-                          className="rounded-md mt-0 ml-0.5"
-                          aria-label="Transaction History"
-                        >
-                          My Account
-                        </Button>
-                      </Box>
-                    </Alert.Text>
-                  </Alert>
-                </div>
-              </AnimatedHeight>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Body as={VStack} className="gap-2">
-              <Text className={classes.textNetwork()}>Asset amount</Text>
-
-              <InputAmount balance={assetBalance} formatOpts={assetFormat}>
-                <InputAmount.Field
-                  disabled={!ethAddress && !fuelAddress}
-                  value={assetAmount}
-                  color="green"
-                  onChange={(val) =>
-                    handlers.changeAssetAmount({
-                      assetAmount: val || undefined,
-                    })
-                  }
-                  placeholder="0.00"
+          <div>
+            <VStack gap="2">
+              <LayoutGroup>{getItemsOrder()}</LayoutGroup>
+              {isEthFrom && toCustomAddress && (
+                <Alert
+                  variant="soft"
+                  color="blue"
+                  size="1"
+                  className="border border-blue-6"
                 >
-                  <InputAmount.Slot className="flex flex-row justify-end gap-2 sm:!flex sm:!flex-row sm:!flex-nowrap sm:!justify-end mobile:!gap-1 mobile:!ml-1">
-                    {assetBalance?.gt(0) && asset?.symbol === 'ETH' ? (
-                      <Tooltip content={<>Max = balance - fee</>}>
-                        <InputAmount.ButtonMaxBalance className="mobile:px-1" />
-                      </Tooltip>
-                    ) : (
-                      <InputAmount.ButtonMaxBalance className="mobile:!text-xs mobile:px-1" />
-                    )}
-                    <InputAmount.CoinSelector
-                      variant="ghost"
-                      className="mobile:!text-xs mobile:!px-2 mobile:!min-w-0"
-                      asset={{
-                        name: asset?.symbol,
-                        imageUrl: asset?.icon || '',
-                        address: ethAssetAddress,
-                      }}
-                      onClick={handlers.openAssetsDialog}
-                    />
-                  </InputAmount.Slot>
-                </InputAmount.Field>
+                  <Alert.Icon>
+                    <IconInfoCircleFilled size="md" />
+                  </Alert.Icon>
 
-                <HStack gap="2" justify="between">
-                  <InputAmount.Balance balance={assetBalance} />
-                  {isEthFrom && !!ethAssetAddress && (
-                    <InputAmount.Balance
-                      balance={allowance.tokensAllowance}
-                      color="blue"
-                      label={'Allowance'}
-                    />
+                  <Alert.Text>
+                    Sending to a custom Fuel account: <br />
+                    <b>{shortAddress(toCustomAddress, 22, 20)}</b>
+                  </Alert.Text>
+                </Alert>
+              )}
+            </VStack>
+            <AnimatedHeight enabled={isNonNative === true}>
+              <div className="pt-2">
+                <Alert
+                  variant="soft"
+                  color="blue"
+                  size="1"
+                  className="border border-blue-6"
+                >
+                  <Alert.Icon>
+                    <IconInfoCircleFilled size="md" />
+                  </Alert.Icon>
+                  <Alert.Text>
+                    Please note: EVM/SVM addresses will differ from your{' '}
+                    <b>Fuel predicate address</b>. This is expected behavior.
+                    <Box className="mt-2">
+                      You can manage your assets in{' '}
+                      <Button
+                        as="a"
+                        href={Routes.account(account || '', 'transactions')}
+                        size="1"
+                        color="blue"
+                        variant="link"
+                        rightIcon={IconUserCircle}
+                        className="rounded-md mt-0 ml-0.5"
+                        aria-label="Transaction History"
+                      >
+                        My Account
+                      </Button>
+                    </Box>
+                  </Alert.Text>
+                </Alert>
+              </div>
+            </AnimatedHeight>
+          </div>
+          <VStack gap="2">
+            <InputAmount balance={assetBalance} formatOpts={assetFormat}>
+              <InputAmount.Field
+                disabled={!ethAddress && !fuelAddress}
+                value={assetAmount}
+                color="green"
+                onChange={(val) =>
+                  handlers.changeAssetAmount({
+                    assetAmount: val || undefined,
+                  })
+                }
+                placeholder="0.00"
+              >
+                <InputAmount.Slot className="flex flex-row justify-end gap-2 sm:!flex sm:!flex-row sm:!flex-nowrap sm:!justify-end mobile:!gap-1 mobile:!ml-1">
+                  {assetBalance?.gt(0) && asset?.symbol === 'ETH' ? (
+                    <Tooltip content={<>Max = balance - fee</>}>
+                      <InputAmount.ButtonMaxBalance className="mobile:px-1" />
+                    </Tooltip>
+                  ) : (
+                    <InputAmount.ButtonMaxBalance className="mobile:!text-xs mobile:px-1" />
                   )}
-                </HStack>
-              </InputAmount>
+                  <InputAmount.CoinSelector
+                    variant="ghost"
+                    className="mobile:!text-xs mobile:!px-2 mobile:!min-w-0"
+                    asset={{
+                      name: asset?.symbol,
+                      imageUrl: asset?.icon || '',
+                      address: ethAssetAddress,
+                    }}
+                    onClick={handlers.openAssetsDialog}
+                  />
+                </InputAmount.Slot>
+              </InputAmount.Field>
 
-              <BridgeWithdrawWarning />
-
-              {isFuelChain(toNetwork) &&
-                balance?.eq(0) &&
-                !!ethAssetAddress && (
-                  <Alert color="orange">
-                    <Alert.Icon>
-                      <IconAlertCircle size="md" />
-                    </Alert.Icon>
-                    <Alert.Text>
-                      You don&apos;t have any ETH on Fuel to pay for gas. We
-                      recommend you bridge some ETH before you bridge any other
-                      assets.
-                    </Alert.Text>
-                  </Alert>
+              <HStack gap="2" justify="between">
+                <InputAmount.Balance balance={assetBalance} />
+                {isEthFrom && !!ethAssetAddress && (
+                  <InputAmount.Balance
+                    balance={allowance.tokensAllowance}
+                    color="blue"
+                    label={'Allowance'}
+                  />
                 )}
-            </Card.Body>
-          </Card>
+              </HStack>
+            </InputAmount>
+
+            <BridgeWithdrawWarning />
+
+            {isFuelChain(toNetwork) && balance?.eq(0) && !!ethAssetAddress && (
+              <Alert color="orange">
+                <Alert.Icon>
+                  <IconAlertCircle size="md" />
+                </Alert.Icon>
+                <Alert.Text>
+                  You don&apos;t have any ETH on Fuel to pay for gas. We
+                  recommend you bridge some ETH before you bridge any other
+                  assets.
+                </Alert.Text>
+              </Alert>
+            )}
+          </VStack>
         </>
       ) : (
         <>
-          <LoadingBox className="w-full h-[236px]" />
-          <LoadingBox className="w-full h-[152px]" />
+          <LoadingBox className="w-full h-[160px]" />
+          <LoadingBox className="w-full h-[86px]" />
         </>
       )}
       <BridgeButton />
@@ -230,27 +215,17 @@ export const Bridge = () => {
           <IconAlertCircle size="md" />
         </Alert.Icon>
         <Alert.Text>
-          Any assets deposited to Fuel can take up to {timeToWithdrawFormatted}{' '}
-          to withdraw back to Ethereum. Learn more about our architecture and
-          security in our&nbsp;
+          Withdrawals back to Ethereum take up to {timeToWithdrawFormatted}.{' '}
           <Link
             target="_blank"
             href="https://docs.fuel.network/docs/fuel-book/the-architecture/security-on-fuel/"
             rel="noreferrer"
             isExternal
           >
-            docs
+            Docs
           </Link>
         </Alert.Text>
       </Alert>
     </VStack>
   );
 };
-
-export const styles = tv({
-  slots: {
-    card: 'p-0',
-    cardBody: 'p-7',
-    textNetwork: 'text-heading',
-  },
-});

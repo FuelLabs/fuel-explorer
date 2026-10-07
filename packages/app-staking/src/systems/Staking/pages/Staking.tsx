@@ -53,8 +53,8 @@ export const StakingPage = () => {
   }, [pathname]);
 
   return (
-    <Box className="px-6 py-8 tablet:px-10">
-      <div className="flex flex-col gap-2 mb-4 tablet:flex-row tablet:justify-end tablet:items-center">
+    <Box className="py-8">
+      <div className="flex flex-col gap-2 mb-6 px-6 tablet:px-10 tablet:flex-row tablet:justify-end tablet:items-center">
         <ClaimV2Button />
         {hasV1Involvement && SHOW_CONVERT_BUTTON === 'true' && (
           <Link to="/upgrade" className="tablet:w-auto w-full">
@@ -70,7 +70,7 @@ export const StakingPage = () => {
         <AccountButton />
       </div>
       <Balance />
-      <VStack className="gap-0 mt-10">
+      <VStack className="gap-0 mt-10 px-6 tablet:px-10">
         <StakingL1Tabs />
         <TabTransition
           panel={activeTab}
