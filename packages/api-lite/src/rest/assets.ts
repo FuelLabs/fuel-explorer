@@ -1,4 +1,5 @@
 import { type NftMetadata, collectionFor } from '../assets/NftMetadata';
+import { withinWait } from '../assets/withinWait';
 import { ValidationError } from '../errors';
 import type { AppContext } from '../graphql/context';
 import {
@@ -14,21 +15,6 @@ const ASSET_ID_RE = /^0x[0-9a-fA-F]{64}$/;
 const NFT_METADATA_WAIT_MS = 1000;
 
 type AssetCtx = Pick<AppContext, 'chain' | 'index' | 'client' | 'price'>;
-
-async function withinWait<T>(
-  promise: Promise<T>,
-  ms: number,
-): Promise<T | null> {
-  let timer: NodeJS.Timeout | undefined;
-  const timeout = new Promise<null>((resolve) => {
-    timer = setTimeout(() => resolve(null), ms);
-  });
-  try {
-    return await Promise.race([promise, timeout]);
-  } finally {
-    clearTimeout(timer);
-  }
-}
 
 // Response shape consumed by fuels-wallet. `rate` is only set for ETH, the one
 // price PriceClient fetches.

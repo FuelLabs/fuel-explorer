@@ -1,3 +1,4 @@
+import type { NftMetadata } from '../assets/NftMetadata';
 import type { FuelCoreClient } from '../fuelcore/FuelCoreClient';
 import type { PriceClient } from '../fuelcore/PriceClient';
 import type { FallbackHeights } from '../hot/FallbackHeights';
@@ -15,4 +16,5 @@ export type AppContext = {
   price: PriceClient;
   hot: HotKeys;
   fallbackHeights?: FallbackHeights;
+  nft?: Pick<NftMetadata, 'get'>;
 };
