@@ -29,7 +29,6 @@ export type AppDeps = AppContext & {
 export function createApp(ctx: AppDeps) {
   const gateway = new IpfsGateway();
   const nft = new NftMetadata({ gateway, publicUrl: ctx.publicUrl });
-  // GraphQL balances read NFT metadata through the same cache as /assets.
   const gqlCtx: AppContext = { ...ctx, nft };
   const yoga = createYoga<AppContext>({
     schema: buildSchema(),

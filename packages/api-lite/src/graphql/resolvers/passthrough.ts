@@ -14,8 +14,6 @@ import {
 // in-flight fuel-core assetDetails lookup at once, so a page full of unlisted
 // assets can't fan out into an unbounded burst of concurrent requests.
 const ASSET_DETAILS_CONCURRENCY = 20;
-// Metadata that misses this wait still lands in NftMetadata's cache, so the
-// next load of the page has it.
 const NFT_METADATA_WAIT_MS = 1000;
 
 async function mapWithConcurrency<T>(
@@ -102,17 +100,17 @@ async function enrichAssetNodes(container: any, ctx: AppContext) {
       // FuelCoreClient), bounded to ASSET_DETAILS_CONCURRENCY in flight.
       const details = await ctx.client.assetDetails(node.assetId);
       node.suspicious = isImpersonating(verified, details?.subId ?? null);
-      // The explorer reads an NFT as total supply 1 with no decimals, and
-      // groups it by collection.
+      // The explorer treats total supply 1 as an NFT and groups it by collection.
       const contractId = details?.contractId ?? null;
       const subId = details?.subId ?? null;
+      const collection = collectionFor(contractId);
       node.contractId = contractId;
       node.totalSupply = details?.totalSupply ?? null;
-      node.collection = collectionFor(contractId);
+      node.collection = collection;
       const metadata =
-        node.totalSupply === '1' && node.collection && ctx.nft && subId
+        contractId && subId && collection && ctx.nft && node.totalSupply === '1'
           ? await withinWait(
-              ctx.nft.get(contractId as string, subId),
+              ctx.nft.get(contractId, subId),
               NFT_METADATA_WAIT_MS,
             )
           : null;
