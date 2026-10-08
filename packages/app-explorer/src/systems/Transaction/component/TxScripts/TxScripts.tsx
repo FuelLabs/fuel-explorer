@@ -1,17 +1,32 @@
-import { Button, LoadingWrapper, cx } from '@fuels/ui';
-import { IconFold } from '@fuels/ui';
+import { Button, HoverCard, LoadingWrapper } from '@fuels/ui';
+import { IconArrowsMoveVertical, IconFold } from '@fuels/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { TxScriptsContent } from '~/systems/Transaction/component/TxScripts/TxScriptsContent/TxScriptsContent';
+import { TypesCounter } from '~/systems/Transaction/component/TxScripts/TypesCounter/TypesCounter';
 import { TxSection } from '../TxItem/TxSection';
 import { TxItemLoader } from '../TxItemLoader';
 import type { TxScriptsProps } from './types';
+import { hasFoldedOperations } from './utils';
 
 export function TxScripts({ tx, isLoading, index, className }: TxScriptsProps) {
   const { t } = useTranslation();
   const [opened, setOpened] = useState(false);
   const hasOperations = !!tx?.operations?.length;
+  const foldable = hasFoldedOperations(tx);
+
+  const toggle = (
+    <Button
+      variant="ghost"
+      color="gray"
+      size="1"
+      leftIcon={opened ? IconFold : IconArrowsMoveVertical}
+      onClick={() => setOpened((value) => !value)}
+    >
+      {opened ? t('tx.collapse') : t('tx.expand')}
+    </Button>
+  );
 
   return (
     <TxSection
@@ -19,28 +34,24 @@ export function TxScripts({ tx, isLoading, index, className }: TxScriptsProps) {
       index={index}
       className={className}
       action={
-        <Button
-          className={cx(
-            '[transition-property:opacity,visibility] duration-200 motion-reduce:transition-none',
-            !opened && 'invisible opacity-0',
-          )}
-          variant="ghost"
-          color="gray"
-          size="1"
-          leftIcon={IconFold}
-          onClick={() => setOpened(false)}
-        >
-          {t('tx.collapse')}
-        </Button>
+        foldable &&
+        (opened ? (
+          toggle
+        ) : (
+          <HoverCard openDelay={100}>
+            <HoverCard.Trigger>{toggle}</HoverCard.Trigger>
+            <HoverCard.Content className="p-2 px-3">
+              <TypesCounter receipts={tx?.receipts ?? []} />
+            </HoverCard.Content>
+          </HoverCard>
+        ))
       }
     >
       <LoadingWrapper
         repeatLoader={2}
         isLoading={isLoading}
         noItems={!hasOperations}
-        regularEl={
-          <TxScriptsContent tx={tx} opened={opened} setOpened={setOpened} />
-        }
+        regularEl={<TxScriptsContent tx={tx} opened={opened} />}
         loadingEl={<TxItemLoader />}
         noItemsEl={
           <EmptyCard hideImage>

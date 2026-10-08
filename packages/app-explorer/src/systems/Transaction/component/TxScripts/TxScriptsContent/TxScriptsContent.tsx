@@ -1,41 +1,31 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import type { GQLOperationReceipt } from '@fuel-explorer/graphql/sdk';
-import { Box, Button, HStack, HoverCard } from '@fuels/ui';
-import { IconArrowsMoveVertical } from '@fuels/ui';
-import { memo, useEffect, useState } from 'react';
+import { Box, HStack } from '@fuels/ui';
+import { Fragment, type ReactNode, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMeasure } from 'react-use';
 import { EmptyCard } from '~/systems/Core/components/EmptyCard/EmptyCard';
 import { TxExpand } from '~/systems/Transaction/component/TxItem/TxExpand';
 import { ReceiptItem } from '~/systems/Transaction/component/TxScripts/ReceiptItem/ReceiptItem';
 import { ReceiptItemR } from '~/systems/Transaction/component/TxScripts/ReceiptItemR/ReceiptItemR';
-import { TypesCounter } from '~/systems/Transaction/component/TxScripts/TypesCounter/TypesCounter';
+import { hasFoldedOperations } from '~/systems/Transaction/component/TxScripts/utils';
 import { styles } from './styles';
 import type { ScriptsContentProps } from './types';
 
-// Mounts the full list on first open, then folds it with the panel so both
-// directions ease. Reduced motion skips the transition in TxExpand.
-function useFold(opened: boolean) {
-  const [mounted, setMounted] = useState(opened);
-  const [shown, setShown] = useState(opened);
-  useEffect(() => {
-    if (!opened) {
-      setShown(false);
-      return;
-    }
-    setMounted(true);
-    const frame = requestAnimationFrame(() => setShown(true));
-    return () => cancelAnimationFrame(frame);
-  }, [opened]);
-  return { mounted, shown };
+// A folded block inside a gap-3 column. The negative margin cancels the
+// column gap while folded and the inner padding restores it while open, so
+// the rows around the fold keep their spacing in both states.
+function Fold({ open, children }: { open: boolean; children: ReactNode }) {
+  return (
+    <TxExpand open={open} className="-mt-3" releaseOverflow>
+      <div className="flex flex-col gap-3 pt-3">{children}</div>
+    </TxExpand>
+  );
 }
 
-function _TxScriptsContent({ tx, opened, setOpened }: ScriptsContentProps) {
+function _TxScriptsContent({ tx, opened }: ScriptsContentProps) {
   const { t } = useTranslation();
   const operations = tx?.operations ?? [];
   const classes = styles();
-  const [ref, { width }] = useMeasure();
-  const fold = useFold(Boolean(opened));
 
   if (!operations.length) {
     return (
@@ -46,10 +36,6 @@ function _TxScriptsContent({ tx, opened, setOpened }: ScriptsContentProps) {
     );
   }
 
-  const txReceipts = tx?.receipts ?? [];
-  const receipts = operations.flatMap((i) => i?.receipts ?? []);
-  const first = receipts?.[0];
-  const last = receipts?.[receipts.length - 1];
   const hasPanic = operations?.some((o) =>
     o?.receipts?.some(
       (r) =>
@@ -58,72 +44,71 @@ function _TxScriptsContent({ tx, opened, setOpened }: ScriptsContentProps) {
     ),
   );
 
-  const summary = (
-    <>
-      <ReceiptItem receipt={first as GQLOperationReceipt} hasPanic={hasPanic} />
-      <HStack>
-        <Box className={classes.lines()} />
-        <HoverCard openDelay={100}>
-          <HoverCard.Trigger>
-            <Button
-              ref={ref as React.Ref<HTMLButtonElement>}
-              color="gray"
-              variant="ghost"
-              leftIcon={IconArrowsMoveVertical}
-              onClick={() => setOpened(true)}
-            >
-              {t('tx.expand')}{' '}
-              <span className="text-[var(--fuel-element-low-em)]">
-                {t('tx.expand_more', { count: txReceipts?.length ?? 0 })}
-              </span>
-            </Button>
-          </HoverCard.Trigger>
-          <HoverCard.Content className="p-2 px-3" style={{ width }}>
-            <TypesCounter receipts={txReceipts} />
-          </HoverCard.Content>
-        </HoverCard>
-        <Box className={classes.lines()} />
-      </HStack>
-      <ReceiptItem receipt={last as GQLOperationReceipt} hasPanic={hasPanic} />
-    </>
+  // Long lists keep the first and last receipt in place and fold everything
+  // between them, so opening grows the list instead of swapping it. The
+  // Expand and Collapse control lives in the section header.
+  const foldable = hasFoldedOperations(tx);
+  const open = !foldable || Boolean(opened);
+  const lastOp = operations.length - 1;
+  const lastIdx = (operations[lastOp]?.receipts?.length ?? 0) - 1;
+
+  const foldedMarker = (
+    <HStack className="items-center">
+      <Box className={classes.lines()} />
+      <span className="fuel-label text-[var(--fuel-element-low-em)]">
+        {t('tx.expand_more', { count: tx?.receipts?.length ?? 0 })}
+      </span>
+      <Box className={classes.lines()} />
+    </HStack>
   );
 
-  const list = (
+  return (
     <div className="flex flex-col gap-3">
       {operations.map((item, i) => (
         <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
           {item?.receipts?.map((receipt, idx) => {
-            return (
+            const key = `${idx}-${receipt?.item?.receiptType ?? ''}`;
+            const isFirst = i === 0 && idx === 0;
+            const isLast = i === lastOp && idx === lastIdx;
+            const pinned = foldable && (isFirst || isLast);
+            const subs = receipt?.receipts?.length ? (
+              <ReceiptItemR
+                receipts={receipt.receipts as GQLOperationReceipt[]}
+                hasPanic={hasPanic}
+              />
+            ) : null;
+            const row = (
               <div
-                key={`${idx}-${receipt?.item?.receiptType ?? ''}`}
-                data-nested="true"
+                key={key}
+                data-nested={open || !pinned}
                 className={`${classes.operation()} fuel-appear`}
               >
                 <ReceiptItem
                   receipt={receipt as GQLOperationReceipt}
-                  isIndented={idx > 0}
+                  isIndented={idx > 0 && (open || !pinned)}
                   hasPanic={hasPanic}
                 />
-                <ReceiptItemR
-                  receipts={receipt?.receipts as GQLOperationReceipt[]}
-                  hasPanic={hasPanic}
-                />
+                {pinned && subs ? <Fold open={open}>{subs}</Fold> : subs}
               </div>
+            );
+            if (!foldable || isLast) return row;
+            if (isFirst) {
+              return (
+                <Fragment key={key}>
+                  {row}
+                  <Fold open={!open}>{foldedMarker}</Fold>
+                </Fragment>
+              );
+            }
+            return (
+              <Fold key={key} open={open}>
+                {row}
+              </Fold>
             );
           })}
         </div>
       ))}
     </div>
-  );
-
-  if (receipts.length <= 3) return list;
-
-  // Long lists show the first and last receipt until opened.
-  return (
-    <>
-      <TxExpand open={!opened}>{summary}</TxExpand>
-      {fold.mounted && <TxExpand open={fold.shown}>{list}</TxExpand>}
-    </>
   );
 }
 

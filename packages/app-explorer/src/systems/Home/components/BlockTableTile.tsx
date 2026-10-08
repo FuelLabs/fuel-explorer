@@ -42,17 +42,9 @@ export const BlockTableTile: React.FC<BlockTableProps> = ({
           {t('home.tx_count', { count: txCount })}
         </span>
         <div className="flex items-center gap-3">
-          <span>
-            <span className="text-muted">{t('home.size')} </span>
-            <span className="text-heading font-medium">
-              ~{formatBytes(block.blockSize)}
-            </span>
-          </span>
-          <span>
-            <span className="text-muted">{t('home.gas')} </span>
-            <span className="text-heading font-medium">
-              {formatGas(block.gasUsed)}
-            </span>
+          <span className="text-[11px] leading-[18px] text-muted tabular-nums">
+            ~{formatBytes(block.blockSize)} ·{' '}
+            {t('home.gas_amount', { value: formatGas(block.gasUsed) })}
           </span>
           <span>
             <span className="text-muted">{t('home.fee')} </span>

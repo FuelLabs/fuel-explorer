@@ -16,44 +16,32 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
   featured,
 }) => {
   const { t } = useTranslation();
-  const activePercentage = (active / total) * 100;
-  const buildingPercentage = ((total - active) / total) * 100;
-  const activeBarStyle = {
-    width: `${activePercentage}%`,
-    height: '5px',
-    borderRadius: 0,
-    transition: 'width 0.4s ease-in-out',
-  };
-  const buildingBarStyle = {
-    width: `${buildingPercentage}%`,
-    height: '5px',
-    borderRadius: 0,
-    transition: 'width 0.4s ease-in-out',
-  };
+  const activeRatio = total > 0 ? Math.min(active / total, 1) : 0;
 
   return (
     <RoundedContainer className="validators-chart h-full px-5">
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
-          <h3 className="fuel-label">{t('home.fuel_dapps')}</h3>
+          <h2 className="fuel-label m-0">{t('home.fuel_dapps')}</h2>
           <a
             className="fuel-label block"
             href="https://app.fuel.network/ecosystem"
+            rel="noreferrer"
           >
             {t('common.view_all')}
           </a>
         </div>
-        <h2 className="fuel-stat">
+        <p className="fuel-stat m-0">
           <AnimatedNumber value={total} />
-        </h2>
+        </p>
       </div>
 
-      <div className="py-4">
-        <div className="progress-bar-background">
-          <div className="w-full flex">
-            <div style={activeBarStyle} className="bg-[var(--fuel-primary)]" />
-            <div style={buildingBarStyle} className="bg-[var(--fuel-muted)]" />
-          </div>
+      <div className="py-2">
+        <div className="h-[5px] w-full bg-[var(--fuel-muted)]">
+          <div
+            className="h-full w-full origin-left bg-[var(--fuel-primary)] transition-transform duration-500 ease-out motion-reduce:transition-none"
+            style={{ transform: `scaleX(${activeRatio})` }}
+          />
         </div>
         <div className="flex items-center justify-between mt-1">
           <span className="text-[12px] leading-[20px] text-muted block font-bold">
@@ -64,7 +52,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
           </span>
         </div>
 
-        <div className="my-2 h-[1px] bg-[rgba(255,255,255,0.04)]" />
+        <div className="my-1 h-[1px] bg-[rgba(255,255,255,0.04)]" />
 
         <span className="text-[12px] leading-[20px] text-muted block font-bold">
           {t('common.top_apps')}
@@ -90,7 +78,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
             if (!feature.url) {
               return (
                 <div
-                  className="flex items-center gap-3 mt-2"
+                  className="flex items-center gap-3 mt-1"
                   key={feature.name}
                 >
                   {row}
@@ -99,7 +87,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
             }
             return (
               <a
-                className="flex items-center gap-3 mt-2"
+                className="flex items-center gap-3 mt-1"
                 href={feature.url}
                 target="_blank"
                 rel="noreferrer"

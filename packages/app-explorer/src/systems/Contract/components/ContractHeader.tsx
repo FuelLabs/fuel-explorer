@@ -19,7 +19,7 @@ export function ContractHeader({ id }: { id: string }) {
 
   return (
     <>
-      <header className="flex flex-wrap items-start justify-between gap-x-10 gap-y-4 pb-6">
+      <header className="flex flex-wrap items-start justify-between gap-x-10 gap-y-4 pt-6 pb-6">
         <div className="flex min-w-0 items-start gap-4">
           {/* The logo is a square here; MetadataLogo rounds its own image. */}
           <div className="shrink-0 [&_img]:rounded-none [&_svg]:rounded-none [&>*]:rounded-none">

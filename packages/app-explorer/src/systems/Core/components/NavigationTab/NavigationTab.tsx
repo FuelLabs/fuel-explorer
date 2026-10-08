@@ -120,7 +120,10 @@ export function NavigationTab({
 
 const styles = tv({
   slots: {
-    root: 'mb-5 max-w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+    root: [
+      'mb-5 max-w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+      'max-tablet:[mask-image:linear-gradient(to_right,#000_calc(100%-40px),transparent)]',
+    ],
     list: 'relative flex min-w-max border-b border-[var(--fuel-line)]',
     cell: [
       'flex',

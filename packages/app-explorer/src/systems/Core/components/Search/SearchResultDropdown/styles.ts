@@ -3,16 +3,20 @@ import { tv } from 'tailwind-variants';
 export const styles = tv({
   slots: {
     dropdownItem:
-      'text-base hover:bg-border focus:bg-border cursor-pointer py-6 my-1',
+      'text-base hover:bg-border focus:bg-border cursor-pointer py-6 my-1 justify-between gap-3',
+    recentKind: 'fuel-label shrink-0',
+    clearRecent:
+      'fuel-label cursor-pointer hover:bg-border focus:bg-border my-1 text-[var(--fuel-element-low-em)]',
+    emptyContainer: 'p-4 text-center text-pretty',
+    emptyTitle: 'm-0 mb-2 font-medium text-heading',
+    emptyHint: 'm-0 text-sm leading-snug text-muted',
     dropdownContent: [
-      '[&[data-active=true]]:max-md:border-l-0 max-md:border-r-0',
-      'ml-[-10px] md:ml-0',
       'mt-[-10px] rounded-t-none shadow-none border border-t-0 border-border',
-      '[&[data-active=true]]:border-t-0',
+      'overflow-x-hidden',
     ],
     dropdownLabel: 'text-sm text-gray-10',
     dropdownSeparator: 'opacity-50 my-4',
-    resultLink: 'hover:no-underline font-mono py-4',
+    resultLink: 'hover:no-underline font-mono py-4 min-w-0 truncate',
     loadingContainer: 'flex justify-center items-center h-[50px]',
     loadingText: 'text-sm text-gray-11 ml-2',
     errorContainer: 'p-[16px] align-center flex text-pretty',

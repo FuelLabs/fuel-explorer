@@ -65,15 +65,7 @@ export const useRollingStats = () => {
     queryKey: ['home', 'rolling'],
     queryFn: async () => {
       const data = await getRollingStats();
-      const rollingStats60s = data?.rollingStats60s ?? {
-        tps: 0,
-        avgTxPerBlock: 0,
-        avgGasPerBlock: 0,
-        avgBlockSize: 0,
-        peakTps: 0,
-      };
-
-      return { rollingStats60s } as any;
+      return { rollingStats60s: data?.rollingStats60s ?? null } as any;
     },
     placeholderData: keepPreviousData,
     refetchInterval: HOME_POLL_MS,

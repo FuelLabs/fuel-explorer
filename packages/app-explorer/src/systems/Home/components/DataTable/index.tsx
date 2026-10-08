@@ -17,9 +17,9 @@ export const DataTable = (props: DataTableProps) => {
   return (
     <RoundedContainer className="flex flex-col h-full p-0">
       <div className="flex items-center justify-between px-5 py-3">
-        <span className="fuel-label">{t('home.recent_blocks')}</span>
+        <h2 className="fuel-label m-0">{t('home.recent_blocks')}</h2>
       </div>
-      <div className="flex-1 min-h-0 flex flex-col divide-y divide-border">
+      <div className="flex-1 min-h-0 flex flex-col border-t border-border divide-y divide-border">
         {props.blocks.map((block, index) => {
           const height = String(block.blockNo);
           return (

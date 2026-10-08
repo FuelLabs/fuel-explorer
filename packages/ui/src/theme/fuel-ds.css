@@ -334,7 +334,8 @@
   box-shadow: inset 0 0 0 1px var(--fuel-border);
 }
 
-/* Frame corners: an 8px indicator with 60px lines fading outward. */
+/* Frame corners: an 8px indicator with lines fading outward. --fuel-corner-reach
+   sets the line length, --fuel-corner-reach-y the vertical lines alone. */
 .fuel-corner {
   position: absolute;
   z-index: 2;
@@ -354,14 +355,20 @@
 
 .fuel-corner::before {
   top: 3px;
-  width: 60px;
+  width: var(--fuel-corner-reach, 60px);
   height: 1px;
 }
 
 .fuel-corner::after {
   left: 3px;
   width: 1px;
-  height: 60px;
+  height: var(--fuel-corner-reach-y, var(--fuel-corner-reach, 60px));
+}
+
+@media (max-width: 639px) {
+  .fuel-corner {
+    --fuel-corner-reach: 24px;
+  }
 }
 
 .fuel-corner-tl {

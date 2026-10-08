@@ -2,7 +2,10 @@ import { tv } from 'tailwind-variants';
 
 export const styles = tv({
   slots: {
-    receiptRow: 'peer relative',
+    receiptRow: [
+      'peer relative',
+      'transition-[margin-left] duration-300 motion-reduce:transition-none',
+    ],
   },
   variants: {
     indent: {

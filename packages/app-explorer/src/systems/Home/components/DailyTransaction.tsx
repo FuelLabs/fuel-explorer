@@ -58,64 +58,66 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
   }, [blocks]);
 
   return (
-    <RoundedContainer className="py-4 px-5 h-full space-y-8 ">
-      <div className="space-y-[16px]">
+    <RoundedContainer className="py-4 px-5 h-full flex flex-col">
+      <div className="flex flex-col flex-1 min-h-0 space-y-[16px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="fuel-label">{t('home.daily_transactions')}</span>
+            <h2 className="fuel-label m-0">{t('home.daily_transactions')}</h2>
             <InfoHint content={t('home.daily_transactions_hint')} />
           </div>
           <span className="fuel-label block">{t('common.window_24h')}</span>
         </div>
-        <h2 className="fuel-stat">
+        <p className="fuel-stat m-0">
           <AnimatedNumber value={cumilativeTsx} format={formatInteger} />
-        </h2>
+        </p>
 
-        <ResponsiveContainer width="100%" height={160}>
-          <LineChart
-            data={chartDataArray}
-            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="var(--fuel-grid-line)"
-              vertical={false}
-            />
-            <XAxis
-              dataKey="time"
-              tick={{
-                fontSize: 10,
-                className: 'fill-heading',
-              }}
-            />
-            <Tooltip
-              formatter={(value: any) => [`${Number(value)}`]}
-              labelFormatter={(label: any) => label.toLocaleString()}
-              contentStyle={{
-                backgroundColor: 'var(--fuel-background)',
-                borderColor: 'var(--fuel-line)',
-                borderRadius: 0,
-                color: 'var(--fuel-element-high-em)',
-              }}
-              labelStyle={{
-                color: 'var(--fuel-element-high-em)',
-                fontWeight: 'bold',
-              }}
-              itemStyle={{
-                color: 'var(--fuel-primary)',
-              }}
-              cursor={{ strokeWidth: 0.1, radius: 10 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke={chartConfig.desktop.color}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 4 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="h-[136px] laptop:h-auto laptop:flex-1 laptop:min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={chartDataArray}
+              margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="var(--fuel-grid-line)"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="time"
+                tick={{
+                  fontSize: 10,
+                  className: 'fill-heading',
+                }}
+              />
+              <Tooltip
+                formatter={(value: any) => [`${Number(value)}`]}
+                labelFormatter={(label: any) => label.toLocaleString()}
+                contentStyle={{
+                  backgroundColor: 'var(--fuel-background)',
+                  borderColor: 'var(--fuel-line)',
+                  borderRadius: 0,
+                  color: 'var(--fuel-element-high-em)',
+                }}
+                labelStyle={{
+                  color: 'var(--fuel-element-high-em)',
+                  fontWeight: 'bold',
+                }}
+                itemStyle={{
+                  color: 'var(--fuel-primary)',
+                }}
+                cursor={{ strokeWidth: 0.1, radius: 10 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke={chartConfig.desktop.color}
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </RoundedContainer>
   );

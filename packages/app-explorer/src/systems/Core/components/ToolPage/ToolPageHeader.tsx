@@ -31,6 +31,6 @@ const styles = tv({
     heading: 'flex flex-wrap items-center gap-x-4 gap-y-2',
     title:
       'm-0 font-medium text-heading text-[32px] leading-[36px] tracking-[-1.28px]',
-    actions: 'flex gap-2',
+    actions: 'flex w-full flex-wrap gap-2 tablet:w-auto',
   },
 });

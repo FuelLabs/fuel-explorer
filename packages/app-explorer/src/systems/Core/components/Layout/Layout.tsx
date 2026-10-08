@@ -18,7 +18,7 @@ export function Layout({ children }: LayoutProps) {
       <VStack className="min-h-screen" gap="0">
         <TopNav />
         <Box
-          className={`fuel-page flex-1 px-6 pb-10 tablet:px-10 laptop:pb-18 ${isHome ? 'pt-8' : ''}`}
+          className={`fuel-page flex-1 px-6 pb-10 tablet:px-10 laptop:pb-18 ${isHome ? 'pt-6 tablet:pt-8 laptop:pt-12 desktop:pt-16' : ''}`}
         >
           <HeroSection />
           {children}
