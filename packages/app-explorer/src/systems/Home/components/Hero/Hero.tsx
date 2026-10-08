@@ -29,21 +29,9 @@ import TotalDapps from '../TotalDapps/TotalDapps';
 function Hero() {
   const classes = heroStyles();
   const { t } = useTranslation();
-  const {
-    isPending: isChartsLoading,
-    isError: isChartsError,
-    data: chartsData,
-  } = useHomeCharts();
-  const {
-    isPending: isRollingLoading,
-    isError: isRollingError,
-    data: rollingData,
-  } = useRollingStats();
-  const {
-    isPending: isBlocksLoading,
-    isError: isBlocksError,
-    data: blocksData,
-  } = useDashboardBlocks();
+  const { isPending: isChartsLoading, data: chartsData } = useHomeCharts();
+  const { isPending: isRollingLoading, data: rollingData } = useRollingStats();
+  const { isPending: isBlocksLoading, data: blocksData } = useDashboardBlocks();
   const ecosystemProjects = useTopEcosystem();
   const isEcosystemLoading = ecosystemProjects.isPending;
 
@@ -78,12 +66,10 @@ function Hero() {
     };
   }, [ecosystemProjects, chartsData, rollingData, blocksData]);
 
-  const chartsUnavailable =
-    isChartsError || (!isChartsLoading && !totalTpsData && !totalFeeData);
-  const rollingUnavailable =
-    isRollingError || (!isRollingLoading && !rollingStats60sData);
-  const blocksUnavailable =
-    isBlocksError || (!isBlocksLoading && blocks.length === 0);
+  // A failed poll keeps the last good payload; only no data at all is unavailable.
+  const chartsUnavailable = !isChartsLoading && !totalTpsData && !totalFeeData;
+  const rollingUnavailable = !isRollingLoading && !rollingStats60sData;
+  const blocksUnavailable = !isBlocksLoading && blocks.length === 0;
   const ecosystemUnavailable = !isEcosystemLoading && totalProjects === 0;
 
   const { top: mostUsed } = useBlockApps(
