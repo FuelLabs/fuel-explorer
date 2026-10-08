@@ -29,6 +29,7 @@ import { styles } from './styles';
 
 type SearchInputProps = BaseProps<InputProps> & {
   loading: boolean;
+  onClear?: () => void;
   onSubmit?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
@@ -45,6 +46,7 @@ export function SearchInput({
   loading,
   error,
   loadingMore,
+  onClear,
   ...props
 }: SearchInputProps) {
   const classes = styles();
@@ -124,7 +126,12 @@ export function SearchInput({
   }, []);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setValue(event.target.value);
+    const next = event.target.value;
+    setValue(next);
+    // Before any search the panel only has recents to show, and only for an empty field.
+    if (searchResult === undefined && !error) {
+      setIsOpen(!next && recents.length > 0);
+    }
   }
 
   function close() {
@@ -136,6 +143,7 @@ export function SearchInput({
     if (loading) return;
     setValue('');
     close();
+    onClear?.();
     if (takeover) {
       setIsFocused(false);
       inputRef.current?.blur();

@@ -47,24 +47,31 @@ export const SearchResultDropdown = forwardRef<
 
     const hits = hitsFromResult(searchResult, searchValue);
     const showRecents =
-      !loading && !error && !searchValue && !searchResult && recents.length > 0;
+      !loading && !error && !searchValue && recents.length > 0;
 
     function pick(hit: SearchHit) {
       onSelectItem(hit);
       navigate(hit.href);
     }
 
-    // The item handles the click; the link keeps its href for new-tab opens.
+    // A plain click is handled by the item; a modified click (new tab, new
+    // window) is left to the link's own href.
+    const isModified = (event: React.MouseEvent) =>
+      event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
     const row = (hit: SearchHit, trailing?: React.ReactNode) => (
       <Dropdown.Item
         key={`${hit.kind}-${hit.value}`}
         className={classes.dropdownItem()}
-        onClick={() => pick(hit)}
+        onClick={(event) => {
+          if (!isModified(event)) pick(hit);
+        }}
       >
         <Link
           className={classes.resultLink()}
           to={hit.href}
-          onClick={(event) => event.preventDefault()}
+          onClick={(event) => {
+            if (!isModified(event)) event.preventDefault();
+          }}
         >
           {shortAddress(hit.value, trimL, trimR)}
         </Link>
