@@ -136,15 +136,17 @@ const txEthToFuelSelectors = {
   },
 };
 
+// `id` is undefined while the dialog plays its exit animation: closing the
+// overlay clears its metadata before the dialog unmounts.
 export function useTxEthToFuel({
   id,
   messageSentEventNonce,
-}: { id: string; messageSentEventNonce: BigInt }) {
+}: { id: string | undefined; messageSentEventNonce: BigInt | undefined }) {
   const { wallet: fuelWallet } = useFuelAccountConnection();
-  const txId = id.startsWith('0x') ? (id as HexAddress) : undefined;
+  const txId = id?.startsWith('0x') ? (id as HexAddress) : undefined;
   const { href: explorerLink } = useExplorerLink({
     network: 'ethereum',
-    id,
+    id: id ?? '',
   });
   const machineId = `${txId}-${messageSentEventNonce}`;
 
