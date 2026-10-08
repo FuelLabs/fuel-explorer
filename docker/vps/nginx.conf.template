@@ -61,7 +61,15 @@ map $request_uri $page_description {
 
 map $http_x_forwarded_proto $forwarded_proto {
     default $scheme;
-    ~.+ $http_x_forwarded_proto;
+    https https;
+    http http;
+}
+
+# The request path goes into an HTML attribute; anything that could close it
+# falls back to the site root. nginx already rejects a Host with such characters.
+map $request_uri $page_path {
+    default "/";
+    '~^[^"<>&\s]*$' $request_uri;
 }
 
 server {
@@ -177,7 +185,7 @@ server {
         # No $uri/ entry: a path that shares its name with a directory in the
         # build output, such as /assets, must fall through to the app instead of
         # redirecting into that directory.
-        set $page_url "$forwarded_proto://$host$request_uri";
+        set $page_url "$forwarded_proto://$host$page_path";
         sub_filter_once off;
         sub_filter_types text/html;
         sub_filter '__PAGE_TITLE__' $page_title;
