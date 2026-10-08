@@ -1,4 +1,10 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { cx } from '@fuels/ui';
+import {
+  type ReactNode,
+  type TransitionEvent,
+  useEffect,
+  useState,
+} from 'react';
 import { tv } from 'tailwind-variants';
 
 type TxExpandProps = {
@@ -6,15 +12,62 @@ type TxExpandProps = {
   id?: string;
   children: ReactNode;
   className?: string;
+  // Stops clipping once the panel is fully open, so decorations that reach
+  // outside the panel (the dashed receipt connectors) stay visible.
+  releaseOverflow?: boolean;
 };
+
+const SETTLE_FALLBACK_MS = 500;
 
 // The panel folds with grid rows (0fr to 1fr) like .fuel-faq-panel, so only
 // the grid track animates. Closing is faster than opening.
-export function TxExpand({ open, id, children, className }: TxExpandProps) {
+export function TxExpand({
+  open,
+  id,
+  children,
+  className,
+  releaseOverflow,
+}: TxExpandProps) {
   const classes = styles({ open });
+  const [settled, setSettled] = useState(open);
+
+  useEffect(() => {
+    if (!open) {
+      setSettled(false);
+      return;
+    }
+    // Reduced motion runs no transition, so no transitionend arrives.
+    const timer = setTimeout(() => setSettled(true), SETTLE_FALLBACK_MS);
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  const onTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    if (
+      event.target === event.currentTarget &&
+      event.propertyName === 'grid-template-rows' &&
+      open
+    ) {
+      setSettled(true);
+    }
+  };
+
   return (
-    <div id={id} className={classes.root({ className })} aria-hidden={!open}>
-      <div className="min-h-0 overflow-hidden">{children}</div>
+    <div
+      id={id}
+      className={classes.root({ className })}
+      aria-hidden={!open}
+      onTransitionEnd={onTransitionEnd}
+    >
+      <div
+        className={cx(
+          'min-h-0',
+          releaseOverflow && open && settled
+            ? 'overflow-visible'
+            : 'overflow-hidden',
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }

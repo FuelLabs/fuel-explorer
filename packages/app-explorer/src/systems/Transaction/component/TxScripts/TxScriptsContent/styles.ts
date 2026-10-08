@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants';
 export const styles = tv({
   slots: {
     lines: [
-      'relative flex-1 border-t border-b border-[var(--fuel-line)]',
+      'relative flex-1',
       'before:h-[1px] before:absolute before:top-1/2 before:left-0',
       'before:w-full before:bg-[var(--fuel-line)] before:content-[""]',
     ],
