@@ -56,8 +56,9 @@ export const styles = tv({
       'bg-transparent hover:bg-[var(--fuel-muted)]',
       'text-[var(--fuel-element-high-em)]',
     ],
+    // Titles carry whole sentences (an error message), so they keep sentence case.
     title: [
-      'fuel-label whitespace-pre',
+      'text-sm font-medium leading-5 whitespace-pre',
       'text-[var(--radix-toast-title-color)]',
     ],
     description:
