@@ -104,6 +104,14 @@ export class FuelCoreClient {
     return d.block ? Number(d.block.height) : null;
   }
 
+  async contractExists(id: string): Promise<boolean> {
+    const d = await this.query<{ contract: { id: string } | null }>(
+      'query($id: ContractId!) { contract(id: $id) { id } }',
+      { id },
+    );
+    return d.contract != null;
+  }
+
   // fuel-core returns null for an asset it has no mint record for (e.g. the
   // chain's own base asset), so a null result here isn't itself an error --
   // callers decide what "unknown" means. Cached briefly, including misses,

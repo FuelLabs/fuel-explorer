@@ -345,7 +345,10 @@ export class ApiService {
   static async getContractBalances(contractId: string): Promise<any[]> {
     try {
       const contract = parseAddressParam(contractId);
-      const { data } = await sdk.contractBalances({ filter: { contract } });
+      const { data } = await sdk.contractBalances({
+        first: 100,
+        filter: { contract },
+      });
       return data.contractBalances.edges || [];
     } catch (error) {
       console.error('Error fetching contract balances:', error);
