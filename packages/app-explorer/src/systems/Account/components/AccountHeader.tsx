@@ -1,8 +1,7 @@
-import { Flex, HStack, LoadingBox } from '@fuels/ui';
+import { LoadingBox } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
-import { DEFAULT_PAGETITLE_MB } from 'app-commons';
 import { useAccountBalances, useAccountPredicate } from '~/hooks/useApi';
 import { MetadataLogo } from '~/systems/Core/components/MetadataLogo/MetadataLogo';
 import { fetchExchangeInfo } from '~/systems/Ecosystem/actions/fetchExchangeInfo';
@@ -39,12 +38,14 @@ export function AccountHeader() {
 
   return (
     <>
-      <Flex gap="2" align="start" justify="between" mb={DEFAULT_PAGETITLE_MB}>
-        <HStack align="start" gap="4">
-          <MetadataLogo type="Wallet" />
+      <header className="flex flex-wrap items-start justify-between gap-x-10 gap-y-4 pt-6 pb-6">
+        <div className="flex min-w-0 items-start gap-4">
+          <div className="shrink-0">
+            <MetadataLogo type="Wallet" />
+          </div>
           <AccountTitle id={id} />
-        </HStack>
-        <HStack>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
           {balancesLoading ? (
             <LoadingBox className="h-10 w-32" />
           ) : (
@@ -57,8 +58,8 @@ export function AccountHeader() {
             <AccountLinks project={project} metadata={metadata} />
           )}
           {exchangeInfo && <ExchangeLinks exchange={exchangeInfo} showBadge />}
-        </HStack>
-      </Flex>
+        </div>
+      </header>
       <AccountTabs address={id} isPredicate={!!predicate?.bytecode} />
     </>
   );

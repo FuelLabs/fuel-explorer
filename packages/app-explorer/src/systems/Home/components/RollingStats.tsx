@@ -24,7 +24,7 @@ export const RollingStats = ({
         />
       </div>
       <div className="relative flex items-center">
-        <span className="fuel-label">{t('home.live_stats')}</span>
+        <h2 className="fuel-label m-0">{t('home.live_stats')}</h2>
         <span className="fuel-label ml-1.5">{t('home.live_stats_window')}</span>
       </div>
 

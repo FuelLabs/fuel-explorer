@@ -9,7 +9,7 @@ export const styles = tv({
     ],
     menuItem: [
       'flex items-center',
-      'relative h-auto',
+      'relative h-auto py-3 tablet:py-0',
       'font-mono font-medium text-[14px] leading-none uppercase tracking-[0.05em]',
       'text-muted transition-colors duration-300',
       'data-[active=true]:text-heading hover:text-heading',

@@ -8,6 +8,7 @@ import {
   Theme,
 } from '@fuels/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useDashboardBlocks,
   useHomeCharts,
@@ -22,13 +23,27 @@ import DailyTransaction from '../DailyTransaction';
 import GasSpentChart from '../GasSpentChart/index';
 import RollingStats from '../RollingStats';
 import TPSHourly from '../TPSHourly';
+import { TileUnavailable } from '../TileUnavailable';
 import TotalDapps from '../TotalDapps/TotalDapps';
 
 function Hero() {
   const classes = heroStyles();
-  const { isPending: isChartsLoading, data: chartsData } = useHomeCharts();
-  const { isPending: isRollingLoading, data: rollingData } = useRollingStats();
-  const { isPending: isBlocksLoading, data: blocksData } = useDashboardBlocks();
+  const { t } = useTranslation();
+  const {
+    isPending: isChartsLoading,
+    isError: isChartsError,
+    data: chartsData,
+  } = useHomeCharts();
+  const {
+    isPending: isRollingLoading,
+    isError: isRollingError,
+    data: rollingData,
+  } = useRollingStats();
+  const {
+    isPending: isBlocksLoading,
+    isError: isBlocksError,
+    data: blocksData,
+  } = useDashboardBlocks();
   const ecosystemProjects = useTopEcosystem();
   const isEcosystemLoading = ecosystemProjects.isPending;
 
@@ -44,13 +59,7 @@ function Hero() {
   } = useMemo(() => {
     const totalTpsData = (chartsData as any)?.tps;
     const averageTpsPerMinuteData = (chartsData as any)?.averageTpsPerMinute;
-    const rollingStats60sData = (rollingData as any)?.rollingStats60s ?? {
-      tps: 0,
-      avgTxPerBlock: 0,
-      avgGasPerBlock: 0,
-      avgBlockSize: 0,
-      peakTps: 0,
-    };
+    const rollingStats60sData = (rollingData as any)?.rollingStats60s;
     const totalFeeData = (chartsData as any)?.fee;
     const blocks = (blocksData as any)?.blocks || [];
     const activeProjects = (ecosystemProjects as any)?.activeProjects || 0;
@@ -69,9 +78,17 @@ function Hero() {
     };
   }, [ecosystemProjects, chartsData, rollingData, blocksData]);
 
+  const chartsUnavailable =
+    isChartsError || (!isChartsLoading && !totalTpsData && !totalFeeData);
+  const rollingUnavailable =
+    isRollingError || (!isRollingLoading && !rollingStats60sData);
+  const blocksUnavailable =
+    isBlocksError || (!isBlocksLoading && blocks.length === 0);
+  const ecosystemUnavailable = !isEcosystemLoading && totalProjects === 0;
+
   const { top: mostUsed } = useBlockApps(
     blocks
-      .slice(0, 5)
+      .slice(0, 4)
       .map((block: { blockNo: string | number }) => String(block.blockNo)),
   );
 
@@ -82,13 +99,17 @@ function Hero() {
           <Heading as="h1" className="sr-only">
             Fuel Explorer
           </Heading>
-          <GridFrame className={classes.searchWrapper()} corners={false}>
+          <GridFrame className={classes.searchWrapper()}>
             {/* Row 1-2, Col 1-4: Daily Transactions */}
             <Reveal className="row-span-2 col-span-12 laptop:col-span-4">
               <LoadingWrapper
                 isLoading={isChartsLoading}
+                noItems={chartsUnavailable}
+                noItemsEl={
+                  <TileUnavailable label={t('home.daily_transactions')} />
+                }
                 loadingEl={
-                  <LoadingBox className="w-full h-[284px] laptop:h-[294px]" />
+                  <LoadingBox className="w-full h-[260px] laptop:h-[251px]" />
                 }
                 regularEl={<DailyTransaction blocks={totalTpsData} />}
               />
@@ -101,8 +122,10 @@ function Hero() {
             >
               <LoadingWrapper
                 isLoading={isEcosystemLoading}
+                noItems={ecosystemUnavailable}
+                noItemsEl={<TileUnavailable label={t('home.fuel_dapps')} />}
                 loadingEl={
-                  <LoadingBox className="w-full h-[286px] laptop:h-[294px]" />
+                  <LoadingBox className="w-full h-[260px] laptop:h-[251px]" />
                 }
                 regularEl={
                   <TotalDapps
@@ -121,24 +144,32 @@ function Hero() {
             >
               <LoadingWrapper
                 isLoading={isRollingLoading}
+                noItems={rollingUnavailable}
+                noItemsEl={<TileUnavailable label={t('home.live_stats')} />}
                 loadingEl={<LoadingBox className="w-full h-[120px]" />}
                 regularEl={
                   <RollingStats
-                    tps={Number(rollingStats60sData.tps) || 0}
+                    tps={Number(rollingStats60sData?.tps) || 0}
                     avgTxPerBlock={
-                      Number(rollingStats60sData.avgTxPerBlock) || 0
+                      Number(rollingStats60sData?.avgTxPerBlock) || 0
                     }
-                    avgBlockSize={Number(rollingStats60sData.avgBlockSize) || 0}
+                    avgBlockSize={
+                      Number(rollingStats60sData?.avgBlockSize) || 0
+                    }
                   />
                 }
               />
               <div className="flex-1 min-h-0">
                 <LoadingWrapper
                   isLoading={isBlocksLoading}
-                  loadingEl={
-                    <LoadingBox className="w-full h-[480px] laptop:h-full" />
+                  noItems={blocksUnavailable}
+                  noItemsEl={
+                    <TileUnavailable label={t('home.recent_blocks')} />
                   }
-                  regularEl={<DataTable blocks={blocks.slice(0, 5)} />}
+                  loadingEl={
+                    <LoadingBox className="w-full h-[384px] laptop:h-full" />
+                  }
+                  regularEl={<DataTable blocks={blocks.slice(0, 4)} />}
                 />
               </div>
             </Reveal>
@@ -150,13 +181,15 @@ function Hero() {
             >
               <LoadingWrapper
                 isLoading={isChartsLoading}
+                noItems={chartsUnavailable}
+                noItemsEl={<TileUnavailable label={t('home.hourly_tps')} />}
                 loadingEl={
-                  <LoadingBox className="w-full h-[284px] laptop:h-[309px]" />
+                  <LoadingBox className="w-full h-[260px] laptop:h-[279px]" />
                 }
                 regularEl={
                   <TPSHourly
                     tpsPerMinute={averageTpsPerMinuteData}
-                    peakTps={Number(rollingStats60sData.peakTps) || 0}
+                    peakTps={Number(rollingStats60sData?.peakTps) || 0}
                   />
                 }
               />
@@ -169,7 +202,11 @@ function Hero() {
             >
               <LoadingWrapper
                 isLoading={isChartsLoading}
-                loadingEl={<LoadingBox className="w-full h-[309px]" />}
+                noItems={chartsUnavailable}
+                noItemsEl={<TileUnavailable label={t('home.fee_spent')} />}
+                loadingEl={
+                  <LoadingBox className="w-full h-[270px] laptop:h-[279px]" />
+                }
                 regularEl={<GasSpentChart blocks={totalFeeData} />}
               />
             </Reveal>

@@ -4,6 +4,7 @@ import DataTable, {
   type TableColumn,
 } from 'react-data-table-component';
 import ReactPaginate from 'react-paginate';
+import { useBreakpoints } from '../../hooks/useBreakpoints';
 import { IconChevronLeft, IconChevronRight } from '../Icons';
 
 export interface GridTableProps<T> extends TableProps<T> {
@@ -29,6 +30,7 @@ export const GridTable = <T,>({
   nextLabel = 'Next',
   ...props
 }: GridTableProps<T>): React.JSX.Element => {
+  const { isMobile } = useBreakpoints();
   const customStyles = {
     tableWrapper: {
       style: {
@@ -121,8 +123,8 @@ export const GridTable = <T,>({
         }
         breakLabel={'...'}
         pageCount={pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
+        marginPagesDisplayed={isMobile ? 1 : 2}
+        pageRangeDisplayed={isMobile ? 1 : 5}
         onPageChange={(page) => handlePagination(page)}
         containerClassName={'pagination'}
         activeClassName={'selected'}

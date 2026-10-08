@@ -105,7 +105,7 @@ export function TopNav() {
         </Nav.Menu>
       </Nav.Desktop>
       <Nav.Mobile>
-        <Nav.MobileContent>
+        <Nav.MobileContent className="relative">
           {logo}
           {!isEcosystemBridge && <SearchWidget />}
         </Nav.MobileContent>
