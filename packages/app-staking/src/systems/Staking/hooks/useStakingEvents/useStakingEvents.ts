@@ -49,7 +49,8 @@ async function getAllStakingEvents(address: Address) {
       itemsPerPage: ALL_EVENTS_PAGE_SIZE,
     });
     nodes.push(...data.nodes);
-    if (!data.pageInfo.hasNextPage) break;
+    // Pages are newest-first; hasPreviousPage says older events sit past endCursor.
+    if (!data.pageInfo.hasPreviousPage) break;
     before = data.pageInfo.endCursor;
   }
   return nodes;
