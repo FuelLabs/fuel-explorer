@@ -137,10 +137,14 @@ export function escapeHtml(value: string) {
     .replaceAll('"', '&quot;');
 }
 
+const OG_URL_TAG = /\s*<meta property="og:url" content="__PAGE_URL__" \/>/;
+
 export function applyPageMeta(html: string, pathname: string, pageUrl: string) {
   const meta = matchPageMeta(pathname);
-  return html
+  const withUrl = pageUrl
+    ? html.replaceAll(PAGE_URL_TOKEN, escapeHtml(pageUrl))
+    : html.replace(OG_URL_TAG, '');
+  return withUrl
     .replaceAll(PAGE_TITLE_TOKEN, escapeHtml(meta.title))
-    .replaceAll(PAGE_DESCRIPTION_TOKEN, escapeHtml(meta.description))
-    .replaceAll(PAGE_URL_TOKEN, escapeHtml(pageUrl));
+    .replaceAll(PAGE_DESCRIPTION_TOKEN, escapeHtml(meta.description));
 }

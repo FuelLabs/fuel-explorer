@@ -29,6 +29,8 @@ RUN if [ -n "$VITE_FUEL_INDEXER_API" ]; then \
 # key is sitting in the local .env.$NETWORK straight into the public JS bundle.
 RUN sed -i '/^VITE_FUEL_INDEXER_API_KEY=/d' packages/app-explorer/.env
 ENV NODE_ENV=production
+# nginx fills the per-route unfurl placeholders at request time.
+ENV KEEP_UNFURL_TOKENS=1
 RUN pnpm build:prod
 
 FROM nginx:1.27-alpine AS runtime
