@@ -66,7 +66,9 @@ map $http_x_forwarded_proto $forwarded_proto {
 }
 
 # The request path goes into an HTML attribute; anything that could close it
-# falls back to the site root. nginx already rejects a Host with such characters.
+# falls back to the site root. nginx does not reject ", <, or > in the request
+# Host, so that header is not written into the page. The share URL host is
+# $server_name, the public hostname substituted from RAILWAY_PUBLIC_DOMAIN.
 map $request_uri $page_path {
     default "/";
     '~^[^"<>&\s]*$' $request_uri;
@@ -76,7 +78,7 @@ server {
     listen 80;
     listen [::]:80;
     access_log /var/log/nginx/access.log proxied;
-    server_name _;
+    server_name ${RAILWAY_PUBLIC_DOMAIN};
     root /usr/share/nginx/html;
     index index.html;
 
@@ -185,7 +187,7 @@ server {
         # No $uri/ entry: a path that shares its name with a directory in the
         # build output, such as /assets, must fall through to the app instead of
         # redirecting into that directory.
-        set $page_url "$forwarded_proto://$host$page_path";
+        set $page_url "$forwarded_proto://$server_name$page_path";
         sub_filter_once off;
         sub_filter_types text/html;
         sub_filter '__PAGE_TITLE__' $page_title;
