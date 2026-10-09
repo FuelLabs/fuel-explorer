@@ -4,24 +4,47 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 
-type Step = {
+export const BRIDGE_STEP_ID = {
+  submitToBridge: 'submit_to_bridge',
+  settlement: 'settlement',
+  confirmTransaction: 'confirm_transaction',
+  receiveOnEthereum: 'receive_on_ethereum',
+  receiveOnFuel: 'receive_on_fuel',
+} as const;
+
+export type BridgeStepId = (typeof BRIDGE_STEP_ID)[keyof typeof BRIDGE_STEP_ID];
+
+export const BRIDGE_STEP_STATUS_ID = {
+  automatic: 'automatic',
+  action: 'action',
+  actionRequired: 'action_required',
+  done: 'done',
+} as const;
+
+export type BridgeStepStatusId =
+  (typeof BRIDGE_STEP_STATUS_ID)[keyof typeof BRIDGE_STEP_STATUS_ID];
+
+export type BridgeStep = {
+  id: BridgeStepId;
   name: string;
   status: ReactNode;
+  statusId?: BridgeStepStatusId;
   isLoading?: boolean;
   isDone?: boolean;
   isSelected?: boolean;
 };
 
 type BridgeStepsProps = {
-  steps?: Step[];
+  steps?: BridgeStep[];
 };
 
-const NAME_KEYS: Record<string, string> = {
-  'Submit to bridge': 'portal.bridge_steps.submit_to_bridge',
-  Settlement: 'portal.bridge_steps.settlement',
-  'Confirm transaction': 'portal.bridge_steps.confirm_transaction',
-  'Receive on Ethereum': 'portal.bridge_steps.receive_on_ethereum',
-  'Receive on Fuel': 'portal.bridge_steps.receive_on_fuel',
+const NAME_KEYS: Record<BridgeStepId, string> = {
+  [BRIDGE_STEP_ID.submitToBridge]: 'portal.bridge_steps.submit_to_bridge',
+  [BRIDGE_STEP_ID.settlement]: 'portal.bridge_steps.settlement',
+  [BRIDGE_STEP_ID.confirmTransaction]:
+    'portal.bridge_steps.confirm_transaction',
+  [BRIDGE_STEP_ID.receiveOnEthereum]: 'portal.bridge_steps.receive_on_ethereum',
+  [BRIDGE_STEP_ID.receiveOnFuel]: 'portal.bridge_steps.receive_on_fuel',
 };
 
 const STATUS_KEYS: Record<string, string> = {
@@ -38,9 +61,8 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
   const { t } = useTranslation();
   const classes = styles();
 
-  // The hooks keep English ids. Translate only when rendering.
-  const stepName = (name: string) =>
-    NAME_KEYS[name] ? t(NAME_KEYS[name]) : name;
+  // Translate by step id. `name` stays the English label.
+  const stepName = (step: BridgeStep) => t(NAME_KEYS[step.id]);
   const stepStatus = (status: ReactNode) => {
     if (typeof status !== 'string') return status;
     if (STATUS_KEYS[status]) return t(STATUS_KEYS[status]);
@@ -56,7 +78,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
         const isLast = index === steps.length - 1;
         return (
           <li
-            key={step.name}
+            key={step.id}
             className={classes.item()}
             data-done={step.isDone}
             data-selected={step.isSelected}
@@ -78,7 +100,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
                 </span>
                 {!isLast && <span aria-hidden className={classes.rail()} />}
               </span>
-              <span className={classes.name()}>{stepName(step.name)}</span>
+              <span className={classes.name()}>{stepName(step)}</span>
             </div>
             <div className={classes.statusWrapper()}>
               {step.isLoading && (
@@ -90,7 +112,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
               <span
                 key={String(step.status)}
                 aria-label={t('portal.steps.step_status', {
-                  name: stepName(step.name),
+                  name: stepName(step),
                   status: String(stepStatus(step.status)),
                 })}
                 className={`${classes.status()} fuel-appear`}

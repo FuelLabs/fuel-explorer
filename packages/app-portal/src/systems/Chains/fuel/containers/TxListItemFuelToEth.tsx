@@ -1,5 +1,8 @@
 import { useAsset } from '~portal/systems/Assets';
-import { BridgeTxItem } from '~portal/systems/Bridge/components';
+import {
+  BRIDGE_STEP_ID,
+  BridgeTxItem,
+} from '~portal/systems/Bridge/components';
 
 import { Asset, Flex, FuelLogo, Spinner, Text } from '@fuels/ui';
 import type { CSSProperties } from 'react';
@@ -49,7 +52,7 @@ export const TxListItemFuelToEth = ({
       );
     }
 
-    if (bridgeTxStatus?.name === 'Confirm transaction') {
+    if (bridgeTxStatus?.id === BRIDGE_STEP_ID.confirmTransaction) {
       return <ActionRequiredBadge />;
     }
 

@@ -3,6 +3,12 @@ import { Routes } from 'app-commons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import {
+  BRIDGE_STEP_ID,
+  BRIDGE_STEP_STATUS_ID,
+  type BridgeStepId,
+  type BridgeStepStatusId,
+} from '~portal/systems/Bridge/components/BridgeSteps';
 import { useBridgeTxs } from '~portal/systems/Bridge/hooks';
 import {
   isEthChain,
@@ -16,8 +22,10 @@ import type { TransfersRailProps } from './BridgePageShell';
 type Kind = 'loading' | 'action' | 'progress' | 'settled';
 
 type Step = {
+  id: BridgeStepId;
   name: string;
   status: string;
+  statusId?: BridgeStepStatusId;
   isLoading?: boolean;
   isDone?: boolean;
   isSelected?: boolean;
@@ -55,11 +63,11 @@ function kindOf({ steps, settled }: RowData): Kind {
   if (settled) return 'settled';
   if (!steps) return 'loading';
   const current = currentStep(steps);
-  // "Automatic" confirmations need nothing from the user.
+  // Automatic confirmations need nothing from the user.
   if (
-    current?.name === 'Confirm transaction' &&
+    current?.id === BRIDGE_STEP_ID.confirmTransaction &&
     !current.isLoading &&
-    current.status !== 'Automatic'
+    current.statusId !== BRIDGE_STEP_STATUS_ID.automatic
   ) {
     return 'action';
   }
@@ -72,7 +80,7 @@ function StepTrack({ steps }: { steps: Step[] }) {
     <span aria-hidden className="flex w-full max-w-[160px] gap-[2px]">
       {steps.map((step) => (
         <span
-          key={step.name}
+          key={step.id}
           className={`block h-[2px] flex-1 ${
             step.isDone
               ? 'bg-[var(--fuel-element-high-em)]'

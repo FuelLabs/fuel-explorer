@@ -4,6 +4,11 @@ import {
   getAssetEthCurrentChain,
   getAssetFuelCurrentChain,
 } from '~portal/systems/Assets/utils';
+import {
+  BRIDGE_STEP_ID,
+  BRIDGE_STEP_STATUS_ID,
+  type BridgeStep,
+} from '~portal/systems/Bridge/components/BridgeSteps';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
 import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
 
@@ -61,9 +66,13 @@ const txEthToFuelSelectors = {
 
     if (!ethTxId) return undefined;
 
-    const confirmTransactionText = isErc20Address(erc20Token?.address)
-      ? 'Action'
-      : 'Automatic';
+    const confirmIsAutomatic = !isErc20Address(erc20Token?.address);
+    const confirmTransactionText = confirmIsAutomatic ? 'Automatic' : 'Action';
+    const confirmStatusId = status.isReceiveDone
+      ? BRIDGE_STEP_STATUS_ID.done
+      : confirmIsAutomatic
+        ? BRIDGE_STEP_STATUS_ID.automatic
+        : BRIDGE_STEP_STATUS_ID.action;
 
     function getSettlementStatusText() {
       if (status.isSettlementDone) return 'Done!';
@@ -78,11 +87,13 @@ const txEthToFuelSelectors = {
 
     const steps = [
       {
+        id: BRIDGE_STEP_ID.submitToBridge,
         name: 'Submit to bridge',
         status: 'Done!',
         isDone: true,
       },
       {
+        id: BRIDGE_STEP_ID.settlement,
         name: 'Settlement',
         status: getSettlementStatusText(),
         isLoading: status.isSettlementLoading,
@@ -90,20 +101,23 @@ const txEthToFuelSelectors = {
         isSelected: status.isSettlementSelected,
       },
       {
+        id: BRIDGE_STEP_ID.confirmTransaction,
         name: 'Confirm transaction',
         status: status.isReceiveDone ? 'Done!' : confirmTransactionText,
+        statusId: confirmStatusId,
         isLoading: status.isConfirmTransactionLoading,
         isDone: status.isReceiveDone,
         isSelected: status.isConfirmTransactionSelected,
       },
       {
+        id: BRIDGE_STEP_ID.receiveOnFuel,
         name: 'Receive on Fuel',
         status: status.isReceiveDone ? 'Done!' : 'Automatic',
         isLoading: false,
         isDone: status.isReceiveDone,
         isSelected: false,
       },
-    ];
+    ] satisfies BridgeStep[];
 
     return steps;
   },
