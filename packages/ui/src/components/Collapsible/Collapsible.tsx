@@ -1,5 +1,11 @@
 import type { TextProps } from '@radix-ui/themes';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  type TransitionEvent,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 import { IconChevronDown } from '../Icons';
@@ -116,6 +122,10 @@ export const CollapsibleHeader = createComponent<
   },
 });
 
+// Same duration as .fuel-collapsible-panel's close transition in feedback.css.
+// Content stays mounted only long enough for that transition, then leaves the tree.
+const COLLAPSE_UNMOUNT_MS = 280;
+
 export const CollapsibleContent = createComponent<
   CollapsibleContentProps,
   typeof Card.Body
@@ -125,15 +135,48 @@ export const CollapsibleContent = createComponent<
   render: (Root, { children, className, ...props }) => {
     const { opened, variant } = useContext(ctx);
     const classes = styles({ variant });
+    const [present, setPresent] = useState(opened);
+
+    if (opened && !present) {
+      setPresent(true);
+    }
+
+    useEffect(() => {
+      if (opened || !present) return;
+      const reduce = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+      const delay = reduce ? 0 : COLLAPSE_UNMOUNT_MS;
+      const timer = window.setTimeout(() => setPresent(false), delay);
+      return () => window.clearTimeout(timer);
+    }, [opened, present]);
+
+    const onTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+      if (
+        event.target !== event.currentTarget ||
+        event.propertyName !== 'grid-template-rows' ||
+        opened
+      ) {
+        return;
+      }
+      setPresent(false);
+    };
+
     return (
       <div
         className="fuel-collapsible-panel"
         data-state={opened ? 'opened' : 'closed'}
+        onTransitionEnd={onTransitionEnd}
       >
         <div className="min-h-0 overflow-hidden">
-          <Root {...props} className={classes.content({ variant, className })}>
-            {children}
-          </Root>
+          {present ? (
+            <Root
+              {...props}
+              className={classes.content({ variant, className })}
+            >
+              {children}
+            </Root>
+          ) : null}
         </div>
       </div>
     );
