@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@fuels/ui';
+import { Button, LoadingBox, Tooltip } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { useModal } from 'connectkit';
 import { useTranslation } from 'react-i18next';
@@ -208,20 +208,33 @@ export function AttentionBoard() {
   const { setOpen } = useModal();
   const { pathname } = useLocation();
   const lane = pathname.includes('/on-ethereum') ? 'ethereum' : 'rig';
-  const { rows, needsConnect, isLoading } = useAttentionRows(lane);
+  const { rows, needsConnect, isLoading, isError, refetch, truncated } =
+    useAttentionRows(lane);
 
-  // An empty board is only noise: it shows when something needs the user or
-  // the wallet is not connected. The positions list below has its own way to
-  // start staking.
-  if (rows.length === 0 && !needsConnect) return null;
+  // Hide only after every query succeeded and nothing is waiting. A load, a
+  // failure, or a history cut off at the event cap keeps the board up so a
+  // withdrawal that needs Finalize is not missed.
+  if (
+    !needsConnect &&
+    !isLoading &&
+    !isError &&
+    !truncated &&
+    rows.length === 0
+  ) {
+    return null;
+  }
 
   return (
-    <section className="fuel-edge min-w-0" aria-labelledby="board-title">
+    <section
+      className="fuel-edge min-w-0"
+      aria-labelledby="board-title"
+      aria-busy={isLoading || undefined}
+    >
       <div className="flex items-center justify-between gap-4 px-6 py-4 tablet:px-10">
         <h2 id="board-title" className="fuel-label m-0 text-heading">
           {t('staking.board.title')}
         </h2>
-        {!needsConnect && !isLoading && (
+        {!needsConnect && !isLoading && !isError && rows.length > 0 && (
           <span className="fuel-label" aria-live="polite">
             {t('staking.board.count', { count: rows.length })}
           </span>
@@ -246,6 +259,47 @@ export function AttentionBoard() {
           <BoardRow key={row.key} row={row} />
         ))}
       </ol>
+
+      {isLoading && rows.length === 0 && (
+        <div
+          className="border-t border-[var(--fuel-border)] px-6 py-4 tablet:px-10"
+          role="status"
+          aria-label={t('staking.status.loading')}
+        >
+          <LoadingBox className="h-6 w-full max-w-[420px] !rounded-none" />
+        </div>
+      )}
+
+      {isError && (
+        <div className="flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">
+          <p
+            role="alert"
+            className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]"
+          >
+            {t('staking.board.load_error', {
+              defaultValue:
+                'Error on fetching what is waiting on you. Something went wrong, try again later.',
+            })}
+          </p>
+          <Button
+            size="2"
+            color="gray"
+            variant="outline"
+            onClick={() => refetch()}
+          >
+            {t('staking.review.retry')}
+          </Button>
+        </div>
+      )}
+
+      {truncated && (
+        <p
+          role="status"
+          className="m-0 border-t border-[var(--fuel-border)] px-6 py-8 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] tablet:px-10"
+        >
+          {t('staking.board.truncated')}
+        </p>
+      )}
 
       {needsConnect && (
         <div className="flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">

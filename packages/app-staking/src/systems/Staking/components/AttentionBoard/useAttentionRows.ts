@@ -110,14 +110,32 @@ export function useAttentionRows(lane: Lane) {
     });
   }, [onEthereum, pendingDeposit, rewards.data, positions.data, events.data]);
 
+  // Disabled queries (no address) sit in pending forever. History reports
+  // success on the first page, so it is still loading while another page is
+  // outstanding. A failure stays an error so the board does not look empty.
+  const watching = !!address && isConnected;
+  const settled = (query: { isSuccess: boolean; isError: boolean }) =>
+    query.isSuccess || query.isError;
+  const eventsSettled =
+    events.isError ||
+    (settled(events) && !events.hasNextPage && !events.isFetchingNextPage);
   const isLoading =
-    onEthereum &&
-    isConnected &&
-    (rewards.isPending || events.isPending || positions.isPending);
+    watching && !(settled(rewards) && eventsSettled && settled(positions));
+  const isError =
+    watching && (rewards.isError || events.isError || positions.isError);
+
+  const refetch = () => {
+    if (rewards.isError) void rewards.refetch();
+    if (events.isError) void events.refetch();
+    if (positions.isError) void positions.refetch();
+  };
 
   return {
     rows,
     needsConnect: onEthereum && !isConnected,
     isLoading,
+    isError,
+    refetch,
+    truncated: onEthereum && events.truncated,
   };
 }
