@@ -1,3 +1,5 @@
+import { useConnectUI } from '@fuels/react';
+import { LoadingBox } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { motion, useReducedMotion } from 'framer-motion';
 import { DECIMAL_FUEL } from 'fuels';
@@ -7,7 +9,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { Routes } from '~staking/routes';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
-import { useRigClaimable } from '../../hooks/useRigClaimable';
+import {
+  type RigClaimStatus,
+  useRigClaimable,
+} from '../../hooks/useRigClaimable';
 import { useStakedBalanceL1 } from '../../services/useTotalStake';
 import { IconRig } from '../StakingMigrationBanner/IconRig';
 
@@ -18,9 +23,11 @@ type LaneProps = {
   active: boolean;
   logo: ReactNode;
   name: string;
-  figureLabel: string;
-  figure: string;
-  unit: string;
+  figureLabel?: string;
+  figure?: string;
+  unit?: string;
+  readout?: ReactNode;
+  busy?: boolean;
 };
 
 // One highlight and one marker are shared by both lanes, so they glide to the
@@ -40,6 +47,8 @@ function Lane({
   figureLabel,
   figure,
   unit,
+  readout,
+  busy,
 }: LaneProps) {
   const reduced = useReducedMotion();
   const transition = reduced ? { duration: 0 } : GLIDE;
@@ -47,6 +56,7 @@ function Lane({
     <Link
       to={to}
       aria-current={active ? 'page' : undefined}
+      aria-busy={busy || undefined}
       className={[
         'group relative isolate grid min-w-0 gap-6 px-6 py-6 text-inherit no-underline tablet:px-10 tablet:py-8',
         'min-[720px]:grid-cols-[1fr_auto] min-[720px]:items-end',
@@ -82,13 +92,84 @@ function Lane({
         </span>
       </span>
       <span className="flex flex-col gap-1 min-[720px]:items-end">
-        <span className="fuel-label">{figureLabel}</span>
-        <span className="flex items-baseline gap-2">
-          <span className="fuel-stat whitespace-nowrap">{figure}</span>
-          <span className="fuel-label">{unit}</span>
-        </span>
+        {readout ?? (
+          <>
+            <span className="fuel-label">{figureLabel}</span>
+            <span className="flex items-baseline gap-2">
+              <span className="fuel-stat whitespace-nowrap">{figure}</span>
+              <span className="fuel-label">{unit}</span>
+            </span>
+          </>
+        )}
       </span>
     </Link>
+  );
+}
+
+function RigReadout({
+  status,
+  pendingDeposit,
+}: {
+  status: RigClaimStatus;
+  pendingDeposit:
+    | { format: (options: { units: number; precision: number }) => string }
+    | undefined;
+}) {
+  const { t } = useTranslation();
+  const { connect } = useConnectUI();
+
+  if (status === 'disconnected') {
+    return (
+      <button
+        type="button"
+        className="m-0 max-w-[280px] cursor-pointer border-0 bg-transparent p-0 text-left text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] min-[720px]:text-right"
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          connect();
+        }}
+      >
+        {t('staking.lane_rig_connect')}
+      </button>
+    );
+  }
+
+  if (status === 'loading') {
+    return (
+      <>
+        <span className="fuel-label">{t('staking.lane_rig_figure')}</span>
+        <span className="sr-only">{t('staking.lane_rig_checking')}</span>
+        <LoadingBox className="h-[34px] w-24 !rounded-none" />
+      </>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <>
+        <span className="fuel-label">{t('staking.lane_rig_figure')}</span>
+        <span
+          role="alert"
+          className="max-w-[220px] text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] min-[720px]:text-right"
+        >
+          {t('home.unavailable')}
+        </span>
+      </>
+    );
+  }
+
+  const figure = pendingDeposit
+    ? pendingDeposit.format({ units: DECIMAL_FUEL, precision: 2 })
+    : '0';
+
+  return (
+    <>
+      <span className="fuel-label">{t('staking.lane_rig_figure')}</span>
+      <span className="flex items-baseline gap-2">
+        <span className="fuel-stat whitespace-nowrap">{figure}</span>
+        <span className="fuel-label">stFUEL</span>
+      </span>
+    </>
   );
 }
 
@@ -96,13 +177,10 @@ export function StakingLanes() {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const { isConnected } = useAccount();
-  const { pendingDeposit } = useRigClaimable();
+  const { pendingDeposit, status } = useRigClaimable();
   const { total } = useStakedBalanceL1();
   const onEthereum = pathname.includes('/on-ethereum');
 
-  const rigFigure = pendingDeposit
-    ? pendingDeposit.format({ units: DECIMAL_FUEL, precision: 2 })
-    : '0';
   const ethereumFigure = isConnected
     ? formatAmount(total, decimals).formatted.display
     : '—';
@@ -117,9 +195,8 @@ export function StakingLanes() {
         active={!onEthereum}
         logo={<IconRig size={28} />}
         name={t('staking.tab_rig')}
-        figureLabel={t('staking.lane_rig_figure')}
-        figure={rigFigure}
-        unit="stFUEL"
+        busy={status === 'loading'}
+        readout={<RigReadout status={status} pendingDeposit={pendingDeposit} />}
       />
       <Lane
         to={Routes.stakingL1()}
