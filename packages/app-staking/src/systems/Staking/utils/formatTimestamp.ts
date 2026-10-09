@@ -1,10 +1,14 @@
-import dayjs from 'dayjs';
+import { intlLanguage } from 'app-commons/src/utils/dayjs';
+import { getI18n } from 'react-i18next';
 
 export const formatTimestamp = (timestamp?: number) => {
   if (!timestamp) {
-    return 'Unknown';
+    return getI18n().t('staking.date.unknown');
   }
 
-  const date = dayjs.unix(timestamp);
-  return dayjs(date).format('MMMM DD, YYYY');
+  return new Intl.DateTimeFormat(intlLanguage(), {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date(timestamp * 1000));
 };

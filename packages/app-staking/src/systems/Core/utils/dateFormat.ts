@@ -1,9 +1,14 @@
-import dayjs from 'dayjs';
+import { intlLanguage } from 'app-commons/src/utils/dayjs';
 
-/**
- * Formats a date string to the format: "12 Feb 2024, 03:23 am"
- */
 export function formatFullDate(dateString?: string): string {
   if (!dateString) return '';
-  return dayjs(dateString).format('D MMM YYYY, hh:mm a');
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat(intlLanguage(), {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date);
 }

@@ -1,3 +1,5 @@
+import { syncDayjsLocale } from 'app-commons/src/utils/dayjs';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 type BlockTimeItemProps = {
@@ -17,9 +19,14 @@ export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
     minute: 'numeric',
   });
 
+  syncDayjsLocale(i18n.language);
+  const relative = Number.isNaN(timeDate.getTime())
+    ? timeAgo
+    : dayjs(timeDate).fromNow();
+
   return (
     <div className="flex flex-col text-[11px] text-[var(--fuel-element-low-em)] leading-[16px]">
-      <span>{timeAgo}</span>
+      <span>{relative}</span>
       <span className="whitespace-nowrap">{formattedTime}</span>
     </div>
   );

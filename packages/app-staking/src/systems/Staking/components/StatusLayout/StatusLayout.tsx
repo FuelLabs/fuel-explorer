@@ -5,7 +5,6 @@ import {
   LoadingWrapper,
   VStack,
 } from '@fuels/ui';
-import dayjs from 'dayjs';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
@@ -70,19 +69,27 @@ export function StatusLayout({
   finalizedAt,
   minHeightClass,
 }: StatusLayoutProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const style = responsiveDialogStyles();
+  const finalizedDate = finalizedAt ? new Date(finalizedAt) : null;
   const facts = [
     eta
       ? { key: 'eta', label: t('staking.status.eta'), value: eta }
       : undefined,
-    finalizedAt && finalizedLabel
+    finalizedDate && !Number.isNaN(finalizedDate.getTime()) && finalizedLabel
       ? {
           key: 'done',
           label: finalizedLabel,
           value: t('staking.status.at', {
-            date: dayjs(finalizedAt).format('MMMM D, YYYY'),
-            time: dayjs(finalizedAt).format('h:mm A'),
+            date: new Intl.DateTimeFormat(i18n.language, {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            }).format(finalizedDate),
+            time: new Intl.DateTimeFormat(i18n.language, {
+              hour: 'numeric',
+              minute: '2-digit',
+            }).format(finalizedDate),
           }),
         }
       : undefined,

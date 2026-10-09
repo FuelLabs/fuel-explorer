@@ -14,6 +14,7 @@ import { Tooltip } from '../Tooltip';
 
 import clsx from 'clsx';
 import { mergeProps } from 'react-aria';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { createComponent, withNamespace } from '../../utils/component';
 import { Avatar } from '../Avatar';
@@ -207,14 +208,10 @@ export const InputAmountBalance = createComponent<
   id: 'InputAmountBalance',
   render: (
     _,
-    {
-      className,
-      label = 'Balance',
-      balance: customBalance,
-      children,
-      ...props
-    },
+    { className, label, balance: customBalance, children, ...props },
   ) => {
+    const { t } = useTranslation();
+    const balanceLabel = label ?? t('core.amount.balance');
     const { balance: originalBalance, formatOpts } =
       useContext(InputAmountRootCtx);
     const balance = customBalance ?? originalBalance;
@@ -249,10 +246,10 @@ export const InputAmountBalance = createComponent<
             'fuel-label self-start bg-transparent px-0 text-[var(--fuel-element-mid-em)]',
             className,
           )}
-          aria-label={label}
+          aria-label={balanceLabel}
           {...props}
         >
-          {label}: {preview}
+          {balanceLabel}: {preview}
         </Badge>
       </Tooltip>
     );
@@ -268,12 +265,14 @@ export const InputAmountButtonMaxBalance = createComponent<
     variant: 'ghost',
     size: '1',
     color: 'green',
-    children: 'MAX',
   },
   render: (
     _,
     { className, children, onClick, disabled: disabledProp, ...props },
   ) => {
+    const { t } = useTranslation();
+    const fallback = t('core.amount.max');
+    const visible = children ?? fallback;
     const classes = styles();
     const { balance, formatOpts } = useContext(InputAmountRootCtx);
     const { disabled, handleAmountChange } = useContext(InputAmountFieldCtx);
@@ -303,13 +302,13 @@ export const InputAmountButtonMaxBalance = createComponent<
 
     return (
       <Button
-        aria-label="MAX"
+        aria-label={typeof visible === 'string' ? visible : fallback}
         type="button"
         {...mergedProps}
         className={classes.maxBalance({ className })}
         disabled={shouldDisableButton}
       >
-        {children}
+        {visible}
       </Button>
     );
   },
@@ -321,6 +320,7 @@ export const InputAmountCoinSelector = createComponent<
 >({
   id: 'InputAmountCoinSelector',
   render: (_, { className, asset, onClick, ...props }) => {
+    const { t } = useTranslation();
     const classes = styles();
     const { disabled } = useContext(InputAmountFieldCtx);
 
@@ -331,7 +331,7 @@ export const InputAmountCoinSelector = createComponent<
     return (
       <Button
         id="CoinSelector"
-        aria-label="Coin Selector"
+        aria-label={t('core.amount.coin_selector')}
         variant="surface"
         color="gray"
         onClick={onClick}
@@ -349,13 +349,13 @@ export const InputAmountCoinSelector = createComponent<
         {asset.name}
         {asset.decimals === 0 ? (
           <Badge variant="ghost" color="green" size="1">
-            NFT
+            {t('asset.nft_tag')}
           </Badge>
         ) : (
           ''
         )}
         {asset.suspicious && (
-          <Tooltip content="This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.">
+          <Tooltip content={t('asset.suspicious')}>
             <div className="mx-1">
               <IconAlertOctagon size={16} color="orange" />
             </div>

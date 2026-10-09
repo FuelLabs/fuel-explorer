@@ -17,17 +17,17 @@ import {
 } from 'recharts';
 import { InfoHint } from '~/systems/Core/components/InfoHint/InfoHint';
 
-const usdFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
-
 // The API sends the total as a display string; count it when it parses.
 function UsdAmount({ value }: { value: string }) {
+  const { i18n } = useTranslation();
   const amount = Number(String(value).replace(/[^0-9.-]/g, ''));
   if (!Number.isFinite(amount)) return <>{value}</>;
+  const usdFormat = new Intl.NumberFormat(i18n.language, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
   return <AnimatedNumber value={amount} format={(v) => usdFormat.format(v)} />;
 }
 

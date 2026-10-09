@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import type { SyntheticEvent } from 'react';
 import { IconCheck, IconCopy } from '../Icons';
 
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';
 import type { Colors } from '../../utils/types';
@@ -56,17 +57,21 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
       as: Root = 'span',
       children,
       value,
-      tooltipMessage = 'Click here to copy to clipboard',
+      tooltipMessage,
       icon: CopyIcon = IconCopy,
       iconSize,
       iconStroke,
       iconClassName,
       iconColor = 'text-icon',
-      iconAriaLabel: ariaLabel = 'Copy to clipboard',
-      copiedMessage = 'Copied to clipboard',
+      iconAriaLabel,
+      copiedMessage,
       ...props
     },
   ) => {
+    const { t } = useTranslation();
+    const tooltip = tooltipMessage ?? t('core.copy.tooltip');
+    const idleLabel = iconAriaLabel ?? t('core.copy.aria');
+    const copiedLabel = copiedMessage ?? t('core.copy.copied');
     const { copied, markCopied } = useCopied();
     const SwapIcon = useMemo(() => makeSwapIcon(CopyIcon), [CopyIcon]);
 
@@ -78,9 +83,9 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
     return (
       <Box {...props} as={Root}>
         {children}
-        <Tooltip content={copied ? copiedMessage : tooltipMessage}>
+        <Tooltip content={copied ? copiedLabel : tooltip}>
           <IconButton
-            aria-label={copied ? copiedMessage : ariaLabel}
+            aria-label={copied ? copiedLabel : idleLabel}
             color="gray"
             icon={SwapIcon}
             iconClassName={styles().icon({ className: iconClassName })}

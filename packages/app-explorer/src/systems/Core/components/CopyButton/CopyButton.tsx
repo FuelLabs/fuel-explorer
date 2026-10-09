@@ -36,6 +36,7 @@ const CopyButton = ({ value, text, className, ...props }: CopyButtonProps) => {
       variant={variant}
       size={size}
       color="gray"
+      aria-label={copied ? t('core.copy.copied') : t('core.copy.aria')}
       onClick={async () => {
         await navigator.clipboard.writeText(value);
         markCopied();

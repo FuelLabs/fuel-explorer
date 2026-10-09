@@ -939,6 +939,9 @@ importers:
       geist:
         specifier: 1.2.2
         version: 1.2.2
+      i18next:
+        specifier: 26.4.2
+        version: 26.4.2(typescript@5.4.5)
       lucide-react:
         specifier: 1.47.0
         version: 1.47.0(react@18.3.1)
@@ -957,6 +960,9 @@ importers:
       react-dom:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.4.5))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)
       react-number-format:
         specifier: 5.4.4
         version: 5.4.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

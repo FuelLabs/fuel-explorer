@@ -161,6 +161,8 @@
     "lane_rig": "The Rig",
     "lane_ethereum": "Ethereum",
     "lane_rig_figure": "To claim",
+    "lane_rig_connect": "Connect your wallet here to determine if you're eligible to claim stFUEL.",
+    "lane_rig_checking": "Checking your claimable balance...",
     "lane_ethereum_figure": "Staked",
     "board": {
       "title": "Waiting on you",
@@ -178,7 +180,9 @@
       "in_progress": "In progress",
       "claim": "Claim",
       "continue": "Continue",
-      "details": "Details"
+      "details": "Details",
+      "load_error": "Error on fetching what is waiting on you. Something went wrong, try again later.",
+      "truncated": "Events past the 1,000 limit were not loaded."
     },
     "history": {
       "status_label": "Filter by status",
@@ -190,7 +194,9 @@
       "type_all": "All types",
       "refresh": "Refresh list",
       "no_match": "No transactions match these filters.",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "load_error": "Error on fetching transactions. Something went wrong, try again later.",
+      "truncated": "Events past the 1,000 limit were not loaded."
     },
     "account": {
       "connect_wallet": "Connect Wallet",
@@ -399,6 +405,9 @@
     "apr": {
       "value": "~{{apy}}% APR",
       "tip": "Help secure Fuel sequencing by delegating your tokens to Fuel validators."
+    },
+    "date": {
+      "unknown": "Unknown"
     }
   },
   "bridge": {
@@ -474,7 +483,18 @@
       "code": "Code"
     },
     "copy": {
-      "copy": "Copy"
+      "copy": "Copy",
+      "tooltip": "Click here to copy to clipboard",
+      "aria": "Copy to clipboard",
+      "copied": "Copied to clipboard"
+    },
+    "amount": {
+      "balance": "Balance",
+      "max": "MAX",
+      "max_label": "Max",
+      "coin_selector": "Coin Selector",
+      "available": "Available",
+      "relative_usd": "Relative value in USD:"
     },
     "info_hint": {
       "label": "More information"
@@ -925,7 +945,24 @@
     "error_balances": "Error loading account balances",
     "error_nfts": "Error loading account NFTs",
     "error_predicate": "Error loading account predicate",
-    "error_transactions": "Error loading account transactions"
+    "error_transactions": "Error loading account transactions",
+    "send": {
+      "title": "Send Asset",
+      "to": "To",
+      "recipient_placeholder": "Enter the recipient address",
+      "amount": "Amount",
+      "max": "Max",
+      "max_selected": "You have selected the max balance",
+      "cancel": "Cancel",
+      "submit": "Send",
+      "sending": "Sending (1/3)",
+      "confirming": "Confirming (2/3)",
+      "redirecting": "Redirecting (3/3)",
+      "error_asset_address": "You cannot send assets to an asset address.",
+      "error_address_type": "You cannot send assets to a {{type}} address.",
+      "warning_checksum": "We couldn't verify the address. Make sure you are sending to a valid address.",
+      "insufficient": "Insufficient balance, please inform an amount lower or equal to your balance."
+    }
   },
   "contract": {
     "title": "Contract",

@@ -1,3 +1,4 @@
+import { intlLanguage } from 'app-commons/src/utils/dayjs';
 import type { FormatAmountResult } from '~staking/systems/Core/types/bn';
 
 type FormatAnimatedBalanceParams = {
@@ -13,7 +14,7 @@ export const formatAnimatedBalance = ({
     return '0';
   }
 
-  const reFormatted = value.toLocaleString('en-US', {
+  const reFormatted = value.toLocaleString(intlLanguage(), {
     minimumFractionDigits: formatted.fractionDigits,
     maximumFractionDigits: formatted.fractionDigits,
   });

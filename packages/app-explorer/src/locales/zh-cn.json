@@ -166,7 +166,9 @@
       "type_all": "所有类型",
       "refresh": "刷新列表",
       "no_match": "没有符合筛选条件的交易。",
-      "clear": "清除筛选"
+      "clear": "清除筛选",
+      "load_error": "获取交易失败。出现问题,请稍后再试。",
+      "truncated": "超过 1,000 条的事件未加载。"
     },
     "account": {
       "connect_wallet": "连接钱包",
@@ -349,6 +351,8 @@
     "lane_rig": "The Rig",
     "lane_ethereum": "Ethereum",
     "lane_rig_figure": "待领取",
+    "lane_rig_connect": "在此连接钱包，以确认你是否可以领取 stFUEL。",
+    "lane_rig_checking": "正在查询可领取余额...",
     "lane_ethereum_figure": "已质押",
     "board": {
       "title": "待您处理",
@@ -365,7 +369,9 @@
       "in_progress": "进行中",
       "claim": "领取",
       "continue": "继续",
-      "details": "详情"
+      "details": "详情",
+      "load_error": "获取待您处理的项目失败。出现问题,请稍后再试。",
+      "truncated": "超过 1,000 条的事件未加载。"
     },
     "event_type": {
       "stake": "质押",
@@ -394,6 +400,9 @@
     "apr": {
       "value": "~{{apy}}% APR",
       "tip": "将代币委托给 Fuel 验证者，帮助保障 Fuel 排序的安全。"
+    },
+    "date": {
+      "unknown": "未知"
     }
   },
   "errors": {
@@ -468,7 +477,18 @@
       "code": "代码"
     },
     "copy": {
-      "copy": "复制"
+      "copy": "复制",
+      "tooltip": "点击此处复制到剪贴板",
+      "aria": "复制到剪贴板",
+      "copied": "已复制到剪贴板"
+    },
+    "amount": {
+      "balance": "余额",
+      "max": "最大",
+      "max_label": "最大",
+      "coin_selector": "币种选择",
+      "available": "可用",
+      "relative_usd": "以美元计的相对价值:"
     },
     "info_hint": {
       "label": "更多信息"
@@ -904,7 +924,24 @@
     "error_balances": "加载账户余额出错",
     "error_nfts": "加载账户 NFT 出错",
     "error_predicate": "加载账户谓词出错",
-    "error_transactions": "加载账户交易出错"
+    "error_transactions": "加载账户交易出错",
+    "send": {
+      "title": "发送资产",
+      "to": "收款方",
+      "recipient_placeholder": "输入收款地址",
+      "amount": "金额",
+      "max": "最大",
+      "max_selected": "已选择最大余额",
+      "cancel": "取消",
+      "submit": "发送",
+      "sending": "正在发送 (1/3)",
+      "confirming": "正在确认 (2/3)",
+      "redirecting": "正在跳转 (3/3)",
+      "error_asset_address": "不能向资产地址发送资产。",
+      "error_address_type": "不能向{{type}}地址发送资产。",
+      "warning_checksum": "无法验证该地址。请确认收款地址正确。",
+      "insufficient": "余额不足，请输入小于或等于余额的金额。"
+    }
   },
   "contract": {
     "title": "合约",
