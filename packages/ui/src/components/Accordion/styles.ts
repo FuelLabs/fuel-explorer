@@ -14,7 +14,7 @@ export const styles = tv({
       'w-full h-[45px] items-center justify-between border border-[var(--fuel-line)]',
       'focus:outline-none text-heading',
       'focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-1',
-      'focus-visible:outline-[var(--fuel-primary)]',
+      'focus-visible:outline-[var(--fuel-focus)]',
     ],
     header: 'flex',
     icon: [

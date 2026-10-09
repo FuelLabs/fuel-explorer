@@ -48,7 +48,8 @@
   --fuel-card: oklch(0.976 0 0);
   --fuel-muted: oklch(0.945 0 0);
   --fuel-border: oklch(0.922 0 0);
-  --fuel-ring: oklch(0.708 0 0);
+  /* 3.00:1 on white. 0.708 was 2.59:1. */
+  --fuel-ring: oklch(0.669 0 0);
   --fuel-element-high-em: var(--fuel-stone-950);
   --fuel-element-mid-em: var(--fuel-stone-700);
   --fuel-element-low-em: var(--fuel-stone-600);
@@ -56,8 +57,10 @@
   --fuel-primary: var(--fuel-brand-600);
   --fuel-primary-hover: var(--fuel-brand-400);
   --fuel-primary-foreground: var(--fuel-stone-950);
-  /* brand-600 is 1.6:1 on the canvas, so green text uses brand-900. */
+  /* brand-600 is 1.70:1 on white, so green text uses brand-900 (6.42:1). */
   --fuel-brand-text: var(--fuel-brand-900);
+  /* Focus rings follow brand-text. brand-900 is 6.42:1 on white. */
+  --fuel-focus: var(--fuel-brand-text);
   --fuel-secondary: var(--fuel-stone-950);
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.922 0 0);
@@ -75,6 +78,7 @@
   --fuel-card: oklch(0.205 0 0);
   --fuel-muted: oklch(0.269 0 0);
   --fuel-border: oklch(1 0 0 / 10%);
+  /* 4.18:1 on the dark canvas. */
   --fuel-ring: oklch(0.556 0 0);
   --fuel-element-high-em: var(--fuel-white);
   --fuel-element-mid-em: var(--fuel-stone-400);
@@ -84,6 +88,8 @@
   --fuel-primary-hover: var(--fuel-brand-400);
   --fuel-primary-foreground: var(--fuel-stone-950);
   --fuel-brand-text: var(--fuel-brand-600);
+  /* Focus rings follow brand-text. brand-600 is 11.63:1 on the dark canvas. */
+  --fuel-focus: var(--fuel-brand-text);
   --fuel-secondary: oklch(0.269 0 0);
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.985 0 0);

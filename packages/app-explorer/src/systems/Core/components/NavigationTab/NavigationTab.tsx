@@ -1,6 +1,12 @@
 import type { IconProps, TabsProps } from '@fuels/ui';
-import { Fragment, useLayoutEffect, useRef } from 'react';
-import type { ReactNode } from 'react';
+import {
+  Fragment,
+  cloneElement,
+  isValidElement,
+  useLayoutEffect,
+  useRef,
+} from 'react';
+import type { KeyboardEvent, ReactElement, ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 type TabItem = {
@@ -68,53 +74,99 @@ export function NavigationTab({
     return () => observer.disconnect();
   }, [active, itemKey]);
 
+  // Arrow keys move and activate, matching the previous Radix tabs. A link
+  // follows its route; a button still calls onValueChange.
+  function onTabKeyDown(event: KeyboardEvent<HTMLElement>) {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    const key = event.key;
+    if (
+      key !== 'ArrowRight' &&
+      key !== 'ArrowLeft' &&
+      key !== 'Home' &&
+      key !== 'End'
+    ) {
+      return;
+    }
+    const list = listRef.current;
+    if (!list) return;
+    const tabs = [
+      ...list.querySelectorAll<HTMLElement>(
+        '[role="tab"]:not([aria-disabled="true"])',
+      ),
+    ];
+    const index = tabs.indexOf(event.currentTarget);
+    if (index < 0 || tabs.length === 0) return;
+    const next =
+      key === 'Home'
+        ? 0
+        : key === 'End'
+          ? tabs.length - 1
+          : key === 'ArrowRight'
+            ? (index + 1) % tabs.length
+            : (index - 1 + tabs.length) % tabs.length;
+    event.preventDefault();
+    const tab = tabs[next];
+    if (!tab || tab === event.currentTarget) return;
+    tab.focus();
+    tab.click();
+  }
+
+  function asTab(node: ReactNode, isActive: boolean, disabled?: boolean) {
+    if (!isValidElement(node)) return node;
+    return cloneElement(node as ReactElement<Record<string, unknown>>, {
+      role: 'tab',
+      'aria-selected': isActive,
+      'aria-disabled': disabled || undefined,
+      tabIndex: disabled ? -1 : isActive ? 0 : -1,
+      onKeyDown: onTabKeyDown,
+    });
+  }
+
   return (
-    <nav className={classes.root({ className })}>
-      <div ref={listRef} className={classes.list()}>
+    <div className={classes.root({ className })}>
+      <div ref={listRef} role="tablist" className={classes.list()}>
         <span ref={indicatorRef} aria-hidden className={classes.indicator()} />
         {items.map((item) => {
           const isActive = item.value === active;
           const tabClass = classes.tab({ active: isActive });
           const tab = (
-            <span
-              aria-current={isActive ? 'page' : undefined}
-              aria-disabled={item.disabled || undefined}
-              data-active={isActive}
-              className={tabClass}
-            >
+            <span data-active={isActive} className={tabClass}>
               {item.label}
             </span>
           );
           if (item.disabled) {
             return (
               <div key={item.value} className={classes.cell()}>
-                {tab}
+                {asTab(tab, isActive, true)}
               </div>
             );
           }
           return (
             <Fragment key={item.value}>
               <div className={classes.cell()}>
-                {renderTab ? (
-                  renderTab(tab, item)
-                ) : (
-                  <button
-                    type="button"
-                    className={classes.button()}
-                    onClick={() => {
-                      item.onClick?.();
-                      onValueChange?.(item.value);
-                    }}
-                  >
-                    {tab}
-                  </button>
+                {asTab(
+                  renderTab ? (
+                    renderTab(tab, item)
+                  ) : (
+                    <button
+                      type="button"
+                      className={classes.button()}
+                      onClick={() => {
+                        item.onClick?.();
+                        onValueChange?.(item.value);
+                      }}
+                    >
+                      {tab}
+                    </button>
+                  ),
+                  isActive,
                 )}
               </div>
             </Fragment>
           );
         })}
       </div>
-    </nav>
+    </div>
   );
 }
 
@@ -128,10 +180,10 @@ const styles = tv({
     cell: [
       'flex',
       '[&>a]:flex [&>a]:no-underline focus-within:z-10',
-      '[&>a:focus-visible]:outline-2 [&>a:focus-visible]:-outline-offset-2 [&>a:focus-visible]:outline-[var(--fuel-primary)]',
+      '[&>a:focus-visible]:outline-2 [&>a:focus-visible]:-outline-offset-2 [&>a:focus-visible]:outline-[var(--fuel-focus)]',
     ],
     button:
-      'm-0 flex cursor-pointer border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-primary)]',
+      'm-0 flex cursor-pointer border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
     tab: [
       'fuel-label flex h-11 items-center whitespace-nowrap px-5',
       'aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-40',

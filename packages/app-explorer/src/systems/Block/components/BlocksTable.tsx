@@ -210,7 +210,7 @@ function BlocksTable({
           <Link
             isExternal={false}
             href={`/block/${row.node.header.height}/simple`}
-            className="fuel-eyebrow fuel-hover-fill flex items-center gap-2 border border-[var(--fuel-line)] px-3 py-2 text-[11px] text-heading no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fuel-primary)] motion-reduce:transition-none"
+            className="fuel-eyebrow fuel-hover-fill flex items-center gap-2 border border-[var(--fuel-line)] px-3 py-2 text-[11px] text-heading no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fuel-focus)] motion-reduce:transition-none"
           >
             {t('block.view')}
             <IconArrowRight size={12} />

@@ -89,7 +89,7 @@ const styles = tv({
     toggle: [
       'grid size-8 shrink-0 cursor-pointer place-items-center self-end border-0 bg-transparent p-0',
       'text-[var(--fuel-element-low-em)] transition-colors hover:text-heading',
-      'focus-visible:outline-2 focus-visible:outline-[var(--fuel-primary)] motion-reduce:transition-none',
+      'focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)] motion-reduce:transition-none',
       'tablet:self-center',
     ],
     chevron: [

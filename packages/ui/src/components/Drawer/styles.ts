@@ -10,7 +10,7 @@ export const styles = tv({
     closeIcon: [
       'fuel-hover-fill absolute right-4 top-4 h-8 w-8 flex items-center justify-center',
       'focus:outline-none focus-visible:outline focus-visible:outline-1',
-      'focus-visible:outline-[var(--fuel-primary)]',
+      'focus-visible:outline-[var(--fuel-focus)]',
       'disabled:pointer-events-none',
     ],
     content: [

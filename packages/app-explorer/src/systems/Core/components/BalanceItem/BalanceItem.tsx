@@ -115,7 +115,7 @@ function ToggleButton({
       aria-controls={panelId}
       aria-label={typeof label === 'string' ? label : undefined}
       onClick={onToggle}
-      className="grid size-8 shrink-0 cursor-pointer place-items-center border-0 bg-transparent p-0 text-[var(--fuel-element-low-em)] transition-colors hover:text-heading focus-visible:outline-2 focus-visible:outline-[var(--fuel-primary)] motion-reduce:transition-none"
+      className="grid size-8 shrink-0 cursor-pointer place-items-center border-0 bg-transparent p-0 text-[var(--fuel-element-low-em)] transition-colors hover:text-heading focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)] motion-reduce:transition-none"
     >
       <IconChevronDown
         aria-hidden

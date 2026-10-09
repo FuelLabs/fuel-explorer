@@ -178,7 +178,7 @@ const styles = tv({
       'fuel-eyebrow text-[11px] tracking-[0.08em]',
       'border-y-0 border-r-0 border-l border-solid border-[var(--fuel-line)]',
       'transition-colors duration-200 motion-reduce:transition-none',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-primary)]',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]',
     ],
     count: 'tabular-nums transition-colors duration-200',
     tools: [

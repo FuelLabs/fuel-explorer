@@ -173,7 +173,7 @@ const styles = tv({
       'fuel-eyebrow h-12 grow cursor-pointer whitespace-nowrap px-4 text-[11px] tracking-[0.08em] tablet:h-11 tablet:px-5',
       'border-y-0 border-r-0 border-l border-solid border-[var(--fuel-line)]',
       'transition-colors duration-200 motion-reduce:transition-none',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-primary)]',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]',
     ],
   },
   variants: {

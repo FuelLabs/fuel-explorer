@@ -16,7 +16,7 @@ export function BridgeNotice({ className }: { className?: string }) {
             <button
               type="button"
               onClick={() => navigate(PortalRoutes.bridgeHistory())}
-              className="m-0 cursor-pointer border-0 bg-transparent p-0 text-[length:inherit] text-heading underline underline-offset-4 transition-colors hover:text-[var(--fuel-brand-text)] focus-visible:outline-2 focus-visible:outline-[var(--fuel-primary)] motion-reduce:transition-none"
+              className="m-0 cursor-pointer border-0 bg-transparent p-0 text-[length:inherit] text-heading underline underline-offset-4 transition-colors hover:text-[var(--fuel-brand-text)] focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)] motion-reduce:transition-none"
             >
               {t('tx.bridge_history_link')}
             </button>

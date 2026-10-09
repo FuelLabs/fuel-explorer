@@ -51,7 +51,7 @@ export const ConnectWallet = () => {
             {/* Same height as the language and network controls beside it. */}
             <button
               type="button"
-              className="fuel-edge fuel-hover-fill fuel-label m-0 flex h-10 min-w-[165px] cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-primary)]"
+              className="fuel-edge fuel-hover-fill fuel-label m-0 flex h-10 min-w-[165px] cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]"
             >
               <span className="font-mono normal-case">
                 {shortAddress(account)}

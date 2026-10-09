@@ -96,7 +96,7 @@ const styles = tv({
       'group relative flex min-h-[84px] min-w-0 items-center gap-4 px-4 py-3 no-underline',
       'border-r border-b border-[var(--fuel-line)] bg-[var(--fuel-background)]',
       'transition-colors [transition-duration:200ms] hover:bg-[var(--fuel-muted)] motion-reduce:transition-none',
-      'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-primary)]',
+      'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
       'tablet:min-h-[112px] tablet:px-5 tablet:py-4',
     ],
     logo: [

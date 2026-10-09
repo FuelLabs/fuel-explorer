@@ -2,6 +2,20 @@
 <html lang="en" class="font-sans">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      try {
+        var saved = localStorage.getItem('fuel-explorer-language');
+        var codes = {
+          en: 'en',
+          ja: 'ja',
+          ko: 'ko',
+          'zh-cn': 'zh-CN',
+          'zh-hk': 'zh-HK',
+        };
+        var code = saved && codes[String(saved).toLowerCase()];
+        if (code) document.documentElement.lang = code;
+      } catch (e) {}
+    </script>
     <link rel="icon" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>__PAGE_TITLE__</title>

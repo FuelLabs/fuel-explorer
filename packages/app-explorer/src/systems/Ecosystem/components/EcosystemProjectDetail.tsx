@@ -314,7 +314,7 @@ const styles = tv({
     ],
     crumb: [
       'flex items-center gap-2 no-underline text-[var(--fuel-element-low-em)] transition-colors hover:text-heading',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fuel-primary)]',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fuel-focus)]',
     ],
     hero: 'relative isolate border border-[var(--fuel-line)] bg-[var(--fuel-stone-950)]',
     heroArt: [
