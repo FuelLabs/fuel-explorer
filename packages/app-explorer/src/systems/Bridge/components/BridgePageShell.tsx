@@ -107,7 +107,7 @@ export function BridgePageShell({ board, children }: BridgePageShellProps) {
               onClick={() => toggle(true)}
               className={cx(
                 'fuel-hover-fill absolute inset-0 z-10 hidden flex-col items-center gap-4 py-8 text-heading desktop:flex',
-                'transition-[opacity,visibility] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-ring)]',
+                'transition-[opacity,visibility] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
                 SLIDE,
                 expanded && 'invisible opacity-0',
               )}

@@ -27,10 +27,6 @@ kbd {
   font-family: var(--default-font-family);
 }
 
-.rt-DialogOverlay {
-  backdrop-filter: blur(12px);
-}
-
 /* Custom responsive breakpoints matching original design */
 @media (min-width: 768px) {
   .tablet\:grid-cols-2 {
@@ -78,6 +74,6 @@ body {
 /* Override default focus styles for better accessibility */
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--fuel-ring);
+  outline: 2px solid var(--fuel-focus);
   outline-offset: 2px;
 }

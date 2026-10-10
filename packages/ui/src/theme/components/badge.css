@@ -16,7 +16,15 @@
 }
 
 .rt-Badge:where([data-accent-color="red"]) {
-  color: var(--red-11);
+  color: var(--fuel-danger-text);
+}
+
+.rt-Badge:where(
+    [data-accent-color="orange"],
+    [data-accent-color="amber"],
+    [data-accent-color="yellow"]
+  ) {
+  color: var(--fuel-warning-text);
 }
 
 [data-accent-color="gray"].rt-Badge:where(.rt-variant-solid) {

@@ -1,5 +1,5 @@
 import { IconChevronDown } from '@fuels/ui';
-import { type ReactNode, useId, useState } from 'react';
+import { type MouseEvent, type ReactNode, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { TxExpand } from './TxExpand';
@@ -25,11 +25,20 @@ export function TxItem({
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const id = useId();
-  const classes = styles({ open });
+  const classes = styles({ open, expandable: Boolean(details) });
+  const onRowClick = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('a, button, input, select, textarea, [role="button"]'))
+      return;
+    if (window.getSelection()?.toString()) return;
+    setOpen((value) => !value);
+  };
 
   return (
     <div className={classes.root({ className })}>
-      <div className={classes.row()}>
+      {/* The whole row toggles. Clicks on links and controls inside keep their own action, and the chevron button is the keyboard control. */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: the chevron button is the keyboard equivalent */}
+      <div className={classes.row()} onClick={details ? onRowClick : undefined}>
         <span className={classes.label()}>{label}</span>
         <div className={classes.main()}>{children}</div>
         {trailing && <div className={classes.trailing()}>{trailing}</div>}
@@ -87,10 +96,10 @@ const styles = tv({
     main: 'min-w-0 flex-1',
     trailing: 'shrink-0 text-[14px] text-heading tablet:text-right',
     toggle: [
-      'grid size-8 shrink-0 cursor-pointer place-items-center self-end border-0 bg-transparent p-0',
+      'relative grid size-8 shrink-0 cursor-pointer place-items-center self-end border-0 bg-transparent p-0',
       'text-[var(--fuel-element-low-em)] transition-colors hover:text-heading',
-      'focus-visible:outline-2 focus-visible:outline-[var(--fuel-primary)] motion-reduce:transition-none',
-      'tablet:self-center',
+      'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fuel-focus)] motion-reduce:transition-none',
+      'tablet:self-center fuel-hit',
     ],
     chevron: [
       'transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
@@ -102,6 +111,9 @@ const styles = tv({
   variants: {
     open: {
       true: { chevron: 'rotate-180' },
+    },
+    expandable: {
+      true: { row: 'cursor-pointer' },
     },
   },
 });

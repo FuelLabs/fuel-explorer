@@ -5,11 +5,15 @@ import {
   LoadingWrapper,
   VStack,
 } from '@fuels/ui';
-import dayjs from 'dayjs';
+import { formatDateTime } from 'app-commons';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
 import { AmountHero } from '../ReviewLayout/ReviewLayout';
+import {
+  StatusMarker,
+  type StatusMarkerKind,
+} from '../StatusMarker/StatusMarker';
 
 export type StatusKind =
   | 'error'
@@ -18,13 +22,12 @@ export type StatusKind =
   | 'action'
   | 'progress';
 
-const MARKER: Record<StatusKind, string> = {
-  error: 'border-[var(--red-10)] bg-[var(--red-10)]',
-  failed: 'border-[var(--red-10)] bg-[var(--red-10)]',
-  completed: 'border-[var(--fuel-primary)] bg-[var(--fuel-primary)]',
-  action:
-    'border-[var(--fuel-element-high-em)] bg-[var(--fuel-element-high-em)]',
-  progress: 'border-[var(--fuel-indicator-border)] bg-transparent',
+const MARKER: Record<StatusKind, StatusMarkerKind> = {
+  error: 'error',
+  failed: 'error',
+  completed: 'done',
+  action: 'action',
+  progress: 'pending',
 };
 
 type StatusLayoutProps = {
@@ -70,23 +73,21 @@ export function StatusLayout({
   finalizedAt,
   minHeightClass,
 }: StatusLayoutProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const style = responsiveDialogStyles();
+  const finalizedDate = finalizedAt ? new Date(finalizedAt) : null;
   const facts = [
     eta
       ? { key: 'eta', label: t('staking.status.eta'), value: eta }
       : undefined,
-    finalizedAt && finalizedLabel
+    finalizedDate && !Number.isNaN(finalizedDate.getTime()) && finalizedLabel
       ? {
           key: 'done',
           label: finalizedLabel,
-          value: t('staking.status.at', {
-            date: dayjs(finalizedAt).format('MMMM D, YYYY'),
-            time: dayjs(finalizedAt).format('h:mm A'),
-          }),
+          value: formatDateTime(finalizedDate, 'long', i18n.language),
         }
       : undefined,
-  ].filter((fact) => !!fact);
+  ].filter((fact): fact is NonNullable<typeof fact> => !!fact);
 
   return (
     <AnimatedDialog.Content
@@ -96,7 +97,7 @@ export function StatusLayout({
         sizing: 'auto',
         // Grows with its content (a failed step adds a long message) and
         // scrolls only when taller than the screen, so nothing is cropped.
-        className: `${minHeightClass} max-h-[calc(100dvh-2rem)] overflow-y-auto`,
+        className: minHeightClass,
       })}
     >
       <VStack className="h-full" gap="7">
@@ -117,10 +118,7 @@ export function StatusLayout({
               loadingEl={<LoadingBox className="h-4 w-20 !rounded-none" />}
               regularEl={
                 <span className="fuel-appear flex items-center gap-2">
-                  <span
-                    aria-hidden
-                    className={`size-2 shrink-0 border ${MARKER[statusKind]}`}
-                  />
+                  <StatusMarker kind={MARKER[statusKind]} />
                   <span className="fuel-label text-[var(--fuel-element-high-em)]">
                     {statusText}
                   </span>
@@ -133,17 +131,14 @@ export function StatusLayout({
           </div>
           {!!error && (
             <div className="fuel-appear flex items-start gap-3 border-t border-[var(--fuel-border)] py-4">
-              <span
-                aria-hidden
-                className="mt-[5px] size-2 shrink-0 border border-[var(--red-10)] bg-[var(--red-10)]"
-              />
+              <StatusMarker kind="error" className="mt-[5px]" />
               <Copyable
                 as="div"
                 className="max-h-[150px] overflow-hidden"
                 value={error}
                 iconClassName="mr-1"
               >
-                <span className="block max-h-[120px] overflow-hidden break-words text-[14px] leading-[18px] text-[var(--red-11)]">
+                <span className="block max-h-[120px] overflow-hidden break-words text-[14px] leading-[18px] text-[var(--fuel-danger-text)]">
                   {error}
                 </span>
               </Copyable>

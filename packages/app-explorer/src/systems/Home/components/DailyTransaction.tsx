@@ -85,7 +85,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
               <XAxis
                 dataKey="time"
                 tick={{
-                  fontSize: 10,
+                  fontSize: 12,
                   className: 'fill-heading',
                 }}
               />
@@ -103,7 +103,7 @@ const DailyTransaction = (blocks: DailyTransactionProps) => {
                   fontWeight: 'bold',
                 }}
                 itemStyle={{
-                  color: 'var(--fuel-primary)',
+                  color: 'var(--fuel-brand-text)',
                 }}
                 cursor={{ strokeWidth: 0.1, radius: 10 }}
               />

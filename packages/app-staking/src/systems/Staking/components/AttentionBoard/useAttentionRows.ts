@@ -2,7 +2,10 @@ import { FuelToken, TOKENS } from 'app-commons';
 import { DECIMAL_FUEL, bn } from 'fuels';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
-import { formatAmount } from '~staking/systems/Core/utils/bn';
+import {
+  formatAmount,
+  truncateToIntegerString,
+} from '~staking/systems/Core/utils/bn';
 import { useRigClaimable } from '../../hooks/useRigClaimable';
 import { useAllStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
 import { useAccountValidators } from '../../services/useAccountValidators';
@@ -45,7 +48,7 @@ export function useAttentionRows(lane: Lane) {
   const onEthereum = lane === 'ethereum';
   const { address: walletAddress, isConnected } = useAccount();
   const address = onEthereum ? walletAddress : undefined;
-  const { pendingDeposit } = useRigClaimable();
+  const { pendingDeposit } = useRigClaimable({ enabled: !onEthereum });
   const rewards = useRewards(address);
   const positions = useAccountValidators(address, {
     select: (data) => data.validators,
@@ -66,7 +69,7 @@ export function useAttentionRows(lane: Lane) {
     for (const entry of onEthereum ? (rewards.data?.rewards ?? []) : []) {
       // The API returns decimal strings, so each amount is cut to an integer first.
       const total = (entry.reward ?? []).reduce(
-        (sum, item) => sum.add(bn(Math.floor(Number(item.amount ?? 0)))),
+        (sum, item) => sum.add(bn(truncateToIntegerString(item.amount))),
         bn(0),
       );
       if (total.isZero()) continue;
@@ -110,14 +113,32 @@ export function useAttentionRows(lane: Lane) {
     });
   }, [onEthereum, pendingDeposit, rewards.data, positions.data, events.data]);
 
+  // Disabled queries (no address) sit in pending forever. History reports
+  // success on the first page, so it is still loading while another page is
+  // outstanding. A failure stays an error so the board does not look empty.
+  const watching = !!address && isConnected;
+  const settled = (query: { isSuccess: boolean; isError: boolean }) =>
+    query.isSuccess || query.isError;
+  const eventsSettled =
+    events.isError ||
+    (settled(events) && !events.hasNextPage && !events.isFetchingNextPage);
   const isLoading =
-    onEthereum &&
-    isConnected &&
-    (rewards.isPending || events.isPending || positions.isPending);
+    watching && !(settled(rewards) && eventsSettled && settled(positions));
+  const isError =
+    watching && (rewards.isError || events.isError || positions.isError);
+
+  const refetch = () => {
+    if (rewards.isError) void rewards.refetch();
+    if (events.isError) void events.refetch();
+    if (positions.isError) void positions.refetch();
+  };
 
   return {
     rows,
     needsConnect: onEthereum && !isConnected,
     isLoading,
+    isError,
+    refetch,
+    truncated: onEthereum && events.truncated,
   };
 }

@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { IconChevronDown } from '../Icons';
 
@@ -17,7 +18,7 @@ const containerVariants = tv({
   ],
   variants: {
     error: {
-      true: 'border-[var(--red-10)]',
+      true: 'border-[var(--fuel-danger)]',
       false: 'border-[var(--fuel-line)]',
     },
     selected: {
@@ -127,6 +128,7 @@ export function SearchableSelect({
   error = false,
   selected,
 }: SearchableSelectProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [localValue, setLocalValue] = useState(
     selectedOption?.label || value || '',
@@ -491,7 +493,7 @@ export function SearchableSelect({
           style={{ cursor: 'pointer' }}
           role="button"
           tabIndex={0}
-          aria-label="Toggle dropdown"
+          aria-label={t('ui.select.toggle', { defaultValue: 'Toggle options' })}
         >
           {endAdornment || <IconChevronDown size={20} />}
         </div>
@@ -515,14 +517,16 @@ export function SearchableSelect({
             onKeyDown={(e) => e.stopPropagation()}
             aria-modal="true"
             role="dialog"
-            aria-label="Select options"
+            aria-label={t('ui.select.dialog', {
+              defaultValue: 'Select an option',
+            })}
           >
             <div
               ref={optionsRef}
               className={optionsListVariants()}
               role="listbox"
               id={optionsListId}
-              aria-label="Options"
+              aria-label={t('ui.select.options', { defaultValue: 'Options' })}
               tabIndex={0}
               style={{
                 position: 'fixed',

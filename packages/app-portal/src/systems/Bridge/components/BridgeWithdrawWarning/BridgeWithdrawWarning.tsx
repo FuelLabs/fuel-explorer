@@ -1,5 +1,5 @@
 import { Alert } from '@fuels/ui';
-import { IconAlertCircleFilled, IconInfoCircleFilled } from '@fuels/ui';
+import { IconAlertCircle, IconInfoCircle } from '@fuels/ui';
 import { AnimatedHeight } from '@fuels/ui';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +35,7 @@ export const BridgeWithdrawWarning = () => {
             <motion.div key="threshold" {...fade}>
               <Alert size="1">
                 <Alert.Icon>
-                  <IconInfoCircleFilled size={16} />
+                  <IconInfoCircle size={16} />
                 </Alert.Icon>
                 <Alert.Text>
                   {t('portal.bridge.withdraw_threshold', {
@@ -49,7 +49,7 @@ export const BridgeWithdrawWarning = () => {
             <motion.div key="limit" {...fade}>
               <Alert size="1" color="red">
                 <Alert.Icon>
-                  <IconAlertCircleFilled size={16} />
+                  <IconAlertCircle size={16} />
                 </Alert.Icon>
                 <Alert.Text>{t('portal.bridge.withdraw_limit')}</Alert.Text>
               </Alert>

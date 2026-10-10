@@ -1,10 +1,10 @@
-import { Routes } from 'app-commons';
 import type React from 'react';
 import { Suspense, lazy, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BridgeFormSkeleton } from '~/systems/Bridge/components/BridgeFormSkeleton';
 import { BridgePageShell } from '~/systems/Bridge/components/BridgePageShell';
 import { TransfersBoardSkeleton } from '~/systems/Bridge/components/TransfersBoardSkeleton';
+import { isBridgeHistory } from '~portal/systems/Bridge/utils/isBridgeHistory';
 
 // Pulls in wagmi, viem and connectkit.
 const BridgePanelPage = lazy(() => import('~/pages/BridgePanelPage'));
@@ -32,7 +32,7 @@ function readPanelHeight() {
 // it stays mounted and the form and history animate into each other.
 const BridgeLayout: React.FC = () => {
   const { pathname } = useLocation();
-  const isHistory = pathname.startsWith(Routes.bridgeHistory());
+  const isHistory = isBridgeHistory(pathname);
   const panel = useRef<HTMLDivElement>(null);
   const [panelHeight, setPanelHeight] = useState(readPanelHeight);
 

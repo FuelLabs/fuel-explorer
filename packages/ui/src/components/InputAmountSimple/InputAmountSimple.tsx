@@ -27,7 +27,7 @@ const container = tv({
   base: 'transition-colors duration-200 w-full',
   variants: {
     error: {
-      true: 'border-b border-[var(--red-10)]',
+      true: 'border-b border-[var(--fuel-danger)]',
       false: 'border-b border-[var(--fuel-line)]',
     },
     readOnly: {

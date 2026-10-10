@@ -26,11 +26,17 @@
       "~/*": ["./src/*"],
       "@i18n": ["./src/i18n.ts"],
       "~portal/*": ["../app-portal/src/*"],
+      "~staking/*": ["../app-staking/src/*"],
       "@fuel-explorer/graphql": ["../graphql/src"],
       "@fuel-explorer/graphql/*": ["../graphql/src/*"],
       "tailwind-variants": ["../../node_modules/tailwind-variants"]
     }
   },
-  "include": ["src", "vite.config.ts", "src/types/global.d.ts"],
+  "include": [
+    "src",
+    "vite.config.ts",
+    "src/types/global.d.ts",
+    "jest.setup.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

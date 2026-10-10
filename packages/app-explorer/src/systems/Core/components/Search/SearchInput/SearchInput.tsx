@@ -11,7 +11,7 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@fuels/ui';
 import type { KeyboardEvent } from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMedia } from 'react-use';
 
@@ -29,6 +29,7 @@ import { styles } from './styles';
 
 type SearchInputProps = BaseProps<InputProps> & {
   loading: boolean;
+  onClear?: () => void;
   onSubmit?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
@@ -45,6 +46,7 @@ export function SearchInput({
   loading,
   error,
   loadingMore,
+  onClear,
   ...props
 }: SearchInputProps) {
   const classes = styles();
@@ -61,6 +63,7 @@ export function SearchInput({
   const { isMobile } = useBreakpoints();
   const isCompactNav = useMedia(BELOW_LAPTOP_QUERY, false);
   const { t } = useTranslation();
+  const resultsId = useId();
   const placeholder =
     _placeholder ?? (isMobile ? t('common.search_short') : t('common.search'));
   const recents = useRecentSearches();
@@ -124,7 +127,12 @@ export function SearchInput({
   }, []);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setValue(event.target.value);
+    const next = event.target.value;
+    setValue(next);
+    // Before any search the panel only has recents to show, and only for an empty field.
+    if (searchResult === undefined && !error) {
+      setIsOpen(!next && recents.length > 0);
+    }
   }
 
   function close() {
@@ -136,6 +144,7 @@ export function SearchInput({
     if (loading) return;
     setValue('');
     close();
+    onClear?.();
     if (takeover) {
       setIsFocused(false);
       inputRef.current?.blur();
@@ -176,7 +185,7 @@ export function SearchInput({
   }
 
   return (
-    <div className="laptop:relative">
+    <div className="md:relative">
       <VStack gap="0" className={classes.searchBox()} data-active={active}>
         <Focus.ArrowNavigator autoFocus={autoFocus}>
           <div ref={containerRef} className={classes.inputContainer()}>
@@ -193,6 +202,10 @@ export function SearchInput({
               data-active={active}
               className={cx(className, classes.inputWrapper())}
               type="search"
+              role="combobox"
+              aria-expanded={openDropdown}
+              aria-controls={resultsId}
+              aria-autocomplete="list"
               autoComplete="off"
               onFocus={handleFocus}
               onBlur={handleBlur}
@@ -234,7 +247,7 @@ export function SearchInput({
                       takeover ? t('common.close') : t('common.clear')
                     }
                     icon={IconX}
-                    iconColor="text-gray-11"
+                    iconColor="text-icon"
                     className={classes.iconClear()}
                     variant="link"
                     disabled={loading}
@@ -259,6 +272,7 @@ export function SearchInput({
         </Focus.ArrowNavigator>
         <SearchResultDropdown
           ref={dropdownRef}
+          id={resultsId}
           width={dropdownWidth}
           searchResult={searchResult}
           searchValue={value}

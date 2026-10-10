@@ -1,6 +1,8 @@
+import { Popover } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { type MouseEvent, forwardRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { TxApp } from '../../utils/txAppsCache';
 
 function stopRowNavigation(event: MouseEvent) {
@@ -17,6 +19,62 @@ type TxAppTagProps = {
   dense?: boolean;
 };
 
+// Lists the apps that did not fit in the row. A popover opens on tap and click,
+// so touch users can reach them too.
+function HiddenApps({ apps, dense }: { apps: TxApp[]; dense?: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <Popover>
+      <Popover.Trigger>
+        <button
+          type="button"
+          aria-label={t('tx.app_tag.more', { count: apps.length })}
+          onClick={stopRowNavigation}
+          className={`pointer-events-auto fuel-hit relative z-10 shrink-0 cursor-pointer border-0 bg-transparent p-0 text-[var(--fuel-element-low-em)] underline-offset-2 hover:text-heading hover:underline focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)] ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}
+        >
+          +{apps.length}
+        </button>
+      </Popover.Trigger>
+      <Popover.Content size="1" onClick={stopRowNavigation}>
+        <ul className="m-0 flex list-none flex-col gap-2 p-0">
+          {apps.map((app) => {
+            const body = (
+              <>
+                {app.image && (
+                  <img
+                    src={getProjectImage(app.image)}
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="size-4 shrink-0 object-cover"
+                  />
+                )}
+                <span className="truncate text-sm">{app.name}</span>
+              </>
+            );
+            return (
+              <li key={app.name}>
+                {app.url ? (
+                  <a
+                    href={app.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 text-heading hover:underline"
+                  >
+                    {body}
+                  </a>
+                ) : (
+                  <span className="flex items-center gap-2">{body}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </Popover.Content>
+    </Popover>
+  );
+}
+
 const BOX = {
   md: 'size-[24px]',
   sm: 'size-[16px]',
@@ -31,7 +89,7 @@ function AppLogo({
   if (!app.image || broken) return null;
   const shell = {
     title: app.name,
-    className: `pointer-events-auto relative z-10 shrink-0 ${box}`,
+    className: `pointer-events-auto fuel-hit relative z-10 shrink-0 ${box}`,
     initial: { opacity: 0, scale: 0.6 },
     animate: { opacity: 1, scale: 1 },
     transition: { duration: 0.3, ease: EASE_OUT, delay },
@@ -96,8 +154,14 @@ const Scanning = forwardRef<HTMLSpanElement, { dense?: boolean }>(
         transition={{ duration: 0.15 }}
       >
         <motion.span
-          className="absolute inset-x-0 h-px bg-[var(--fuel-primary)]"
-          animate={{ top: ['0%', '100%', '0%'] }}
+          className="absolute inset-x-0 top-0 h-px bg-[var(--fuel-primary)] will-change-transform"
+          animate={{
+            transform: [
+              'translateY(0px)',
+              `translateY(${dense ? 14 : 22}px)`,
+              'translateY(0px)',
+            ],
+          }}
           transition={{
             duration: 1.2,
             ease: 'easeInOut',
@@ -126,7 +190,7 @@ function StaticTag({ apps, dense }: { apps: TxApp[]; dense?: boolean }) {
               rel="noreferrer"
               title={app.name}
               onClick={stopRowNavigation}
-              className="pointer-events-auto relative z-10 shrink-0"
+              className="pointer-events-auto fuel-hit relative z-10 shrink-0"
             >
               <img
                 src={getProjectImage(app.image)}
@@ -149,11 +213,7 @@ function StaticTag({ apps, dense }: { apps: TxApp[]; dense?: boolean }) {
           ),
         )}
       {hidden > 0 && (
-        <span
-          className={`shrink-0 text-[var(--fuel-element-low-em)] ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}
-        >
-          +{hidden}
-        </span>
+        <HiddenApps apps={apps.slice(shown.length)} dense={dense} />
       )}
     </span>
   );
@@ -183,14 +243,7 @@ export function TxAppTag({ apps, pending, delay = 0, dense }: TxAppTagProps) {
           />
         ))}
       {!pending && hidden > 0 && (
-        <motion.span
-          className={`shrink-0 text-[var(--fuel-element-low-em)] ${dense ? 'text-[12px] leading-[18px]' : 'text-sm'}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: delay + shown.length * 0.08 + 0.2 }}
-        >
-          +{hidden}
-        </motion.span>
+        <HiddenApps apps={apps?.slice(shown.length) ?? []} dense={dense} />
       )}
     </span>
   );

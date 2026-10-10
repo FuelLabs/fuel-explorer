@@ -160,6 +160,9 @@
     "ts:check": "tsc --noEmit",
     "generate:defs": "node scripts/create-defs.mjs"
   },
+  "peerDependencies": {
+    "i18next": "26.4.2"
+  },
   "dependencies": {
     "@radix-ui/colors": "3.0.0",
     "@radix-ui/react-accordion": "1.1.2",
@@ -182,6 +185,7 @@
     "react-aria": "3.32.1",
     "react-data-table-component": "7.6.2",
     "react-dom": "18.3.1",
+    "react-i18next": "17.0.15",
     "react-number-format": "5.4.4",
     "react-paginate": "8.2.0",
     "react-stately": "3.29.1",
@@ -199,6 +203,7 @@
     "@types/react-dom": "18.3.7",
     "autoprefixer": "10.4.17",
     "globby": "14.0.1",
+    "i18next": "26.4.2",
     "lodash": "^4.17.21",
     "postcss": "8.4.34",
     "postcss-import": "16.0.0",

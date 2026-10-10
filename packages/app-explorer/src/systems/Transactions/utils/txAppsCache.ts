@@ -67,10 +67,28 @@ function createAppsCache(
       if (cache.size <= maxEntries) break;
       cache.delete(id);
     }
+    schedulePersist();
+  }
+
+  // Serializing up to 2,000 entries blocks the main thread, so the save waits
+  // for an idle moment. Writes made before it runs share one save.
+  let persistScheduled = false;
+  function persist() {
+    persistScheduled = false;
     try {
-      localStorage.setItem(key, JSON.stringify([...cache]));
+      localStorage.setItem(key, JSON.stringify([...load()]));
       localStorage.setItem(savedAtKey, String(Date.now()));
     } catch {}
+  }
+
+  function schedulePersist() {
+    if (persistScheduled) return;
+    persistScheduled = true;
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(persist, { timeout: 2000 });
+    } else {
+      setTimeout(persist, 0);
+    }
   }
 
   function list() {

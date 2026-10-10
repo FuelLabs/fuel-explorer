@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import type { SyntheticEvent } from 'react';
 import { IconCheck, IconCopy } from '../Icons';
 
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';
 import type { Colors } from '../../utils/types';
@@ -56,31 +57,44 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
       as: Root = 'span',
       children,
       value,
-      tooltipMessage = 'Click here to copy to clipboard',
+      tooltipMessage,
       icon: CopyIcon = IconCopy,
       iconSize,
       iconStroke,
       iconClassName,
       iconColor = 'text-icon',
-      iconAriaLabel: ariaLabel = 'Copy to clipboard',
-      copiedMessage = 'Copied to clipboard',
+      iconAriaLabel,
+      copiedMessage,
       ...props
     },
   ) => {
-    const { copied, markCopied } = useCopied();
+    const { t } = useTranslation();
+    const tooltip =
+      tooltipMessage ??
+      t('ui.copy.tooltip', { defaultValue: 'Click here to copy to clipboard' });
+    const idleLabel =
+      iconAriaLabel ?? t('ui.copy.aria', { defaultValue: 'Copy to clipboard' });
+    const copiedLabel =
+      copiedMessage ??
+      t('ui.copy.copied', { defaultValue: 'Copied to clipboard' });
+    const failedLabel = t('ui.copy.failed', {
+      defaultValue: 'Could not copy. Select the text and copy it by hand.',
+    });
+    const { copied, failed, copy } = useCopied();
     const SwapIcon = useMemo(() => makeSwapIcon(CopyIcon), [CopyIcon]);
-
-    async function handleCopy() {
-      await navigator.clipboard.writeText(value);
-      markCopied();
-    }
 
     return (
       <Box {...props} as={Root}>
         {children}
-        <Tooltip content={copied ? copiedMessage : tooltipMessage}>
+        <span role="status" className="sr-only">
+          {copied ? copiedLabel : failed ? failedLabel : ''}
+        </span>
+        <Tooltip
+          content={copied ? copiedLabel : failed ? failedLabel : tooltip}
+        >
           <IconButton
-            aria-label={copied ? copiedMessage : ariaLabel}
+            aria-label={copied ? copiedLabel : idleLabel}
+            className="fuel-hit relative"
             color="gray"
             icon={SwapIcon}
             iconClassName={styles().icon({ className: iconClassName })}
@@ -89,9 +103,10 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
             iconStroke={iconStroke}
             variant="link"
             data-copied={copied ? '' : undefined}
+            data-failed={failed ? '' : undefined}
             onClick={(e: SyntheticEvent) => {
               e.stopPropagation();
-              handleCopy();
+              copy(value);
             }}
           />
         </Tooltip>

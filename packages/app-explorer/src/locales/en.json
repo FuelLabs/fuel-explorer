@@ -1,7 +1,6 @@
 {
   "common": {
     "view_all": "View All",
-    "top_apps": "Top Apps",
     "language": "Language",
     "search": "Search by block, transaction, contract, address...",
     "search_short": "Search here...",
@@ -28,7 +27,8 @@
     "building": "Building: {{count}}",
     "window_24h": "24h",
     "read_docs": "Read docs",
-    "questions": "Questions"
+    "questions": "Questions",
+    "search_loading": "Loading results"
   },
   "nav": {
     "explorer": "Explorer",
@@ -61,7 +61,9 @@
     "avg_tps": "Hour average",
     "error_title": "Could not load transactions",
     "error_description": "The latest transactions failed to load. Try again.",
-    "unavailable": "Data unavailable"
+    "unavailable": "Data unavailable",
+    "apps_recently_active": "Recently active",
+    "apps_featured": "Featured"
   },
   "ecosystem": {
     "eyebrow": "Fuel Ecosystem",
@@ -108,14 +110,17 @@
     "app_count_other": "{{count}} apps",
     "show_all": "Show all",
     "no_results": "No apps found.",
-    "load_error": "Error loading projects: {{message}}",
     "spotlight": {
       "title": "Fully onchain spot DEX, powered by Fuel",
       "lead": "Home of o2 Turbo: get funded up to $10k in prop-trading capital. No evaluation, keep 100% of the profit.",
       "cta": "Trade now",
       "view_project": "View project",
       "image_alt": "{{name}} product screenshot"
-    }
+    },
+    "load_error_title": "Could not load projects",
+    "load_error_body": "Check your connection and try again.",
+    "empty_title": "No projects yet",
+    "empty_body": "Projects will appear here when they are listed."
   },
   "footer": {
     "fuel": "FUEL",
@@ -161,9 +166,11 @@
     "lane_rig": "The Rig",
     "lane_ethereum": "Ethereum",
     "lane_rig_figure": "To claim",
+    "lane_rig_connect": "Connect your wallet here to determine if you're eligible to claim stFUEL.",
+    "lane_rig_checking": "Checking your claimable balance...",
     "lane_ethereum_figure": "Staked",
     "board": {
-      "title": "Waiting on you",
+      "title": "Open items",
       "count_one": "{{count}} item",
       "count_other": "{{count}} items",
       "col_lane": "Path",
@@ -178,7 +185,9 @@
       "in_progress": "In progress",
       "claim": "Claim",
       "continue": "Continue",
-      "details": "Details"
+      "details": "Details",
+      "load_error": "Error on fetching your open items. Something went wrong, try again later.",
+      "truncated": "Events past the 1,000 limit were not loaded."
     },
     "history": {
       "status_label": "Filter by status",
@@ -190,7 +199,9 @@
       "type_all": "All types",
       "refresh": "Refresh list",
       "no_match": "No transactions match these filters.",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "load_error": "Error on fetching transactions. Something went wrong, try again later.",
+      "truncated": "Events past the 1,000 limit were not loaded."
     },
     "account": {
       "connect_wallet": "Connect Wallet",
@@ -322,7 +333,11 @@
       "undelegation_completed_on": "Undelegation completed on",
       "waiting_confirmation": "Waiting for transaction confirmation",
       "waiting_user": "Waiting user action",
-      "withdrawal_finalized_on": "Withdrawal finalized on"
+      "withdrawal_finalized_on": "Withdrawal finalized on",
+      "step_done": "Completed",
+      "step_active": "In progress",
+      "step_failed": "Failed",
+      "step_pending": "Not started"
     },
     "table": {
       "commission": "Commission",
@@ -399,6 +414,9 @@
     "apr": {
       "value": "~{{apy}}% APR",
       "tip": "Help secure Fuel sequencing by delegating your tokens to Fuel validators."
+    },
+    "date": {
+      "unknown": "Unknown"
     }
   },
   "bridge": {
@@ -427,7 +445,9 @@
       "open_history": "Open History",
       "loading": "Loading your transfers",
       "expand": "Show transfers",
-      "collapse": "Hide transfers"
+      "collapse": "Hide transfers",
+      "truncated_one": "Only your latest transfer is checked here. Older transfers may still be in progress. Open History to see them.",
+      "truncated_other": "Only your latest {{count}} transfers are checked here. Older transfers may still be in progress. Open History to see them."
     }
   },
   "errors": {
@@ -474,7 +494,18 @@
       "code": "Code"
     },
     "copy": {
-      "copy": "Copy"
+      "copy": "Copy",
+      "tooltip": "Click here to copy to clipboard",
+      "aria": "Copy to clipboard",
+      "copied": "Copied to clipboard"
+    },
+    "amount": {
+      "balance": "Balance",
+      "max": "MAX",
+      "max_label": "Max",
+      "coin_selector": "Coin Selector",
+      "available": "Available",
+      "relative_usd": "Relative value in USD:"
     },
     "info_hint": {
       "label": "More information"
@@ -483,7 +514,8 @@
       "title": "Token Manager",
       "subtitle": "Manage your contributor grant and Fuel token release schedules.",
       "stake_tokens": "Stake your Fuel Tokens"
-    }
+    },
+    "stale_data": "Couldn't refresh. Showing the last loaded data."
   },
   "block": {
     "title": "Block",
@@ -564,7 +596,9 @@
       "withdraw_warning_accept": "I understand this withdrawal exceeds the weekly limit and will be blocked during relay. I still want to proceed.",
       "terms_label": "Terms of Service",
       "terms_accept": "I have read and agree to the updated",
-      "terms_link": "Terms of Service"
+      "terms_link": "Terms of Service",
+      "progress_label": "Transfer progress",
+      "amount_label": "Amount to bridge"
     },
     "overview": {
       "transaction_id": "Transaction ID",
@@ -652,6 +686,10 @@
       "deposit_started": "Deposit successfully initiated. You may now close the popup.",
       "withdraw_started": "Withdraw successfully initiated. You may now close the popup.",
       "user_rejected": "User rejected the transaction"
+    },
+    "assets_toast": {
+      "add_failed": "Failed to add asset to wallet",
+      "faucet_success": "Added tokens to your wallet"
     }
   },
   "tx": {
@@ -868,20 +906,20 @@
         "removed": "was removed"
       },
       "phrase": {
-        "triggered_past": "t {{rest}}",
-        "triggered_base": "r {{rest}}",
-        "placed_past": "p {{rest}}",
-        "placed_base": "l {{rest}}",
-        "set_past": "s {{rest}}",
-        "set_base": "e {{rest}}",
-        "cancelled_past": "c {{rest}}",
-        "cancelled_base": "a {{rest}}",
-        "filled_past": "f {{rest}}",
-        "filled_base": "i {{rest}}",
-        "withdrew_past": "w {{rest}}",
-        "withdrew_base": "i {{rest}}",
-        "changed_past": "c {{rest}}",
-        "changed_base": "h {{rest}}"
+        "triggered_past": "triggered {{rest}}",
+        "triggered_base": "trigger {{rest}}",
+        "placed_past": "placed {{rest}}",
+        "placed_base": "place {{rest}}",
+        "set_past": "set {{rest}}",
+        "set_base": "set {{rest}}",
+        "cancelled_past": "cancelled {{rest}}",
+        "cancelled_base": "cancel {{rest}}",
+        "filled_past": "filled {{rest}}",
+        "filled_base": "fill {{rest}}",
+        "withdrew_past": "withdrew {{rest}}",
+        "withdrew_base": "withdraw {{rest}}",
+        "changed_past": "changed {{rest}}",
+        "changed_base": "change {{rest}}"
       },
       "noun": {
         "order_one": "{{count}} order",
@@ -909,6 +947,9 @@
       },
       "list_comma": "{{a}}, {{b}}",
       "list_and": "{{head}} and {{last}}"
+    },
+    "app_tag": {
+      "more": "Show {{count}} more apps"
     }
   },
   "account": {
@@ -925,7 +966,24 @@
     "error_balances": "Error loading account balances",
     "error_nfts": "Error loading account NFTs",
     "error_predicate": "Error loading account predicate",
-    "error_transactions": "Error loading account transactions"
+    "error_transactions": "Error loading account transactions",
+    "send": {
+      "title": "Send Asset",
+      "to": "To",
+      "recipient_placeholder": "Enter the recipient address",
+      "amount": "Amount",
+      "max": "Max",
+      "max_selected": "You have selected the max balance",
+      "cancel": "Cancel",
+      "submit": "Send",
+      "sending": "Sending (1/3)",
+      "confirming": "Confirming (2/3)",
+      "redirecting": "Redirecting (3/3)",
+      "error_asset_address": "You cannot send assets to an asset address.",
+      "error_address_type": "You cannot send assets to a {{type}} address.",
+      "warning_checksum": "We couldn't verify the address. Make sure you are sending to a valid address.",
+      "insufficient": "Insufficient balance, please inform an amount lower or equal to your balance."
+    }
   },
   "contract": {
     "title": "Contract",
@@ -953,7 +1011,8 @@
     "nft_tag": "NFT",
     "utxos": "UTXOs ({{count}})",
     "show_utxos": "Show UTXOs",
-    "hide_utxos": "Hide UTXOs"
+    "hide_utxos": "Hide UTXOs",
+    "suspicious_badge": "Suspicious"
   },
   "meta": {
     "home": {
@@ -1017,5 +1076,33 @@
     "error": "Error - Fuel Explorer",
     "tx_title": "Transaction {{id}}... - Fuel Explorer",
     "tx_description": "View details for transaction {{id}} on the Fuel blockchain"
+  },
+  "ui": {
+    "collapsible": {
+      "toggle": "Show or hide details"
+    },
+    "copy": {
+      "tooltip": "Click here to copy to clipboard",
+      "aria": "Copy to clipboard",
+      "copied": "Copied to clipboard",
+      "failed": "Could not copy. Select the text and copy it by hand."
+    },
+    "close": "Close",
+    "nav": {
+      "toggle_menu": "Toggle menu",
+      "toggle_theme": "Toggle theme",
+      "connect": "Connect"
+    },
+    "helper_icon": {
+      "label": "More information"
+    },
+    "password": {
+      "toggle": "Show or hide password"
+    },
+    "select": {
+      "toggle": "Toggle options",
+      "dialog": "Select an option",
+      "options": "Options"
+    }
   }
 }

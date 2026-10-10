@@ -38,7 +38,7 @@ export function TxOutputCoin({ output, txStatus }: TxOutputCoinProps) {
             size={16}
             className={
               isFailure
-                ? 'text-[var(--red-10)]'
+                ? 'text-[var(--fuel-danger-text)]'
                 : 'text-[var(--fuel-brand-text)]'
             }
           />

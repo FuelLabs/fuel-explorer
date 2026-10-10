@@ -5,7 +5,6 @@ import {
   LoadingBox,
   LoadingWrapper,
   Reveal,
-  Theme,
 } from '@fuels/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,21 +28,9 @@ import TotalDapps from '../TotalDapps/TotalDapps';
 function Hero() {
   const classes = heroStyles();
   const { t } = useTranslation();
-  const {
-    isPending: isChartsLoading,
-    isError: isChartsError,
-    data: chartsData,
-  } = useHomeCharts();
-  const {
-    isPending: isRollingLoading,
-    isError: isRollingError,
-    data: rollingData,
-  } = useRollingStats();
-  const {
-    isPending: isBlocksLoading,
-    isError: isBlocksError,
-    data: blocksData,
-  } = useDashboardBlocks();
+  const { isPending: isChartsLoading, data: chartsData } = useHomeCharts();
+  const { isPending: isRollingLoading, data: rollingData } = useRollingStats();
+  const { isPending: isBlocksLoading, data: blocksData } = useDashboardBlocks();
   const ecosystemProjects = useTopEcosystem();
   const isEcosystemLoading = ecosystemProjects.isPending;
 
@@ -78,12 +65,10 @@ function Hero() {
     };
   }, [ecosystemProjects, chartsData, rollingData, blocksData]);
 
-  const chartsUnavailable =
-    isChartsError || (!isChartsLoading && !totalTpsData && !totalFeeData);
-  const rollingUnavailable =
-    isRollingError || (!isRollingLoading && !rollingStats60sData);
-  const blocksUnavailable =
-    isBlocksError || (!isBlocksLoading && blocks.length === 0);
+  // A failed poll keeps the last good payload; only no data at all is unavailable.
+  const chartsUnavailable = !isChartsLoading && !totalTpsData && !totalFeeData;
+  const rollingUnavailable = !isRollingLoading && !rollingStats60sData;
+  const blocksUnavailable = !isBlocksLoading && blocks.length === 0;
   const ecosystemUnavailable = !isEcosystemLoading && totalProjects === 0;
 
   const { top: mostUsed } = useBlockApps(
@@ -93,7 +78,7 @@ function Hero() {
   );
 
   return (
-    <Theme appearance="light">
+    <>
       <Box className={classes.root()}>
         <Box className={classes.container()}>
           <Heading as="h1" className="sr-only">
@@ -101,7 +86,10 @@ function Hero() {
           </Heading>
           <GridFrame className={classes.searchWrapper()}>
             {/* Row 1-2, Col 1-4: Daily Transactions */}
-            <Reveal className="row-span-2 col-span-12 laptop:col-span-4">
+            <Reveal
+              immediate
+              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-4"
+            >
               <LoadingWrapper
                 isLoading={isChartsLoading}
                 noItems={chartsUnavailable}
@@ -117,8 +105,8 @@ function Hero() {
 
             {/* Row 1-2, Col 5-7: Fuel Dapps */}
             <Reveal
-              delay={0.05}
-              className="row-span-2 col-span-12 laptop:col-span-3"
+              immediate
+              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-3"
             >
               <LoadingWrapper
                 isLoading={isEcosystemLoading}
@@ -132,6 +120,7 @@ function Hero() {
                     active={activeProjects}
                     total={totalProjects}
                     featured={mostUsed.length ? mostUsed : top3Projects}
+                    ranked={mostUsed.length > 0}
                   />
                 }
               />
@@ -139,7 +128,7 @@ function Hero() {
 
             {/* Row 1-4, Col 8-12: Latest Block + Recent Blocks */}
             <Reveal
-              delay={0.1}
+              immediate
               className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-px bg-[var(--fuel-line)]"
             >
               <LoadingWrapper
@@ -177,7 +166,7 @@ function Hero() {
             {/* Row 3-4, Col 1-4: Hourly TPS */}
             <Reveal
               delay={0.15}
-              className="row-span-2 col-span-12 laptop:col-span-4"
+              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-4"
             >
               <LoadingWrapper
                 isLoading={isChartsLoading}
@@ -198,7 +187,7 @@ function Hero() {
             {/* Row 3-4, Col 5-7: Fee Spent */}
             <Reveal
               delay={0.2}
-              className="row-span-2 col-span-12 laptop:col-span-3"
+              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-3"
             >
               <LoadingWrapper
                 isLoading={isChartsLoading}
@@ -213,7 +202,7 @@ function Hero() {
           </GridFrame>
         </Box>
       </Box>
-    </Theme>
+    </>
   );
 }
 

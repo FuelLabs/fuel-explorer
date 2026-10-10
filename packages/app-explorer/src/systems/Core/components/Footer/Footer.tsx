@@ -115,6 +115,7 @@ export function Footer() {
             <Link
               className={classes.socialIcon()}
               href="https://x.com/fuel_network"
+              aria-label="X"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -123,6 +124,7 @@ export function Footer() {
             <Link
               className={classes.socialIcon()}
               href="https://discord.com/invite/xfpK4Pe"
+              aria-label="Discord"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -131,6 +133,7 @@ export function Footer() {
             <Link
               className={classes.socialIcon()}
               href="https://www.youtube.com/channel/UCam2Sj3SvFSAIfDbP-4jWZQ"
+              aria-label="YouTube"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -139,6 +142,7 @@ export function Footer() {
             <Link
               className={classes.socialIcon()}
               href="https://t.me/fuelcommunity"
+              aria-label="Telegram"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -149,10 +153,7 @@ export function Footer() {
             <Text className={classes.meta()} size="2">
               {t('footer.rights', { year: dayjs().year() })}
             </Text>
-            <Text
-              className={classes.meta({ className: 'opacity-50' })}
-              size="2"
-            >
+            <Text className={classes.meta()} size="2">
               {t('footer.version', { hash: APP_COMMIT_HASH })}
             </Text>
           </HStack>
@@ -173,7 +174,7 @@ const styles = tv({
     ],
     social: ['mt-12'],
     socialIcon: [
-      'text-heading opacity-50 hover:opacity-100 transition-opacity duration-300',
+      'fuel-hit relative inline-flex text-[var(--fuel-element-mid-em)] hover:text-heading transition-colors duration-300',
     ],
     navs: ['flex flex-wrap justify-around gap-y-10 w-full max-w-screen-md'],
     nav: ['w-full tablet:w-1/2 desktop:w-auto'],
@@ -181,9 +182,9 @@ const styles = tv({
       'font-mono font-medium text-[12px] leading-none uppercase tracking-[0.05em] justify-start text-heading',
     ],
     navList: ['flex flex-col gap-0'],
-    meta: ['text-muted'],
+    meta: ['text-[var(--fuel-element-low-em)]'],
     navLink: [
-      'font-mono font-medium text-[14px] leading-[18px] uppercase tracking-[0.05em] text-color hover:text-heading hover:no-underline transition-colors duration-300',
+      'inline-flex min-h-11 items-center font-mono font-medium text-[14px] leading-[18px] uppercase tracking-[0.05em] text-color hover:text-heading hover:no-underline transition-colors duration-300',
     ],
   },
 });

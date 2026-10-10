@@ -13,7 +13,7 @@ export const ErrorInline = ({ error, className = '' }: ErrorInlineProps) => {
     <HStack gap="2" className={`mb-3 items-center ${className}`}>
       <span
         aria-hidden
-        className="mb-auto mt-[6px] size-2 shrink-0 border border-[var(--red-10)] bg-[var(--red-10)]"
+        className="mb-auto mt-[6px] size-2 shrink-0 border border-[var(--fuel-danger)] bg-[var(--fuel-danger)]"
       />
       <AnimatedError error={error} />
     </HStack>

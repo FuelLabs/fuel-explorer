@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.cache/app-portal.tsbuildInfo",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "outDir": "./dist",
     "baseUrl": ".",

@@ -1,6 +1,8 @@
+import { Button } from '@fuels/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
 import { EcosystemFilterBar } from '~/systems/Ecosystem/components/EcosystemFilterBar';
 import { EcosystemHero } from '~/systems/Ecosystem/components/EcosystemHero';
 import { EcosystemList } from '~/systems/Ecosystem/components/EcosystemList';
@@ -24,7 +26,8 @@ export function EcosystemPageWrapper() {
   const filtered = !!activeSection || !!search.trim();
 
   // Search and section filter on the client, so typing never refetches.
-  const { data, isLoading, error } = useEcosystemProjects(liveOnly);
+  const { data, isLoading, error, refetch, isFetching } =
+    useEcosystemProjects(liveOnly);
 
   const projects = useMemo(() => data?.initialProjects ?? [], [data]);
   const sectionsWithProjects = useMemo(
@@ -82,11 +85,29 @@ export function EcosystemPageWrapper() {
         />
         {isLoading && <EcosystemSectionSkeleton />}
         {error && (
-          <p className="m-0 text-[var(--red-11)]">
-            {t('ecosystem.load_error', { message: error.message })}
-          </p>
+          <PageState
+            tone="error"
+            title={t('ecosystem.load_error_title')}
+            description={t('ecosystem.load_error_body')}
+            action={
+              <Button
+                variant="surface"
+                color="gray"
+                onClick={() => refetch()}
+                isLoading={isFetching}
+              >
+                {t('core.retry')}
+              </Button>
+            }
+          />
         )}
-        {data && filtered && (
+        {data && projects.length === 0 && (
+          <PageState
+            title={t('ecosystem.empty_title')}
+            description={t('ecosystem.empty_body')}
+          />
+        )}
+        {data && projects.length > 0 && filtered && (
           // Keyed by section so choosing another one re-enters the list. Typing
           // keeps the same section, so results never replay on a keystroke.
           <section key={activeSection} className="flex flex-col gap-6">
@@ -110,7 +131,7 @@ export function EcosystemPageWrapper() {
             )}
           </section>
         )}
-        {data && !filtered && (
+        {data && projects.length > 0 && !filtered && (
           <>
             {suite.length > 0 && (
               <EcosystemSection section={SUITE_SECTION} projects={suite} />

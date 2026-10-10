@@ -15,10 +15,9 @@ type ClaimRewardStatusDialogProps = {
 const v2 = TOKENS[FuelToken.V2];
 const { symbol, decimals } = v2;
 
-export const ClaimRewardStatusDialog = ({
+const ClaimRewardStatusDialogContent = ({
   identifier,
-}: ClaimRewardStatusDialogProps) => {
-  if (!identifier) return null;
+}: { identifier: string }) => {
   const { t } = useTranslation();
 
   const {
@@ -88,7 +87,7 @@ export const ClaimRewardStatusDialog = ({
         isFinalized ? t('staking.status.rewards_claimed_on') : undefined
       }
       finalizedAt={dateFinalized}
-      minHeightClass="min-h-[350px]"
+      minHeightClass="tablet:min-h-[350px]"
     >
       {CLAIM_STEPS.filter((step) => {
         if (step.status === 'Skipped') {
@@ -127,3 +126,12 @@ export const ClaimRewardStatusDialog = ({
     </StatusLayout>
   );
 };
+
+// Hooks cannot sit below an early return, so the dialog body mounts only
+// once there is an identifier.
+export const ClaimRewardStatusDialog = ({
+  identifier,
+}: ClaimRewardStatusDialogProps) =>
+  identifier ? (
+    <ClaimRewardStatusDialogContent identifier={identifier} />
+  ) : null;

@@ -3,6 +3,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { StaleNotice } from '~/systems/Core/components/PageState/StaleNotice';
 import { SyncStatusMonitor } from '~/systems/Core/components/SyncStatusMonitor/SyncStatusMonitor';
 import { fetchTxsData } from '~/systems/Transactions/actions/fetchTxsData';
 import { TxList } from '~/systems/Transactions/components/TxList/TxList';
@@ -33,6 +34,9 @@ export function HomePage({
     <>
       <SyncStatusMonitor />
       <TxsTitle />
+      {isError && txs && (
+        <StaleNotice message={t('core.stale_data')} onRetry={() => refetch()} />
+      )}
       {isError && !txs ? (
         <PageState
           title={t('home.error_title')}

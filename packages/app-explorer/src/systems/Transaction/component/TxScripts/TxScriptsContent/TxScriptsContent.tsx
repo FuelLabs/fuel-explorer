@@ -44,12 +44,17 @@ function _TxScriptsContent({ tx, opened }: ScriptsContentProps) {
     ),
   );
 
-  // Long lists keep the first and last receipt in place and fold everything
-  // between them, so opening grows the list instead of swapping it. The
-  // Expand and Collapse control lives in the section header.
+  // More than three receipts show the first and the last until expanded.
+  // Receipts in between are not mounted. The Expand control is in the header.
   const foldable = hasFoldedOperations(tx);
   const open = !foldable || Boolean(opened);
-  const lastOp = operations.length - 1;
+  // First and last receipt over the flattened list, so an operation with no
+  // receipts at either end does not hide the pinned rows.
+  const withReceipts = operations
+    .map((o, i) => (o?.receipts?.length ? i : -1))
+    .filter((i) => i >= 0);
+  const firstOp = withReceipts[0] ?? 0;
+  const lastOp = withReceipts[withReceipts.length - 1] ?? operations.length - 1;
   const lastIdx = (operations[lastOp]?.receipts?.length ?? 0) - 1;
 
   const foldedMarker = (
@@ -64,50 +69,55 @@ function _TxScriptsContent({ tx, opened }: ScriptsContentProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      {operations.map((item, i) => (
-        <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
-          {item?.receipts?.map((receipt, idx) => {
-            const key = `${idx}-${receipt?.item?.receiptType ?? ''}`;
-            const isFirst = i === 0 && idx === 0;
-            const isLast = i === lastOp && idx === lastIdx;
-            const pinned = foldable && (isFirst || isLast);
-            const subs = receipt?.receipts?.length ? (
-              <ReceiptItemR
-                receipts={receipt.receipts as GQLOperationReceipt[]}
-                hasPanic={hasPanic}
-              />
-            ) : null;
-            const row = (
-              <div
-                key={key}
-                data-nested={open || !pinned}
-                className={`${classes.operation()} fuel-appear`}
-              >
-                <ReceiptItem
-                  receipt={receipt as GQLOperationReceipt}
-                  isIndented={idx > 0 && (open || !pinned)}
-                  hasPanic={hasPanic}
-                />
-                {pinned && subs ? <Fold open={open}>{subs}</Fold> : subs}
-              </div>
-            );
-            if (!foldable || isLast) return row;
-            if (isFirst) {
-              return (
-                <Fragment key={key}>
-                  {row}
-                  <Fold open={!open}>{foldedMarker}</Fold>
-                </Fragment>
+      {operations.map((item, i) => {
+        if (foldable && !open && i !== firstOp && i !== lastOp) return null;
+        return (
+          <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
+            {item?.receipts?.map((receipt, idx) => {
+              const key = `${idx}-${receipt?.item?.receiptType ?? ''}`;
+              const isFirst = i === firstOp && idx === 0;
+              const isLast = i === lastOp && idx === lastIdx;
+              if (foldable && !open && !isFirst && !isLast) return null;
+              const pinned = foldable && (isFirst || isLast);
+              const subs =
+                receipt?.receipts?.length && (!pinned || open) ? (
+                  <ReceiptItemR
+                    receipts={receipt.receipts as GQLOperationReceipt[]}
+                    hasPanic={hasPanic}
+                  />
+                ) : null;
+              const row = (
+                <div
+                  key={key}
+                  data-nested={open || !pinned}
+                  className={`${classes.operation()} fuel-appear`}
+                >
+                  <ReceiptItem
+                    receipt={receipt as GQLOperationReceipt}
+                    isIndented={idx > 0 && (open || !pinned)}
+                    hasPanic={hasPanic}
+                  />
+                  {pinned && subs ? <Fold open={open}>{subs}</Fold> : subs}
+                </div>
               );
-            }
-            return (
-              <Fold key={key} open={open}>
-                {row}
-              </Fold>
-            );
-          })}
-        </div>
-      ))}
+              if (!foldable || isLast) return row;
+              if (isFirst) {
+                return (
+                  <Fragment key={key}>
+                    {row}
+                    <Fold open={!open}>{foldedMarker}</Fold>
+                  </Fragment>
+                );
+              }
+              return (
+                <Fold key={key} open={open}>
+                  {row}
+                </Fold>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -1,18 +1,21 @@
 import { useTranslation } from 'react-i18next';
 import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import type { StakingEvent } from '../../types/l1/events';
+import {
+  StatusMarker,
+  type StatusMarkerKind,
+} from '../StatusMarker/StatusMarker';
 import { type EventStatus, eventStatus } from './constants';
 
 interface TransactionHistoryItemStatusProps {
   event: StakingEvent;
 }
 
-const MARKER: Record<EventStatus, string> = {
-  completed: 'border-[var(--fuel-primary)] bg-[var(--fuel-primary)]',
-  action:
-    'border-[var(--fuel-element-high-em)] bg-[var(--fuel-element-high-em)]',
-  failed: 'border-[var(--red-10)] bg-[var(--red-10)]',
-  progress: 'border-[var(--fuel-indicator-border)] bg-transparent',
+const MARKER: Record<EventStatus, StatusMarkerKind> = {
+  completed: 'done',
+  action: 'action',
+  failed: 'error',
+  progress: 'pending',
 };
 
 const LABEL: Record<EventStatus, string> = {
@@ -37,10 +40,7 @@ export const TransactionHistoryItemStatus = ({
   return (
     <div className="flex min-w-0 flex-col gap-2">
       <span className="flex items-center gap-2">
-        <span
-          aria-hidden
-          className={`size-2 shrink-0 border ${MARKER[status]}`}
-        />
+        <StatusMarker kind={MARKER[status]} />
         <span className="fuel-label text-[var(--fuel-element-mid-em)]">
           {t(LABEL[status])}
         </span>

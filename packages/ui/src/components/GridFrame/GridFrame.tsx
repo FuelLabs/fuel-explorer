@@ -60,9 +60,16 @@ export function GridFrame({
   useLayoutEffect(() => {
     const frame = ref.current;
     if (!frame) return;
-    const resize = new ResizeObserver(() => {
+    // An animated cell fires the observer on every frame, so measure once per frame at most.
+    let pending = 0;
+    const measure = () => {
+      pending = 0;
       const next = findJoints(frame);
       setJoints((prev) => (sameJoints(prev, next) ? prev : next));
+    };
+    const resize = new ResizeObserver(() => {
+      if (pending) return;
+      pending = requestAnimationFrame(measure);
     });
     const observeCells = () => {
       resize.observe(frame);
@@ -74,6 +81,7 @@ export function GridFrame({
     mutations.observe(frame, { childList: true, subtree: true });
     observeCells();
     return () => {
+      cancelAnimationFrame(pending);
       resize.disconnect();
       mutations.disconnect();
     };

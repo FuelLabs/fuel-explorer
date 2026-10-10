@@ -1,7 +1,6 @@
 {
   "common": {
     "view_all": "すべて見る",
-    "top_apps": "トップアプリ",
     "language": "言語",
     "search": "ブロック、トランザクション、コントラクト、アドレスで検索...",
     "search_short": "検索",
@@ -28,7 +27,8 @@
     "building": "開発中: {{count}}",
     "window_24h": "24時間",
     "read_docs": "ドキュメント",
-    "questions": "質問"
+    "questions": "質問",
+    "search_loading": "結果を読み込み中"
   },
   "nav": {
     "explorer": "エクスプローラー",
@@ -61,7 +61,9 @@
     "avg_tps": "時間平均",
     "error_title": "取引を読み込めませんでした",
     "error_description": "最新の取引を読み込めませんでした。もう一度お試しください。",
-    "unavailable": "データを取得できません"
+    "unavailable": "データを取得できません",
+    "apps_recently_active": "最近アクティブ",
+    "apps_featured": "注目のアプリ"
   },
   "ecosystem": {
     "eyebrow": "Fuel エコシステム",
@@ -107,14 +109,17 @@
     "app_count_other": "{{count}} 件のアプリ",
     "show_all": "すべて表示",
     "no_results": "アプリが見つかりません。",
-    "load_error": "プロジェクトの読み込みエラー: {{message}}",
     "spotlight": {
       "title": "Fuel で動く完全オンチェーンの現物 DEX",
       "lead": "o2 Turbo の拠点：最大 $10k のプロップトレード資金を獲得。審査なし、利益は 100% あなたのもの。",
       "cta": "取引する",
       "view_project": "プロジェクトを見る",
       "image_alt": "{{name}} の製品スクリーンショット"
-    }
+    },
+    "load_error_title": "プロジェクトを読み込めませんでした",
+    "load_error_body": "接続を確認して、もう一度お試しください。",
+    "empty_title": "プロジェクトはまだありません",
+    "empty_body": "プロジェクトが登録されるとここに表示されます。"
   },
   "footer": {
     "fuel": "FUEL",
@@ -166,7 +171,9 @@
       "type_all": "すべての種類",
       "refresh": "リストを更新",
       "no_match": "条件に一致するトランザクションはありません。",
-      "clear": "絞り込みを解除"
+      "clear": "絞り込みを解除",
+      "load_error": "トランザクションの取得に失敗しました。問題が発生しました。後でもう一度お試しください。",
+      "truncated": "1,000件を超えるイベントは読み込まれていません。"
     },
     "account": {
       "connect_wallet": "ウォレットを接続",
@@ -298,7 +305,11 @@
       "undelegation_completed_on": "委任解除の完了日時",
       "waiting_confirmation": "取引の承認を待機中",
       "waiting_user": "ユーザー操作待ち",
-      "withdrawal_finalized_on": "引き出しの確定日時"
+      "withdrawal_finalized_on": "引き出しの確定日時",
+      "step_done": "完了",
+      "step_active": "進行中",
+      "step_failed": "失敗",
+      "step_pending": "未開始"
     },
     "table": {
       "commission": "手数料率",
@@ -349,9 +360,11 @@
     "lane_rig": "The Rig",
     "lane_ethereum": "Ethereum",
     "lane_rig_figure": "請求可能",
+    "lane_rig_connect": "stFUEL を請求できるか確認するには、ここでウォレットを接続してください。",
+    "lane_rig_checking": "請求可能残高を確認しています...",
     "lane_ethereum_figure": "ステーキング中",
     "board": {
-      "title": "対応待ち",
+      "title": "未完了の項目",
       "count_other": "{{count}} 件",
       "col_lane": "方法",
       "col_what": "内容",
@@ -365,7 +378,9 @@
       "in_progress": "処理中",
       "claim": "請求",
       "continue": "続行",
-      "details": "詳細"
+      "details": "詳細",
+      "load_error": "未完了の項目の取得に失敗しました。問題が発生しました。後でもう一度お試しください。",
+      "truncated": "1,000件を超えるイベントは読み込まれていません。"
     },
     "event_type": {
       "stake": "ステーク",
@@ -394,6 +409,9 @@
     "apr": {
       "value": "~{{apy}}% APR",
       "tip": "トークンをFuelバリデーターに委任して、Fuelシーケンシングの安全性を高めましょう。"
+    },
+    "date": {
+      "unknown": "不明"
     }
   },
   "errors": {
@@ -426,7 +444,9 @@
       "none": "まだ送金はありません。入金と出金はここに表示されます。",
       "empty": "処理中のものはありません。完了した送金は履歴にあります。",
       "open_history": "履歴を開く",
-      "loading": "送金を読み込み中"
+      "loading": "送金を読み込み中",
+      "truncated_one": "ここで確認されるのは最新の送金のみです。それより古い送金が進行中の場合があります。履歴を開いて確認してください。",
+      "truncated_other": "ここで確認されるのは最新の{{count}}件の送金のみです。それより古い送金が進行中の場合があります。履歴を開いて確認してください。"
     },
     "title": "ブリッジ",
     "read_docs": "ドキュメント",
@@ -468,7 +488,18 @@
       "code": "コード"
     },
     "copy": {
-      "copy": "コピー"
+      "copy": "コピー",
+      "tooltip": "クリックしてクリップボードにコピー",
+      "aria": "クリップボードにコピー",
+      "copied": "クリップボードにコピーしました"
+    },
+    "amount": {
+      "balance": "残高",
+      "max": "最大",
+      "max_label": "最大",
+      "coin_selector": "コイン選択",
+      "available": "利用可能",
+      "relative_usd": "USD換算額:"
     },
     "info_hint": {
       "label": "詳細情報"
@@ -477,7 +508,8 @@
       "title": "トークンマネージャー",
       "subtitle": "コントリビューター付与とFuelトークンの解放スケジュールを管理します。",
       "stake_tokens": "Fuelトークンをステーク"
-    }
+    },
+    "stale_data": "更新できませんでした。最後に読み込んだデータを表示しています。"
   },
   "block": {
     "title": "ブロック",
@@ -558,7 +590,9 @@
       "withdraw_warning_accept": "この出金が週間上限を超えており、リレー中にブロックされることを理解しています。それでも続行します。",
       "terms_label": "利用規約",
       "terms_accept": "更新された以下の内容を読み、同意します:",
-      "terms_link": "利用規約"
+      "terms_link": "利用規約",
+      "progress_label": "送金の進捗",
+      "amount_label": "ブリッジする金額"
     },
     "overview": {
       "transaction_id": "トランザクションID",
@@ -646,6 +680,10 @@
       "deposit_started": "入金を開始しました。ポップアップを閉じて構いません。",
       "withdraw_started": "出金を開始しました。ポップアップを閉じて構いません。",
       "user_rejected": "ユーザーがトランザクションを拒否しました"
+    },
+    "assets_toast": {
+      "add_failed": "ウォレットへのアセット追加に失敗しました",
+      "faucet_success": "ウォレットにトークンを追加しました"
     }
   },
   "tx": {
@@ -888,6 +926,9 @@
       },
       "list_comma": "{{a}}、{{b}}",
       "list_and": "{{head}}、{{last}}"
+    },
+    "app_tag": {
+      "more": "他{{count}}件のアプリを表示"
     }
   },
   "account": {
@@ -904,7 +945,24 @@
     "error_balances": "アカウント残高の読み込みエラー",
     "error_nfts": "アカウントの NFT の読み込みエラー",
     "error_predicate": "アカウントのプレディケートの読み込みエラー",
-    "error_transactions": "アカウントのトランザクションの読み込みエラー"
+    "error_transactions": "アカウントのトランザクションの読み込みエラー",
+    "send": {
+      "title": "アセットを送信",
+      "to": "宛先",
+      "recipient_placeholder": "受取人のアドレスを入力",
+      "amount": "金額",
+      "max": "最大",
+      "max_selected": "最大残高を選択しています",
+      "cancel": "キャンセル",
+      "submit": "送信",
+      "sending": "送信中 (1/3)",
+      "confirming": "確認中 (2/3)",
+      "redirecting": "移動中 (3/3)",
+      "error_asset_address": "アセットアドレスにはアセットを送信できません。",
+      "error_address_type": "{{type}}アドレスにはアセットを送信できません。",
+      "warning_checksum": "アドレスを検証できませんでした。有効なアドレスに送信していることを確認してください。",
+      "insufficient": "残高が不足しています。残高以下の金額を入力してください。"
+    }
   },
   "contract": {
     "title": "コントラクト",
@@ -932,7 +990,8 @@
     "nft_tag": "NFT",
     "utxos": "UTXO ({{count}})",
     "show_utxos": "UTXO を表示",
-    "hide_utxos": "UTXO を隠す"
+    "hide_utxos": "UTXO を隠す",
+    "suspicious_badge": "不審"
   },
   "meta": {
     "home": {
@@ -996,5 +1055,33 @@
     "error": "エラー - Fuel Explorer",
     "tx_title": "トランザクション {{id}}... - Fuel Explorer",
     "tx_description": "Fuelブロックチェーン上のトランザクション {{id}} の詳細を表示"
+  },
+  "ui": {
+    "collapsible": {
+      "toggle": "詳細を表示または非表示"
+    },
+    "copy": {
+      "tooltip": "クリックしてクリップボードにコピー",
+      "aria": "クリップボードにコピー",
+      "copied": "クリップボードにコピーしました",
+      "failed": "コピーできませんでした。テキストを選択して手動でコピーしてください。"
+    },
+    "close": "閉じる",
+    "nav": {
+      "toggle_menu": "メニューを切り替え",
+      "toggle_theme": "テーマを切り替え",
+      "connect": "接続"
+    },
+    "helper_icon": {
+      "label": "詳細情報"
+    },
+    "password": {
+      "toggle": "パスワードを表示または非表示"
+    },
+    "select": {
+      "toggle": "選択肢を切り替え",
+      "dialog": "オプションを選択",
+      "options": "オプション"
+    }
   }
 }

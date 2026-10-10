@@ -96,7 +96,7 @@ export const StepConvert = ({ token, ctx, onClose }: StepConvertProps) => {
                 </Tooltip>
               }
             />
-            <span className="fuel-label">{symbolV1}</span>
+            <span className="fuel-label normal-case">{symbolV1}</span>
           </div>
         </div>
         <div className="flex flex-col gap-3 border-t border-[var(--fuel-border)] pt-4">
@@ -116,7 +116,7 @@ export const StepConvert = ({ token, ctx, onClose }: StepConvertProps) => {
                 </Tooltip>
               }
             />
-            <span className="fuel-label">{symbolV2}</span>
+            <span className="fuel-label normal-case">{symbolV2}</span>
           </div>
         </div>
         <AnimatedError

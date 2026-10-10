@@ -1,6 +1,5 @@
 import { Box } from '@fuels/ui';
 import { BridgePausedBanner, PageTitle } from 'app-commons';
-import { Routes } from 'app-commons';
 
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +8,7 @@ import { tv } from 'tailwind-variants';
 import { BridgeHistoryToggle } from '../components/BridgeHistoryToggle/BridgeHistoryToggle';
 import { LayerSwapBanner } from '../components/LayerSwapBanner/LayerSwapBanner';
 import { BridgeTabs } from '../containers/BridgeTabs';
+import { isBridgeHistory as isHistoryPath } from '../utils/isBridgeHistory';
 
 type BridgeHomeProps = {
   children: ReactNode;
@@ -20,7 +20,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
   const { t } = useTranslation();
   const classes = styles();
   const location = useLocation();
-  const isBridgeHistory = location.pathname === Routes.bridgeHistory();
+  const isBridgeHistory = isHistoryPath(location.pathname);
 
   return (
     <Box className={classes.content()}>

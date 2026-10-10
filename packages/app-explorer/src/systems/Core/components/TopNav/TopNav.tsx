@@ -1,7 +1,8 @@
-import { Box, Flex, HStack, Nav, useBreakpoints } from '@fuels/ui';
+import { Box, Flex, HStack, Nav } from '@fuels/ui';
 import { isRoute } from 'app-commons';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useMedia } from 'react-use';
 
 import { Routes as PortalRoutes } from 'app-commons';
 import { ConnectWallet } from 'app-portal';
@@ -17,7 +18,8 @@ export function TopNav() {
   // nav elements are in the DOM and respond to click events.
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const { isLaptop } = useBreakpoints();
+  // The nav switches between its two layouts at the md breakpoint (1024 px).
+  const isLaptop = useMedia('(min-width: 1024px)', true);
   const { t } = useTranslation();
   const location = useLocation();
   const { setTheme, resolvedTheme } = useTheme();
@@ -60,7 +62,7 @@ export function TopNav() {
   );
 
   const logo = (
-    <Link to="/" className="flex items-center">
+    <Link to="/" className="fuel-hit relative flex items-center">
       <Nav.Logo />
     </Link>
   );

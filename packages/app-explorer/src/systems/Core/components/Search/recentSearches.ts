@@ -73,7 +73,14 @@ export function hitsFromResult(
       href: `/account/${predicate}/assets`,
     });
   }
-  return hits;
+  // An address can be both the account and a predicate. Show it once.
+  const seen = new Set<string>();
+  return hits.filter((hit) => {
+    const key = `${hit.kind}:${hit.value.toLowerCase()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 // Stored per origin, so each network keeps its own list.

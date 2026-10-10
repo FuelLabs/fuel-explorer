@@ -22,7 +22,13 @@ const CopyButton = ({ value, text, className, ...props }: CopyButtonProps) => {
   const { t } = useTranslation();
   const size = props.size || '1';
   const variant = props.variant || 'ghost';
-  const { copied, markCopied } = useCopied();
+  const { copied, failed, copy } = useCopied();
+  const copiedLabel = t('ui.copy.copied', {
+    defaultValue: 'Copied to clipboard',
+  });
+  const failedLabel = t('ui.copy.failed', {
+    defaultValue: 'Could not copy. Select the text and copy it by hand.',
+  });
   const iconSize = COPY_ICON_SIZES[size as string] ?? 15;
 
   return (
@@ -36,11 +42,16 @@ const CopyButton = ({ value, text, className, ...props }: CopyButtonProps) => {
       variant={variant}
       size={size}
       color="gray"
-      onClick={async () => {
-        await navigator.clipboard.writeText(value);
-        markCopied();
+      aria-label={
+        copied ? copiedLabel : failed ? failedLabel : t('core.copy.aria')
+      }
+      onClick={() => {
+        void copy(value);
       }}
     >
+      <span role="status" className="sr-only">
+        {copied ? copiedLabel : failed ? failedLabel : ''}
+      </span>
       {text ?? t('core.copy.copy')}
       <span
         aria-hidden

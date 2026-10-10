@@ -144,7 +144,7 @@ function _ReviewStake({
               <Tooltip content={t('staking.dialog.approved')}>
                 <IconCheck
                   size={20}
-                  className="fuel-appear shrink-0 text-[var(--fuel-primary)]"
+                  className="fuel-appear shrink-0 text-[var(--fuel-brand-text)]"
                 />
               </Tooltip>
             )}

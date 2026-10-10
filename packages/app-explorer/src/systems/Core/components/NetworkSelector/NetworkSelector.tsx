@@ -18,7 +18,7 @@ function NetworkItem({
     <Dropdown.Item
       key={chain.id}
       className={clsx('px-4', {
-        'hover:bg-gray-3': !selected,
+        'hover:bg-[var(--fuel-muted)]': !selected,
         'hover:bg-transparent': selected,
       })}
       disabled={selected}
@@ -48,7 +48,7 @@ export function NetworkSelector() {
           color="gray"
           size="1"
           rightIcon={IconChevronDown}
-          className="m-0 h-10 px-4 text-color-gray-3"
+          className="m-0 h-10 px-4 text-[var(--fuel-element-mid-em)]"
         >
           {FUEL_CHAIN.name.replace(/fuel/i, '').trim()}
         </Button>
@@ -64,7 +64,7 @@ export function NetworkSelector() {
               />
             ))}
             <Flex gap={'1'} width={'140px'} className="my-2">
-              <Box className="border-t w-full border-gray-3" />
+              <Box className="border-t w-full border-[var(--fuel-line)]" />
             </Flex>
           </>
         ) : null}

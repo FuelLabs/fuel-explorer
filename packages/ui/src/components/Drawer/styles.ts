@@ -3,14 +3,14 @@ import { tv } from 'tailwind-variants';
 export const styles = tv({
   slots: {
     overlay: [
-      'fixed inset-0 z-50 bg-black/50',
+      'fixed inset-0 z-50 bg-[var(--fuel-scrim)]',
       'data-[state=open]:animate-in data-[state=closed]:animate-out',
       'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
     ],
     closeIcon: [
       'fuel-hover-fill absolute right-4 top-4 h-8 w-8 flex items-center justify-center',
       'focus:outline-none focus-visible:outline focus-visible:outline-1',
-      'focus-visible:outline-[var(--fuel-primary)]',
+      'focus-visible:outline-[var(--fuel-focus)]',
       'disabled:pointer-events-none',
     ],
     content: [

@@ -1,54 +1,54 @@
 import { Spinner } from '@fuels/ui';
 import { IconCheck } from '@fuels/ui';
-import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
+import {
+  BRIDGE_STEP_ID,
+  BRIDGE_STEP_STATUS_ID,
+  type BridgeStep,
+  type BridgeStepId,
+  type BridgeStepStatusId,
+} from './constants';
 
-type Step = {
-  name: string;
-  status: ReactNode;
-  isLoading?: boolean;
-  isDone?: boolean;
-  isSelected?: boolean;
-};
+export * from './constants';
 
 type BridgeStepsProps = {
-  steps?: Step[];
+  steps?: BridgeStep[];
 };
 
-const NAME_KEYS: Record<string, string> = {
-  'Submit to bridge': 'portal.bridge_steps.submit_to_bridge',
-  Settlement: 'portal.bridge_steps.settlement',
-  'Confirm transaction': 'portal.bridge_steps.confirm_transaction',
-  'Receive on Ethereum': 'portal.bridge_steps.receive_on_ethereum',
-  'Receive on Fuel': 'portal.bridge_steps.receive_on_fuel',
+const NAME_KEYS: Record<BridgeStepId, string> = {
+  [BRIDGE_STEP_ID.submitToBridge]: 'portal.bridge_steps.submit_to_bridge',
+  [BRIDGE_STEP_ID.settlement]: 'portal.bridge_steps.settlement',
+  [BRIDGE_STEP_ID.confirmTransaction]:
+    'portal.bridge_steps.confirm_transaction',
+  [BRIDGE_STEP_ID.receiveOnEthereum]: 'portal.bridge_steps.receive_on_ethereum',
+  [BRIDGE_STEP_ID.receiveOnFuel]: 'portal.bridge_steps.receive_on_fuel',
 };
 
-const STATUS_KEYS: Record<string, string> = {
-  'Done!': 'portal.bridge_steps.done',
-  Waiting: 'portal.bridge_steps.waiting',
-  Automatic: 'portal.bridge_steps.automatic',
-  Action: 'portal.bridge_steps.action',
-  'Action required': 'portal.bridge_steps.action_required',
+const STATUS_KEYS: Record<BridgeStepStatusId, string> = {
+  [BRIDGE_STEP_STATUS_ID.automatic]: 'portal.bridge_steps.automatic',
+  [BRIDGE_STEP_STATUS_ID.action]: 'portal.bridge_steps.action',
+  [BRIDGE_STEP_STATUS_ID.actionRequired]: 'portal.bridge_steps.action_required',
+  [BRIDGE_STEP_STATUS_ID.done]: 'portal.bridge_steps.done',
+  [BRIDGE_STEP_STATUS_ID.waiting]: 'portal.bridge_steps.waiting',
+  [BRIDGE_STEP_STATUS_ID.timeLeft]: 'portal.bridge_steps.time_left',
 };
 
-const TIME_LEFT = /^~(.+) left$/;
+/** Translators for step names and statuses, keyed by id, never by English text. */
+export function useBridgeStepLabels() {
+  const { t } = useTranslation();
+  const stepName = (step: Pick<BridgeStep, 'id'>) => t(NAME_KEYS[step.id]);
+  const stepStatus = (step: Pick<BridgeStep, 'statusId' | 'eta' | 'status'>) =>
+    step.statusId
+      ? t(STATUS_KEYS[step.statusId], { time: step.eta })
+      : step.status;
+  return { stepName, stepStatus };
+}
 
 export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
   const { t } = useTranslation();
+  const { stepName, stepStatus } = useBridgeStepLabels();
   const classes = styles();
-
-  // The hooks keep English ids. Translate only when rendering.
-  const stepName = (name: string) =>
-    NAME_KEYS[name] ? t(NAME_KEYS[name]) : name;
-  const stepStatus = (status: ReactNode) => {
-    if (typeof status !== 'string') return status;
-    if (STATUS_KEYS[status]) return t(STATUS_KEYS[status]);
-    const time = status.match(TIME_LEFT);
-    return time
-      ? t('portal.bridge_steps.time_left', { time: time[1] })
-      : status;
-  };
 
   return (
     <ol className={classes.list()}>
@@ -56,7 +56,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
         const isLast = index === steps.length - 1;
         return (
           <li
-            key={step.name}
+            key={step.id}
             className={classes.item()}
             data-done={step.isDone}
             data-selected={step.isSelected}
@@ -78,7 +78,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
                 </span>
                 {!isLast && <span aria-hidden className={classes.rail()} />}
               </span>
-              <span className={classes.name()}>{stepName(step.name)}</span>
+              <span className={classes.name()}>{stepName(step)}</span>
             </div>
             <div className={classes.statusWrapper()}>
               {step.isLoading && (
@@ -88,14 +88,14 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
               )}
               {/* The key restarts the fade when the status text changes. */}
               <span
-                key={String(step.status)}
+                key={String(stepStatus(step))}
                 aria-label={t('portal.steps.step_status', {
-                  name: stepName(step.name),
-                  status: String(stepStatus(step.status)),
+                  name: stepName(step),
+                  status: String(stepStatus(step)),
                 })}
                 className={`${classes.status()} fuel-appear`}
               >
-                {stepStatus(step.status)}
+                {stepStatus(step)}
               </span>
             </div>
           </li>

@@ -11,7 +11,7 @@ export const styles = tv({
         root: [
           'fuel-hover-fill cursor-pointer border border-transparent',
           'focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-1',
-          'focus-visible:outline-[var(--fuel-primary)]',
+          'focus-visible:outline-[var(--fuel-focus)]',
         ],
       },
     },

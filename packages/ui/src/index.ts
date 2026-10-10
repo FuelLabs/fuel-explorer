@@ -1,6 +1,7 @@
 export { cx } from './utils/css';
 export { shortAddress } from './utils/helpers';
 export { useBreakpoints } from './hooks/useBreakpoints';
+export { useSlidingIndicator } from './hooks/useSlidingIndicator';
 export type * from './utils/types';
 
 export * from './components/Accordion';

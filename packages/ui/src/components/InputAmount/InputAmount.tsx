@@ -14,6 +14,7 @@ import { Tooltip } from '../Tooltip';
 
 import clsx from 'clsx';
 import { mergeProps } from 'react-aria';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { createComponent, withNamespace } from '../../utils/component';
 import { Avatar } from '../Avatar';
@@ -207,14 +208,11 @@ export const InputAmountBalance = createComponent<
   id: 'InputAmountBalance',
   render: (
     _,
-    {
-      className,
-      label = 'Balance',
-      balance: customBalance,
-      children,
-      ...props
-    },
+    { className, label, balance: customBalance, children, ...props },
   ) => {
+    const { t } = useTranslation();
+    const balanceLabel =
+      label ?? t('core.amount.balance', { defaultValue: 'Balance' });
     const { balance: originalBalance, formatOpts } =
       useContext(InputAmountRootCtx);
     const balance = customBalance ?? originalBalance;
@@ -246,13 +244,13 @@ export const InputAmountBalance = createComponent<
           size="1"
           radius="none"
           className={clsx(
-            'fuel-label self-start bg-transparent px-0 text-[var(--fuel-element-mid-em)]',
+            'fuel-label self-start bg-transparent px-0 shadow-none text-[var(--fuel-element-mid-em)]',
             className,
           )}
-          aria-label={label}
+          aria-label={balanceLabel}
           {...props}
         >
-          {label}: {preview}
+          {balanceLabel}: {preview}
         </Badge>
       </Tooltip>
     );
@@ -267,13 +265,15 @@ export const InputAmountButtonMaxBalance = createComponent<
   defaultProps: {
     variant: 'ghost',
     size: '1',
-    color: 'green',
-    children: 'MAX',
+    color: 'gray',
   },
   render: (
     _,
     { className, children, onClick, disabled: disabledProp, ...props },
   ) => {
+    const { t } = useTranslation();
+    const fallback = t('core.amount.max', { defaultValue: 'MAX' });
+    const visible = children ?? fallback;
     const classes = styles();
     const { balance, formatOpts } = useContext(InputAmountRootCtx);
     const { disabled, handleAmountChange } = useContext(InputAmountFieldCtx);
@@ -303,13 +303,13 @@ export const InputAmountButtonMaxBalance = createComponent<
 
     return (
       <Button
-        aria-label="MAX"
+        aria-label={typeof visible === 'string' ? visible : fallback}
         type="button"
         {...mergedProps}
         className={classes.maxBalance({ className })}
         disabled={shouldDisableButton}
       >
-        {children}
+        {visible}
       </Button>
     );
   },
@@ -321,6 +321,7 @@ export const InputAmountCoinSelector = createComponent<
 >({
   id: 'InputAmountCoinSelector',
   render: (_, { className, asset, onClick, ...props }) => {
+    const { t } = useTranslation();
     const classes = styles();
     const { disabled } = useContext(InputAmountFieldCtx);
 
@@ -331,7 +332,9 @@ export const InputAmountCoinSelector = createComponent<
     return (
       <Button
         id="CoinSelector"
-        aria-label="Coin Selector"
+        aria-label={t('core.amount.coin_selector', {
+          defaultValue: 'Coin selector',
+        })}
         variant="surface"
         color="gray"
         onClick={onClick}
@@ -349,13 +352,18 @@ export const InputAmountCoinSelector = createComponent<
         {asset.name}
         {asset.decimals === 0 ? (
           <Badge variant="ghost" color="green" size="1">
-            NFT
+            {t('asset.nft_tag', { defaultValue: 'NFT' })}
           </Badge>
         ) : (
           ''
         )}
         {asset.suspicious && (
-          <Tooltip content="This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.">
+          <Tooltip
+            content={t('asset.suspicious', {
+              defaultValue:
+                'This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.',
+            })}
+          >
             <div className="mx-1">
               <IconAlertOctagon size={16} color="orange" />
             </div>
@@ -382,7 +390,11 @@ const styles = tv({
       'flex-row flex-wrap bg-clip-border w-auto h-auto py-3',
       'first-child:flex-1 first-child:basis-2/5 first-child:indent-[var(--space-3)]',
     ],
-    maxBalance: ['fuel-hover-fill', 'h-6 px-2', 'mr-2', 'rounded-none'],
+    maxBalance: [
+      'fuel-hover-fill fuel-hit fuel-label relative',
+      'h-6 px-2 mr-2 rounded-none',
+      'border border-[var(--fuel-line)] text-[var(--fuel-element-high-em)]',
+    ],
     coinSelector: 'gap-2 text-xs py-1 px-3',
   },
 });

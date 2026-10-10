@@ -1,22 +1,16 @@
 import {
   AnimatePresence,
   type AnimationPlaybackControls,
+  type BezierDefinition,
   animate,
   motion,
-  useIsPresent,
   useReducedMotion,
 } from 'framer-motion';
-import {
-  type ReactNode,
-  useContext,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
-import { UNSAFE_LocationContext } from 'react-router-dom';
+import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { PinLocation } from '../PinLocation/PinLocation';
 
-const EASE_OUT = [0.16, 1, 0.3, 1] as const;
-const EASE_IN = [0.4, 0, 1, 1] as const;
+const EASE_OUT: BezierDefinition = [0.16, 1, 0.3, 1];
+const EASE_IN: BezierDefinition = [0.4, 0, 1, 1];
 
 const HEIGHT_SECONDS = 0.5;
 const ENTER_SECONDS = 0.55;
@@ -53,25 +47,6 @@ const variants = {
     transition: { duration: reduced ? 0.1 : EXIT_SECONDS, ease: EASE_IN },
   }),
 };
-
-/**
- * A panel that is leaving still re-renders when the URL changes, so a tab
- * strip or lane check inside it would flip to the new state while it fades.
- * Pin its location to what it was while it was current.
- */
-function PinLocation({ children }: { children: ReactNode }) {
-  const present = useIsPresent();
-  const context = useContext(UNSAFE_LocationContext);
-  const pinned = useRef(context.location);
-  if (present) pinned.current = context.location;
-  return (
-    <UNSAFE_LocationContext.Provider
-      value={{ ...context, location: pinned.current }}
-    >
-      {children}
-    </UNSAFE_LocationContext.Provider>
-  );
-}
 
 export type TabTransitionProps = {
   /** Identifies the panel. A new value plays the transition. */

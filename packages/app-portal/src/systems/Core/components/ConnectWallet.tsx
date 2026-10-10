@@ -51,7 +51,7 @@ export const ConnectWallet = () => {
             {/* Same height as the language and network controls beside it. */}
             <button
               type="button"
-              className="fuel-edge fuel-hover-fill fuel-label m-0 flex h-10 min-w-[165px] cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-primary)]"
+              className="fuel-edge fuel-hover-fill fuel-label m-0 flex h-10 min-w-[165px] cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]"
             >
               <span className="font-mono normal-case">
                 {shortAddress(account)}
@@ -93,7 +93,7 @@ export const ConnectWallet = () => {
               {t('portal.wallet.bridge_history')}
             </Dropdown.Item>
             <Dropdown.Item
-              className={`${ITEM} text-[var(--red-11)]`}
+              className={`${ITEM} fuel-danger-item`}
               onClick={handleDisconnect}
             >
               <IconLogout size="1em" />
@@ -115,7 +115,7 @@ export const ConnectWallet = () => {
        */}
       <Button
         onClick={connect}
-        className="tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]"
+        className="fuel-hit relative tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]"
         size={{
           initial: '1',
           lg: '2',

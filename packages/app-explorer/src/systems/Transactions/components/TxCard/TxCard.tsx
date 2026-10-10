@@ -19,21 +19,11 @@ import type { GQLRecentTransactionsQuery } from '@fuel-explorer/graphql';
 import { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isValidAddress } from '~/systems/Core/utils/address';
-import {
-  TxChip,
-  type TxChipKind,
-} from '~/systems/Transaction/component/TxItem/TxChip';
+import { TxChip } from '~/systems/Transaction/component/TxItem/TxChip';
+import { TX_STATUS_CHIP } from '~/systems/Transaction/component/TxItem/txStatusChip';
 import type { TxApp } from '../../utils/txAppsCache';
 import { TxAppTag } from '../TxAppTag/TxAppTag';
 import { TxDayTime } from './TxDayTime';
-
-const STATUS_CHIP: Record<string, { kind: TxChipKind; label: string }> = {
-  Success: { kind: 'success', label: 'tx.status.success' },
-  Failure: { kind: 'failed', label: 'tx.status.failed' },
-  Submitted: { kind: 'pending', label: 'tx.status.pending' },
-  Info: { kind: 'neutral', label: 'tx.status.info' },
-  Warning: { kind: 'pending', label: 'tx.status.waiting' },
-};
 
 type TxCardProps = BaseProps<{
   transaction: GQLRecentTransactionsQuery['transactions']['nodes'][number];
@@ -55,7 +45,7 @@ function _TxCard({
   ...props
 }: TxCardProps) {
   const { t } = useTranslation();
-  const statusChip = STATUS_CHIP[tx.statusType as string];
+  const statusChip = TX_STATUS_CHIP[tx.statusType as string];
   const isValid = useMemo(() => isValidAddress(tx.id), [tx.id]);
   const fee = bn(tx.gasCosts?.fee ?? 0);
 
@@ -75,7 +65,7 @@ function _TxCard({
         className={cx(className, 'relative z-10 pointer-events-none')}
       >
         <Card.Body className="flex flex-col gap-4 laptop:flex-row laptop:justify-between">
-          <Box className="flex gap-3 h-[26px] min-w-0 items-center">
+          <Box className="flex flex-wrap gap-x-3 gap-y-1 min-h-[26px] min-w-0 items-center">
             <LoadingWrapper
               isLoading={isLoading}
               loadingEl={<LoadingBox className="w-[50px] h-6" />}
@@ -102,7 +92,7 @@ function _TxCard({
                   loadingEl={<LoadingBox className="w-16 h-5" />}
                   regularEl={
                     <Tooltip content={`${fee.format()} ETH`} delayDuration={0}>
-                      <span className="pointer-events-auto">
+                      <span className="pointer-events-auto flex items-center gap-2">
                         <Text
                           className="text-sm text-[var(--fuel-element-mid-em)]"
                           leftIcon={IconGasStation}
@@ -110,6 +100,9 @@ function _TxCard({
                         >
                           {tx.gasCosts?.feeInUsd}
                         </Text>
+                        <span className="hidden laptop:inline fuel-caption font-mono tabular-nums">
+                          {fee.format()} ETH
+                        </span>
                       </span>
                     </Tooltip>
                   }

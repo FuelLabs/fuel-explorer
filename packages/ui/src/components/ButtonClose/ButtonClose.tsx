@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { IconX } from '../Icons';
 
 import { createComponent } from '../../utils/component';
@@ -9,10 +10,17 @@ export type ButtonCloseProps = Partial<IconButtonProps>;
 export const ButtonClose = createComponent<ButtonCloseProps, typeof IconButton>(
   {
     id: 'ButtonClose',
-    baseElement: IconButton,
-    defaultProps: {
-      'aria-label': 'Close',
-      icon: IconX,
+    render: (_, props) => {
+      const { t } = useTranslation();
+      return (
+        <IconButton
+          {...(props as IconButtonProps)}
+          aria-label={
+            props['aria-label'] ?? t('ui.close', { defaultValue: 'Close' })
+          }
+          icon={props.icon ?? IconX}
+        />
+      );
     },
   },
 );

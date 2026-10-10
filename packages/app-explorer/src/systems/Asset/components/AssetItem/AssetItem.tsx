@@ -125,12 +125,10 @@ export function AssetItem({
                   )}
                   {asset?.suspicious && (
                     <Tooltip content={t('asset.suspicious')}>
-                      <div className="mx-1">
-                        <IconAlertOctagon
-                          size={16}
-                          className="text-[var(--red-10)]"
-                        />
-                      </div>
+                      <span className="mx-1 inline-flex items-center gap-1 text-xs text-[var(--fuel-danger-text)]">
+                        <IconAlertOctagon size={16} aria-hidden />
+                        {t('asset.suspicious_badge')}
+                      </span>
                     </Tooltip>
                   )}
                   {nft?.nft && <AssetNftTag />}

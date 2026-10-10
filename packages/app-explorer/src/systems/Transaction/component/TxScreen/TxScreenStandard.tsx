@@ -2,7 +2,6 @@ import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql';
 import {
   Address,
   HStack,
-  HelperIcon,
   IconArrowUp,
   Link,
   LoadingBox,
@@ -22,14 +21,16 @@ import { useTranslation } from 'react-i18next';
 import { AssetItem } from '~/systems/Asset/components/AssetItem/AssetItem';
 import type { InputContract } from '~/systems/Transaction/component/TxInput/TxInputContract/types';
 
+import { InfoHint } from '~/systems/Core/components/InfoHint/InfoHint';
 import { TxFullDateTimestamp } from '~/systems/Transaction/component/TxFullDateTimestamp/TxFullDateTimestamp';
+import { TX_STATUS_CHIP } from '~/systems/Transaction/component/TxItem/txStatusChip';
 import { TxTimeAgoTimestamp } from '~/systems/Transaction/component/TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 import { useFormatBalance } from '~staking/systems/Core/hooks/useFormatBalance';
 import { TxInput } from '../../component/TxInput/TxInput';
 import { TxOutput } from '../../component/TxOutput/TxOutput';
 import type { TransactionNode, TxIconType, TxStatus } from '../../types';
 import { TxIcon } from '../TxIcon/TxIcon';
-import { TxChip, type TxChipKind } from '../TxItem/TxChip';
+import { TxChip } from '../TxItem/TxChip';
 import { TxFact } from '../TxItem/TxFact';
 import { TxItem, TxItemGroup } from '../TxItem/TxItem';
 import { TxRise, TxSection } from '../TxItem/TxSection';
@@ -47,14 +48,6 @@ type TxScreenProps =
       isLoading: true;
     };
 
-const STATUS_CHIP: Record<string, { kind: TxChipKind; label: string }> = {
-  Success: { kind: 'success', label: 'tx.status.success' },
-  Failure: { kind: 'failed', label: 'tx.status.failed' },
-  Submitted: { kind: 'pending', label: 'tx.status.pending' },
-  Info: { kind: 'neutral', label: 'tx.status.info' },
-  Warning: { kind: 'pending', label: 'tx.status.waiting' },
-};
-
 export function TxScreenStandard({
   transaction: tx,
   isLoading,
@@ -62,7 +55,7 @@ export function TxScreenStandard({
   const { t } = useTranslation();
   const title = tx?.title as string;
   const classes = styles();
-  const statusChip = STATUS_CHIP[tx?.statusType as string];
+  const statusChip = TX_STATUS_CHIP[tx?.statusType as string];
 
   const facts = [
     <TxFact key="type">
@@ -307,7 +300,7 @@ function MintOutputs({
                 ({formatted.display} ETH)
               </span>
             </Tooltip>
-            <HelperIcon message={t('tx.minted_help')} />
+            <InfoHint content={t('tx.minted_help')} />
           </div>
         }
       >

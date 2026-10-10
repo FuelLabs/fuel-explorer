@@ -1,4 +1,4 @@
-import { Skeleton } from '@fuels/ui';
+import { LoadingBox } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
@@ -36,9 +36,7 @@ export function MetadataLogo({
   if (image && !imageFallback) {
     return (
       <div>
-        {isImageLoading && (
-          <Skeleton height={`${size}px`} width={`${size}px`} />
-        )}
+        {isImageLoading && <LoadingBox style={{ height: size, width: size }} />}
         <img
           ref={imgRef}
           src={getProjectImage(image)}

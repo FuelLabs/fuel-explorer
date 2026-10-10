@@ -1,7 +1,6 @@
 {
   "common": {
     "view_all": "모두 보기",
-    "top_apps": "인기 앱",
     "language": "언어",
     "search": "블록, 트랜잭션, 컨트랙트, 주소로 검색...",
     "search_short": "검색",
@@ -28,7 +27,8 @@
     "building": "개발 중: {{count}}",
     "window_24h": "24시간",
     "read_docs": "문서",
-    "questions": "질문"
+    "questions": "질문",
+    "search_loading": "결과 불러오는 중"
   },
   "nav": {
     "explorer": "탐색기",
@@ -61,7 +61,9 @@
     "avg_tps": "시간 평균",
     "error_title": "트랜잭션을 불러올 수 없습니다",
     "error_description": "최신 트랜잭션을 불러오지 못했습니다. 다시 시도해 주세요.",
-    "unavailable": "데이터를 불러올 수 없습니다"
+    "unavailable": "데이터를 불러올 수 없습니다",
+    "apps_recently_active": "최근 활동",
+    "apps_featured": "추천 앱"
   },
   "ecosystem": {
     "eyebrow": "Fuel 생태계",
@@ -107,14 +109,17 @@
     "app_count_other": "앱 {{count}}개",
     "show_all": "모두 보기",
     "no_results": "앱을 찾을 수 없습니다.",
-    "load_error": "프로젝트 로드 오류: {{message}}",
     "spotlight": {
       "title": "Fuel 기반의 완전 온체인 현물 DEX",
       "lead": "o2 Turbo의 본거지: 최대 $10k의 프롭 트레이딩 자금을 받으세요. 평가 없음, 수익은 100% 본인 몫.",
       "cta": "지금 거래",
       "view_project": "프로젝트 보기",
       "image_alt": "{{name}} 제품 스크린샷"
-    }
+    },
+    "load_error_title": "프로젝트를 불러오지 못했습니다",
+    "load_error_body": "연결을 확인하고 다시 시도하세요.",
+    "empty_title": "아직 프로젝트가 없습니다",
+    "empty_body": "프로젝트가 등록되면 여기에 표시됩니다."
   },
   "footer": {
     "fuel": "FUEL",
@@ -166,7 +171,9 @@
       "type_all": "모든 유형",
       "refresh": "목록 새로고침",
       "no_match": "필터와 일치하는 트랜잭션이 없습니다.",
-      "clear": "필터 지우기"
+      "clear": "필터 지우기",
+      "load_error": "트랜잭션을 불러오지 못했습니다. 문제가 발생했으니 나중에 다시 시도해 주세요.",
+      "truncated": "1,000건을 넘는 이벤트는 불러오지 않았습니다."
     },
     "account": {
       "connect_wallet": "지갑 연결",
@@ -298,7 +305,11 @@
       "undelegation_completed_on": "위임 해제 완료 일시",
       "waiting_confirmation": "트랜잭션 확인 대기 중",
       "waiting_user": "사용자 작업 대기 중",
-      "withdrawal_finalized_on": "출금 확정 일시"
+      "withdrawal_finalized_on": "출금 확정 일시",
+      "step_done": "완료",
+      "step_active": "진행 중",
+      "step_failed": "실패",
+      "step_pending": "시작 전"
     },
     "table": {
       "commission": "수수료율",
@@ -349,9 +360,11 @@
     "lane_rig": "The Rig",
     "lane_ethereum": "Ethereum",
     "lane_rig_figure": "청구 가능",
+    "lane_rig_connect": "stFUEL 청구 가능 여부를 확인하려면 여기에서 지갑을 연결하세요.",
+    "lane_rig_checking": "청구 가능 잔액을 확인하는 중...",
     "lane_ethereum_figure": "스테이킹됨",
     "board": {
-      "title": "처리 대기 중",
+      "title": "진행 중인 항목",
       "count_other": "{{count}}개 항목",
       "col_lane": "경로",
       "col_what": "내용",
@@ -365,7 +378,9 @@
       "in_progress": "진행 중",
       "claim": "청구",
       "continue": "계속",
-      "details": "세부 정보"
+      "details": "세부 정보",
+      "load_error": "진행 중인 항목을 불러오지 못했습니다. 문제가 발생했으니 나중에 다시 시도해 주세요.",
+      "truncated": "1,000건을 넘는 이벤트는 불러오지 않았습니다."
     },
     "event_type": {
       "stake": "스테이크",
@@ -394,6 +409,9 @@
     "apr": {
       "value": "~{{apy}}% APR",
       "tip": "토큰을 Fuel 검증인에게 위임하여 Fuel 시퀀싱 보안에 기여하세요."
+    },
+    "date": {
+      "unknown": "알 수 없음"
     }
   },
   "errors": {
@@ -426,7 +444,9 @@
       "none": "아직 전송 내역이 없습니다. 입금과 출금이 여기에 표시됩니다.",
       "empty": "진행 중인 항목이 없습니다. 완료된 전송은 기록에 있습니다.",
       "open_history": "기록 열기",
-      "loading": "전송 내역 불러오는 중"
+      "loading": "전송 내역 불러오는 중",
+      "truncated_one": "여기서는 가장 최근 전송만 확인합니다. 더 오래된 전송은 아직 진행 중일 수 있습니다. 기록에서 확인하세요.",
+      "truncated_other": "여기서는 가장 최근 전송 {{count}}건만 확인합니다. 더 오래된 전송은 아직 진행 중일 수 있습니다. 기록에서 확인하세요."
     },
     "title": "브리지",
     "read_docs": "문서 보기",
@@ -468,7 +488,18 @@
       "code": "코드"
     },
     "copy": {
-      "copy": "복사"
+      "copy": "복사",
+      "tooltip": "클릭하여 클립보드에 복사",
+      "aria": "클립보드에 복사",
+      "copied": "클립보드에 복사했습니다"
+    },
+    "amount": {
+      "balance": "잔액",
+      "max": "최대",
+      "max_label": "최대",
+      "coin_selector": "코인 선택",
+      "available": "사용 가능",
+      "relative_usd": "USD 환산 가치:"
     },
     "info_hint": {
       "label": "자세한 정보"
@@ -477,7 +508,8 @@
       "title": "토큰 매니저",
       "subtitle": "기여자 보조금과 Fuel 토큰 릴리스 일정을 관리합니다.",
       "stake_tokens": "Fuel 토큰 스테이킹"
-    }
+    },
+    "stale_data": "새로고침하지 못했습니다. 마지막으로 불러온 데이터를 표시합니다."
   },
   "block": {
     "title": "블록",
@@ -558,7 +590,9 @@
       "withdraw_warning_accept": "이 출금이 주간 한도를 초과하여 릴레이 중 차단된다는 점을 이해합니다. 그래도 진행하겠습니다.",
       "terms_label": "서비스 약관",
       "terms_accept": "업데이트된 다음 내용을 읽고 동의합니다:",
-      "terms_link": "서비스 약관"
+      "terms_link": "서비스 약관",
+      "progress_label": "전송 진행률",
+      "amount_label": "브리지할 금액"
     },
     "overview": {
       "transaction_id": "트랜잭션 ID",
@@ -646,6 +680,10 @@
       "deposit_started": "입금이 시작되었습니다. 팝업을 닫으셔도 됩니다.",
       "withdraw_started": "출금이 시작되었습니다. 팝업을 닫으셔도 됩니다.",
       "user_rejected": "사용자가 트랜잭션을 거부했습니다"
+    },
+    "assets_toast": {
+      "add_failed": "지갑에 자산을 추가하지 못했습니다",
+      "faucet_success": "지갑에 토큰을 추가했습니다"
     }
   },
   "tx": {
@@ -888,6 +926,9 @@
       },
       "list_comma": "{{a}}, {{b}}",
       "list_and": "{{head}} 및 {{last}}"
+    },
+    "app_tag": {
+      "more": "앱 {{count}}개 더 보기"
     }
   },
   "account": {
@@ -904,7 +945,24 @@
     "error_balances": "계정 잔액을 불러오는 중 오류가 발생했습니다",
     "error_nfts": "계정 NFT를 불러오는 중 오류가 발생했습니다",
     "error_predicate": "계정 프리디케이트를 불러오는 중 오류가 발생했습니다",
-    "error_transactions": "계정 트랜잭션을 불러오는 중 오류가 발생했습니다"
+    "error_transactions": "계정 트랜잭션을 불러오는 중 오류가 발생했습니다",
+    "send": {
+      "title": "자산 보내기",
+      "to": "받는 곳",
+      "recipient_placeholder": "받는 주소를 입력하세요",
+      "amount": "금액",
+      "max": "최대",
+      "max_selected": "최대 잔액을 선택했습니다",
+      "cancel": "취소",
+      "submit": "보내기",
+      "sending": "보내는 중 (1/3)",
+      "confirming": "확인 중 (2/3)",
+      "redirecting": "이동 중 (3/3)",
+      "error_asset_address": "자산 주소로는 자산을 보낼 수 없습니다.",
+      "error_address_type": "{{type}} 주소로는 자산을 보낼 수 없습니다.",
+      "warning_checksum": "주소를 확인할 수 없습니다. 유효한 주소로 보내는지 확인하세요.",
+      "insufficient": "잔액이 부족합니다. 잔액 이하의 금액을 입력하세요."
+    }
   },
   "contract": {
     "title": "컨트랙트",
@@ -932,7 +990,8 @@
     "nft_tag": "NFT",
     "utxos": "UTXO ({{count}})",
     "show_utxos": "UTXO 보기",
-    "hide_utxos": "UTXO 숨기기"
+    "hide_utxos": "UTXO 숨기기",
+    "suspicious_badge": "의심"
   },
   "meta": {
     "home": {
@@ -996,5 +1055,33 @@
     "error": "오류 - Fuel Explorer",
     "tx_title": "트랜잭션 {{id}}... - Fuel Explorer",
     "tx_description": "Fuel 블록체인의 트랜잭션 {{id}} 상세 정보 보기"
+  },
+  "ui": {
+    "collapsible": {
+      "toggle": "세부 정보 표시 또는 숨기기"
+    },
+    "copy": {
+      "tooltip": "클릭하여 클립보드에 복사",
+      "aria": "클립보드에 복사",
+      "copied": "클립보드에 복사되었습니다",
+      "failed": "복사하지 못했습니다. 텍스트를 선택하여 직접 복사하세요."
+    },
+    "close": "닫기",
+    "nav": {
+      "toggle_menu": "메뉴 열기/닫기",
+      "toggle_theme": "테마 전환",
+      "connect": "연결"
+    },
+    "helper_icon": {
+      "label": "자세한 정보"
+    },
+    "password": {
+      "toggle": "비밀번호 표시 또는 숨기기"
+    },
+    "select": {
+      "toggle": "옵션 열기/닫기",
+      "dialog": "옵션 선택",
+      "options": "옵션"
+    }
   }
 }

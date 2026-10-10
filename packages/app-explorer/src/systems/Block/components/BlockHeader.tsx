@@ -16,6 +16,7 @@ export function BlockHeader({
   return (
     <PageTitle
       title={t('block.title')}
+      className="flex-col tablet:flex-row tablet:justify-between tablet:items-center gap-4 tablet:gap-0"
       subtitle={
         <LoadingWrapper
           isLoading={isLoading}
@@ -33,7 +34,9 @@ export function BlockHeader({
         />
       }
     >
-      <ViewMode />
+      <div className="w-full tablet:w-auto flex justify-start tablet:justify-end">
+        <ViewMode />
+      </div>
     </PageTitle>
   );
 }

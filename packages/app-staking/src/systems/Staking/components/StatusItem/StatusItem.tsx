@@ -1,21 +1,27 @@
-import { Address as AddressUi, LoadingBox, LoadingWrapper } from '@fuels/ui';
-import { IconCheck } from '@fuels/ui';
+import {
+  Address as AddressUi,
+  IconCheck,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import { motion, useReducedMotion } from 'framer-motion';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatETA } from '~staking/systems/Core/utils/eta';
 import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
 import { EASE_OUT } from '~staking/systems/Core/utils/motion';
+import {
+  StatusMarker,
+  type StatusMarkerKind,
+} from '../StatusMarker/StatusMarker';
 import type { StakingStatusDialogStepProps } from './types';
 
-type Marker = 'done' | 'active' | 'error' | 'pending';
-
-const MARKER: Record<Marker, string> = {
-  done: 'border-[var(--fuel-primary)] bg-[var(--fuel-primary)]',
-  active:
-    'border-[var(--fuel-element-high-em)] bg-[var(--fuel-element-high-em)] animate-pulse motion-reduce:animate-none',
-  error: 'border-[var(--red-10)] bg-[var(--red-10)]',
-  pending: 'border-[var(--fuel-indicator-border)] bg-transparent',
+const MARKER_LABEL: Record<StatusMarkerKind, string> = {
+  done: 'staking.status.step_done',
+  active: 'staking.status.step_active',
+  action: 'staking.status.step_active',
+  error: 'staking.status.step_failed',
+  pending: 'staking.status.step_pending',
 };
 
 export const StatusItem = memo(function StatusItem({
@@ -37,13 +43,14 @@ export const StatusItem = memo(function StatusItem({
   const isError = !!statusInfo?.Error?.error;
   const isSkipped = !!statusInfo?.Skipped;
 
-  let marker: Marker = 'pending';
+  let marker: StatusMarkerKind = 'pending';
   if (isCurrent && (isError || isSkipped)) marker = 'error';
   else if (isCompleted) marker = 'done';
   else if (isCurrent || isProcessing) marker = 'active';
 
   return (
     <div
+      aria-current={isCurrent ? 'step' : undefined}
       className={`relative flex w-full items-start justify-between gap-3 py-3 pl-4 pr-1 ${
         isCurrent ? 'text-heading' : 'text-[var(--fuel-element-low-em)]'
       }`}
@@ -60,7 +67,10 @@ export const StatusItem = memo(function StatusItem({
             isLoading={isLoading}
             loadingEl={<LoadingBox className="size-2 !rounded-none" />}
             regularEl={
-              <span aria-hidden className={`size-2 border ${MARKER[marker]}`} />
+              <>
+                <StatusMarker kind={marker} />
+                <span className="sr-only">{t(MARKER_LABEL[marker])}</span>
+              </>
             }
           />
         </span>
@@ -82,7 +92,7 @@ export const StatusItem = memo(function StatusItem({
                     initial={{ scale: reduced ? 1 : 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.2, ease: EASE_OUT }}
-                    className="flex text-[var(--fuel-primary)]"
+                    className="flex text-[var(--fuel-brand-text)]"
                   >
                     <IconCheck size={14} />
                   </motion.span>

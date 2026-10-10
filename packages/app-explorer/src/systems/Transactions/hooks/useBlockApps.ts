@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { FUEL_CHAIN } from 'app-commons';
+import { useMemo } from 'react';
 import { fetchEcosystemProjects } from '~/systems/Ecosystem/utils/ecosystemProjects';
 import { appsInBlock, indexByContract, rankApps } from '../utils/matchApps';
 import {
@@ -74,9 +75,13 @@ export function useBlockApps(heights: string[]) {
   });
 
   const apps = data ?? cached.hits;
+  // The ranking only changes when a block is added to the cache.
+  const cachedBlocks = Object.keys(apps).join(',');
+  // biome-ignore lint/correctness/useExhaustiveDependencies: cachedBlocks stands for the cache contents
+  const top = useMemo(() => rankApps(listBlockApps()), [cachedBlocks, data]);
   return {
     apps,
-    top: rankApps(listBlockApps()),
+    top,
     isResolving: cached.misses.length > 0 && (isPending || isFetching),
   };
 }

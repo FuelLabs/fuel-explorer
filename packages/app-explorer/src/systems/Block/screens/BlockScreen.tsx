@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import type { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { StaleNotice } from '~/systems/Core/components/PageState/StaleNotice';
 import { getBlocks } from '../actions/get-blocks';
 import BlocksTable from '../components/BlocksTable';
 import { BlocksTableLoader } from '../components/BlocksTableLoader';
@@ -103,6 +104,12 @@ export const BlocksScreen = () => {
   return (
     <VStack>
       <Hero />
+      {hasError && data && (
+        <StaleNotice
+          message={t('core.stale_data')}
+          onRetry={() => fetchBlockData(currentCursor, dir)}
+        />
+      )}
       {hasError && !data ? (
         <PageState
           title={t('block.list_error_title')}

@@ -25,8 +25,9 @@
   clip-path: var(--single-notch-polygon);
 }
 .filter-single-clip-polygon {
-  filter: drop-shadow(1px 0 0 var(--gray-6)) drop-shadow(-1px 0 0 var(--gray-6))
-    drop-shadow(0 1px 0 var(--gray-6)) drop-shadow(0 -1px 0 var(--gray-6));
+  filter: drop-shadow(1px 0 0 var(--fuel-line))
+    drop-shadow(-1px 0 0 var(--fuel-line)) drop-shadow(0 1px 0 var(--fuel-line))
+    drop-shadow(0 -1px 0 var(--fuel-line));
 }
 
 .rt-BaseCard {

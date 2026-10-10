@@ -1,4 +1,4 @@
-import { Grid, HStack, Skeleton, VStack } from '@fuels/ui';
+import { Grid, HStack, LoadingBox, VStack } from '@fuels/ui';
 
 const placeholders = Array.from({ length: 10 }, (_, i) => i);
 
@@ -7,22 +7,19 @@ export function AccountNftsLoader() {
     <VStack className="min-h-[45vh]">
       <div className="mb-10">
         <HStack align="center" gap="2" className="mb-5">
-          <Skeleton width="180px" height="14px" />
-          <Skeleton width="24px" height="14px" />
+          <LoadingBox className="h-[14px] w-[180px]" />
+          <LoadingBox className="h-[14px] w-6" />
         </HStack>
         <Grid className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {placeholders.map((placeholder) => {
             return (
               <VStack key={placeholder} gap="0" align="center">
                 <div className="w-full aspect-square overflow-hidden">
-                  <Skeleton width="100%" height="100%" />
+                  <LoadingBox className="size-full" />
                 </div>
-
-                <Skeleton
-                  width="80%"
-                  height="12px"
-                  className="mt-[22px] mb-2"
-                />
+                <div className="flex h-6 w-full items-center justify-center">
+                  <LoadingBox className="h-[14px] w-[80%]" />
+                </div>
               </VStack>
             );
           })}

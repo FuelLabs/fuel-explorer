@@ -1,12 +1,14 @@
-import { Button, Tooltip } from '@fuels/ui';
+import { Button, LoadingBox, Tooltip } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { useModal } from 'connectkit';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import {
   stakingTxDialogEvents,
   stakingTxDialogStore,
 } from '~staking/systems/Staking/store/stakingTxDialogStore';
+import { RIG_URL } from '../../constants/rig';
 import { useETA } from '../../hooks/useETA';
 import {
   typeLabelKey,
@@ -14,11 +16,10 @@ import {
 } from '../TransactionHistoryItem/constants';
 import { type AttentionRow, useAttentionRows } from './useAttentionRows';
 
-const RIG_URL = 'https://rig.st';
 const { symbol } = TOKENS[FuelToken.V2];
 
 const COLUMNS =
-  'items-center gap-x-6 gap-y-2 px-6 tablet:px-10 min-[720px]:grid-cols-[96px_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)_96px]';
+  'items-center gap-x-6 gap-y-2 px-6 tablet:px-10 laptop:grid-cols-[96px_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)_96px]';
 const ROW_GRID = `grid ${COLUMNS} border-t border-[var(--fuel-border)] py-4`;
 
 function Lane({ rig }: { rig: boolean }) {
@@ -41,19 +42,30 @@ function Amount({
   full,
   unit = symbol,
 }: { display: string; full?: string; unit?: string }) {
-  const figure = (
-    <span className="fuel-stat-sm whitespace-nowrap">{display}</span>
-  );
+  const [open, setOpen] = useState(false);
   return (
     <span className="flex items-baseline gap-2">
       {full ? (
-        <Tooltip content={`${full} ${unit}`} delayDuration={0}>
-          {figure}
+        // A button, so a tap or the keyboard shows the full amount like hover does.
+        <Tooltip
+          content={`${full} ${unit}`}
+          delayDuration={0}
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <button
+            type="button"
+            aria-label={`${full} ${unit}`}
+            onClick={() => setOpen((prev) => !prev)}
+            className="fuel-stat-sm m-0 cursor-help whitespace-nowrap border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)]"
+          >
+            {display}
+          </button>
         </Tooltip>
       ) : (
-        figure
+        <span className="fuel-stat-sm whitespace-nowrap">{display}</span>
       )}
-      <span className="fuel-label">{unit}</span>
+      <span className="fuel-label normal-case">{unit}</span>
     </span>
   );
 }
@@ -115,7 +127,7 @@ function BoardRow({ row }: { row: AttentionRow }) {
         </span>
         <Amount display={row.amount} unit="stFUEL" />
         <ReadyMark label={t('staking.board.ready')} />
-        <span className="min-[720px]:justify-self-end">
+        <span className="laptop:justify-self-end">
           <Button
             as="a"
             href={RIG_URL}
@@ -147,7 +159,7 @@ function BoardRow({ row }: { row: AttentionRow }) {
           full={row.amount.original.display}
         />
         <ReadyMark label={t('staking.board.ready')} />
-        <span className="min-[720px]:justify-self-end">
+        <span className="laptop:justify-self-end">
           <Button
             size="2"
             onClick={() =>
@@ -188,7 +200,7 @@ function BoardRow({ row }: { row: AttentionRow }) {
           end={event.timestampToFinish}
         />
       )}
-      <span className="min-[720px]:justify-self-end">
+      <span className="laptop:justify-self-end">
         {row.kind === 'action' ? (
           <Button size="2" onClick={openStatus}>
             {t('staking.board.continue')}
@@ -208,20 +220,33 @@ export function AttentionBoard() {
   const { setOpen } = useModal();
   const { pathname } = useLocation();
   const lane = pathname.includes('/on-ethereum') ? 'ethereum' : 'rig';
-  const { rows, needsConnect, isLoading } = useAttentionRows(lane);
+  const { rows, needsConnect, isLoading, isError, refetch, truncated } =
+    useAttentionRows(lane);
 
-  // An empty board is only noise: it shows when something needs the user or
-  // the wallet is not connected. The positions list below has its own way to
-  // start staking.
-  if (rows.length === 0 && !needsConnect) return null;
+  // Hide only after every query succeeded and nothing is waiting. A load, a
+  // failure, or a history cut off at the event cap keeps the board up so a
+  // withdrawal that needs Finalize is not missed.
+  if (
+    !needsConnect &&
+    !isLoading &&
+    !isError &&
+    !truncated &&
+    rows.length === 0
+  ) {
+    return null;
+  }
 
   return (
-    <section className="fuel-edge min-w-0" aria-labelledby="board-title">
+    <section
+      className="fuel-edge min-w-0"
+      aria-labelledby="board-title"
+      aria-busy={isLoading || undefined}
+    >
       <div className="flex items-center justify-between gap-4 px-6 py-4 tablet:px-10">
         <h2 id="board-title" className="fuel-label m-0 text-heading">
           {t('staking.board.title')}
         </h2>
-        {!needsConnect && !isLoading && (
+        {!needsConnect && !isLoading && !isError && rows.length > 0 && (
           <span className="fuel-label" aria-live="polite">
             {t('staking.board.count', { count: rows.length })}
           </span>
@@ -231,7 +256,7 @@ export function AttentionBoard() {
       {rows.length > 0 && (
         <div
           aria-hidden
-          className={`fuel-label hidden min-[720px]:grid ${COLUMNS} border-t border-[var(--fuel-border)] py-3`}
+          className={`fuel-label hidden laptop:grid ${COLUMNS} border-t border-[var(--fuel-border)] py-3`}
         >
           <span>{t('staking.board.col_lane')}</span>
           <span>{t('staking.board.col_what')}</span>
@@ -246,6 +271,47 @@ export function AttentionBoard() {
           <BoardRow key={row.key} row={row} />
         ))}
       </ol>
+
+      {isLoading && rows.length === 0 && (
+        <div
+          className="border-t border-[var(--fuel-border)] px-6 py-4 tablet:px-10"
+          role="status"
+          aria-label={t('staking.status.loading')}
+        >
+          <LoadingBox className="h-6 w-full max-w-[420px] !rounded-none" />
+        </div>
+      )}
+
+      {isError && (
+        <div className="flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">
+          <p
+            role="alert"
+            className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]"
+          >
+            {t('staking.board.load_error', {
+              defaultValue:
+                'Error on fetching your open items. Something went wrong, try again later.',
+            })}
+          </p>
+          <Button
+            size="2"
+            color="gray"
+            variant="outline"
+            onClick={() => refetch()}
+          >
+            {t('staking.review.retry')}
+          </Button>
+        </div>
+      )}
+
+      {truncated && (
+        <p
+          role="status"
+          className="m-0 border-t border-[var(--fuel-border)] px-6 py-8 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] tablet:px-10"
+        >
+          {t('staking.board.truncated')}
+        </p>
+      )}
 
       {needsConnect && (
         <div className="flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">

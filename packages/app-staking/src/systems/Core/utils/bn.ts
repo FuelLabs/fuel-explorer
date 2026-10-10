@@ -79,3 +79,12 @@ export const formatAmount = (
     },
   };
 };
+
+// The Cosmos API returns amounts as decimal strings ("1234.56"). Number() would
+// round anything above 2^53, so the fraction is cut off the string instead.
+export const truncateToIntegerString = (
+  amount: string | number | null | undefined,
+): string => {
+  const [integer] = String(amount ?? '0').split('.');
+  return /^\d+$/.test(integer) ? integer : '0';
+};

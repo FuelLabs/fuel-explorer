@@ -199,7 +199,7 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
             </div>
           )}
           {activity.failed && (
-            <div className="flex items-center gap-1 text-sm text-[var(--red-11)]">
+            <div className="flex items-center gap-1 text-sm text-[var(--fuel-danger-text)]">
               <IconAlertTriangle aria-hidden size={16} />
               <span>{t('tx.reverted_notice')}</span>
             </div>

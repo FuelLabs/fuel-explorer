@@ -11,7 +11,7 @@ export function EcosystemSection({ section, projects }: EcosystemGroup) {
     <section aria-labelledby={headingId} className="flex flex-col gap-5">
       <div className="fuel-rise px-7">
         {section === SUITE_SECTION && (
-          <p className="fuel-eyebrow m-0 mb-1 text-[11px] tracking-[0.08em] text-[var(--fuel-element-low-em)]">
+          <p className="fuel-eyebrow m-0 mb-1 text-[var(--fuel-element-low-em)]">
             {t('ecosystem.quick_access')}
           </p>
         )}

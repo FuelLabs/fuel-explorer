@@ -1,5 +1,5 @@
-import { IconSearch, IconX } from '@fuels/ui';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { IconSearch, IconX, useSlidingIndicator } from '@fuels/ui';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import type { EcosystemSection } from '../constants';
@@ -23,8 +23,6 @@ export function EcosystemFilterBar({
   const classes = styles();
   const searchRef = useRef<HTMLInputElement>(null);
   const chipsRef = useRef<HTMLDivElement>(null);
-  const indicatorRef = useRef<HTMLSpanElement>(null);
-  const placed = useRef(false);
   const filters = [{ id: undefined, label: t('common.all') }].concat(
     sections.map((section) => ({
       id: section.id,
@@ -33,52 +31,33 @@ export function EcosystemFilterBar({
   ) as { id?: string; label: string }[];
 
   // The active fill is one element that slides between chips, so a change of
-  // section reads as movement. It is a 1px box scaled to the chip's width, so
-  // only transform animates.
+  // section reads as movement.
   const filterKey = filters.map((filter) => filter.label).join('|');
-  // biome-ignore lint/correctness/useExhaustiveDependencies: filterKey tracks the chip set
-  useLayoutEffect(() => {
-    const chips = chipsRef.current;
-    const indicator = indicatorRef.current;
-    if (!chips || !indicator) return;
-
-    function place(animate: boolean) {
-      if (!chips || !indicator) return;
-      const chip = chips.querySelector<HTMLElement>('[aria-pressed="true"]');
-      indicator.style.opacity = chip ? '1' : '0';
-      if (!chip) return;
-      // Skip the first placement and resizes, which should not travel.
-      if (!animate) indicator.style.transition = 'none';
-      const box = chip.getBoundingClientRect();
-      const x = box.left - chips.getBoundingClientRect().left + chip.clientLeft;
-      indicator.style.transform = `translateX(${x}px) scaleX(${box.width - chip.clientLeft})`;
-      if (!animate) {
-        void indicator.offsetWidth;
-        indicator.style.transition = '';
-      }
-    }
-
-    place(placed.current);
-    placed.current = true;
-    // The observer reports once on attach; only a real resize should snap.
-    let width = chips.offsetWidth;
-    const observer = new ResizeObserver(() => {
-      if (chips.offsetWidth === width) return;
-      width = chips.offsetWidth;
-      place(false);
-    });
-    observer.observe(chips);
-    return () => observer.disconnect();
-  }, [activeSection, filterKey]);
+  const indicatorRef = useSlidingIndicator<HTMLDivElement, HTMLSpanElement>(
+    chipsRef,
+    '[aria-pressed="true"]',
+    [activeSection, filterKey],
+  );
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== '/') return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
-      const typing =
+      // Leave the key alone while typing, on any control, or over an open overlay.
+      if (
         target?.isContentEditable ||
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement;
-      if (event.key !== '/' || typing) return;
+        target?.closest(
+          'input, textarea, select, button, a, [role="button"], [role="menuitem"], [role="combobox"]',
+        )
+      )
+        return;
+      if (
+        document.querySelector(
+          '[role="dialog"], [role="alertdialog"], [role="menu"], [data-radix-popper-content-wrapper]',
+        )
+      )
+        return;
       event.preventDefault();
       searchRef.current?.focus();
     }
@@ -153,14 +132,14 @@ const styles = tv({
       'border-b border-[var(--fuel-line)] tablet:border-r tablet:border-b-0',
     ],
     searchIcon:
-      'ml-4 shrink-0 text-[var(--fuel-element-low-em)] transition-colors duration-200 group-focus-within:text-[var(--fuel-primary)] motion-reduce:transition-none',
+      'ml-4 shrink-0 text-[var(--fuel-element-low-em)] transition-colors duration-200 group-focus-within:text-[var(--fuel-brand-text)] motion-reduce:transition-none',
     input: [
-      'h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[13px] text-heading outline-none',
+      'h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[16px] tablet:text-[13px] text-heading outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
       'placeholder:text-[var(--fuel-element-low-em)] [&::-webkit-search-cancel-button]:hidden',
     ],
     clear: [
-      'mr-3 grid size-7 shrink-0 cursor-pointer place-items-center border-0 bg-transparent p-0',
-      'fuel-appear text-[var(--fuel-element-low-em)] transition-colors hover:text-heading focus-visible:text-heading focus-visible:outline-none',
+      'fuel-hit relative mr-3 grid size-7 shrink-0 cursor-pointer place-items-center border-0 bg-transparent p-0',
+      'fuel-appear text-[var(--fuel-element-low-em)] transition-colors hover:text-heading focus-visible:text-heading focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)]',
     ],
     nav: 'flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden tablet:flex-[2]',
     chips: 'relative flex min-w-max items-stretch',
@@ -170,10 +149,10 @@ const styles = tv({
     ],
     chip: [
       'relative z-10',
-      'fuel-eyebrow h-12 grow cursor-pointer whitespace-nowrap px-4 text-[11px] tracking-[0.08em] tablet:h-11 tablet:px-5',
+      'fuel-eyebrow h-12 grow cursor-pointer whitespace-nowrap px-4 tablet:h-11 tablet:px-5',
       'border-y-0 border-r-0 border-l border-solid border-[var(--fuel-line)]',
       'transition-colors duration-200 motion-reduce:transition-none',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-primary)]',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]',
     ],
   },
   variants: {

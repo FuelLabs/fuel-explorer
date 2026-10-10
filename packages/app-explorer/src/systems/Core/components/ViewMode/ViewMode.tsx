@@ -1,5 +1,5 @@
-import { Tooltip } from '@fuels/ui';
-import { useLayoutEffect, useRef } from 'react';
+import { useSlidingIndicator } from '@fuels/ui';
+import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
@@ -20,8 +20,7 @@ export function ViewMode({
   const location = useLocation();
   const classes = styles();
   const groupRef = useRef<HTMLDivElement>(null);
-  const indicatorRef = useRef<HTMLSpanElement>(null);
-  const placed = useRef(false);
+  const hintId = useId();
 
   const handleModeChange = (newMode: string) => {
     if (newMode && newMode !== mode) {
@@ -36,81 +35,61 @@ export function ViewMode({
   const selected =
     isSimpleDisabled && mode === ViewModes.Simple ? ViewModes.Standard : mode;
 
-  // The active fill is one element that slides between items. It is a 1px box
-  // scaled to the item's width, so only transform animates.
+  // The active fill is one element that slides between items.
   const modeKey = viewModes.join('|');
-  // biome-ignore lint/correctness/useExhaustiveDependencies: modeKey tracks the item set
-  useLayoutEffect(() => {
-    const group = groupRef.current;
-    const indicator = indicatorRef.current;
-    if (!group || !indicator) return;
-
-    function place(animate: boolean) {
-      if (!group || !indicator) return;
-      const item = group.querySelector<HTMLElement>('[aria-pressed="true"]');
-      indicator.style.opacity = item ? '1' : '0';
-      if (!item) return;
-      // Skip the first placement and resizes, which should not travel.
-      if (!animate) indicator.style.transition = 'none';
-      const box = item.getBoundingClientRect();
-      const x = box.left - group.getBoundingClientRect().left + item.clientLeft;
-      indicator.style.transform = `translateX(${x}px) scaleX(${box.width - item.clientLeft})`;
-      if (!animate) {
-        void indicator.offsetWidth;
-        indicator.style.transition = '';
-      }
-    }
-
-    place(placed.current);
-    placed.current = true;
-    let width = group.offsetWidth;
-    const observer = new ResizeObserver(() => {
-      if (group.offsetWidth === width) return;
-      width = group.offsetWidth;
-      place(false);
-    });
-    observer.observe(group);
-    return () => observer.disconnect();
-  }, [selected, modeKey]);
+  const indicatorRef = useSlidingIndicator<HTMLDivElement, HTMLSpanElement>(
+    groupRef,
+    '[aria-pressed="true"]',
+    [selected, modeKey],
+  );
+  const showHint = Boolean(
+    isSimpleDisabled && viewModes.includes(ViewModes.Simple),
+  );
 
   return (
-    <div
-      ref={groupRef}
-      role="group"
-      aria-label={t('core.view_mode.label')}
-      className={classes.root()}
-    >
-      <span ref={indicatorRef} aria-hidden className={classes.indicator()} />
-      {viewModes.map((viewMode, index) => {
-        const isActive = viewMode === selected;
-        const isDisabled = viewMode === ViewModes.Simple && isSimpleDisabled;
-        const item = (
-          <button
-            key={viewMode}
-            type="button"
-            aria-pressed={isActive}
-            disabled={isDisabled}
-            onClick={() => handleModeChange(viewMode)}
-            className={classes.item({
-              active: isActive,
-              disabled: Boolean(isDisabled),
-              first: !index,
-            })}
-          >
-            {t(`core.view_mode.${viewMode}`)}
-          </button>
-        );
+    <div className="flex flex-col items-start gap-1">
+      <div
+        ref={groupRef}
+        role="group"
+        aria-label={t('core.view_mode.label')}
+        className={classes.root()}
+      >
+        <span ref={indicatorRef} aria-hidden className={classes.indicator()} />
+        {viewModes.map((viewMode, index) => {
+          const isActive = viewMode === selected;
+          const isDisabled = viewMode === ViewModes.Simple && isSimpleDisabled;
+          const item = (
+            <button
+              key={viewMode}
+              type="button"
+              aria-pressed={isActive}
+              aria-disabled={isDisabled || undefined}
+              aria-describedby={isDisabled ? hintId : undefined}
+              onClick={() => {
+                if (!isDisabled) handleModeChange(viewMode);
+              }}
+              className={classes.item({
+                active: isActive,
+                disabled: Boolean(isDisabled),
+                first: !index,
+              })}
+            >
+              {t(`core.view_mode.${viewMode}`)}
+            </button>
+          );
 
-        return isDisabled ? (
-          <Tooltip key={viewMode} content={t('core.view_mode.simple_disabled')}>
-            <span className="flex">{item}</span>
-          </Tooltip>
-        ) : (
-          <span key={viewMode} className="flex">
-            {item}
-          </span>
-        );
-      })}
+          return (
+            <span key={viewMode} className="flex">
+              {item}
+            </span>
+          );
+        })}
+      </div>
+      {showHint && (
+        <span id={hintId} className="fuel-caption">
+          {t('core.view_mode.simple_disabled')}
+        </span>
+      )}
     </div>
   );
 }
@@ -123,10 +102,10 @@ const styles = tv({
       'transition-[transform,opacity] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
     ],
     item: [
-      'fuel-eyebrow relative z-10 h-9 grow cursor-pointer whitespace-nowrap bg-transparent px-4 text-[11px] tracking-[0.08em]',
+      'fuel-eyebrow relative z-10 h-9 grow cursor-pointer whitespace-nowrap bg-transparent px-4',
       'border-y-0 border-r-0 border-l border-solid border-[var(--fuel-line)]',
       'transition-colors duration-200 motion-reduce:transition-none',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-primary)]',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]',
     ],
   },
   variants: {

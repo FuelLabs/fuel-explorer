@@ -32,7 +32,7 @@ interface ErrorAlert {
   alertIcon: string;
 }
 
-const RED_ICON = 'text-[var(--red-11)]';
+const RED_ICON = 'text-[var(--fuel-danger-text)]';
 
 export function TxFuelToEthDialog() {
   const { t } = useTranslation();

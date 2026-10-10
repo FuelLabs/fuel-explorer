@@ -11,6 +11,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
 import { cx } from '~/systems/Core/utils/cx';
 import type { Project } from '~/types/ecosystem';
 import type { EcosystemSection } from '../constants';
@@ -129,7 +130,7 @@ export function EcosystemProjectDetail({
           <dl className={classes.facts()}>
             <Fact
               label={t('facts.category')}
-              className="border-r border-b sm:border-r-0"
+              className="border-b min-[480px]:border-r sm:border-r-0"
             >
               <Link to={sectionUrl} className={classes.factLink()}>
                 {sectionLabel}
@@ -140,7 +141,7 @@ export function EcosystemProjectDetail({
             </Fact>
             <Fact
               label={t('facts.network')}
-              className="border-r sm:border-r-0 sm:border-b"
+              className="border-b min-[480px]:border-b-0 min-[480px]:border-r sm:border-r-0 sm:border-b"
             >
               {t('network_fuel')}
             </Fact>
@@ -153,7 +154,9 @@ export function EcosystemProjectDetail({
                     rel="noreferrer"
                     className={classes.factLink()}
                   >
-                    <span className="truncate">{host}</span>
+                    <span className="truncate" title={host}>
+                      {host}
+                    </span>
                     <IconArrowUpRight
                       size={14}
                       aria-hidden
@@ -247,10 +250,15 @@ function Fact({
 }) {
   return (
     <div className={cx('min-w-0 border-[var(--fuel-line)] p-7', className)}>
-      <dt className="fuel-eyebrow text-[12px] tracking-[0.08em] text-[var(--fuel-element-low-em)]">
+      <dt className="fuel-eyebrow text-[var(--fuel-element-low-em)]">
         {label}
       </dt>
-      <dd className="m-0 mt-3 truncate text-[16px] text-heading">{children}</dd>
+      <dd
+        className="m-0 mt-3 truncate text-[16px] text-heading"
+        title={typeof children === 'string' ? children : undefined}
+      >
+        {children}
+      </dd>
     </div>
   );
 }
@@ -280,10 +288,11 @@ export function EcosystemProjectLoadError() {
 
   return (
     <div className={cx(classes.page(), 'flex flex-col gap-6 py-24')}>
-      <h1 className="m-0 font-medium text-heading text-[30px] leading-[36px] tracking-[-0.6px]">
-        {t('load_error.title')}
-      </h1>
-      <p className="m-0 text-[var(--red-11)]">{t('load_error.body')}</p>
+      <PageState
+        tone="error"
+        title={t('load_error.title')}
+        description={t('load_error.body')}
+      />
       <Link
         to="/ecosystem"
         className={cx(classes.crumb(), classes.label(), 'w-fit')}
@@ -309,12 +318,12 @@ const styles = tv({
   slots: {
     page: 'mx-auto w-full max-w-[1240px]',
     breadcrumb: [
-      'fuel-eyebrow mb-3 flex items-center gap-2 pl-2 text-[12px] tracking-[0.08em]',
+      'fuel-eyebrow mb-3 flex items-center gap-2 pl-2',
       'text-[var(--fuel-element-low-em)] tablet:pl-3 desktop:mb-4 desktop:pl-4',
     ],
     crumb: [
       'flex items-center gap-2 no-underline text-[var(--fuel-element-low-em)] transition-colors hover:text-heading',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fuel-primary)]',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fuel-focus)]',
     ],
     hero: 'relative isolate border border-[var(--fuel-line)] bg-[var(--fuel-stone-950)]',
     heroArt: [
@@ -327,8 +336,8 @@ const styles = tv({
     heroCopy:
       'flex min-w-0 flex-col justify-center px-6 py-10 tablet:px-10 tablet:py-12 md:px-14',
     badge: [
-      'fuel-eyebrow mb-6 w-fit rounded-full border border-[var(--fuel-stone-600)] px-3 py-1',
-      'text-[12px] tracking-[0.08em] text-[var(--fuel-stone-400)]',
+      'fuel-eyebrow mb-6 w-fit border border-[var(--fuel-stone-600)] px-3 py-1',
+      'text-[var(--fuel-stone-400)]',
     ],
     heroTitle:
       'm-0 break-words font-medium uppercase leading-none text-white text-[40px]',
@@ -339,8 +348,7 @@ const styles = tv({
       'border-t border-[var(--fuel-line)] sm:border-t-0 sm:border-l',
     ],
     heroLogo: 'relative size-24 tablet:size-32',
-    label:
-      'fuel-eyebrow m-0 text-[12px] tracking-[0.08em] text-[var(--fuel-element-low-em)]',
+    label: 'fuel-eyebrow m-0 text-[var(--fuel-element-low-em)]',
     about: 'flex flex-col gap-5 p-7 tablet:p-10 md:px-14',
     aboutLead: 'm-0 max-w-[640px] text-[24px] leading-[32px] text-heading',
     paragraphs:
@@ -350,7 +358,7 @@ const styles = tv({
       'text-[14px] leading-[24px] text-[var(--fuel-element-low-em)]',
     ],
     facts: [
-      'm-0 grid grid-cols-2 content-start sm:grid-cols-1',
+      'm-0 grid grid-cols-1 content-start min-[480px]:grid-cols-2 sm:grid-cols-1',
       'border-t border-[var(--fuel-line)] sm:border-t-0 sm:border-l',
     ],
     factLink: [
@@ -370,12 +378,11 @@ const styles = tv({
     productName: 'm-0 font-medium text-heading text-[20px] leading-[28px]',
     productArrow:
       'shrink-0 text-[var(--fuel-element-low-em)] transition-colors duration-200 group-hover:text-heading',
-    productTagline:
-      'fuel-eyebrow m-0 text-[11px] leading-[16px] tracking-[0.08em] text-[var(--fuel-element-low-em)]',
+    productTagline: 'fuel-eyebrow m-0 text-[var(--fuel-element-low-em)]',
     productText:
       'm-0 text-[14px] leading-[24px] text-[var(--fuel-element-low-em)]',
     productOpen: [
-      'fuel-eyebrow mt-auto pt-4 text-[11px] tracking-[0.08em] text-[var(--fuel-element-low-em)]',
+      'fuel-eyebrow mt-auto pt-4 text-[var(--fuel-element-low-em)]',
       'transition-colors duration-200 group-hover:text-heading',
     ],
     relatedTitle: 'm-0 font-medium text-heading text-[24px] leading-[32px]',

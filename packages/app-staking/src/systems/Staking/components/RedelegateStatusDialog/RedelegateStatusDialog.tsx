@@ -15,10 +15,9 @@ type RedelegateStatusDialogProps = {
 const v2 = TOKENS[FuelToken.V2];
 const { symbol, decimals } = v2;
 
-export const RedelegateStatusDialog = ({
+const RedelegateStatusDialogContent = ({
   identifier,
-}: RedelegateStatusDialogProps) => {
-  if (!identifier) return null;
+}: { identifier: string }) => {
   const { t } = useTranslation();
 
   const {
@@ -88,7 +87,7 @@ export const RedelegateStatusDialog = ({
         isFinalized ? t('staking.status.redelegated_on') : undefined
       }
       finalizedAt={dateFinalized}
-      minHeightClass="min-h-[450px]"
+      minHeightClass="tablet:min-h-[450px]"
     >
       {REDELEGATE_STEPS.filter((step) => {
         if (step.status === 'Skipped') {
@@ -127,3 +126,10 @@ export const RedelegateStatusDialog = ({
     </StatusLayout>
   );
 };
+
+// Hooks cannot sit below an early return, so the dialog body mounts only
+// once there is an identifier.
+export const RedelegateStatusDialog = ({
+  identifier,
+}: RedelegateStatusDialogProps) =>
+  identifier ? <RedelegateStatusDialogContent identifier={identifier} /> : null;

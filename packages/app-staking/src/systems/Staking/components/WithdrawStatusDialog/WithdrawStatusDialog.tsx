@@ -18,10 +18,9 @@ type WithdrawStatusDialogProps = {
 const v2 = TOKENS[FuelToken.V2];
 const { symbol, decimals } = v2;
 
-export const WithdrawStatusDialog = ({
+const WithdrawStatusDialogContent = ({
   identifier,
-}: WithdrawStatusDialogProps) => {
-  if (!identifier) return null;
+}: { identifier: string }) => {
   const { t } = useTranslation();
 
   const {
@@ -118,7 +117,7 @@ export const WithdrawStatusDialog = ({
         isFinalized ? t('staking.status.withdrawal_finalized_on') : undefined
       }
       finalizedAt={dateFinalized}
-      minHeightClass="min-h-[520px]"
+      minHeightClass="tablet:min-h-[520px]"
     >
       {WITHDRAW_STEPS.filter((step) => {
         if (step.status === GQLWithdrawStatusType.Skipped) {
@@ -163,3 +162,10 @@ export const WithdrawStatusDialog = ({
     </StatusLayout>
   );
 };
+
+// Hooks cannot sit below an early return, so the dialog body mounts only
+// once there is an identifier.
+export const WithdrawStatusDialog = ({
+  identifier,
+}: WithdrawStatusDialogProps) =>
+  identifier ? <WithdrawStatusDialogContent identifier={identifier} /> : null;

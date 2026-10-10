@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next';
 
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
+import { TX_STATUS_CHIP } from '~/systems/Transaction/component/TxItem/txStatusChip';
 import type { TransactionNode } from '../../types';
 import { TxActivity, TxActivityLoader } from '../TxActivity/TxActivity';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 import { TxFullDateTimestamp } from '../TxFullDateTimestamp/TxFullDateTimestamp';
-import { TxChip, type TxChipKind, TxSquare } from '../TxItem/TxChip';
+import { TxChip, TxSquare } from '../TxItem/TxChip';
 import { TxRise, TxSection } from '../TxItem/TxSection';
 import { TxTimeAgoTimestamp } from '../TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 
@@ -31,13 +32,6 @@ const detailsLink: Record<AddressType, typeof Routes.accountAssets> = {
   [AddressType.account]: Routes.accountAssets,
 };
 
-const STATUS_CHIP: Record<string, { kind: TxChipKind; label: string }> = {
-  SuccessStatus: { kind: 'success', label: 'tx.status.success' },
-  FailureStatus: { kind: 'failed', label: 'tx.status.failed' },
-  SubmittedStatus: { kind: 'pending', label: 'tx.status.pending' },
-  SqueezedOutStatus: { kind: 'failed', label: 'tx.status.squeezed_out' },
-};
-
 export function TxScreenSimple({
   transaction,
   isLoading,
@@ -46,7 +40,7 @@ export function TxScreenSimple({
   const { t } = useTranslation();
   if (!transaction && !isLoading) return null;
 
-  const status = STATUS_CHIP[transaction?.status?.__typename ?? ''];
+  const status = TX_STATUS_CHIP[transaction?.status?.__typename ?? ''];
   const hasSummary = !!transaction?.summary?.length;
   const showTransfersTitle =
     !isLoading && (transaction?.activity || isActivityLoading) && hasSummary;

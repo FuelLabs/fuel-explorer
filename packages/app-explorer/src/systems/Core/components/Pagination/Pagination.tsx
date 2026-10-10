@@ -12,7 +12,7 @@ type PaginationProps = BaseProps<{
 }>;
 
 const ARROW =
-  'grid size-10 shrink-0 grow cursor-pointer place-items-center border-0 bg-transparent p-0 text-heading tablet:grow-0 fuel-hover-fill focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-primary)] disabled:cursor-not-allowed disabled:text-[var(--fuel-element-disabled)] disabled:hover:bg-transparent motion-reduce:transition-none';
+  'grid size-10 shrink-0 grow cursor-pointer place-items-center border-0 bg-transparent p-0 text-heading tablet:grow-0 fuel-hover-fill focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)] disabled:cursor-not-allowed disabled:text-[var(--fuel-element-disabled)] disabled:hover:bg-transparent motion-reduce:transition-none';
 
 export function Pagination({
   onChange,

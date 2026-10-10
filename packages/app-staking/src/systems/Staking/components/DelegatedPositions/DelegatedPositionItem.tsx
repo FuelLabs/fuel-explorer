@@ -15,7 +15,10 @@ import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
 import { LIST_SEPARATOR_BORDER } from '~staking/systems/Core/components/AnimatedTable/styles';
-import { formatAmount } from '~staking/systems/Core/utils/bn';
+import {
+  formatAmount,
+  truncateToIntegerString,
+} from '~staking/systems/Core/utils/bn';
 import { useAccountValidatorDelegations } from '~staking/systems/Staking/services/useAccountValidatorDelegations';
 import { useValidatorRewards } from '~staking/systems/Staking/services/useValidatorRewards';
 import type { ValidatorReward } from '~staking/systems/Staking/services/useValidatorRewards/types';
@@ -77,7 +80,7 @@ const _DelegatedPositionItem = ({
   const rewardBN = useMemo(() => {
     return rewardsData.reduce((acc, curr) => {
       // Cosmos API returns decimal strings - truncate to integer for BN
-      const integerAmount = Math.floor(Number(curr.amount ?? 0)).toString();
+      const integerAmount = truncateToIntegerString(curr.amount);
       return acc.add(new BN(integerAmount));
     }, new BN(0));
   }, [rewardsData]);
@@ -91,11 +94,11 @@ const _DelegatedPositionItem = ({
   }, [totalDelegated]);
 
   return (
+    // biome-ignore lint/a11y/useFocusableInteractive: a row holds its own buttons and is not a tab stop
     <div
       key={name}
       className={`fuel-hover-fill w-full flex align-center ${LIST_SEPARATOR_BORDER} ${isLast ? '' : 'border-b'}`}
       role="row"
-      tabIndex={0}
     >
       <div
         className={`${DELEGATED_POSITIONS_CELLS_OBJ.name} font-medium text-heading min-h-[52px]`}

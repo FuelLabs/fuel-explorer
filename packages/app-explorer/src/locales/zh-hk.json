@@ -1,7 +1,6 @@
 {
   "common": {
     "view_all": "查看全部",
-    "top_apps": "熱門應用",
     "language": "語言",
     "search": "按區塊、交易、合約、地址搜尋...",
     "search_short": "搜尋",
@@ -28,7 +27,8 @@
     "building": "開發中: {{count}}",
     "window_24h": "24小時",
     "read_docs": "查看文件",
-    "questions": "問題"
+    "questions": "問題",
+    "search_loading": "正在載入結果"
   },
   "nav": {
     "explorer": "瀏覽器",
@@ -61,7 +61,9 @@
     "avg_tps": "小時平均",
     "error_title": "無法載入交易",
     "error_description": "最新交易載入失敗,請重試。",
-    "unavailable": "數據暫不可用"
+    "unavailable": "數據暫不可用",
+    "apps_recently_active": "最近活躍",
+    "apps_featured": "精選"
   },
   "ecosystem": {
     "eyebrow": "Fuel 生態",
@@ -107,14 +109,17 @@
     "app_count_other": "{{count}} 個應用",
     "show_all": "顯示全部",
     "no_results": "找不到應用。",
-    "load_error": "載入項目出錯：{{message}}",
     "spotlight": {
       "title": "由 Fuel 驅動的完全鏈上現貨 DEX",
       "lead": "o2 Turbo 的主場：獲得最高 $10k 的自營交易資金。無需考核，利潤 100% 歸你。",
       "cta": "立即交易",
       "view_project": "查看項目",
       "image_alt": "{{name}} 產品截圖"
-    }
+    },
+    "load_error_title": "無法載入項目",
+    "load_error_body": "請檢查網絡連線後重試。",
+    "empty_title": "暫無項目",
+    "empty_body": "項目上架後將顯示在這裡。"
   },
   "footer": {
     "fuel": "FUEL",
@@ -166,7 +171,9 @@
       "type_all": "所有類型",
       "refresh": "重新整理列表",
       "no_match": "沒有符合篩選條件的交易。",
-      "clear": "清除篩選"
+      "clear": "清除篩選",
+      "load_error": "獲取交易失敗。出現問題,請稍後再試。",
+      "truncated": "超過 1,000 條的事件未載入。"
     },
     "account": {
       "connect_wallet": "連接錢包",
@@ -298,7 +305,11 @@
       "undelegation_completed_on": "取消委託完成時間",
       "waiting_confirmation": "等待交易確認",
       "waiting_user": "等待用戶操作",
-      "withdrawal_finalized_on": "提取確認時間"
+      "withdrawal_finalized_on": "提取確認時間",
+      "step_done": "已完成",
+      "step_active": "進行中",
+      "step_failed": "失敗",
+      "step_pending": "未開始"
     },
     "table": {
       "commission": "佣金",
@@ -349,9 +360,11 @@
     "lane_rig": "The Rig",
     "lane_ethereum": "Ethereum",
     "lane_rig_figure": "待領取",
+    "lane_rig_connect": "在此連接錢包，以確認你是否可以領取 stFUEL。",
+    "lane_rig_checking": "正在查詢可領取餘額...",
     "lane_ethereum_figure": "已質押",
     "board": {
-      "title": "待你處理",
+      "title": "待辦事項",
       "count_other": "{{count}} 項",
       "col_lane": "路徑",
       "col_what": "內容",
@@ -365,7 +378,9 @@
       "in_progress": "進行中",
       "claim": "領取",
       "continue": "繼續",
-      "details": "詳情"
+      "details": "詳情",
+      "load_error": "獲取待辦事項失敗。出現問題,請稍後再試。",
+      "truncated": "超過 1,000 條的事件未載入。"
     },
     "event_type": {
       "stake": "質押",
@@ -394,6 +409,9 @@
     "apr": {
       "value": "~{{apy}}% APR",
       "tip": "將代幣委託給 Fuel 驗證者，協助保障 Fuel 排序的安全。"
+    },
+    "date": {
+      "unknown": "不詳"
     }
   },
   "errors": {
@@ -426,7 +444,9 @@
       "none": "暫無轉帳。你的存入和提取會顯示在這裡。",
       "empty": "沒有進行中的轉帳。已完成的轉帳在歷史記錄中。",
       "open_history": "打開歷史記錄",
-      "loading": "正在載入你的轉帳"
+      "loading": "正在載入你的轉帳",
+      "truncated_one": "此處僅檢查你最新的一筆轉帳。更早的轉帳可能仍在進行中。請開啟歷史記錄查看。",
+      "truncated_other": "此處僅檢查你最新的 {{count}} 筆轉帳。更早的轉帳可能仍在進行中。請開啟歷史記錄查看。"
     },
     "title": "跨鏈橋",
     "read_docs": "查看文件",
@@ -468,7 +488,18 @@
       "code": "程式碼"
     },
     "copy": {
-      "copy": "複製"
+      "copy": "複製",
+      "tooltip": "按此複製到剪貼簿",
+      "aria": "複製到剪貼簿",
+      "copied": "已複製到剪貼簿"
+    },
+    "amount": {
+      "balance": "餘額",
+      "max": "上限",
+      "max_label": "全數",
+      "coin_selector": "幣種選擇",
+      "available": "可用餘額",
+      "relative_usd": "以美元計的相對價值:"
     },
     "info_hint": {
       "label": "更多資訊"
@@ -477,7 +508,8 @@
       "title": "代幣管理器",
       "subtitle": "管理您的貢獻者授予和 Fuel 代幣釋放計劃。",
       "stake_tokens": "質押您的 Fuel 代幣"
-    }
+    },
+    "stale_data": "無法重新整理。正在顯示上次載入的資料。"
   },
   "block": {
     "title": "區塊",
@@ -558,7 +590,9 @@
       "withdraw_warning_accept": "我了解此次提取超過每週限額，將在中繼時被攔截，但仍要繼續。",
       "terms_label": "服務條款",
       "terms_accept": "我已閱讀並同意更新後的",
-      "terms_link": "服務條款"
+      "terms_link": "服務條款",
+      "progress_label": "轉帳進度",
+      "amount_label": "跨鏈金額"
     },
     "overview": {
       "transaction_id": "交易 ID",
@@ -646,6 +680,10 @@
       "deposit_started": "存款已發起。您現在可以關閉彈出視窗。",
       "withdraw_started": "提款已發起。您現在可以關閉彈出視窗。",
       "user_rejected": "用戶拒絕了交易"
+    },
+    "assets_toast": {
+      "add_failed": "無法將資產新增至錢包",
+      "faucet_success": "已將代幣新增至錢包"
     }
   },
   "tx": {
@@ -888,6 +926,9 @@
       },
       "list_comma": "{{a}}，{{b}}",
       "list_and": "{{head}}和{{last}}"
+    },
+    "app_tag": {
+      "more": "顯示另外 {{count}} 個應用"
     }
   },
   "account": {
@@ -904,7 +945,24 @@
     "error_balances": "載入帳戶餘額出錯",
     "error_nfts": "載入帳戶 NFT 出錯",
     "error_predicate": "載入帳戶謂詞出錯",
-    "error_transactions": "載入帳戶交易出錯"
+    "error_transactions": "載入帳戶交易出錯",
+    "send": {
+      "title": "發送資產",
+      "to": "收款人",
+      "recipient_placeholder": "輸入收款地址",
+      "amount": "金額",
+      "max": "全數",
+      "max_selected": "已選取最高餘額",
+      "cancel": "取消",
+      "submit": "發送",
+      "sending": "正在發送 (1/3)",
+      "confirming": "正在確認 (2/3)",
+      "redirecting": "正在跳轉 (3/3)",
+      "error_asset_address": "不可向資產地址發送資產。",
+      "error_address_type": "不可向{{type}}地址發送資產。",
+      "warning_checksum": "未能核實這個地址。請確認你發送至有效地址。",
+      "insufficient": "餘額不足，請輸入低於或等於餘額的金額。"
+    }
   },
   "contract": {
     "title": "合約",
@@ -932,7 +990,8 @@
     "nft_tag": "NFT",
     "utxos": "UTXO（{{count}}）",
     "show_utxos": "顯示 UTXO",
-    "hide_utxos": "隱藏 UTXO"
+    "hide_utxos": "隱藏 UTXO",
+    "suspicious_badge": "可疑"
   },
   "meta": {
     "home": {
@@ -996,5 +1055,33 @@
     "error": "錯誤 - Fuel Explorer",
     "tx_title": "交易 {{id}}... - Fuel Explorer",
     "tx_description": "查看 Fuel 區塊鏈上交易 {{id}} 的詳情"
+  },
+  "ui": {
+    "collapsible": {
+      "toggle": "顯示或隱藏詳情"
+    },
+    "copy": {
+      "tooltip": "點擊複製到剪貼簿",
+      "aria": "複製到剪貼簿",
+      "copied": "已複製到剪貼簿",
+      "failed": "無法複製。請選取文字後手動複製。"
+    },
+    "close": "關閉",
+    "nav": {
+      "toggle_menu": "切換選單",
+      "toggle_theme": "切換主題",
+      "connect": "連接"
+    },
+    "helper_icon": {
+      "label": "更多資訊"
+    },
+    "password": {
+      "toggle": "顯示或隱藏密碼"
+    },
+    "select": {
+      "toggle": "切換選項",
+      "dialog": "選擇一個選項",
+      "options": "選項"
+    }
   }
 }

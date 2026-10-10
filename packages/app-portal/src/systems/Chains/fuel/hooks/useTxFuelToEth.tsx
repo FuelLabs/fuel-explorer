@@ -3,6 +3,12 @@ import { DateTime } from 'fuels';
 import { useMemo } from 'react';
 import { Services, store } from '~portal/store';
 import { useAssets } from '~portal/systems/Assets';
+import {
+  BRIDGE_STEP_ID,
+  BRIDGE_STEP_STATUS_ID,
+  type BridgeStep,
+  type BridgeStepStatusId,
+} from '~portal/systems/Bridge/components/BridgeSteps';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
 import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
 
@@ -67,49 +73,86 @@ const txFuelToEthSelectors = {
     const estimatedTimeRemaining =
       txFuelToEthSelectors.estimatedTimeRemaining(state);
 
-    function getConfirmStatusText() {
-      if (status.isWaitingEthWalletApproval) return 'Action required';
-      if (status.isConfirmTransactionDone) return 'Done!';
-      return 'Action';
+    function getConfirmStatus(): {
+      status: string;
+      statusId: BridgeStepStatusId;
+    } {
+      if (status.isWaitingEthWalletApproval) {
+        return {
+          status: 'Action required',
+          statusId: BRIDGE_STEP_STATUS_ID.actionRequired,
+        };
+      }
+      if (status.isConfirmTransactionDone) {
+        return { status: 'Done!', statusId: BRIDGE_STEP_STATUS_ID.done };
+      }
+      return { status: 'Action', statusId: BRIDGE_STEP_STATUS_ID.action };
     }
 
-    function getSettlementStatusText() {
-      if (status.isSettlementDone) return 'Done!';
-      if (estimatedTimeRemaining) return `~${estimatedTimeRemaining} left`;
-      return 'Waiting';
+    function getSettlementStatus(): {
+      status: string;
+      statusId: BridgeStepStatusId;
+      eta?: string;
+    } {
+      if (status.isSettlementDone) {
+        return { status: 'Done!', statusId: BRIDGE_STEP_STATUS_ID.done };
+      }
+      if (estimatedTimeRemaining) {
+        return {
+          status: `~${estimatedTimeRemaining} left`,
+          statusId: BRIDGE_STEP_STATUS_ID.timeLeft,
+          eta: estimatedTimeRemaining,
+        };
+      }
+      return { status: 'Waiting', statusId: BRIDGE_STEP_STATUS_ID.waiting };
     }
 
+    const confirmStatus = getConfirmStatus();
+    const settlementStatus = getSettlementStatus();
     const steps = [
       {
+        id: BRIDGE_STEP_ID.submitToBridge,
         name: 'Submit to bridge',
         // TODO: put correct time left '~XX minutes left', how?
         status: status.isSubmitToBridgeDone ? 'Done!' : 'Waiting',
+        statusId: status.isSubmitToBridgeDone
+          ? BRIDGE_STEP_STATUS_ID.done
+          : BRIDGE_STEP_STATUS_ID.waiting,
         isLoading: status.isSubmitToBridgeLoading,
         isSelected: status.isSubmitToBridgeSelected,
         isDone: status.isSubmitToBridgeDone,
       },
       {
+        id: BRIDGE_STEP_ID.settlement,
         name: 'Settlement',
-        status: getSettlementStatusText(),
+        status: settlementStatus.status,
+        statusId: settlementStatus.statusId,
+        eta: settlementStatus.eta,
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
       },
       {
+        id: BRIDGE_STEP_ID.confirmTransaction,
         name: 'Confirm transaction',
-        status: getConfirmStatusText(),
+        status: confirmStatus.status,
+        statusId: confirmStatus.statusId,
         isLoading: status.isConfirmTransactionLoading,
         isDone: status.isConfirmTransactionDone,
         isSelected: status.isConfirmTransactionSelected,
       },
       {
+        id: BRIDGE_STEP_ID.receiveOnEthereum,
         name: 'Receive on Ethereum',
         status: status.isReceiveDone ? 'Done!' : 'Automatic',
+        statusId: status.isReceiveDone
+          ? BRIDGE_STEP_STATUS_ID.done
+          : BRIDGE_STEP_STATUS_ID.automatic,
         isLoading: status.isReceiveLoading,
         isDone: status.isReceiveDone,
         isSelected: status.isReceiveSelected,
       },
-    ];
+    ] satisfies BridgeStep[];
     return steps;
   },
   fuelTxResult: (state: TxFuelToEthMachineState) => {

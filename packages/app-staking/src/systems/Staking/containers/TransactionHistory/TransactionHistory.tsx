@@ -88,7 +88,11 @@ export const TransactionHistory = () => {
     data: events,
     isPending,
     isFetching,
+    isError,
+    isSuccess,
+    hasNextPage,
     refetch,
+    truncated,
   } = useAllStakingEvents(address);
   const cells = useMemo(
     () =>
@@ -153,9 +157,16 @@ export const TransactionHistory = () => {
     setCurrentPage(1);
   };
 
+  // Empty copy is only for a successful read with no rows. A failure stays an
+  // error, and a load stays on the skeleton list.
   const hasTransactions = (events ?? []).length > 0;
-  const shouldShowList = isConnected && (hasTransactions || isPending);
-  const shouldShowEmpty = isConnected && !isPending && !hasTransactions;
+  const shouldShowError = isConnected && isError;
+  // A later page can fail after earlier pages have loaded. Keep those rows
+  // and show the error with them. An initial failure has no rows.
+  const shouldShowList =
+    isConnected && (hasTransactions || (isPending && !isError));
+  const shouldShowEmpty =
+    isConnected && isSuccess && !hasNextPage && !hasTransactions;
 
   return (
     <VStack gap="0">
@@ -202,6 +213,14 @@ export const TransactionHistory = () => {
                     />
                   ))}
               </AnimatedTable>
+              {truncated && (
+                <p
+                  role="status"
+                  className="m-0 border-t border-[var(--fuel-border)] py-4 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]"
+                >
+                  {t('staking.history.truncated')}
+                </p>
+              )}
               {!isPending && rows.length === 0 && (
                 <div className="fuel-appear flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] py-8 tablet:flex-row tablet:items-center tablet:justify-between">
                   <p className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]">
@@ -229,6 +248,28 @@ export const TransactionHistory = () => {
                 onPerPageChange={handlePerPageChange}
               />
             </>
+          )}
+          {shouldShowError && (
+            <div className="fuel-appear flex flex-col items-start gap-4 py-8 tablet:flex-row tablet:items-center tablet:justify-between">
+              <p
+                role="alert"
+                className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]"
+              >
+                {t('staking.history.load_error', {
+                  defaultValue:
+                    'Error on fetching transactions. Something went wrong, try again later.',
+                })}
+              </p>
+              <Button
+                size="2"
+                variant="ghost"
+                color="gray"
+                isLoading={isFetching}
+                onClick={() => refetch()}
+              >
+                {t('staking.review.retry')}
+              </Button>
+            </div>
           )}
           {shouldShowEmpty && (
             <TransactionHistoryEmpty onStartStaking={handleStartStaking} />

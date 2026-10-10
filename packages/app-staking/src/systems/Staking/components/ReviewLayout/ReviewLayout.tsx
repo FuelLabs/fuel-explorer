@@ -131,10 +131,10 @@ export function ReviewLayout({
           >
             <span
               aria-hidden
-              className="mt-[5px] size-2 shrink-0 border border-[var(--fuel-element-high-em)] bg-[var(--fuel-element-high-em)]"
+              className="mt-[5px] size-2 shrink-0 border border-[var(--fuel-warning)] bg-[var(--fuel-warning)]"
             />
             <div className="flex min-w-0 flex-col gap-1">
-              <span className="fuel-label text-[var(--fuel-element-high-em)]">
+              <span className="fuel-label text-[var(--fuel-warning-text)]">
                 {warning.title}
               </span>
               {warning.message && (

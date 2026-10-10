@@ -1,5 +1,4 @@
-import { HStack, Tooltip } from '@fuels/ui';
-import { IconInfoCircle } from '@fuels/ui';
+import { HStack, HelperIcon, IconInfoCircle } from '@fuels/ui';
 import { AnimatePresence, type AnimationProps, motion } from 'framer-motion';
 import type React from 'react';
 import { memo } from 'react';
@@ -12,7 +11,7 @@ import {
 
 export type Cell = {
   id: string;
-  tooltip?: React.ReactNode;
+  tooltip?: string;
   title: string;
   className?: string;
   animate?: AnimationProps['animate'];
@@ -42,16 +41,11 @@ function _AnimatedTable({ children, headerCells }: AnimatedTableProps) {
                   {title}
 
                   {tooltip && (
-                    <Tooltip
-                      content={tooltip}
-                      delayDuration={0}
-                      className="text-center"
-                    >
-                      <IconInfoCircle
-                        size={12}
-                        className="hidden tablet:block"
-                      />
-                    </Tooltip>
+                    <HelperIcon
+                      message={tooltip}
+                      icon={IconInfoCircle}
+                      iconSize={12}
+                    />
                   )}
                 </motion.div>
               ),

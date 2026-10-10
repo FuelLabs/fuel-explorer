@@ -1,3 +1,4 @@
+import { syncDayjsLocale } from 'app-commons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -14,5 +15,6 @@ export const calculateDateDiffFromTimestamp = (timestamp?: number) => {
 export const calculateDateDiff = (date?: Date) => {
   if (!date) return '';
 
+  syncDayjsLocale();
   return dayjs(date).fromNow();
 };

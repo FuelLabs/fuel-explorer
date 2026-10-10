@@ -13,12 +13,14 @@ export function ContractAsset({ id }: ContractAssetProps) {
   const { t } = useTranslation();
   const {
     data: balances,
-    isLoading,
+    isPending,
     isFetching,
     error,
   } = useContractBalances(id);
 
-  if (isLoading) {
+  // isPending, not isLoading: a retry paused in a background tab is pending
+  // with no data and no error, and must not render as "No Assets".
+  if (isPending) {
     return <ContractAssetsLoader />;
   }
 

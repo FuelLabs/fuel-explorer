@@ -31,7 +31,6 @@ const { symbol, decimals } = TOKENS[FuelToken.V2];
 
 const _ValidatorListItem = ({
   validator,
-  index,
   isLast,
   isLoading,
 }: ValidatorListItemProps) => {
@@ -49,11 +48,11 @@ const _ValidatorListItem = ({
     (disabled ? t('staking.validator.stake_disabled') : undefined);
 
   return (
+    // biome-ignore lint/a11y/useFocusableInteractive: a row holds its own buttons and is not a tab stop
     <div
       key={`${validator?.description?.moniker}-${validator?.rank}`}
       className={`fuel-hover-fill w-full flex align-center ${LIST_SEPARATOR_BORDER} ${isLast ? '' : 'border-b'}`}
       role="row"
-      tabIndex={index}
     >
       <div
         className={`${VALIDATORS_CELLS_OBJ.name} font-medium text-heading min-h-[52px] !pl-4`}

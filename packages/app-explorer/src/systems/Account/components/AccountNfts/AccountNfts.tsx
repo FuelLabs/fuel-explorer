@@ -24,7 +24,7 @@ export function AccountNfts({ balances = [] }: AccountNftsProps) {
         return (
           <div key={collection.name} className="mb-10">
             <HStack gap="2" className="mb-5 items-baseline">
-              <h2 className="fuel-label m-0">{collection.name}</h2>
+              <h2 className="fuel-label m-0 normal-case">{collection.name}</h2>
               <span className="text-[13px] text-[var(--fuel-element-low-em)]">
                 {collection.nfts.length}
               </span>
