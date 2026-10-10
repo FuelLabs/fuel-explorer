@@ -1,9 +1,9 @@
-import { Button, Flex, Text, VStack } from '@fuels/ui';
+import { Button, IconArrowRight, VStack } from '@fuels/ui';
 import { type Option, SearchableSelect } from '@fuels/ui';
-import { IconChevronDown } from '@tabler/icons-react';
 import type { BN } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import type { UseControllerReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { AnimatedError } from '~staking/systems/Core/components/AnimatedError/AnimatedError';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import type { Validator } from '~staking/systems/Staking/types/validators';
@@ -46,6 +46,7 @@ export function RedelegateAmount({
   toValidatorController,
   toValidatorData,
 }: RedelegateAmountProps) {
+  const { t } = useTranslation();
   const validatorOptions = useMemo(() => {
     return (
       validators?.map((validator) => ({
@@ -85,9 +86,9 @@ export function RedelegateAmount({
     <form className="flex flex-col flex-1 gap-8">
       <VStack gap="8" justify="center" className="flex-1">
         <VStack gap="0">
-          <Text className="font-medium text-gray-12 mb-1">
-            How much would you like to redelegate?
-          </Text>
+          <span className="fuel-label mb-2">
+            {t('staking.dialog.how_much_redelegate')}
+          </span>
           <RedelegateInput
             amount={amount}
             stakedAmount={stakedAmount}
@@ -99,17 +100,12 @@ export function RedelegateAmount({
           />
         </VStack>
         <VStack gap="2">
-          <Text className="font-medium text-[0.9375rem] text-gray-12 leading-[24px] mt-2">
-            To which validator?
-          </Text>
+          <span className="fuel-label mt-2">
+            {t('staking.dialog.to_which_validator')}
+          </span>
           <SearchableSelect
-            placeholder="Search or select validator"
-            endAdornment={
-              <Flex className="align-center mx-auto">
-                <IconChevronDown size={20} color="white" />
-              </Flex>
-            }
-            className="font-medium text-[0.9375rem] leading-[24px]"
+            placeholder={t('staking.dialog.search_validator')}
+            className="text-[16px] font-medium leading-[24px]"
             value=""
             options={validatorOptions}
             onChange={toValidatorController.field.onChange}
@@ -123,16 +119,15 @@ export function RedelegateAmount({
       </VStack>
 
       <Button
-        variant="solid"
-        color="green"
-        size="4"
-        className="w-full font-medium text-[0.8125rem] leading-[20px]"
+        size="3"
+        className="w-full"
         disabled={!isReady || !amount?.gt(0) || !!errorMsg}
         onClick={goToReview}
         type="button"
         isLoading={isGettingReviewDetails}
+        rightIcon={errorMsg ? undefined : IconArrowRight}
       >
-        {errorMsg ? errorMsg : 'Review →'}
+        {errorMsg ? errorMsg : t('staking.dialog.review')}
       </Button>
     </form>
   );

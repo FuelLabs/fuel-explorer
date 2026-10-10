@@ -1,0 +1,20 @@
+{
+  "faq": {
+    "rig": {
+      "question": "什麼是 The Rig？",
+      "answer": "The Rig 是 Ignition 上的流動性質押協議。在那裡質押，獎勵會自動複利。"
+    },
+    "unstake": {
+      "question": "解除質押需要多久？",
+      "answer": "解除質押要先完成同步，再經過解綁期，代幣才會釋放。狀態對話框會顯示每個階段。"
+    },
+    "position": {
+      "question": "在哪裡查看我的質押？",
+      "answer": "當前持倉列出你委託的每個驗證者。你的交易列出每一次質押和解除質押。"
+    },
+    "apr": {
+      "question": "APR 徽章顯示什麼？",
+      "answer": "在 Ethereum 上質押的年化獎勵率估計。數據來自 Fuel 索引器，並會隨時間變化。"
+    }
+  }
+}

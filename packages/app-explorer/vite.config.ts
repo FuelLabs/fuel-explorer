@@ -8,9 +8,40 @@ import tailwindcssNesting from 'tailwindcss/nesting';
 import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import svgr from 'vite-plugin-svgr';
+import { applyPageMeta } from './src/systems/Core/pageMeta';
 
 export default defineConfig({
   plugins: [
+    // The built index.html carries the home page's tags, so a host without the
+    // nginx per-route substitution still unfurls. KEEP_UNFURL_TOKENS leaves the
+    // placeholders in for that nginx layer.
+    {
+      name: 'page-meta-build',
+      apply: 'build',
+      transformIndexHtml(html) {
+        if (process.env.KEEP_UNFURL_TOKENS) return html;
+        return applyPageMeta(html, '/', '');
+      },
+    },
+    {
+      name: 'page-meta',
+      apply: 'serve',
+      transformIndexHtml(html, ctx) {
+        const requestUrl = ctx.originalUrl ?? '/';
+        const pathname = requestUrl.split('?')[0] || '/';
+        const host = ctx.server?.config.server.host;
+        const port = ctx.server?.config.server.port;
+        const origin =
+          host && port
+            ? `http://${host === true ? 'localhost' : host}:${port}`
+            : '';
+        return applyPageMeta(
+          html,
+          pathname,
+          origin ? `${origin}${requestUrl}` : '',
+        );
+      },
+    },
     nodePolyfills({
       globals: {
         Buffer: true,
@@ -54,6 +85,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': path.resolve(__dirname, './src'),
+      '@i18n': path.resolve(__dirname, './src/i18n.ts'),
       '~staking': path.resolve(__dirname, '../app-staking/src'),
       '@fuel-explorer/graphql/sdk': path.resolve(
         __dirname,

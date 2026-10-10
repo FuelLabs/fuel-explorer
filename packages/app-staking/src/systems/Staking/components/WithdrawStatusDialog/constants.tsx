@@ -1,44 +1,30 @@
 import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
+import { SyncFailedDescription } from '../StatusItem/SyncFailedDescription';
 
 export const WITHDRAW_STEPS = [
   {
-    label: 'Withdraw transaction sent...',
+    label: 'staking.status.step_withdraw_sent',
     status: GQLWithdrawStatusType.TransactionSent,
   },
   {
-    label: 'Synchronizing with Sequencer...',
+    label: 'staking.status.step_withdraw_sync',
     status: GQLWithdrawStatusType.WaitingSync,
   },
   {
-    label: 'Synchronization Failed',
+    label: 'staking.status.step_sync_failed',
     status: GQLWithdrawStatusType.Skipped,
-    description: (
-      <>
-        Likely due to the balance not being available at the moment of
-        synchronization. If you believe the sync should have been successful,
-        please contact Fuel support on{' '}
-        <a
-          href="https://discord.com/invite/xfpK4Pe"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline"
-        >
-          Discord
-        </a>
-        .
-      </>
-    ),
+    description: <SyncFailedDescription />,
   },
   {
-    label: 'Sequencer committing to L1...',
+    label: 'staking.status.step_withdraw_commit',
     status: GQLWithdrawStatusType.WaitingCommittingToL1,
   },
   {
-    label: 'Waiting for finalization...',
+    label: 'staking.status.step_withdraw_finalization',
     status: GQLWithdrawStatusType.WaitingFinalization,
   },
   {
-    label: 'Ready for withdrawal...',
+    label: 'staking.status.step_withdraw_ready',
     status: GQLWithdrawStatusType.ReadyToProcessWithdraw,
   },
 ];

@@ -1,41 +1,40 @@
-import { Box, Card, Text } from '@fuels/ui';
 import type { BaseProps } from '@fuels/ui';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 type CardInfoProps = BaseProps<{
   name?: string;
   description?: ReactNode | null;
   children?: ReactNode;
+  style?: CSSProperties;
 }>;
 
+// A flat cell. Put several inside a GridFrame so the hairlines between them
+// come from the frame.
 export function CardInfo({
   className,
   name,
   description,
   children,
-  ...props
+  style,
 }: CardInfoProps) {
   const classes = styles();
   return (
-    <Card {...props} className={classes.root({ className })}>
-      <Card.Body className={classes.body()}>
-        {name && (
-          <Text as="h3" className={classes.name()}>
-            {name}
-          </Text>
-        )}
-        <Box>{children}</Box>
-        <Text className="text-xs text-muted">{description}</Text>
-      </Card.Body>
-    </Card>
+    <div className={classes.root({ className })} style={style}>
+      {name && <h3 className={classes.name()}>{name}</h3>}
+      <div className={classes.value()}>{children}</div>
+      {description && (
+        <div className={classes.description()}>{description}</div>
+      )}
+    </div>
   );
 }
 
 const styles = tv({
   slots: {
-    root: 'py-2 gap-0 h-full',
-    name: 'mb-2 text-sm text-muted leading-1',
-    body: 'py-2',
+    root: 'fuel-edge flex h-full flex-col gap-2 bg-[var(--fuel-background)] px-4 py-4',
+    name: 'fuel-label m-0',
+    value: 'fuel-stat-sm min-w-0',
+    description: 'text-[12px] leading-[18px] text-[var(--fuel-element-low-em)]',
   },
 });

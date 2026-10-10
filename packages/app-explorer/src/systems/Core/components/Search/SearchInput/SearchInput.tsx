@@ -9,20 +9,27 @@ import {
   VStack,
   useBreakpoints,
 } from '@fuels/ui';
-import { IconCheck, IconSearch, IconX } from '@tabler/icons-react';
+import { IconCheck, IconSearch, IconX } from '@fuels/ui';
 import type { KeyboardEvent } from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useId, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useMedia } from 'react-use';
 
 import { cx } from '../../../utils/cx';
 
 import { SearchResultDropdown } from '../SearchResultDropdown';
 import { SearchContext } from '../SearchWidget';
-import { usePropagateInputMouseClick } from '../hooks/usePropagateInputMouseClick';
-import { DEFAULT_SEARCH_INPUT_WIDTH } from './constants';
+import {
+  addRecentSearch,
+  clearRecentSearches,
+  useRecentSearches,
+} from '../recentSearches';
+import { BELOW_LAPTOP_QUERY, DEFAULT_SEARCH_INPUT_WIDTH } from './constants';
 import { styles } from './styles';
 
 type SearchInputProps = BaseProps<InputProps> & {
   loading: boolean;
+  onClear?: () => void;
   onSubmit?: (value: string) => void;
   searchResult?: Maybe<GQLSearchResult>;
   alwaysDisplayActionButtons?: boolean;
@@ -34,12 +41,12 @@ export function SearchInput({
   value: initialValue = '',
   className,
   autoFocus,
-  placeholder:
-    _placeholder = 'Search by block, transaction, contract, address...',
+  placeholder: _placeholder,
   searchResult,
   loading,
   error,
   loadingMore,
+  onClear,
   ...props
 }: SearchInputProps) {
   const classes = styles();
@@ -54,19 +61,18 @@ export function SearchInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const { dropdownRef } = useContext(SearchContext);
   const { isMobile } = useBreakpoints();
-  const placeholder = !isMobile ? _placeholder : 'Search here...';
-  const shouldOpen = !!error || !!value || searchResult !== null;
+  const isCompactNav = useMedia(BELOW_LAPTOP_QUERY, false);
+  const { t } = useTranslation();
+  const resultsId = useId();
+  const placeholder =
+    _placeholder ?? (isMobile ? t('common.search_short') : t('common.search'));
+  const recents = useRecentSearches();
+  const hasRecents = !value && recents.length > 0;
+  const shouldOpen = !!error || !!value || searchResult !== null || hasRecents;
   const openDropdown = isOpen;
+  const active = isFocused || openDropdown;
+  const takeover = isCompactNav && active;
   const isPressingFloatingIcon = useRef<boolean>(false);
-  const hasClickedFieldArea = useRef(false);
-
-  usePropagateInputMouseClick({
-    containerRef,
-    inputRef,
-    enabled: openDropdown,
-    hasClickedFieldArea,
-    isPressingFloatingIcon,
-  });
   useEffect(() => {
     if (error) {
       setIsOpen(true);
@@ -121,7 +127,12 @@ export function SearchInput({
   }, []);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setValue(event.target.value);
+    const next = event.target.value;
+    setValue(next);
+    // Before any search the panel only has recents to show, and only for an empty field.
+    if (searchResult === undefined && !error) {
+      setIsOpen(!next && recents.length > 0);
+    }
   }
 
   function close() {
@@ -133,16 +144,23 @@ export function SearchInput({
     if (loading) return;
     setValue('');
     close();
+    onClear?.();
+    if (takeover) {
+      setIsFocused(false);
+      inputRef.current?.blur();
+      return;
+    }
     inputRef.current?.focus();
   }
 
   function handleFocus() {
     setIsFocused(true);
+    if (hasRecents && !isOpen) setIsOpen(true);
   }
 
   function handleBlur() {
     // Fixes onBlur triggering before the button is clicked
-    if (!isPressingFloatingIcon.current && !hasClickedFieldArea.current) {
+    if (!isPressingFloatingIcon.current) {
       setIsFocused(false);
     }
   }
@@ -167,12 +185,8 @@ export function SearchInput({
   }
 
   return (
-    <div className="relative">
-      <VStack
-        gap="0"
-        className={classes.searchBox()}
-        data-active={isFocused || openDropdown}
-      >
+    <div className="md:relative">
+      <VStack gap="0" className={classes.searchBox()} data-active={active}>
         <Focus.ArrowNavigator autoFocus={autoFocus}>
           <div ref={containerRef} className={classes.inputContainer()}>
             <Input
@@ -185,39 +199,55 @@ export function SearchInput({
               variant="surface"
               radius="large"
               size="3"
-              data-active={isFocused || openDropdown}
+              data-active={active}
               className={cx(className, classes.inputWrapper())}
               type="search"
+              role="combobox"
+              aria-expanded={openDropdown}
+              aria-controls={resultsId}
+              aria-autocomplete="list"
+              autoComplete="off"
               onFocus={handleFocus}
               onBlur={handleBlur}
               onKeyDown={onKeyDown}
             >
               <Input.Slot
+                side="left"
+                data-show={takeover}
+                className="[&[data-show=false]]:hidden"
+              >
+                <Icon icon={IconSearch} size={16} />
+              </Input.Slot>
+              <Input.Slot
                 side="right"
-                data-show={(isFocused && !!value) || !!value}
+                data-show={!!value || takeover}
                 className={classes.inputActionsContainer()}
               >
-                <Tooltip content="Submit">
+                <Tooltip content={t('common.submit')}>
                   <IconButton
                     type="submit"
-                    aria-label="Submit"
+                    aria-label={t('common.submit')}
                     icon={IconCheck}
                     className={classes.iconCheck()}
                     iconColor="text-brand"
                     variant="link"
                     data-should-hide={
-                      !value || value !== lastSearchTerm.current
+                      !!value && value !== lastSearchTerm.current
                     }
                     isLoading={loading}
                     onMouseDown={handleButtonMouseDown}
                     onMouseUp={handleButtonMouseUp}
                   />
                 </Tooltip>
-                <Tooltip content="Clear">
+                <Tooltip
+                  content={takeover ? t('common.close') : t('common.clear')}
+                >
                   <IconButton
-                    aria-label="Clear"
+                    aria-label={
+                      takeover ? t('common.close') : t('common.clear')
+                    }
                     icon={IconX}
-                    iconColor="text-gray-11"
+                    iconColor="text-icon"
                     className={classes.iconClear()}
                     variant="link"
                     disabled={loading}
@@ -231,7 +261,7 @@ export function SearchInput({
               </Input.Slot>
 
               <Input.Slot
-                data-show={!isFocused && !inputRef.current?.value}
+                data-show={!isFocused && !value && !takeover}
                 side="right"
                 className="[&[data-show=false]]:hidden"
               >
@@ -242,6 +272,7 @@ export function SearchInput({
         </Focus.ArrowNavigator>
         <SearchResultDropdown
           ref={dropdownRef}
+          id={resultsId}
           width={dropdownWidth}
           searchResult={searchResult}
           searchValue={value}
@@ -250,8 +281,15 @@ export function SearchInput({
           error={error}
           loading={loading}
           loadingMore={loadingMore}
-          onSelectItem={() => {
+          recents={recents}
+          keepOpenWithin={containerRef}
+          onSelectItem={(hit) => {
+            addRecentSearch(hit);
             handleClear();
+          }}
+          onClearRecents={() => {
+            clearRecentSearches();
+            close();
           }}
           onOpenChange={(open) => {
             if (!open) {

@@ -1,12 +1,12 @@
 import * as RD from '@radix-ui/react-dialog';
 
 import { Portal } from '@radix-ui/react-portal';
-import { IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 import { IconButton } from '../IconButton';
+import { IconX } from '../Icons';
 
 export type AnimatedDialogProps = PropsOf<typeof RD.Root>;
 export type AnimatedDialogTriggerProps = PropsOf<typeof RD.Trigger>;
@@ -15,7 +15,7 @@ export type AnimatedDialogOverlayProps = PropsOf<typeof RD.Overlay>;
 export type AnimatedDialogTitleProps = PropsOf<typeof RD.Title>;
 export interface AnimatedDialogContentProps extends PropsOf<typeof RD.Content> {
   open: boolean;
-  color?: 'green' | 'orange';
+  color?: 'grass' | 'green' | 'orange';
   hideClose?: boolean;
 }
 export type AnimatedDialogCloseProps = PropsOf<typeof RD.Close>;
@@ -24,38 +24,36 @@ export type AnimatedDialogCloseButtonProps = Partial<
 >;
 export type AnimatedDialogDescriptionProps = PropsOf<typeof RD.Description>;
 
-const animations = {
-  closed: {
-    opacity: 0,
-    transform: 'var(--animated-dialog-transform-closed)',
-  },
-  open: {
-    opacity: 1,
-    transform: 'var(--animated-dialog-transform-open)',
-  },
-};
+const enterEase = [0.16, 1, 0.3, 1] as const;
+const exitEase = [0.4, 0, 0.2, 1] as const;
 
 const fadeOuter = {
   closed: {
     opacity: 0,
-    transition: {
-      when: 'afterChildren',
-    },
+    transition: { duration: 0.18, ease: exitEase },
   },
   open: {
     opacity: 1,
-    transition: {
-      when: 'beforeChildren',
-      duration: 0.2,
-    },
+    transition: { duration: 0.2, ease: enterEase },
   },
 };
 
-const contentTransition = {
-  type: 'spring',
-  duration: 0.5,
-  bounce: 0.1,
-};
+function getContentVariants(reduced: boolean | null) {
+  return {
+    closed: {
+      opacity: 0,
+      y: reduced ? 0 : 12,
+      scale: reduced ? 1 : 0.98,
+      transition: { duration: 0.18, ease: exitEase },
+    },
+    open: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.3, ease: enterEase },
+    },
+  };
+}
 
 export const AnimatedDialogRoot = createComponent<
   AnimatedDialogProps,
@@ -79,7 +77,6 @@ export const AnimatedDialogOverlay = createComponent<
 >({
   id: 'AnimatedDialogOverlay',
   baseElement: RD.Overlay,
-  className: () => 'backdrop-blur-sm bg-black/70',
 });
 
 export const AnimatedDialogClose = createComponent<
@@ -103,9 +100,9 @@ export const AnimatedDialogCloseButton = createComponent<
         color="gray"
         iconSize={20}
         icon={IconX}
-        iconColor="text-gray-12"
+        iconColor="text-heading"
         className={clsx(
-          'rounded-full absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
+          'fuel-hover-fill fuel-hit absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
           props.className,
         )}
       />
@@ -124,8 +121,10 @@ export const AnimatedDialogContent = createComponent<
   },
   render: (
     _,
-    { children, open, hideClose = false, color = 'green', ...props },
+    { children, open, hideClose = false, color = 'grass', ...props },
   ) => {
+    const reduced = useReducedMotion();
+    const variants = getContentVariants(reduced);
     return (
       <AnimatePresence mode="wait">
         {open && (
@@ -133,7 +132,7 @@ export const AnimatedDialogContent = createComponent<
             className="radix-themes"
             data-accent-color="grass"
             data-gray-color="slate"
-            data-radius="medium"
+            data-radius="none"
             data-scaling="100%"
             asChild
           >
@@ -147,13 +146,10 @@ export const AnimatedDialogContent = createComponent<
                 <RD.Content {...props} forceMount asChild>
                   <motion.div
                     data-accent-color={color}
-                    variants={animations}
+                    variants={variants}
                     initial="closed"
                     animate="open"
                     exit="closed"
-                    layout
-                    layoutId="animated-dialog-content"
-                    transition={contentTransition}
                   >
                     {children}
 
@@ -181,8 +177,7 @@ export const AnimatedDialogTitle = createComponent<
 >({
   id: 'AnimatedDialogTitle',
   baseElement: RD.Title,
-  className: ({ className }) =>
-    `font-mono text-xl tablet:text-2xl ${className}`,
+  className: ({ className }) => clsx('fuel-stat-sm', className),
 });
 
 export const AnimatedDialogDescription = createComponent<

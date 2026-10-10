@@ -1,15 +1,13 @@
-import {
-  IconBuildingBank,
-  IconHistory,
-  IconTableOptions,
-} from '@tabler/icons-react';
+import { IconBuildingBank, IconHistory, IconTableOptions } from '@fuels/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { Routes } from '~staking/routes';
 import { NavigationTab } from '~staking/systems/Core/components/NavigationTab/NavigationTab';
 
 export function StakingL1Tabs() {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const defaultValue = useMemo(() => {
     if (pathname.includes('/on-ethereum/validators')) return 'validators';
@@ -39,17 +37,17 @@ export function StakingL1Tabs() {
       items={[
         {
           value: 'positions',
-          label: 'Current Positions',
+          label: t('staking.positions'),
           icon: IconTableOptions,
         },
         {
           value: 'validators',
-          label: 'Validators',
+          label: t('staking.validators'),
           icon: IconBuildingBank,
         },
         {
           value: 'transactions',
-          label: 'Your Transactions',
+          label: t('staking.transactions'),
           icon: IconHistory,
         },
       ]}

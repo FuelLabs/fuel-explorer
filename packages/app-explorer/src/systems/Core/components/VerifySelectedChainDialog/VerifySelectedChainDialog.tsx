@@ -29,7 +29,7 @@ export function VerifySelectedChainDialog() {
           <div>
             <AnimatedDialog.Title>Network Switch Required</AnimatedDialog.Title>
           </div>
-          <Text className="mt-10 mb-4 text-gray-11">
+          <Text className="mt-10 mb-4 text-[var(--fuel-element-mid-em)]">
             It looks like you're connected to a wrong network.
             <br /> To ensure the app works correctly, please switch to{' '}
             {expectedChainName || 'our network'} network.

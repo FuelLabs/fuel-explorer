@@ -1,11 +1,14 @@
-import { Box, Flex, Nav, useBreakpoints } from '@fuels/ui';
+import { Box, Flex, HStack, Nav } from '@fuels/ui';
 import { isRoute } from 'app-commons';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useMedia } from 'react-use';
 
 import { Routes as PortalRoutes } from 'app-commons';
 import { ConnectWallet } from 'app-portal';
 import { Routes as StakingRoutes } from 'app-staking';
+import { useTranslation } from 'react-i18next';
+import { LanguageSelect } from '../LanguageSelect/LanguageSelect';
 import { NetworkSelector } from '../NetworkSelector/NetworkSelector';
 import { SearchWidget } from '../Search/SearchWidget';
 import { useTheme } from '../Theme/ThemeProvider';
@@ -15,7 +18,9 @@ export function TopNav() {
   // nav elements are in the DOM and respond to click events.
   const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const { isLaptop } = useBreakpoints();
+  // The nav switches between its two layouts at the md breakpoint (1024 px).
+  const isLaptop = useMedia('(min-width: 1024px)', true);
+  const { t } = useTranslation();
   const location = useLocation();
   const { setTheme, resolvedTheme } = useTheme();
 
@@ -34,7 +39,9 @@ export function TopNav() {
     PortalRoutes.bridge,
     PortalRoutes.bridgeHistory,
   ]);
-  const isEcosystemBridge = isRoute(pathname, [PortalRoutes.ecosystem]);
+  const isEcosystemBridge =
+    isRoute(pathname, [PortalRoutes.ecosystem]) ||
+    pathname.startsWith(`${PortalRoutes.ecosystem.pathname}/`);
 
   const isExplorer = !isBridge && !isEcosystemBridge && !isStake;
 
@@ -46,8 +53,16 @@ export function TopNav() {
     }
   }, [isLaptop, isDesktopSearchOpen, isMobileSearchOpen]);
 
+  const themeToggle = (
+    <Nav.ThemeToggle
+      whenOpened="no-effect"
+      theme={resolvedTheme}
+      onToggle={setTheme}
+    />
+  );
+
   const logo = (
-    <Link to="/" className="flex items-center">
+    <Link to="/" className="fuel-hit relative flex items-center">
       <Nav.Logo />
     </Link>
   );
@@ -59,48 +74,59 @@ export function TopNav() {
         href="/"
         className="flex items-center"
       >
-        Explorer
+        {t('nav.explorer')}
       </Nav.MenuItem>
       <Nav.MenuItem isActive={isBridge} href={PortalRoutes.bridge()}>
-        Bridge
+        {t('nav.bridge')}
       </Nav.MenuItem>
       <Nav.MenuItem isActive={isStake} href={StakingRoutes.stakingL1()}>
-        Stake
+        {t('nav.stake')}
       </Nav.MenuItem>
       <Nav.MenuItem
         isActive={isEcosystemBridge}
         href={PortalRoutes.ecosystem()}
       >
-        Ecosystem
+        {t('nav.ecosystem')}
       </Nav.MenuItem>
     </>
   );
 
   return (
     <Nav>
-      <Nav.Desktop className={'px-10 justify-between items-center'}>
-        <Nav.Menu className={'items-center'}>
+      <Nav.Desktop className={'md:px-6 lg:px-10 justify-between items-center'}>
+        <Nav.Menu className={'items-center md:max-lg:gap-3'}>
           {logo}
           {tooling}
         </Nav.Menu>
         <Nav.Menu>{!isEcosystemBridge && <SearchWidget />}</Nav.Menu>
         <Nav.Menu className={'items-center laptop:gap-2'}>
+          <LanguageSelect />
           <NetworkSelector />
-          <Box className="border-r mr-[-12px] h-[40px] border-gray-3" />
-          <ConnectWallet theme={resolvedTheme} setTheme={setTheme} />
+          {themeToggle}
+          <ConnectWallet />
         </Nav.Menu>
       </Nav.Desktop>
       <Nav.Mobile>
-        <Nav.MobileContent>
+        <Nav.MobileContent className="relative">
           {logo}
           {!isEcosystemBridge && <SearchWidget />}
-          <NetworkSelector />
         </Nav.MobileContent>
-        <Nav.Menu>
-          <Flex className="w-full">
-            <Box className="flex-1">{tooling}</Box>
-            <ConnectWallet theme={resolvedTheme} setTheme={setTheme} />
-          </Flex>
+        <Nav.Menu className="bg-[var(--fuel-background)]">
+          <div className="flex w-full flex-col gap-4">
+            <Flex className="w-full">
+              <Box className="flex-1">{tooling}</Box>
+              <ConnectWallet />
+            </Flex>
+            <HStack
+              gap="2"
+              align="center"
+              className="border-t border-border pt-4"
+            >
+              <LanguageSelect />
+              <NetworkSelector />
+              {themeToggle}
+            </HStack>
+          </div>
         </Nav.Menu>
       </Nav.Mobile>
     </Nav>

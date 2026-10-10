@@ -5,16 +5,16 @@
 @layer base {
   .custom-scrollbar {
     &::-webkit-scrollbar {
-      @apply w-[10px] bg-transparent;
+      @apply w-[6px] bg-transparent;
     }
     &::-webkit-scrollbar-track {
       @apply bg-transparent;
     }
     &::-webkit-scrollbar-thumb {
-      @apply bg-gray-8 opacity-50 border-4 border-transparent rounded-[12px] bg-clip-content;
+      background-color: var(--fuel-line);
     }
     &::-webkit-scrollbar-thumb:hover {
-      @apply bg-gray-10;
+      background-color: var(--fuel-element-low-em);
     }
   }
 }

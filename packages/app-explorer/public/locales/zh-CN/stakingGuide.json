@@ -1,0 +1,20 @@
+{
+  "faq": {
+    "rig": {
+      "question": "什么是 The Rig？",
+      "answer": "The Rig 是 Ignition 上的流动性质押协议。在那里质押，奖励会自动复利。"
+    },
+    "unstake": {
+      "question": "解除质押需要多久？",
+      "answer": "解除质押要先完成同步，再经过解绑期，代币才会释放。状态对话框会显示每个阶段。"
+    },
+    "position": {
+      "question": "在哪里查看我的质押？",
+      "answer": "当前持仓列出你委托的每个验证者。你的交易列出每一次质押和解除质押。"
+    },
+    "apr": {
+      "question": "APR 徽章显示什么？",
+      "answer": "在 Ethereum 上质押的年化奖励率估计。数据来自 Fuel 索引器，并会随时间变化。"
+    }
+  }
+}

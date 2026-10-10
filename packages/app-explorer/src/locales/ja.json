@@ -1,0 +1,1087 @@
+{
+  "common": {
+    "view_all": "すべて見る",
+    "language": "言語",
+    "search": "ブロック、トランザクション、コントラクト、アドレスで検索...",
+    "search_short": "検索",
+    "submit": "送信",
+    "clear": "クリア",
+    "close": "閉じる",
+    "recent_searches": "最近の検索",
+    "clear_recent": "履歴を消去",
+    "no_results": "結果が見つかりません",
+    "no_results_hint": "ブロックハッシュ、トランザクション ID、コントラクト、アカウント、またはプレディケートのアドレスで検索してください。",
+    "search_error": "検索結果の取得中にエラーが発生しました。",
+    "search_kind": {
+      "account": "アカウント",
+      "block_hash": "ブロックハッシュ",
+      "block_height": "ブロック高",
+      "contract": "コントラクト",
+      "transaction": "トランザクション"
+    },
+    "search_projects_label": "プロジェクトを検索",
+    "all": "すべて",
+    "today": "今日",
+    "yesterday": "昨日",
+    "active": "稼働中: {{count}}",
+    "building": "開発中: {{count}}",
+    "window_24h": "24時間",
+    "read_docs": "ドキュメント",
+    "questions": "質問",
+    "search_loading": "結果を読み込み中"
+  },
+  "nav": {
+    "explorer": "エクスプローラー",
+    "bridge": "ブリッジ",
+    "stake": "ステーク",
+    "ecosystem": "エコシステム"
+  },
+  "home": {
+    "daily_transactions": "日間トランザクション",
+    "daily_transactions_hint": "過去24時間に Fuel Network で完了したトランザクションの合計",
+    "hourly_tps": "時間あたり TPS",
+    "tx_per_second": "TPS",
+    "peak": "ピーク:",
+    "fee_spent": "支払手数料",
+    "fee_spent_hint": "Fuel Network で支払われた手数料",
+    "usd": "USD",
+    "live_stats": "ライブ統計",
+    "live_stats_window": "(60秒)",
+    "tps": "TPS",
+    "tx_per_block": "TX / ブロック",
+    "block_size": "ブロックサイズ",
+    "recent_blocks": "最新ブロック",
+    "recent_transactions": "最新トランザクション",
+    "fuel_dapps": "Fuel のアプリ",
+    "tx_count": "{{count}} TX",
+    "fee": "手数料",
+    "gas_amount": "{{value}} ガス",
+    "block_link": "ブロック {{number}}",
+    "peak_tps": "時間ピーク",
+    "avg_tps": "時間平均",
+    "error_title": "取引を読み込めませんでした",
+    "error_description": "最新の取引を読み込めませんでした。もう一度お試しください。",
+    "unavailable": "データを取得できません",
+    "apps_recently_active": "最近アクティブ",
+    "apps_featured": "注目のアプリ"
+  },
+  "ecosystem": {
+    "eyebrow": "Fuel エコシステム",
+    "built_on_fuel": "Fuel 上で動く",
+    "lead": "アプリ、ウォレット、インフラが最速の実行レイヤーで稼働しています。",
+    "sections": {
+      "fuel": {
+        "title": "Fuel Suite"
+      },
+      "defi": {
+        "eyebrow": "DeFi",
+        "title": "DeFi"
+      },
+      "ai": {
+        "eyebrow": "AI",
+        "title": "AI"
+      },
+      "wallets": {
+        "eyebrow": "ウォレット",
+        "title": "ウォレット"
+      },
+      "infrastructure": {
+        "eyebrow": "データとインフラ",
+        "title": "データとインフラ"
+      },
+      "tooling": {
+        "eyebrow": "ツール",
+        "title": "ツール"
+      },
+      "security": {
+        "eyebrow": "セキュリティ",
+        "title": "セキュリティ"
+      },
+      "more": {
+        "eyebrow": "その他",
+        "title": "その他の Fuel"
+      }
+    },
+    "quick_access": "クイックアクセス",
+    "search_placeholder": "アプリ、ウォレット、インフラを検索",
+    "clear_search": "検索をクリア",
+    "categories_label": "エコシステムのカテゴリ",
+    "app_count_other": "{{count}} 件のアプリ",
+    "show_all": "すべて表示",
+    "no_results": "アプリが見つかりません。",
+    "spotlight": {
+      "title": "Fuel で動く完全オンチェーンの現物 DEX",
+      "lead": "o2 Turbo の拠点：最大 $10k のプロップトレード資金を獲得。審査なし、利益は 100% あなたのもの。",
+      "cta": "取引する",
+      "view_project": "プロジェクトを見る",
+      "image_alt": "{{name}} の製品スクリーンショット"
+    },
+    "load_error_title": "プロジェクトを読み込めませんでした",
+    "load_error_body": "接続を確認して、もう一度お試しください。",
+    "empty_title": "プロジェクトはまだありません",
+    "empty_body": "プロジェクトが登録されるとここに表示されます。"
+  },
+  "footer": {
+    "fuel": "FUEL",
+    "get_started": "はじめに",
+    "build": "開発",
+    "environment": "環境",
+    "about_fuel": "Fuel について",
+    "jobs": "採用",
+    "blog": "ブログ",
+    "media_kit": "メディアキット",
+    "build_an_app": "アプリを作る",
+    "create_contract": "スマートコントラクトを作る",
+    "docs": "ドキュメント",
+    "fuelvm": "FuelVM",
+    "grant_program": "グラント",
+    "github": "Github",
+    "forum": "フォーラム",
+    "discord": "Discord",
+    "changelog": "変更履歴",
+    "block_explorer": "ブロックエクスプローラー",
+    "ecosystem": "エコシステム",
+    "wallet": "ウォレット",
+    "bridge": "ブリッジ",
+    "rights": "© {{year}} Fuel Labs. All rights reserved",
+    "version": "version: {{hash}}"
+  },
+  "staking": {
+    "title": "Fuel ネットワークの安全を支える",
+    "read_docs": "ドキュメント",
+    "open_rig": "The Rig を開く",
+    "tab_rig": "The Rig でリキッドステーク",
+    "tab_ethereum": "Ethereum でステーク",
+    "rig_card_title": "The Rig でリキッドステーク",
+    "rig_card_lead": "Ignition でステークし、リキッドトークンを受け取ります。報酬は自動で複利になります。",
+    "connect_tokens": "ステークできるトークンを見るにはウォレットを接続してください。",
+    "connect_ethereum": "Ethereum ウォレットを接続",
+    "positions": "現在のポジション",
+    "validators": "バリデータ",
+    "transactions": "トランザクション",
+    "wallet_disconnected": "ウォレット未接続",
+    "connect_positions": "ステーキングのポジションを見るにはウォレットを接続してください。",
+    "history": {
+      "status_label": "ステータスで絞り込み",
+      "status_action": "対応が必要",
+      "status_progress": "処理中",
+      "status_completed": "完了",
+      "status_failed": "失敗",
+      "type_label": "種類で絞り込み",
+      "type_all": "すべての種類",
+      "refresh": "リストを更新",
+      "no_match": "条件に一致するトランザクションはありません。",
+      "clear": "絞り込みを解除",
+      "load_error": "トランザクションの取得に失敗しました。問題が発生しました。後でもう一度お試しください。",
+      "truncated": "1,000件を超えるイベントは読み込まれていません。"
+    },
+    "account": {
+      "connect_wallet": "ウォレットを接続",
+      "copied": "コピーしました",
+      "copied_toast": "アドレスをクリップボードにコピーしました",
+      "copy": "アドレスをコピー",
+      "disconnect": "切断",
+      "switch": "ネットワークを切り替え",
+      "unsupported": "未対応のネットワーク"
+    },
+    "balance": {
+      "ethereum": "Ethereum上の残高",
+      "ethereum_tip": "バリデータへのステークに使えるEthereumネットワーク上の残高です。",
+      "rewards": "獲得した報酬",
+      "rewards_tip": "ステーク中のポジションから得た現在の報酬です。請求するには「現在のポジション」タブを開いてください。",
+      "sequencer": "シーケンサー内の残高",
+      "sequencer_tip": "Fuel Sequencerチェーン上の残高です。バリデータへのステークや、Ethereumネットワークへの引き出しに使えます。",
+      "vesting": "ベスティング中のトークン",
+      "vesting_tip": "V1からFUELへの変換で得たロック中のFUELトークンです。\n\nベスティング期間中、これらのトークンは少しずつ「シーケンサー内の残高」に解放されます。請求の操作は不要です。",
+      "withdraw": "引き出し"
+    },
+    "dialog": {
+      "amount_to_claim": "請求額",
+      "approval": "承認",
+      "approve_body": "ステークを続けるには、このコントラクトがEthereum残高のトークンを使用することを許可する必要があります。",
+      "approve_title": "FUELの使用を承認",
+      "approved": "FUELトークンの使用は承認済みです。",
+      "approving": "承認中...",
+      "claim_pending": "報酬の請求を処理中",
+      "claim_rewards": "報酬を請求",
+      "claiming_now": "請求中",
+      "from_account": "送信元アカウント",
+      "have_claimed": "請求済み",
+      "have_redelegated": "再委任済み",
+      "have_staked": "ステーク済み",
+      "have_undelegated": "委任解除済み",
+      "have_withdrawn": "引き出し済み",
+      "how_much_redelegate": "いくら再委任しますか?",
+      "how_much_stake": "いくらステークしますか?",
+      "how_much_undelegate": "いくら委任解除しますか?",
+      "how_much_withdraw": "いくら引き出しますか?",
+      "please_wait": "しばらくお待ちください",
+      "redelegate": "再委任",
+      "redelegating_now": "再委任中",
+      "review": "確認",
+      "review_claim": "確認: 報酬の請求",
+      "review_redelegate": "確認: 再委任",
+      "review_stake": "確認: ステーク",
+      "review_undelegate": "確認: 委任解除",
+      "review_withdraw": "確認: 引き出し",
+      "search_validator": "バリデータを検索または選択",
+      "selected_validator": "選択したバリデータ",
+      "sourced_from": "資金元",
+      "stake": "ステーク",
+      "stake_unavailable": "現在ステークできません",
+      "staking_now": "ステーク中",
+      "step_of": "ステップ {{current}} / {{total}}",
+      "submit_redelegate": "再委任を送信",
+      "submit_stake": "ステークを送信",
+      "submit_undelegate": "委任解除を送信",
+      "submit_withdraw": "引き出しを送信",
+      "to_which_validator": "どのバリデータに?",
+      "two_tx_body": "この取引は「Ethereum上の残高」と「シーケンサー内の残高」の両方から資金が出ます。そのため、2件の別々の取引を実行する必要があります。",
+      "two_tx_title": "このステーク操作には2件の取引が必要です。",
+      "undelegate": "委任解除",
+      "undelegate_unavailable": "現在委任解除できません",
+      "undelegating_now": "委任解除中",
+      "withdraw": "引き出し",
+      "withdraw_unavailable": "現在引き出しできません",
+      "withdrawal": "引き出し",
+      "withdrawing_now": "引き出し中"
+    },
+    "empty": {
+      "positions": "現在、有効なステークポジションはありません。",
+      "start": "ステークを始める",
+      "transactions": "まだ取引はありません。"
+    },
+    "faucet": {
+      "button": "Fuelトークンのファウセット",
+      "error": "Fuelトークンの請求に失敗しました"
+    },
+    "pagination": {
+      "next": "次のページ",
+      "page": "ページ {{page}}",
+      "previous": "前のページ",
+      "records": "件",
+      "show": "表示"
+    },
+    "position": {
+      "claim": "請求",
+      "menu": "委任項目",
+      "redelegate": "再委任",
+      "undelegate": "委任解除"
+    },
+    "review": {
+      "approve": "承認",
+      "back": "戻る",
+      "balance_ethereum": "(Ethereum上の残高)",
+      "balance_sequencer": "(シーケンサー内の残高)",
+      "checking": "確認中...",
+      "fee": "ネットワーク手数料",
+      "from": "送信元",
+      "my_account": "マイアカウント",
+      "retry": "再試行",
+      "submitting": "送信中...",
+      "time_to_complete": "完了までの時間",
+      "to": "送信先"
+    },
+    "status": {
+      "at": "{{date}} {{time}}",
+      "error": "エラー",
+      "eta": "完了予定時刻",
+      "finalize_withdraw": "引き出しを確定",
+      "funds_staked_on": "ステーク日時",
+      "label": "ステータス",
+      "loading": "読み込み中...",
+      "redelegated_on": "再委任日時",
+      "rewards_claimed_on": "報酬請求日時",
+      "step_sent": "取引を送信済み",
+      "step_sync_failed": "同期に失敗しました",
+      "step_unbonding": "アンボンディング待ち",
+      "step_waiting_sync": "同期を待機中",
+      "step_withdraw_commit": "シーケンサーがL1にコミット中...",
+      "step_withdraw_finalization": "確定を待機中...",
+      "step_withdraw_ready": "引き出し可能...",
+      "step_withdraw_sent": "引き出し取引を送信済み...",
+      "step_withdraw_sync": "シーケンサーと同期中...",
+      "sync_failed_body": "同期時点で残高が利用できなかったことが原因と考えられます。同期は成功するはずだと思われる場合は、<discord>Discord</discord>でFuelサポートにお問い合わせください。",
+      "undelegation_completed_on": "委任解除の完了日時",
+      "waiting_confirmation": "取引の承認を待機中",
+      "waiting_user": "ユーザー操作待ち",
+      "withdrawal_finalized_on": "引き出しの確定日時",
+      "step_done": "完了",
+      "step_active": "進行中",
+      "step_failed": "失敗",
+      "step_pending": "未開始"
+    },
+    "table": {
+      "commission": "手数料率",
+      "delegated": "委任トークン",
+      "name": "名前",
+      "power": "投票力",
+      "rewards": "獲得報酬",
+      "date": "日付",
+      "type": "種類",
+      "amount": "金額",
+      "status": "ステータス"
+    },
+    "upgrade": {
+      "allowance": "トークン許容額",
+      "available": "利用可能",
+      "claim": "トークンを請求",
+      "claim_submitted": "ベスティングの請求を送信しました",
+      "cliff_end": "クリフ終了",
+      "close_hint": "このダイアログを閉じて、後で戻ってくることができます。",
+      "convert": "FUELにアップグレード",
+      "cta": "Fuel V1トークンをアップグレード",
+      "dialog_title": "V1をFUELトークンにアップグレード",
+      "go_staking": "ステークへ移動",
+      "grant_title": "V1トークンの付与",
+      "liquid": "流動的な{{version}}トークン",
+      "migration_submitted": "移行を送信しました",
+      "next": "次へ",
+      "receive": "受け取る量",
+      "release_end": "リリース終了",
+      "start_date": "開始日",
+      "step_allowance": "許容額",
+      "step_upgrade": "アップグレード",
+      "submit": "アップグレード",
+      "total_claimed": "請求済み合計",
+      "total_grant": "付与合計",
+      "total_vesting": "ベスティング合計",
+      "unclaimed": "未請求のトークン",
+      "v1_amount": "V1の数量",
+      "vesting_fuel": "FUELトークンのベスティング",
+      "waiting_allowance": "トークン許容額の承認を待機中です。"
+    },
+    "validator": {
+      "load_error": "バリデータの取得に失敗しました。問題が発生しました。後でもう一度お試しください。",
+      "stake": "ステーク",
+      "stake_disabled": "他のステーク操作が保留中の間は、ステークできません。"
+    },
+    "lanes_label": "ステーキング方法",
+    "lane_rig": "The Rig",
+    "lane_ethereum": "Ethereum",
+    "lane_rig_figure": "請求可能",
+    "lane_rig_connect": "stFUEL を請求できるか確認するには、ここでウォレットを接続してください。",
+    "lane_rig_checking": "請求可能残高を確認しています...",
+    "lane_ethereum_figure": "ステーキング中",
+    "board": {
+      "title": "未完了の項目",
+      "count_other": "{{count}} 件",
+      "col_lane": "方法",
+      "col_what": "内容",
+      "col_amount": "金額",
+      "col_status": "ステータス",
+      "rig_claim": "stFUEL を請求",
+      "claim_rewards": "報酬を請求",
+      "ready": "準備完了",
+      "action_needed": "対応が必要",
+      "time_left": "残り約 {{eta}}",
+      "in_progress": "処理中",
+      "claim": "請求",
+      "continue": "続行",
+      "details": "詳細",
+      "load_error": "未完了の項目の取得に失敗しました。問題が発生しました。後でもう一度お試しください。",
+      "truncated": "1,000件を超えるイベントは読み込まれていません。"
+    },
+    "event_type": {
+      "stake": "ステーク",
+      "redelegate": "再委任",
+      "undelegate": "委任解除",
+      "claim_rewards": "報酬の請求",
+      "withdraw": "引き出し"
+    },
+    "toast": {
+      "stake_submitted": "ステークリクエストを送信しました",
+      "undelegate_submitted": "委任解除のトランザクションを送信しました",
+      "redelegate_submitted": "再委任リクエストを送信しました",
+      "claim_reward_submitted": "報酬請求のトランザクションを送信しました",
+      "withdraw_submitted": "引き出しリクエストを送信しました",
+      "finalize_submitted": "引き出しを確定するトランザクションを送信しました",
+      "fuel_claimed": "Fuelトークンを請求しました。まもなくウォレットに反映されます。",
+      "view_explorer": "エクスプローラーで表示"
+    },
+    "eta": {
+      "less_than_minute": "1分未満",
+      "days_other": "{{count}}日",
+      "hours_other": "{{count}}時間",
+      "minutes_other": "{{count}}分",
+      "join": "{{first}}{{second}}"
+    },
+    "apr": {
+      "value": "~{{apy}}% APR",
+      "tip": "トークンをFuelバリデーターに委任して、Fuelシーケンシングの安全性を高めましょう。"
+    },
+    "date": {
+      "unknown": "不明"
+    }
+  },
+  "errors": {
+    "not_found": "ページが見つかりません",
+    "not_found_body": "お探しのページは存在しないか、別のエラーが発生しました。",
+    "not_found_short": "お探しのページは存在しません。",
+    "go_home": "ホームに戻る",
+    "unexpected": "問題が発生しました",
+    "unexpected_body": "予期しないエラーが発生しました。ページを再読み込みしてください。",
+    "reload": "再読み込み"
+  },
+  "bridge": {
+    "board": {
+      "expand": "送金を表示",
+      "collapse": "送金を隠す",
+      "title": "処理中の送金",
+      "count_other": "{{count}} 件進行中",
+      "col_what": "内容",
+      "col_amount": "金額",
+      "col_status": "ステータス",
+      "deposit": "入金",
+      "withdraw": "出金",
+      "route_deposit": "Ethereum から Fuel",
+      "route_withdraw": "Fuel から Ethereum",
+      "action_needed": "対応が必要",
+      "continue": "続行",
+      "details": "詳細",
+      "connect": "送金を表示するには Fuel ウォレットを接続してください。",
+      "connect_button": "ウォレットを接続",
+      "none": "まだ送金はありません。入金と出金はここに表示されます。",
+      "empty": "処理中のものはありません。完了した送金は履歴にあります。",
+      "open_history": "履歴を開く",
+      "loading": "送金を読み込み中",
+      "truncated_one": "ここで確認されるのは最新の送金のみです。それより古い送金が進行中の場合があります。履歴を開いて確認してください。",
+      "truncated_other": "ここで確認されるのは最新の{{count}}件の送金のみです。それより古い送金が進行中の場合があります。履歴を開いて確認してください。"
+    },
+    "title": "ブリッジ",
+    "read_docs": "ドキュメント",
+    "panel_transfer": "送金",
+    "panel_history": "履歴"
+  },
+  "core": {
+    "retry": "再試行",
+    "view_mode": {
+      "label": "表示モード",
+      "standard": "標準",
+      "simple": "シンプル",
+      "advanced": "詳細",
+      "simple_disabled": "この取引ではシンプル表示は利用できません"
+    },
+    "pagination": {
+      "previous": "前のページ",
+      "next": "次のページ",
+      "range": "{{start}} - {{end}} / {{total}}"
+    },
+    "empty": {
+      "assets_title": "アセットなし",
+      "assets_description": "この{{entity}}にはアセットがありません。",
+      "nfts_title": "NFTなし",
+      "nfts_description": "この{{entity}}にはNFTがありません。",
+      "transactions_title": "取引なし",
+      "transactions_description": "この{{entity}}には取引がありません。"
+    },
+    "entity": {
+      "account": "アカウント",
+      "contract": "コントラクト",
+      "assets": "アセット",
+      "block": "ブロック"
+    },
+    "sync_status": {
+      "message": "インデクサーで問題が発生しています。Fuelチームが修正に取り組んでいます。一部のデータが古い、または利用できない場合があります。"
+    },
+    "code_block": {
+      "code": "コード"
+    },
+    "copy": {
+      "copy": "コピー",
+      "tooltip": "クリックしてクリップボードにコピー",
+      "aria": "クリップボードにコピー",
+      "copied": "クリップボードにコピーしました"
+    },
+    "amount": {
+      "balance": "残高",
+      "max": "最大",
+      "max_label": "最大",
+      "coin_selector": "コイン選択",
+      "available": "利用可能",
+      "relative_usd": "USD換算額:"
+    },
+    "info_hint": {
+      "label": "詳細情報"
+    },
+    "upgrade": {
+      "title": "トークンマネージャー",
+      "subtitle": "コントリビューター付与とFuelトークンの解放スケジュールを管理します。",
+      "stake_tokens": "Fuelトークンをステーク"
+    },
+    "stale_data": "更新できませんでした。最後に読み込んだデータを表示しています。"
+  },
+  "block": {
+    "title": "ブロック",
+    "blocks_title": "ブロック",
+    "breadcrumb_label": "パンくずリスト",
+    "breadcrumb_home": "ホーム",
+    "breadcrumb_all_blocks": "すべてのブロックを表示",
+    "height": "高さ",
+    "producer": "プロデューサー",
+    "created": "作成日時",
+    "tx_count": "取引数",
+    "transactions": "取引",
+    "total_fee": "合計手数料",
+    "col_block": "ブロック",
+    "col_blockhash": "ブロックハッシュ",
+    "col_transactions": "取引",
+    "col_rewards": "報酬",
+    "col_producer": "プロデューサー",
+    "col_efficiency": "効率",
+    "col_time": "時間",
+    "col_blockhash_hint": "ブロックのデータをハッシュ化して生成される、このブロック固有の識別子です。",
+    "col_rewards_hint": "このブロックを生成したバリデーターに分配された報酬の合計です。",
+    "col_efficiency_hint": "取引によって使用されたブロックリソースの割合です。",
+    "no_mint_amount": "ミント量なし",
+    "view": "表示",
+    "not_found_title": "ブロックが見つかりません",
+    "not_found_description": "指定されたブロックは見つかりませんでした。",
+    "not_found_meta_title": "ブロックが見つかりません - Fuel Explorer",
+    "error_title": "ブロックを読み込めませんでした",
+    "error_description": "ブロックの詳細を読み込めませんでした。",
+    "error_meta_title": "エラー - Fuel Explorer",
+    "loading_meta_title": "ブロックを読み込み中 - Fuel Explorer",
+    "meta_title": "ブロック {{height}} - Fuel Explorer",
+    "meta_description": "Fuelブロックチェーン上のブロック {{height}} の詳細を表示",
+    "list_error_title": "ブロックを読み込めませんでした",
+    "list_error_description": "ブロック一覧を読み込めませんでした。もう一度お試しください。",
+    "pager_previous": "前へ",
+    "pager_next": "次へ"
+  },
+  "portal": {
+    "wallet": {
+      "connect": "ウォレットを接続",
+      "address_copied": "アドレスをクリップボードにコピーしました",
+      "switch_network": "ネットワークを切り替え",
+      "my_account": "マイアカウント",
+      "copy_address": "アドレスをコピー",
+      "bridge_history": "ブリッジ履歴",
+      "disconnect": "切断"
+    },
+    "account": {
+      "disconnect": "切断",
+      "connected_wallet": "{{network}}: 接続中のウォレット",
+      "change_wallet": "ウォレットを変更"
+    },
+    "bridge": {
+      "from": "送信元",
+      "to": "送信先",
+      "deposit": "入金",
+      "withdraw": "出金",
+      "deposit_tab": "入金タブ",
+      "withdraw_tab": "出金タブ",
+      "history": "履歴",
+      "back": "戻る",
+      "back_to_home": "ホームに戻る",
+      "transaction_history": "トランザクション履歴",
+      "layerswap": "LayerSwapで高速ブリッジ",
+      "custom_address_notice": "カスタムFuelアカウントに送信中:",
+      "non_native_notice": "ご注意: EVM/SVMアドレスは<strong>Fuelプレディケートアドレス</strong>とは異なります。これは想定された動作です。",
+      "manage_assets_in": "資産は次の場所で管理できます:",
+      "my_account": "マイアカウント",
+      "max_tooltip": "最大 = 残高 - 手数料",
+      "allowance": "許可額",
+      "no_gas_warning": "ガス代を支払うためのFuel上のETHがありません。他の資産をブリッジする前に、ETHをブリッジすることをおすすめします。",
+      "withdraw_delay": "Ethereumへの出金には最大{{time}}かかります。",
+      "withdraw_threshold": "この出金は、この資産の週間上限の{{percentage}}%を超えています。大きな出金はリレー中にブロックされる場合があります。小さな取引に分割すると、週間上限に達するまでにより多く出金できる可能性があります。",
+      "withdraw_limit": "この出金はこの資産の週間上限を超えており、リレー中にブロックされます。小さな取引に分割すると、週間上限に達するまでにより多く出金できる可能性があります。",
+      "withdraw_warning_label": "出金の警告",
+      "withdraw_warning_accept": "この出金が週間上限を超えており、リレー中にブロックされることを理解しています。それでも続行します。",
+      "terms_label": "利用規約",
+      "terms_accept": "更新された以下の内容を読み、同意します:",
+      "terms_link": "利用規約",
+      "progress_label": "送金の進捗",
+      "amount_label": "ブリッジする金額"
+    },
+    "overview": {
+      "transaction_id": "トランザクションID",
+      "transaction_id_label": "トランザクションID: {{id}}",
+      "from": "送信元",
+      "to": "送信先",
+      "age": "経過時間",
+      "direction": "方向",
+      "direction_deposit": "(入金)",
+      "direction_withdraw": "(出金)",
+      "alt_deposit": "入金",
+      "alt_withdrawal": "出金",
+      "asset": "資産",
+      "add_to_wallet": "ウォレットに追加",
+      "alt_asset": "資産 {{symbol}}",
+      "asset_amount": "資産の数量"
+    },
+    "steps": {
+      "step_status": "ステップ {{name}}: {{status}}"
+    },
+    "dialog": {
+      "close": "閉じる",
+      "confirm_transaction": "トランザクションを確認",
+      "connect_eth_wallet": "Ethereumウォレットを接続",
+      "progress": "トランザクションの進行状況"
+    },
+    "assets": {
+      "back": "戻る",
+      "select_token": "トークンを選択",
+      "manage_token_list": "トークンリストを管理",
+      "search_placeholder": "ここに入力して検索",
+      "no_asset_found": "「{{query}}」に一致する資産が見つかりません",
+      "unnamed": "名称なし",
+      "name_label": "{{symbol}} の名前",
+      "symbol_label": "{{symbol}} のシンボル",
+      "balance_label": "{{symbol}} の残高",
+      "faucet_label": "{{symbol}} フォーセット"
+    },
+    "history": {
+      "empty": "アクティビティはまだありません。トランザクションを行うとここに表示されます。",
+      "not_connected": "ウォレットが検出されません。トランザクションを表示するにはウォレットを接続してください。",
+      "connect_fuel_wallet": "Fuelウォレットを接続",
+      "action_required": "要対応",
+      "settled": "完了",
+      "processing": "処理中",
+      "show_more": "さらに表示",
+      "slow_loading": "処理に予想より時間がかかっています。アカウントのトランザクションが多い場合は、数分かかることがあります。",
+      "slow_loading_detail": "Fuelブリッジのトランザクション専用インデクサーを導入し、この体験の改善に取り組んでいます。"
+    },
+    "paused": {
+      "tag": "一時停止中",
+      "title": "操作は一時的に停止されています。",
+      "dialog_title": "操作は一時的に停止されています",
+      "module_updating": "{{name}}モジュールを現在更新中です。",
+      "no_action": "お客様側での対応は不要です。",
+      "close": "閉じる",
+      "bridge_message": "メンテナンスのため出金を一時停止しています。資金は安全で、再開後すぐに完了できます。"
+    },
+    "bridge_button": {
+      "connect_wallet": "{{chain}}ウォレットを接続",
+      "bridge_anyway": "それでもアセットをブリッジ",
+      "approve": "承認",
+      "loading_allowance": "トークンの許可額を取得中...",
+      "loading_submit": "トランザクションを送信中...",
+      "select_network_from": "ブリッジ元のネットワークを選択",
+      "select_network_to": "ブリッジ先のネットワークを選択",
+      "pick_asset": "アセットを選択",
+      "enter_amount": "金額を入力",
+      "insufficient_funds": "残高不足"
+    },
+    "bridge_steps": {
+      "submit_to_bridge": "ブリッジに送信",
+      "settlement": "決済",
+      "confirm_transaction": "トランザクションを確認",
+      "receive_on_ethereum": "Ethereumで受け取る",
+      "receive_on_fuel": "Fuelで受け取る",
+      "done": "完了",
+      "waiting": "待機中",
+      "automatic": "自動",
+      "action": "操作",
+      "action_required": "操作が必要",
+      "time_left": "残り約{{time}}"
+    },
+    "bridge_toast": {
+      "deposit_started": "入金を開始しました。ポップアップを閉じて構いません。",
+      "withdraw_started": "出金を開始しました。ポップアップを閉じて構いません。",
+      "user_rejected": "ユーザーがトランザクションを拒否しました"
+    },
+    "assets_toast": {
+      "add_failed": "ウォレットへのアセット追加に失敗しました",
+      "faucet_success": "ウォレットにトークンを追加しました"
+    }
+  },
+  "tx": {
+    "details_title": "トランザクション詳細",
+    "not_found_title": "トランザクションが見つかりません",
+    "not_found_body": "お探しのトランザクションは存在しないか、まだインデックスされていません。",
+    "error_title": "エラー",
+    "error_body": "トランザクション詳細の読み込みに失敗しました",
+    "retry": "再試行",
+    "bridge_notice": "ブリッジのトランザクションはここに表示されません。ウォレットを接続し、<history/>で確認してください。",
+    "bridge_history_link": "ブリッジ > 履歴",
+    "status": {
+      "success": "成功",
+      "failed": "失敗",
+      "pending": "保留中",
+      "squeezed_out": "押し出し",
+      "info": "情報",
+      "waiting": "待機中"
+    },
+    "transfer": "転送",
+    "predicate": "プレディケート",
+    "timestamp": "タイムスタンプ",
+    "block": "ブロック",
+    "network_fee": "ネットワーク手数料",
+    "gas_used": "使用ガス: {{gas}}",
+    "fee": "手数料",
+    "to": "宛先",
+    "token_transfers": "トークン転送",
+    "also_called": "その他の呼び出し",
+    "on": "対象",
+    "account": "アカウント",
+    "signed_with_session_key": "セッションキーで署名",
+    "reverted_notice": "このトランザクションはリバートされました。これらの操作はいずれも反映されていません。",
+    "inputs": "入力",
+    "outputs": "出力",
+    "operations": "オペレーション",
+    "minted_assets": "ミントされたアセット",
+    "minted": "ミント",
+    "minted_help": "このトランザクションでミントされた数量です",
+    "input_contract": "入力コントラクト",
+    "tx_pointer_label": "Tx ポインタ",
+    "no_inputs": "入力なし",
+    "no_inputs_body": "このトランザクションには入力がありません。",
+    "no_outputs": "出力なし",
+    "no_outputs_body": "このトランザクションには出力がありません。",
+    "no_operations": "オペレーションなし",
+    "no_operations_body": "このトランザクションにはオペレーションがありません。",
+    "no_scripts": "スクリプトなし",
+    "no_scripts_body": "このトランザクションにはスクリプトがありません。",
+    "collapse": "折りたたむ",
+    "expand": "展開",
+    "show_details": "詳細を表示",
+    "hide_details": "詳細を隠す",
+    "input_type": {
+      "coin": "コイン",
+      "message": "メッセージ",
+      "contract": "コントラクト"
+    },
+    "output_type": {
+      "contract": "コントラクト",
+      "created": "作成",
+      "variable": "可変",
+      "change": "おつり",
+      "coin": "コイン",
+      "unknown": "不明"
+    },
+    "account_type": {
+      "wallet": "ウォレット",
+      "contract": "コントラクト",
+      "predicate": "プレディケート"
+    },
+    "contract_created": "コントラクト作成",
+    "asset": "アセット",
+    "spent": "支出: {{amount}}",
+    "utxo": "UTXO",
+    "input": "入力",
+    "index": "インデックス:",
+    "id_prefix": "ID:",
+    "asset_prefix": "アセット:",
+    "from_prefix": "送信元:",
+    "to_prefix": "送信先:",
+    "sender_prefix": "送信者:",
+    "recipient_prefix": "受信者:",
+    "nonce_prefix": "ノンス:",
+    "data_prefix": "データ:",
+    "address_prefix": "アドレス:",
+    "utxo_id_prefix": "UTXO ID:",
+    "balance_root_prefix": "残高ルート:",
+    "tx_pointer": "Tx ポインタ:",
+    "method_prefix": "メソッド:",
+    "event_prefix": "イベント:",
+    "policies": "ポリシー",
+    "policy": {
+      "tip": {
+        "name": "チップ",
+        "description": "ブロックプロデューサーへの任意のチップ"
+      },
+      "witness_limit": {
+        "name": "ウィットネス上限",
+        "description": "トランザクションに許可されるウィットネスデータの最大量"
+      },
+      "maturity": {
+        "name": "成熟度",
+        "description": "このブロック高に達するまでトランザクションは含まれません"
+      },
+      "max_fee": {
+        "name": "最大手数料",
+        "description": "送信者が支払ってもよい最大手数料"
+      },
+      "owner": {
+        "name": "オーナー",
+        "description": "トランザクションのオーナーに指定された入力インデックス"
+      },
+      "bytes": "{{bytes}} バイト",
+      "none": "なし",
+      "block": "ブロック #{{height}}",
+      "input": "入力 #{{index}}",
+      "input_typed": "入力 #{{index}} ({{type}})",
+      "unknown": "不明"
+    },
+    "expand_more_other": "(+{{count}} 件のオペレーション)",
+    "op": {
+      "call_other": "コール",
+      "log_other": "ログ",
+      "transfer_other": "転送",
+      "message_other": "メッセージ",
+      "mint_other": "ミント",
+      "burn_other": "バーン",
+      "return_other": "リターン",
+      "result_other": "結果",
+      "error_other": "エラー"
+    },
+    "transaction_label": "トランザクション",
+    "activity": {
+      "label": {
+        "order_placed": "注文発注",
+        "filled": "約定",
+        "order_cancelled": "注文キャンセル",
+        "order_expired": "注文期限切れ",
+        "order_removed": "注文削除",
+        "order_stopped": "注文停止",
+        "take_profit": "利確",
+        "stop_loss": "損切り",
+        "trigger_order": "トリガー注文",
+        "triggered": "発動",
+        "trigger_cancelled": "トリガーキャンセル",
+        "fees": "手数料",
+        "settled": "決済",
+        "withdrawn": "出金",
+        "session_added": "セッションキー追加",
+        "session_revoked": "セッションキー失効",
+        "rejected": "拒否",
+        "called": "呼び出し"
+      },
+      "part": {
+        "and": "、",
+        "place_head": "{{type}} {{side}} ",
+        "with_limit_price": " 指値上限 ",
+        "at": " 価格 ",
+        "bought": "買い ",
+        "sold": "売り ",
+        "order": "注文 ",
+        "by_market": " (マーケットによる)",
+        "resting_order": "待機中の注文 ",
+        "below_minimum": " は最小サイズ未満です",
+        "out_of_gas": " はマッチング中にガスが不足しました",
+        "stopped_with": " 停止、残り ",
+        "unfilled": " 未約定",
+        "side_prefix": "{{side}} ",
+        "filled_amount": "約定数量",
+        "when_reaches": " 価格が次に達したとき ",
+        "when_rises": " 価格が次まで上昇したとき ",
+        "when_falls": " 価格が次まで下落したとき ",
+        "trigger_order": "トリガー注文 ",
+        "reached_price": " が価格に到達しました",
+        "fees_collected": " (マーケットが徴収)",
+        "moved_to": " 移動先 ",
+        "moved_to_trade_account": " 取引アカウントへ移動",
+        "to": " 宛先 ",
+        "key": "キー ",
+        "validation_failed": "検証に失敗しました"
+      },
+      "order_type": {
+        "limit": "指値",
+        "post_only": "ポストオンリー",
+        "fill_or_kill": "FOK (全量約定または取消)",
+        "market": "成行"
+      },
+      "side": {
+        "buy": "買い",
+        "sell": "売り"
+      },
+      "side_cap": {
+        "buy": "買い",
+        "sell": "売り"
+      },
+      "ejection": {
+        "cancelled_by_user": "はトレーダーによりキャンセルされました",
+        "force_canceled": "は強制キャンセルされました",
+        "sibling_activated": "は対の注文が発動したためキャンセルされました",
+        "not_enough_funds": "は資金不足のため削除されました",
+        "ejected_by_admin": "は管理者により削除されました",
+        "parent_canceled": "は親注文とともにキャンセルされました",
+        "removed": "は削除されました"
+      },
+      "phrase": {
+        "triggered_past": "{{rest}}を発動",
+        "triggered_base": "{{rest}}の発動",
+        "placed_past": "{{rest}}を発注",
+        "placed_base": "{{rest}}の発注",
+        "set_past": "{{rest}}を設定",
+        "set_base": "{{rest}}の設定",
+        "cancelled_past": "{{rest}}をキャンセル",
+        "cancelled_base": "{{rest}}のキャンセル",
+        "filled_past": "{{rest}}を約定",
+        "filled_base": "{{rest}}の約定",
+        "withdrew_past": "{{rest}}を出金",
+        "withdrew_base": "{{rest}}の出金",
+        "changed_past": "{{rest}}を変更",
+        "changed_base": "{{rest}}の変更"
+      },
+      "noun": {
+        "order_other": "{{count}}件の注文",
+        "trigger_order_other": "{{count}}件のトリガー注文",
+        "trade_other": "{{count}}件の取引",
+        "asset_other": "{{count}}件の資産",
+        "take_profit": "利確",
+        "stop_loss": "損切り",
+        "order_with_protection": "{{orders}}({{protection}}付き)",
+        "session_key": "セッションキー"
+      },
+      "headline": {
+        "on_market": "({{market}})",
+        "a_contract": "コントラクト",
+        "failed_interact": "{{target}}とのやり取りに失敗しました",
+        "interacted": "{{target}}とやり取りしました",
+        "sentence": "{{list}}{{where}}{{plus}}",
+        "failed_sentence": "{{list}}{{where}}に失敗しました{{plus}}",
+        "plus_calls_other": "、他のコントラクト{{count}}件の呼び出しを含む"
+      },
+      "list_comma": "{{a}}、{{b}}",
+      "list_and": "{{head}}、{{last}}"
+    },
+    "app_tag": {
+      "more": "他{{count}}件のアプリを表示"
+    }
+  },
+  "account": {
+    "title": "アカウント",
+    "my_account": "マイアカウント",
+    "send_transaction": "トランザクションを送信",
+    "exchange": "取引所",
+    "tabs": {
+      "assets": "アセット",
+      "nfts": "NFT",
+      "transactions": "トランザクション",
+      "predicate": "プレディケート"
+    },
+    "error_balances": "アカウント残高の読み込みエラー",
+    "error_nfts": "アカウントの NFT の読み込みエラー",
+    "error_predicate": "アカウントのプレディケートの読み込みエラー",
+    "error_transactions": "アカウントのトランザクションの読み込みエラー",
+    "send": {
+      "title": "アセットを送信",
+      "to": "宛先",
+      "recipient_placeholder": "受取人のアドレスを入力",
+      "amount": "金額",
+      "max": "最大",
+      "max_selected": "最大残高を選択しています",
+      "cancel": "キャンセル",
+      "submit": "送信",
+      "sending": "送信中 (1/3)",
+      "confirming": "確認中 (2/3)",
+      "redirecting": "移動中 (3/3)",
+      "error_asset_address": "アセットアドレスにはアセットを送信できません。",
+      "error_address_type": "{{type}}アドレスにはアセットを送信できません。",
+      "warning_checksum": "アドレスを検証できませんでした。有効なアドレスに送信していることを確認してください。",
+      "insufficient": "残高が不足しています。残高以下の金額を入力してください。"
+    }
+  },
+  "contract": {
+    "title": "コントラクト",
+    "title_named": "コントラクト: {{name}}",
+    "tabs": {
+      "minted_assets": "ミントされたアセット",
+      "assets": "アセット",
+      "transactions": "トランザクション",
+      "source_code": "ソースコード"
+    },
+    "bytecode": "バイトコード",
+    "no_assets_title": "アセットなし",
+    "no_assets_body": "このコントラクトにはアセットがありません。",
+    "no_minted_title": "ミントされたアセットなし",
+    "no_minted_body": "このコントラクトにはミントされたアセットがありません。",
+    "error_assets": "コントラクトのアセットの読み込みに失敗しました",
+    "error_minted": "ミントされたアセットの読み込みに失敗しました",
+    "error_transactions": "コントラクトのトランザクションの読み込みに失敗しました",
+    "error_code": "コントラクトデータの読み込みに失敗しました"
+  },
+  "asset": {
+    "verified": "認証済みアセット",
+    "suspicious": "このアセットは不審としてフラグが立てられています。他のアセットを模倣している可能性があります。ご注意ください。",
+    "unknown": "不明なアセット",
+    "nft_tag": "NFT",
+    "utxos": "UTXO ({{count}})",
+    "show_utxos": "UTXO を表示",
+    "hide_utxos": "UTXO を隠す",
+    "suspicious_badge": "不審"
+  },
+  "meta": {
+    "home": {
+      "title": "Fuel Explorer",
+      "description": "Fuel Ignitionのブロック、トランザクション、ネットワークのリアルタイム統計。"
+    },
+    "bridge_history": {
+      "title": "ブリッジ履歴 · Fuel Explorer",
+      "description": "EthereumとFuel間の保留中および完了した転送。"
+    },
+    "bridge": {
+      "title": "ブリッジ · Fuel Explorer",
+      "description": "EthereumとFuel Ignition間で資産を移動。"
+    },
+    "staking_on_ethereum": {
+      "title": "Ethereumでステーク · Fuel Explorer",
+      "description": "EthereumでFUELをステークし、ポジション、バリデーター、トランザクションを確認。"
+    },
+    "staking": {
+      "title": "ステーク · Fuel Explorer",
+      "description": "FUELをバリデーターに委任、またはThe Rigでリキッドステーク。"
+    },
+    "ecosystem": {
+      "title": "エコシステム · Fuel Explorer",
+      "description": "Fuel上に構築されたアプリ、ウォレット、インフラ。"
+    },
+    "blocks": {
+      "title": "ブロック · Fuel Explorer",
+      "description": "Fuel Ignitionの最新ブロック。"
+    },
+    "block": {
+      "title": "ブロック {{height}} · Fuel Explorer",
+      "description": "Fuel Ignitionのブロック {{height}}。"
+    },
+    "tx": {
+      "title": "トランザクション · Fuel Explorer",
+      "description": "Fuel Ignitionのトランザクション。"
+    },
+    "account": {
+      "title": "アカウント · Fuel Explorer",
+      "description": "Fuelアカウントの資産、トランザクション、NFT。"
+    },
+    "contract": {
+      "title": "コントラクト · Fuel Explorer",
+      "description": "Fuelコントラクトの資産、コード、トランザクション。"
+    },
+    "upgrade": {
+      "title": "トークンマネージャー · Fuel Explorer",
+      "description": "コントリビューター向け付与とFuelトークンの解放スケジュール。"
+    },
+    "account_assets": "アカウントの資産 {{id}} - Fuel Explorer",
+    "account_transactions": "アカウントのトランザクション {{id}} - Fuel Explorer",
+    "account_nfts": "アカウントのNFT {{id}} - Fuel Explorer",
+    "account_predicate": "アカウントのプレディケート {{id}} - Fuel Explorer",
+    "contract_assets": "コントラクトの資産 {{id}} - Fuel Explorer",
+    "contract_minted_assets": "コントラクトのミント資産 {{id}} - Fuel Explorer",
+    "contract_transactions": "コントラクトのトランザクション {{id}} - Fuel Explorer",
+    "contract_code": "コントラクトのコード {{id}} - Fuel Explorer",
+    "tx_loading": "トランザクションを読み込み中 - Fuel Explorer",
+    "tx_not_found": "トランザクションが見つかりません - Fuel Explorer",
+    "error": "エラー - Fuel Explorer",
+    "tx_title": "トランザクション {{id}}... - Fuel Explorer",
+    "tx_description": "Fuelブロックチェーン上のトランザクション {{id}} の詳細を表示"
+  },
+  "ui": {
+    "collapsible": {
+      "toggle": "詳細を表示または非表示"
+    },
+    "copy": {
+      "tooltip": "クリックしてクリップボードにコピー",
+      "aria": "クリップボードにコピー",
+      "copied": "クリップボードにコピーしました",
+      "failed": "コピーできませんでした。テキストを選択して手動でコピーしてください。"
+    },
+    "close": "閉じる",
+    "nav": {
+      "toggle_menu": "メニューを切り替え",
+      "toggle_theme": "テーマを切り替え",
+      "connect": "接続"
+    },
+    "helper_icon": {
+      "label": "詳細情報"
+    },
+    "password": {
+      "toggle": "パスワードを表示または非表示"
+    },
+    "select": {
+      "toggle": "選択肢を切り替え",
+      "dialog": "オプションを選択",
+      "options": "オプション"
+    }
+  }
+}

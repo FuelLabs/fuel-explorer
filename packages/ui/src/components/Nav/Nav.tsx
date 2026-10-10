@@ -1,13 +1,7 @@
-import {
-  IconMenu2,
-  IconMoonFilled,
-  IconSunFilled,
-  IconWallet,
-  IconX,
-} from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Children, cloneElement, useEffect, useState } from 'react';
-import { useWindowSize } from 'react-use';
+import { useTranslation } from 'react-i18next';
+import { IconMenu2, IconMoon, IconSun, IconWallet, IconX } from '../Icons';
 
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';
@@ -154,6 +148,7 @@ export const NavMobileContent = createComponent<
   className: ({ className }) => styles().mobileContent({ className }),
   render: (Root, { children, ...props }) => {
     const { isOpen, onOpenChange } = useNavMobileContext();
+    const { t } = useTranslation();
 
     return (
       <Root {...props} data-open={isOpen}>
@@ -165,8 +160,8 @@ export const NavMobileContent = createComponent<
           </HStack>
         </AnimatePresence>
         <IconButton
-          aria-label="Toggle Menu"
-          className="ml-2"
+          aria-label={t('ui.nav.toggle_menu', { defaultValue: 'Toggle menu' })}
+          className="fuel-hit relative ml-2"
           icon={isOpen ? IconX : IconMenu2}
           iconSize={24}
           variant="link"
@@ -190,13 +185,13 @@ export const NavSpacer = createComponent<BaseProps<{}>, 'hr'>({
  * NavLogo
  */
 
+const NAV_LOGO_SIZE = 16;
+
 export const NavLogo = createComponent<NavLogoProps, typeof FuelLogo>({
   id: 'NavLogo',
   className: ({ className }) => styles().logo({ className }),
   render: (_, { size, ...props }) => {
-    const { width } = useWindowSize();
-    const defaultSize = width < 960 ? 28 : 32;
-    return <FuelLogo {...props} size={size || defaultSize} />;
+    return <FuelLogo showLettering {...props} size={size || NAV_LOGO_SIZE} />;
   },
 });
 
@@ -220,6 +215,7 @@ export const NavMenu = createComponent<NavMenuProps, 'div'>({
         {mobileProps.isOpen && (
           <motion.div
             key="content"
+            className="max-h-[calc(100dvh-var(--nav-height))] overflow-y-auto"
             animate="open"
             exit="collapsed"
             initial="collapsed"
@@ -278,6 +274,7 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
     render: (_, { whenOpened = 'show', ...props }) => {
       const navProps = useNavContext();
       const mobileProps = useNavMobileContext();
+      const { t } = useTranslation();
       const hasProps = navProps.network || navProps.account;
       const connectButton = (
         <Button
@@ -286,7 +283,7 @@ export const NavConnection = createComponent<NavConnectionProps, typeof Button>(
           variant="solid"
           onClick={navProps.onConnect}
         >
-          Connect
+          {t('ui.nav.connect', { defaultValue: 'Connect' })}
         </Button>
       );
 
@@ -355,6 +352,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
   ) => {
     const mobileProps = useNavMobileContext();
     const classes = styles();
+    const { t } = useTranslation();
 
     function handleToggle() {
       const next = theme === 'light' ? 'dark' : 'light';
@@ -364,17 +362,23 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
     const content = (
       <Root
         {...props}
-        aria-label="Toggle Theme"
+        aria-label={t('ui.nav.toggle_theme', { defaultValue: 'Toggle theme' })}
         className={classes.themeToggle({ className })}
         role="button"
         tabIndex={0}
         onClick={handleToggle}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggle();
+          }
+        }}
       >
         <Icon
           aria-label="Sun"
           className={classes.themeToggleIcon()}
           color="text-icon"
-          icon={IconSunFilled}
+          icon={IconSun}
           size={18}
           stroke={1}
         />
@@ -382,7 +386,7 @@ export const NavThemeToggle = createComponent<NavThemeToggleProps, 'span'>({
           aria-label="Moon"
           className={classes.themeToggleIcon()}
           color="text-icon"
-          icon={IconMoonFilled}
+          icon={IconMoon}
           size={18}
           stroke={1}
         />

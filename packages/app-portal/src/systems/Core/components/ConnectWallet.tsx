@@ -1,35 +1,23 @@
+import { Button, Dropdown, shortAddress, useToast } from '@fuels/ui';
 import {
-  Box,
-  Button,
-  type Colors,
-  Dropdown,
-  HStack,
-  Nav,
-  Text,
-  shortAddress,
-  useToast,
-} from '@fuels/ui';
-import {
+  IconChevronDown,
   IconCopy,
   IconHistory,
   IconLogout,
-  IconSettingsFilled,
   IconSwitch3,
   IconUserCircle,
-} from '@tabler/icons-react';
-import { AnimatePresence, motion } from 'framer-motion';
+} from '@fuels/ui';
 
 import { useAccount, useConnectUI, useDisconnect } from '@fuels/react';
 import { Routes } from 'app-commons';
 import { useVerifySelectedChain } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import { useSwitchChain } from 'wagmi';
 
-interface ConnectWalletProps {
-  theme?: string;
-  setTheme?: (theme: string) => void;
-}
+const ITEM = 'cursor-pointer justify-start gap-2 px-4';
 
-export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
+export const ConnectWallet = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { connect, isConnected } = useConnectUI();
 
@@ -46,7 +34,7 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
   const onCopy = async () => {
     await navigator.clipboard.writeText(account ?? '');
     toast({
-      title: 'Address has been copied to clipboard',
+      title: t('portal.wallet.address_copied'),
       variant: 'success',
     });
   };
@@ -55,139 +43,86 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
     window.location.href = path;
   };
 
-  const _handleThemeToggle = (nextTheme: string) => {
-    // Nav.ThemeToggle passes the next theme as parameter
-    setTheme?.(nextTheme);
-  };
+  if (isConnected && account) {
+    return (
+      <div key="dropdown" className="fuel-appear">
+        <Dropdown>
+          <Dropdown.Trigger>
+            {/* Same height as the language and network controls beside it. */}
+            <button
+              type="button"
+              className="fuel-edge fuel-hover-fill fuel-label m-0 flex h-10 min-w-[165px] cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]"
+            >
+              <span className="font-mono normal-case">
+                {shortAddress(account)}
+              </span>
+              <IconChevronDown size={14} className="shrink-0 opacity-60" />
+            </button>
+          </Dropdown.Trigger>
+
+          <Dropdown.Content align="end" className="w-[200px]">
+            {!isChainSupported && (
+              <Dropdown.Item
+                className={ITEM}
+                onClick={() => {
+                  switchChain({
+                    chainId: expectedChainId,
+                  });
+                }}
+              >
+                <IconSwitch3 size="1em" />
+                {t('portal.wallet.switch_network')}
+              </Dropdown.Item>
+            )}
+            <Dropdown.Item
+              className={ITEM}
+              onClick={() => handleNavigate(Routes.account(account, 'assets'))}
+            >
+              <IconUserCircle size="1em" />
+              {t('portal.wallet.my_account')}
+            </Dropdown.Item>
+            <Dropdown.Item className={ITEM} onClick={onCopy}>
+              <IconCopy size="1em" />
+              {t('portal.wallet.copy_address')}
+            </Dropdown.Item>
+            <Dropdown.Item
+              className={ITEM}
+              onClick={() => handleNavigate(Routes.bridgeHistory())}
+            >
+              <IconHistory size="1em" />
+              {t('portal.wallet.bridge_history')}
+            </Dropdown.Item>
+            <Dropdown.Item
+              className={`${ITEM} fuel-danger-item`}
+              onClick={handleDisconnect}
+            >
+              <IconLogout size="1em" />
+              {t('portal.wallet.disconnect')}
+            </Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown>
+      </div>
+    );
+  }
 
   return (
-    <AnimatePresence initial={false} mode="wait">
-      {isConnected && account ? (
-        <motion.div
-          key="dropdown"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <Dropdown>
-            <Dropdown.Trigger className="bg-transparent hover:bg-[var(--accent-a4)]">
-              <Button
-                color="gray"
-                variant="soft"
-                size={{
-                  initial: '1',
-                  lg: '2',
-                }}
-                className="text-[var(--accent-a11)] h-[40px] max-w-[165px] w-full pl-[20px]"
-                iconColor={'text-[var(--accent-a11)]' as Colors}
-                rightIcon={IconSettingsFilled}
-                rightIconClassName="ml-[8px] w-[26px] h-[26px] opacity-50"
-              >
-                {shortAddress(account)}
-              </Button>
-            </Dropdown.Trigger>
-
-            <Dropdown.Content color="gray" className="w-[180px]">
-              {!isChainSupported && (
-                <Dropdown.Item
-                  className="gap-2 px-[16px] justify-start hover:backdrop-blur-[5px] hover:bg-white/[.04] hover:text-black dark:hover:text-[inherit] h-[30px] cursor-pointer"
-                  onClick={() => {
-                    switchChain({
-                      chainId: expectedChainId,
-                    });
-                  }}
-                >
-                  <IconSwitch3 size="1em" />
-                  Switch Network
-                </Dropdown.Item>
-              )}
-              {account && (
-                <>
-                  <Dropdown.Item
-                    className="gap-1 px-[16px] justify-start hover:backdrop-blur-[5px] hover:bg-white/[.04] hover:text-black dark:hover:text-[inherit] h-[30px] cursor-pointer"
-                    onClick={() =>
-                      handleNavigate(Routes.account(account, 'assets'))
-                    }
-                  >
-                    <IconUserCircle size="1em" />
-                    My Account
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="gap-2 px-[16px] justify-start hover:backdrop-blur-[5px] hover:bg-white/[.04] hover:text-black dark:hover:text-[inherit] h-[30px] cursor-pointer"
-                    onClick={onCopy}
-                  >
-                    <IconCopy size="1em" />
-                    Copy address
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="gap-2 px-[16px] justify-start hover:backdrop-blur-[5px] hover:bg-white/[.04] hover:text-black dark:hover:text-[inherit] h-[30px] cursor-pointer"
-                    onClick={() => handleNavigate(Routes.bridgeHistory())}
-                  >
-                    <IconHistory size="1em" />
-                    Bridge History
-                  </Dropdown.Item>
-                </>
-              )}
-              <Dropdown.Item
-                className="gap-2 px-[16px] justify-start hover:backdrop-blur-[5px] hover:bg-white/[.04] hover:text-black dark:hover:text-[inherit] h-[30px] cursor-pointer"
-                color="red"
-                onClick={handleDisconnect}
-              >
-                <IconLogout size="1em" />
-                Disconnect
-              </Dropdown.Item>
-              <Dropdown.Item
-                className="flex flex-col hover:bg-transparent px-0 h-[50px] mt-2"
-                onSelect={(e) => e.preventDefault()}
-              >
-                <Box className="border-t w-full border-gray-3 " />
-                <HStack className="justify-center items-normal pl-[13px]">
-                  <Text
-                    size="2"
-                    className="text-[var(--accent-a11)] flex items-center"
-                  >
-                    Settings
-                  </Text>
-                  <Nav.ThemeToggle
-                    whenOpened="no-effect"
-                    theme={theme}
-                    onToggle={_handleThemeToggle}
-                    className="ml-auto border border-gray-3 scale-75 bg-gray-2 translate-x-[11px]"
-                  />
-                </HStack>
-              </Dropdown.Item>
-            </Dropdown.Content>
-          </Dropdown>
-        </motion.div>
-      ) : (
-        <motion.div
-          key="button"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          {/*
-           * TODO: Add isLoading back to the button.
-           *
-           * The button component creates a weird behavior where the Modal opened by the connectors
-           * is not open when the button transitions between loading states.
-           */}
-          <Button
-            // isLoading={loading}
-            // loadingText={isConnecting ? 'Connecting...' : 'Loading...'}
-            variant="solid"
-            color={'brand' as any}
-            onClick={connect}
-            className="tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]"
-            size={{
-              initial: '1',
-              lg: '2',
-            }}
-          >
-            Connect Wallet
-          </Button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div key="button" className="fuel-appear">
+      {/*
+       * TODO: Add isLoading back to the button.
+       *
+       * The button component creates a weird behavior where the Modal opened by the connectors
+       * is not open when the button transitions between loading states.
+       */}
+      <Button
+        onClick={connect}
+        className="fuel-hit relative tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]"
+        size={{
+          initial: '1',
+          lg: '2',
+        }}
+      >
+        {t('portal.wallet.connect')}
+      </Button>
+    </div>
   );
 };

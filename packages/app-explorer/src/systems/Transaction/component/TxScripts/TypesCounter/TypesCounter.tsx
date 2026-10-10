@@ -64,19 +64,19 @@ export function TypesCounter({ receipts: items }: TypesCounterProps) {
 
   return (
     <div className="flex flex-col gap-0 text-sm font-mono w-full">
-      {counts.calls > 0 && <CountReceipt num={counts.calls} op="Call" />}
-      {counts.logs > 0 && <CountReceipt num={counts.logs} op="Log" />}
+      {counts.calls > 0 && <CountReceipt num={counts.calls} op="call" />}
+      {counts.logs > 0 && <CountReceipt num={counts.logs} op="log" />}
       {counts.transfers > 0 && (
-        <CountReceipt num={counts.transfers} op="Transfer" />
+        <CountReceipt num={counts.transfers} op="transfer" />
       )}
       {counts.messages > 0 && (
-        <CountReceipt num={counts.messages} op="Message" />
+        <CountReceipt num={counts.messages} op="message" />
       )}
-      {counts.mints > 0 && <CountReceipt num={counts.mints} op="Mint" />}
-      {counts.burns > 0 && <CountReceipt num={counts.burns} op="Burn" />}
-      {counts.returns > 0 && <CountReceipt num={counts.returns} op="Return" />}
-      {counts.results > 0 && <CountReceipt num={counts.results} op="Result" />}
-      {counts.errors > 0 && <CountReceipt num={counts.errors} op="Error" />}
+      {counts.mints > 0 && <CountReceipt num={counts.mints} op="mint" />}
+      {counts.burns > 0 && <CountReceipt num={counts.burns} op="burn" />}
+      {counts.returns > 0 && <CountReceipt num={counts.returns} op="return" />}
+      {counts.results > 0 && <CountReceipt num={counts.results} op="result" />}
+      {counts.errors > 0 && <CountReceipt num={counts.errors} op="error" />}
     </div>
   );
 }

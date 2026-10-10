@@ -1,23 +1,19 @@
-import {
-  HStack,
-  LoadingBox,
-  LoadingWrapper,
-  Separator,
-  Text,
-  Tooltip,
-} from '@fuels/ui';
-import { TokenBadge, convertToUsd } from '@fuels/ui';
+import { LoadingBox, LoadingWrapper } from '@fuels/ui';
+import { convertToUsd } from '@fuels/ui';
 import { FuelToken, type HexAddress, TOKENS } from 'app-commons';
-import { type BN, DECIMAL_WEI } from 'fuels';
+import type { BN } from 'fuels';
 import { memo, useMemo } from 'react';
-import { AnimatedError } from '~staking/systems/Core/components/AnimatedError/AnimatedError';
-
+import { useTranslation } from 'react-i18next';
 import { formatAmount } from '~staking/systems/Core/utils/bn';
 
-import { IconSquareLetterX } from '@tabler/icons-react';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
+import { RegularInfoSection } from '~staking/systems/Core/components/RegularInfoSection/RegularInfoSection';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
-import { ButtonConfirm } from './ButtonConfirm';
+import {
+  AccountRow,
+  NetworkFeeRow,
+  ReviewLayout,
+} from '~staking/systems/Staking/components/ReviewLayout/ReviewLayout';
 
 const { symbol: fuelSymbol, decimals } = TOKENS[FuelToken.V2];
 
@@ -47,6 +43,7 @@ function _ReviewStep({
   onSubmit,
   isLoadingValidator,
 }: Props) {
+  const { t } = useTranslation();
   const rates = useMemo(() => {
     const fuelRate = incomingRates?.find(
       (rate) => rate.symbol.toLowerCase() === fuelSymbol.toLowerCase(),
@@ -70,131 +67,43 @@ function _ReviewStep({
     return formatAmount(amount, decimals);
   }, [amount]);
 
-  const {
-    formatted: formattedFee,
-    original: originalFee,
-    tooltip: tooltipFee,
-  } = useMemo(() => {
-    return formatAmount(fee, DECIMAL_WEI);
-  }, [fee]);
-
   const { formatted: formattedAmountUsd } = useMemo(() => {
     return convertToUsd(amount, decimals, rates.fuel);
   }, [amount, rates.fuel]);
 
-  const { formatted: formattedFeeUsd } = useMemo(() => {
-    return convertToUsd(fee, DECIMAL_WEI, rates.eth);
-  }, [fee, rates.eth]);
-
   return (
-    <div className="flex flex-col gap-8 mt-8">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <Text size="3" weight="medium">
-            You're undelegating
-          </Text>
-          <div className="flex items-center gap-2">
-            <TokenBadge
-              image="/assets/fuel.png"
-              symbol={fuelSymbol}
-              size="small"
-            />
-            <Tooltip
-              content={`${originalAmount.display} ${fuelSymbol}`}
-              delayDuration={0}
-              open={tooltipAmount ? undefined : false}
-            >
-              <Text
-                weight="bold"
-                className="font-mono text-[24px] text-gray-12"
-              >
-                {formattedAmount.display}
-              </Text>
-            </Tooltip>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Text size="2" weight="bold" className="text-gray-10">
-              Relative value in USD:{' '}
-            </Text>
-            <LoadingWrapper
-              isLoading={!rates.fuel}
-              loadingEl={<LoadingBox className="w-[40px] h-[12px] my-1" />}
-              regularEl={
-                <Text size="2" weight="bold" className="text-gray-12">
-                  {formattedAmountUsd}
-                </Text>
-              }
-            />
-          </div>
-        </div>
-        <Separator size="4" />
-        <div className="flex flex-col gap-1">
-          <Text size="2" weight="medium" className="text-gray-10">
-            From
-          </Text>
+    <div className="mt-8">
+      <ReviewLayout
+        label={t('staking.dialog.undelegating_now')}
+        symbol={fuelSymbol}
+        amount={formattedAmount.display}
+        fullAmount={tooltipAmount ? originalAmount.display : undefined}
+        usd={
           <LoadingWrapper
-            isLoading={isLoadingValidator}
-            regularEl={
-              <Text size="3" weight="medium" className="text-gray-12">
-                {validatorName || validatorAddress}
-              </Text>
-            }
-            loadingEl={<LoadingBox className="w-[120px] h-[16px] my-1" />}
+            isLoading={!rates.fuel}
+            loadingEl={<LoadingBox className="h-3 w-10 !rounded-none" />}
+            regularEl={`(${formattedAmountUsd})`}
           />
-        </div>
-        <Separator size="4" />
-        <div className="flex flex-col gap-1">
-          <Text size="2" weight="medium" className="text-gray-10">
-            To
-          </Text>
-          <Text size="3" weight="medium" className="text-gray-12">
-            My Account{' '}
-            <span className="text-sm text-gray-10">(Balance in Sequencer)</span>
-          </Text>
-        </div>
-        <Separator size="4" />
-        <div className="flex flex-col gap-1">
-          <Text size="2" weight="medium" className="text-gray-10">
-            Fee (network)
-          </Text>
-          <LoadingWrapper
-            isLoading={!fee || fee.isZero() || !rates.eth}
-            loadingEl={<LoadingBox className="w-[120px] h-[16px] my-1" />}
-            regularEl={
-              <Text size="3" weight="medium" className="text-gray-12">
-                {formattedFeeUsd}{' '}
-                <Tooltip
-                  content={`${originalFee.display} ETH`}
-                  delayDuration={0}
-                  open={tooltipFee ? undefined : false}
-                >
-                  <span className="text-sm text-gray-10">
-                    ({formattedFee.display} ETH)
-                  </span>
-                </Tooltip>
-              </Text>
-            }
-          />
-        </div>
-      </div>
-      <div>
-        <HStack
-          gap="2"
-          data-error={!!error}
-          className="mb-3 hidden data-[error=true]:flex"
-        >
-          <IconSquareLetterX
-            size={18}
-            className="mt-[3px] mb-auto text-red-11"
-          />
-          <AnimatedError
-            error={error}
-            className="text-[15px] font-medium text-left text-red-11 "
-          />
-        </HStack>
-        <ButtonConfirm onClick={onSubmit} submitData={submitData} />
-      </div>
+        }
+        error={error}
+        confirmLabel={submitData.label}
+        retryOnError={false}
+        onConfirm={onSubmit}
+        isConfirmDisabled={submitData.disabled}
+      >
+        <RegularInfoSection
+          header={t('staking.review.from')}
+          isLoading={isLoadingValidator}
+          loadingEl={<LoadingBox className="h-4 w-[120px] !rounded-none" />}
+          text={validatorName || validatorAddress}
+        />
+        <AccountRow header={t('staking.review.to')} kind="sequencer" />
+        <NetworkFeeRow
+          fee={fee}
+          ethRate={rates.eth}
+          isLoading={!fee || fee.isZero() || !rates.eth}
+        />
+      </ReviewLayout>
     </div>
   );
 }

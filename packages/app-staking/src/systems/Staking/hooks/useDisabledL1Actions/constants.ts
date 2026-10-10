@@ -36,12 +36,15 @@ export type SequencerOperationProgressStatus =
  * - can: claim, redelegate, undelegate
  */
 
+// Both enums use the same string for Delegate and Undelegate, so one rule
+// covers the L1 and the sequencer operation. Keys are typed by value.
+type PendingActionKey =
+  | `${PendingTransactionTypeL1}`
+  | `${PendingSequencerOperationType}`;
+
 // If there's a pending transaction of this type, will disable the following actions globally
 export const GLOBAL_DISABLED_ACTIONS: Partial<
-  Record<
-    PendingTransactionTypeL1 | PendingSequencerOperationType,
-    Partial<Record<PendingTransactionTypeL1, boolean>>
-  >
+  Record<PendingActionKey, Partial<Record<PendingTransactionTypeL1, boolean>>>
 > = {
   // When Withdraw is pending
   [PendingTransactionTypeL1.WithdrawStart]: {
@@ -115,21 +118,13 @@ export const GLOBAL_DISABLED_ACTIONS: Partial<
     [PendingTransactionTypeL1.Delegate]: true,
   },
 
-  // Sequencer operation: Delegate processing
-  // Same rules as L1 Delegate
-  [PendingSequencerOperationType.Delegate]: {
-    [PendingTransactionTypeL1.Delegate]: true,
-    [PendingTransactionTypeL1.WithdrawStart]: true,
-  },
+  // Sequencer Delegate shares the 'DELEGATE' key with L1 Delegate above.
 };
 
 // Disables actions for a specific validator
 // These rules only apply when the pending operation's validator matches the target validator
 export const VALIDATOR_SPECIFIC_DISABLED_ACTIONS: Partial<
-  Record<
-    PendingTransactionTypeL1 | PendingSequencerOperationType,
-    Partial<Record<PendingTransactionTypeL1, boolean>>
-  >
+  Record<PendingActionKey, Partial<Record<PendingTransactionTypeL1, boolean>>>
 > = {
   // When Claim Rewards is pending on a validator
   // Can't: claim on same validator

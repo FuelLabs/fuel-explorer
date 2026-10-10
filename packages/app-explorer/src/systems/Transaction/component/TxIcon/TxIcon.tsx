@@ -1,5 +1,5 @@
-import { Badge, Icon } from '@fuels/ui';
-import type { BadgeProps, BaseProps, IconComponent } from '@fuels/ui';
+import { Icon, cx } from '@fuels/ui';
+import type { BaseProps, IconComponent } from '@fuels/ui';
 import {
   IconCode,
   IconCoins,
@@ -9,11 +9,12 @@ import {
   IconSwitch3,
   IconTransfer,
   IconWallet,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
 import type { TxIconType, TxStatus } from '../../types';
+import { type TxChipKind, TxSquare } from '../TxItem/TxChip';
 
 const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   'Contract Created': IconCode,
@@ -28,13 +29,22 @@ const TX_ICON_MAP: Record<TxIconType, IconComponent> = {
   Message: IconMailForward,
 } as const;
 
-export const TX_INTENT_MAP: Record<TxStatus, any> = {
-  Success: 'green',
-  Failure: 'red',
-  Submitted: 'gray',
-  Info: 'sky',
-  Warning: 'yellow',
+// Marker colour per status. Submitted and Info carry no marker.
+export const TX_CHIP_KIND_MAP: Record<TxStatus, TxChipKind | undefined> = {
+  Success: 'success',
+  Failure: 'failed',
+  Submitted: undefined,
+  Info: undefined,
+  Warning: 'pending',
 } as const;
+
+const ICON_COLOR: Record<TxStatus, string> = {
+  Success: 'text-[var(--fuel-brand-text)]',
+  Failure: 'text-[var(--fuel-danger-text)]',
+  Submitted: 'text-[var(--fuel-element-mid-em)]',
+  Info: 'text-[var(--fuel-element-mid-em)]',
+  Warning: 'text-[var(--fuel-element-low-em)]',
+};
 
 export const TX_STATUS_MAP: Record<TxStatus, string> = {
   Success: 'Success',
@@ -48,40 +58,44 @@ type TxIconProps = VariantProps<typeof styles> &
   BaseProps<{
     type: TxIconType;
     status?: TxStatus;
-    radius?: BadgeProps['radius'];
-    color?: BadgeProps['color'];
+    radius?: string;
+    color?: string;
     label?: string;
   }>;
 
+// Corners are always square; radius and color are kept so callers still compile.
 export function TxIcon({
   type,
   status,
   size = 'md',
   className,
-  radius = 'full',
-  color,
+  radius: _radius,
+  color: _color,
   label: initLabel,
   ...props
 }: TxIconProps) {
-  const label = initLabel ?? TX_STATUS_MAP[status || 'Submitted'];
+  const current = status || 'Submitted';
+  const label = initLabel ?? TX_STATUS_MAP[current];
   const classes = styles({ size });
+  const kind = TX_CHIP_KIND_MAP[current];
   return (
-    <Badge
+    <span
       {...props}
+      role="img"
       aria-label={label}
-      className={classes.root({ className })}
-      color={color || TX_INTENT_MAP[status || 'Submitted']}
-      radius={radius}
-      variant="ghost"
+      className={classes.root({
+        className: cx(ICON_COLOR[current], className),
+      })}
     >
       <Icon className={classes.icon()} icon={TX_ICON_MAP[type]} />
-    </Badge>
+      {kind && <TxSquare kind={kind} className="absolute -right-px -top-px" />}
+    </span>
   );
 }
 
 const styles = tv({
   slots: {
-    root: 'inline-flex items-center justify-center',
+    root: 'relative inline-flex shrink-0 items-center justify-center border border-[var(--fuel-border)]',
     icon: 'text-current',
   },
   variants: {

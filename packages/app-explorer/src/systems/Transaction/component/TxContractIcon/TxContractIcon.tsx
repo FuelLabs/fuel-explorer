@@ -1,4 +1,4 @@
-import { Skeleton, Tooltip } from '@fuels/ui';
+import { LoadingBox, Tooltip } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -29,7 +29,10 @@ export function TxContractIcon({
       >
         <div>
           {(isImageLoading || isMetadataLoading) && (
-            <Skeleton height={size} width={size} className="rounded-full" />
+            <LoadingBox
+              style={{ height: size, width: size }}
+              className="rounded-full"
+            />
           )}
           {data?.project?.image && data?.metadata && (
             <img

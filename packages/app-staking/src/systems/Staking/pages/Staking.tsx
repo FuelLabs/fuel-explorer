@@ -3,10 +3,12 @@ import { SHOW_CONVERT_BUTTON, TOKENS } from 'app-commons';
 import { FuelToken } from 'app-commons';
 
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { AccountButton } from '~staking/systems/Core/components/AccountButton/AccountButton';
 import { PendingTransactionsWatcher } from '~staking/systems/Core/components/PendingTransactionsWatcher/PendingTransactionsWatcher';
+import { TabTransition } from '~staking/systems/Core/components/TabTransition/TabTransition';
 import { useFormatBalance } from '~staking/systems/Core/hooks/useFormatBalance';
 import { ClaimV2Button } from '~staking/systems/Faucet/ClaimV2';
 import { StakingDialogs } from '../components/StakingDialogs';
@@ -20,8 +22,10 @@ import { useTokenBalance } from '../services/useTokenBalance';
 import { useVestingReleases } from '../services/useVestingReleases';
 
 const v1 = TOKENS[FuelToken.V1];
+const TAB_ORDER = ['positions', 'validators', 'transactions'];
 
 export const StakingPage = () => {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { data: releases } = useVestingReleases(address);
   const totalGrant = useFormatBalance(releases?.amount, v1.decimals);
@@ -51,28 +55,34 @@ export const StakingPage = () => {
   }, [pathname]);
 
   return (
-    <Box>
-      <div className="flex flex-col gap-2 mb-4 tablet:flex-row tablet:justify-end tablet:items-center">
+    <Box className="py-8">
+      <div className="flex flex-col gap-2 mb-6 px-6 tablet:px-10 tablet:flex-row tablet:justify-end tablet:items-center">
         <ClaimV2Button />
         {hasV1Involvement && SHOW_CONVERT_BUTTON === 'true' && (
           <Link to="/upgrade" className="tablet:w-auto w-full">
             <Button
-              variant="outline"
+              variant="ghost"
               color="gray"
               className="laptop:w-auto w-full"
             >
-              Upgrade your Fuel V1 Tokens
+              {t('staking.upgrade.cta')}
             </Button>
           </Link>
         )}
         <AccountButton />
       </div>
       <Balance />
-      <VStack className="gap-0 mt-16">
+      <VStack className="gap-0 mt-10 px-6 tablet:px-10">
         <StakingL1Tabs />
-        {activeTab === 'positions' && <DelegatedPositions />}
-        {activeTab === 'validators' && <ValidatorsList />}
-        {activeTab === 'transactions' && <TransactionHistory />}
+        <TabTransition
+          panel={activeTab}
+          order={TAB_ORDER.indexOf(activeTab)}
+          travel={24}
+        >
+          {activeTab === 'positions' && <DelegatedPositions />}
+          {activeTab === 'validators' && <ValidatorsList />}
+          {activeTab === 'transactions' && <TransactionHistory />}
+        </TabTransition>
       </VStack>
       <StakingDialogs />
       <PendingTransactionsWatcher />

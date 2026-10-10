@@ -1,42 +1,28 @@
-import { Alert, HStack, Text } from '@fuels/ui';
-import { IconInfoCircleFilled } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 interface PausedContractAlertProps {
   name: string;
 }
 
 export const PausedContractAlert = ({ name }: PausedContractAlertProps) => {
+  const { t } = useTranslation();
+
   return (
-    <Alert
-      variant="soft"
-      color="gray"
-      size="3"
-      className="border border-gray-6"
+    <div
+      role="status"
+      className="fuel-edge fuel-appear flex flex-col gap-2 border border-[var(--fuel-line)] bg-[var(--fuel-card)] p-4"
     >
-      <HStack align="center" gap="2">
-        <Alert.Icon>
-          <IconInfoCircleFilled className="text-orange-11 w-5 h-5" />
-        </Alert.Icon>
-        <Text weight="medium" size="3" className="text-gray-12">
-          Operations are temporarily paused.
-        </Text>
-      </HStack>
-
-      <Text
-        weight="regular"
-        size="3"
-        className="text-gray-11 dark:text-[rgba(246,243,226,0.5)]"
-      >
-        The {name} module is currently being updated.
-      </Text>
-
-      <Text
-        size="3"
-        weight="medium"
-        className="text-gray-12 dark:text-[#F6F3E2]"
-      >
-        No action is needed from your side.
-      </Text>
-    </Alert>
+      <span className="fuel-label flex items-center gap-2 text-[var(--fuel-element-high-em)]">
+        <span aria-hidden className="fuel-square" />
+        {t('portal.paused.tag')}
+      </span>
+      <p className="m-0 text-base text-heading">{t('portal.paused.title')}</p>
+      <p className="m-0 text-sm text-[var(--fuel-element-mid-em)]">
+        {t('portal.paused.module_updating', { name })}
+      </p>
+      <p className="m-0 text-sm text-[var(--fuel-element-high-em)]">
+        {t('portal.paused.no_action')}
+      </p>
+    </div>
   );
 };

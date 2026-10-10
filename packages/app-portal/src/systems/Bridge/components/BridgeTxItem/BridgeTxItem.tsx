@@ -1,7 +1,8 @@
 import { Asset, Box, CardList, Flex, Text } from '@fuels/ui';
-import { IconArrowRight } from '@tabler/icons-react';
+import { IconArrowRight } from '@fuels/ui';
 import type { Asset as FuelsAsset } from 'fuels';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { calculateDateDiff, shortAddress } from '~portal/systems/Core';
 
 import { tv } from 'tailwind-variants';
@@ -17,6 +18,8 @@ type BridgeTxItemProps = {
   txId?: string;
   amount?: string;
   isLoading?: boolean;
+  className?: string;
+  style?: CSSProperties;
 };
 
 export const BridgeTxItem = ({
@@ -29,18 +32,24 @@ export const BridgeTxItem = ({
   txId,
   amount,
   isLoading,
+  className,
+  style,
 }: BridgeTxItemProps) => {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
     <CardList.Item
-      aria-label={`Transaction ID: ${shortAddress(txId)}`}
+      aria-label={t('portal.overview.transaction_id_label', {
+        id: shortAddress(txId),
+      })}
       onClick={onClick}
-      className={classes.cardItem()}
+      className={classes.cardItem({ className })}
+      style={style}
     >
       <Flex className={classes.networks()}>
         {fromLogo}
-        <IconArrowRight size={16} />
+        <IconArrowRight size={16} className={classes.arrow()} />
         {toLogo}
       </Flex>
       <Flex className={classes.assetAmountWrapper()}>
@@ -52,7 +61,9 @@ export const BridgeTxItem = ({
           <ItemLoader />
         ) : (
           <Text className={classes.assetAmountText()}>
-            {amount} {asset?.symbol}
+            <span className="fuel-stat-sm">{amount}</span>{' '}
+            {/* A real space keeps the row text "1.5 ETH" for readers and tests. */}
+            <span className="fuel-label normal-case ml-1">{asset?.symbol}</span>
           </Text>
         )}
       </Flex>
@@ -74,12 +85,20 @@ export const BridgeTxItem = ({
 const styles = tv({
   slots: {
     networks: 'shrink-0 gap-1 items-center',
-    cardItem: 'flex flex-row px-4 py-0 min-h-[56px] gap-1 items-center',
+    arrow:
+      'transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none',
+    // A flat row in a framed list: the card ring and rounding are removed so
+    // rows share hairlines instead of stacking as separate cards.
+    cardItem: [
+      'group flex flex-row px-4 py-0 min-h-[64px] gap-3 items-center',
+      'rounded-none border-0 border-t border-[var(--fuel-border)] first:border-t-0',
+      'bg-transparent after:!shadow-none hover:bg-[var(--fuel-muted)] hover:border-[var(--fuel-border)]',
+    ],
     statusTime: 'flex-col gap-y-1 items-end',
     line: 'flex-1',
     timeLoader: 'flex items-center h-[16.8px]',
-    ageText: 'text-xs text-heading text-right',
+    ageText: 'fuel-label text-right',
     assetAmountWrapper: 'grow shrink-0 items-center gap-2',
-    assetAmountText: 'text-xs text-heading',
+    assetAmountText: 'text-heading',
   },
 });

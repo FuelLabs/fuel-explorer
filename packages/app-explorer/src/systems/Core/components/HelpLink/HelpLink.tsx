@@ -1,5 +1,5 @@
 import { Button, Icon } from '@fuels/ui';
-import { IconHelpCircle } from '@tabler/icons-react';
+import { IconHelpCircle } from '@fuels/ui';
 
 export function HelpLink() {
   return (

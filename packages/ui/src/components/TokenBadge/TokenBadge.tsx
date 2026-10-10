@@ -7,11 +7,9 @@ const tokenBadge = tv({
     'inline-flex',
     'flex-shrink-0',
     'items-center',
-    'bg-[--gray-a4]',
-    'rounded-full',
-    'shadow-sm',
+    'bg-transparent',
     'border',
-    'border-[--gray-a5]',
+    'border-[var(--fuel-border)]',
   ],
   variants: {
     size: {

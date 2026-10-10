@@ -1,15 +1,59 @@
+.rt-SegmentedControlRoot,
+.rt-SegmentedControlIndicator::before {
+  border-radius: 0;
+}
+
+.rt-SegmentedControlRoot {
+  background-color: var(--fuel-muted);
+  box-shadow: none;
+}
+
+.rt-SegmentedControlIndicator::before {
+  background-color: var(--fuel-background);
+  box-shadow: inset 0 0 0 1px var(--fuel-line);
+}
+
 .rt-SegmentedControlItem {
   cursor: pointer;
+  background-color: transparent;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.6px;
+  color: var(--fuel-element-low-em);
+  transition: color 200ms;
 }
 
-.rt-SegmentedControlItem[data-state="off"] {
-  background-color: var(--gray-a4);
-}
-
-:root:is(.dark, .dark-theme) .rt-SegmentedControlItem[data-state="off"] {
-  background-color: var(--gray-a1);
-}
-
+.rt-SegmentedControlItem[data-state="off"],
+.rt-SegmentedControlItem[data-state="off"]:hover,
+.rt-SegmentedControlItem[data-state="on"],
 .rt-SegmentedControlItem[data-state="on"]:hover {
-  background-color: var(--gray-a2);
+  background-color: transparent;
+}
+
+.rt-SegmentedControlItem[data-state="off"] .rt-SegmentedControlItemLabel,
+.rt-SegmentedControlItem[data-state="off"] .rt-SegmentedControlItemLabelActive {
+  color: var(--fuel-element-low-em);
+}
+
+.rt-SegmentedControlItem[data-state="off"]:hover .rt-SegmentedControlItemLabel {
+  color: var(--fuel-element-high-em);
+}
+
+.rt-SegmentedControlItem[data-state="on"],
+.rt-SegmentedControlItem[data-state="on"] .rt-SegmentedControlItemLabel,
+.rt-SegmentedControlItem[data-state="on"] .rt-SegmentedControlItemLabelActive {
+  color: var(--fuel-element-high-em);
+}
+
+.rt-SegmentedControlItemLabel,
+.rt-SegmentedControlItemLabelActive {
+  transition: color 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rt-SegmentedControlItem,
+  .rt-SegmentedControlItemLabel,
+  .rt-SegmentedControlItemLabelActive {
+    transition: color 200ms;
+  }
 }

@@ -1,9 +1,10 @@
-import { Link, toast } from '@fuels/ui';
+import { toast } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, type HexAddress } from 'app-commons';
 import { safeWriteContract } from 'app-commons/safeWriteContract';
+import { getI18n } from 'react-i18next';
 import { sequencerAbi } from '~staking/contracts/sequencer/sequencerAbi';
+import { ViewInExplorer } from '~staking/systems/Core/components/ViewInExplorer/ViewInExplorer';
 import { bnToBigInt } from '~staking/systems/Core/utils/bn';
-import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
 import { convertSequencerValidatorAddressToEthAddress } from '../../utils/convertSequencerValidatorAddressToEthAddress';
 import type { SubmitUndelegateNewDialogInput } from './types';
 
@@ -70,17 +71,8 @@ export class UndelegateNewService {
    */
   static showSuccessToast(txHash: `0x${string}`): void {
     toast({
-      title: 'Undelegate transaction has been submitted',
-      description: (
-        <Link
-          href={getTransactionLink(txHash, 'l1')}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="green"
-        >
-          View on Etherscan
-        </Link>
-      ),
+      title: getI18n().t('staking.toast.undelegate_submitted'),
+      action: <ViewInExplorer hash={txHash} layer="l1" />,
       variant: 'info',
       duration: 5_000,
     });

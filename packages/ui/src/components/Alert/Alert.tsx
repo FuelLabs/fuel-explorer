@@ -11,7 +11,7 @@ export const AlertRoot = createComponent<AlertProps, typeof RC.Root>({
   id: 'Alert',
   baseElement: RC.Root,
   defaultProps: {
-    color: 'blue',
+    color: 'gray',
   },
 });
 

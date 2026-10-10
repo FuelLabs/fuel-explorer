@@ -1,20 +1,48 @@
 <!doctype html>
-<html lang="en" class="font-inter">
+<html lang="en" class="font-sans">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      try {
+        var saved = localStorage.getItem('fuel-explorer-language');
+        var codes = {
+          en: 'en',
+          ja: 'ja',
+          ko: 'ko',
+          'zh-cn': 'zh-CN',
+          'zh-hk': 'zh-HK',
+        };
+        var code = saved && codes[String(saved).toLowerCase()];
+        if (code) document.documentElement.lang = code;
+      } catch (e) {}
+    </script>
+    <script>
+      // Sets the theme class before first paint. ThemeProvider (app-commons)
+      // reads the same key and falls back to dark when nothing is stored.
+      try {
+        var theme = localStorage.getItem('fuel-ui-theme');
+        var resolved = theme === 'light' ? 'light' : 'dark';
+        var root = document.documentElement;
+        root.classList.remove('light', 'dark');
+        root.classList.add(resolved);
+        root.style.colorScheme = resolved;
+      } catch (e) {}
+    </script>
+    <link rel="preload" href="/fonts/abc-monument-grotesk-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/IBMPlexMono-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Fuel Ignition is a high-performance Ethereum layer-2 rollup powered by the FuelVM; built for home verification and scalable for all." />
+    <title>__PAGE_TITLE__</title>
+    <meta name="description" content="__PAGE_DESCRIPTION__" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Fuel Explorer" />
+    <meta property="og:title" content="__PAGE_TITLE__" />
+    <meta property="og:description" content="__PAGE_DESCRIPTION__" />
+    <meta property="og:url" content="__PAGE_URL__" />
     <meta property="og:image" content="/preview.png?v=ignition" />
-    <title>Fuel Explorer</title>
-
-    <style>
-      :root {
-        --font-inter: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        --font-geist-mono: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-      }
-    </style>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="__PAGE_TITLE__" />
+    <meta name="twitter:description" content="__PAGE_DESCRIPTION__" />
   </head>
   <body>
     <div id="root"></div>

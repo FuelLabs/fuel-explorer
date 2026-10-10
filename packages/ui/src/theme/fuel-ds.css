@@ -1,0 +1,729 @@
+:root {
+  --font-sans: "ABC Monument Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --fuel-black: #000000;
+  --fuel-white: #ffffff;
+  --fuel-dark: oklch(0.218 0 0);
+  --fuel-gray-alpha-light: oklch(0.683 0 0);
+
+  --fuel-brand-400: oklch(0.867 0.156 153.8);
+  --fuel-brand-500: oklch(0.83 0.204 150.8);
+  --fuel-brand-600: oklch(0.803 0.239 146.9);
+  --fuel-brand-900: oklch(0.47 0.136 148);
+  /* Figma brand gradient. brand-600 is #02E555. Mint holds through 75%. */
+  --fuel-gradient-mint: #88ecd1;
+  --fuel-dither-gradient: linear-gradient(
+    to bottom,
+    var(--fuel-gradient-mint) 0%,
+    var(--fuel-gradient-mint) 75%,
+    var(--fuel-brand-600) 100%
+  );
+
+  --fuel-stone-50: oklch(0.968 0.005 78.3);
+  --fuel-stone-400: oklch(0.709 0.01 62.5);
+  --fuel-stone-600: oklch(0.444 0.011 78.2);
+  --fuel-stone-700: oklch(0.374 0.01 73.6);
+  --fuel-stone-800: oklch(0.268 0.006 34.3);
+  --fuel-stone-950: oklch(0.147 0.004 49.2);
+
+  --fuel-border-light: var(--fuel-gray-alpha-light);
+  --fuel-border-dark: oklch(0.371 0 0);
+  --fuel-border-footer: oklch(0.26 0 0);
+
+  --fuel-chamfer: 10px;
+  --fuel-chamfer-polygon: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--fuel-chamfer)),
+    calc(100% - var(--fuel-chamfer)) 100%,
+    0 100%
+  );
+}
+
+/* Scoped to <html> so a nested <Theme appearance> keeps the page colors. */
+:root,
+:root:is(.light, .light-theme) {
+  --fuel-background: oklch(1 0 0);
+  --fuel-card: oklch(0.976 0 0);
+  --fuel-muted: oklch(0.945 0 0);
+  --fuel-border: oklch(0.922 0 0);
+  /* 3.00:1 on white. 0.708 was 2.59:1. */
+  --fuel-ring: oklch(0.669 0 0);
+  --fuel-element-high-em: var(--fuel-stone-950);
+  --fuel-element-mid-em: var(--fuel-stone-700);
+  --fuel-element-low-em: var(--fuel-stone-600);
+  /* Disabled text: about 3.2:1 on white, distinct from the mid and low emphasis text. */
+  --fuel-disabled-text: oklch(0.6 0.01 70);
+  --fuel-element-disabled: var(--fuel-disabled-text);
+  --fuel-primary: var(--fuel-brand-600);
+  --fuel-primary-hover: var(--fuel-brand-400);
+  --fuel-primary-foreground: var(--fuel-stone-950);
+  /* Danger: fill and border 4.8:1, text and icons 7:1 on white. */
+  --fuel-danger: oklch(0.577 0.235 27.3);
+  --fuel-danger-text: oklch(0.49 0.2 27);
+  /* Warning: amber fill, brown text 6:1 on white. */
+  --fuel-warning: oklch(0.76 0.16 75);
+  --fuel-warning-text: oklch(0.48 0.11 65);
+  --fuel-scrim: rgb(0 0 0 / 0.5);
+  /* brand-600 is 1.70:1 on white, so green text uses brand-900 (6.42:1). */
+  --fuel-brand-text: var(--fuel-brand-900);
+  /* Focus rings follow brand-text. brand-900 is 6.42:1 on white. */
+  --fuel-focus: var(--fuel-brand-900);
+  --fuel-secondary: var(--fuel-stone-950);
+  --fuel-secondary-hover: var(--fuel-stone-800);
+  --fuel-secondary-foreground: oklch(0.922 0 0);
+  --fuel-grid-line: oklch(0.9 0 0);
+  --fuel-line: oklch(0.9 0 0);
+  --fuel-footer-bg: var(--fuel-background);
+  --fuel-indicator-border: oklch(0.8 0 0);
+  --fuel-indicator-fill: var(--fuel-background);
+  --fuel-square: var(--fuel-brand-600);
+  --fuel-square-border: var(--fuel-brand-500);
+}
+
+:root:is(.dark, .dark-theme) {
+  --fuel-background: oklch(0.145 0 0);
+  --fuel-card: oklch(0.205 0 0);
+  --fuel-muted: oklch(0.269 0 0);
+  --fuel-border: oklch(1 0 0 / 10%);
+  /* 4.18:1 on the dark canvas. */
+  --fuel-ring: oklch(0.556 0 0);
+  --fuel-element-high-em: var(--fuel-white);
+  --fuel-element-mid-em: var(--fuel-stone-400);
+  --fuel-element-low-em: var(--fuel-gray-alpha-light);
+  /* Disabled text: below the mid and low emphasis text, about 3:1 on the card. */
+  --fuel-disabled-text: oklch(0.55 0 0);
+  --fuel-element-disabled: var(--fuel-disabled-text);
+  --fuel-primary: var(--fuel-brand-600);
+  --fuel-primary-hover: var(--fuel-brand-400);
+  --fuel-primary-foreground: var(--fuel-stone-950);
+  --fuel-danger: oklch(0.66 0.21 25);
+  --fuel-danger-text: oklch(0.76 0.16 22);
+  --fuel-warning: oklch(0.8 0.16 85);
+  --fuel-warning-text: oklch(0.83 0.15 85);
+  --fuel-scrim: rgb(0 0 0 / 0.5);
+  --fuel-brand-text: var(--fuel-brand-600);
+  /* Focus rings follow brand-text. brand-600 is 11.63:1 on the dark canvas. */
+  --fuel-focus: var(--fuel-brand-600);
+  --fuel-secondary: oklch(0.269 0 0);
+  --fuel-secondary-hover: oklch(0.34 0 0);
+  --fuel-secondary-foreground: oklch(0.985 0 0);
+  --fuel-grid-line: var(--fuel-border-dark);
+  --fuel-line: var(--fuel-border-dark);
+  --fuel-footer-bg: var(--fuel-black);
+  --fuel-indicator-border: var(--fuel-border-dark);
+  --fuel-indicator-fill: var(--fuel-dark);
+  --fuel-square: var(--fuel-brand-600);
+  --fuel-square-border: var(--fuel-brand-500);
+}
+
+/* Only the default accent: explicit color="green" stays the success color. */
+:root [data-accent-color="grass"],
+:root [data-accent-color="brand"] {
+  --accent-9: var(--fuel-primary);
+  --accent-10: var(--fuel-primary-hover);
+  --accent-11: var(--fuel-brand-text);
+  --accent-contrast: var(--fuel-primary-foreground);
+  --accent-indicator: var(--fuel-primary);
+  --focus-8: var(--fuel-focus);
+}
+
+.rt-Heading {
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+/* Tight tracking is tuned for Latin. CJK fallback fonts need none. */
+:lang(ja),
+:lang(ko),
+:lang(zh),
+.radix-themes:is(:lang(ja), :lang(ko), :lang(zh)),
+:is(:lang(ja), :lang(ko), :lang(zh)) .rt-Heading,
+.rt-Heading:is(:lang(ja), :lang(ko), :lang(zh)) {
+  --default-letter-spacing: normal;
+  --heading-letter-spacing: normal;
+  letter-spacing: normal;
+}
+
+.rt-Button,
+.rt-Badge,
+.rt-TabsTrigger,
+.rt-TabNavLink,
+.rt-SegmentedControlItem,
+.rt-TableColumnHeaderCell {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fuel-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.fuel-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--fuel-element-low-em);
+}
+
+.fuel-body {
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.32px;
+}
+
+.fuel-caption {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--fuel-element-low-em);
+}
+
+.fuel-stat {
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 34px;
+  letter-spacing: -1.28px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fuel-element-high-em);
+}
+
+@media (min-width: 1440px) {
+  .fuel-stat {
+    font-size: 40px;
+    line-height: 44px;
+    letter-spacing: -1.6px;
+  }
+}
+
+.fuel-stat-sm {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fuel-element-high-em);
+}
+
+/* Grows the tap target to 44px without changing the visual size. The element must be positioned. */
+.fuel-hit::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+}
+
+.fuel-square {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-square-border);
+  background: var(--fuel-square);
+}
+
+.fuel-dither-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* A hem of the brand gradient. The cell itself stays the page color. */
+.fuel-dither-accent::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 30%;
+  background: var(--fuel-dither-gradient);
+  opacity: 0.45;
+  -webkit-mask-image: linear-gradient(to top, black, transparent);
+  mask-image: linear-gradient(to top, black, transparent);
+  pointer-events: none;
+}
+
+/* Light themes show the image's shadows as dark ink, dark themes its highlights as light ink. */
+.fuel-dither {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  image-rendering: pixelated;
+  opacity: 0.12;
+}
+
+.fuel-dither[data-ink="highlights"],
+:root:is(.dark, .dark-theme) .fuel-dither[data-ink="shadows"] {
+  display: none;
+}
+
+:root:is(.dark, .dark-theme) .fuel-dither[data-ink="highlights"] {
+  display: block;
+  opacity: 0.16;
+}
+
+/* A scroll area with no scrollbar. data-fade-top / data-fade-bottom fade the
+   edge that has more content past it. */
+@property --fuel-fade-top {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --fuel-fade-bottom {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.fuel-scroll-fade {
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--fuel-fade-top),
+    #000 calc(100% - var(--fuel-fade-bottom)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--fuel-fade-top),
+    #000 calc(100% - var(--fuel-fade-bottom)),
+    transparent
+  );
+  transition: --fuel-fade-top 200ms ease-out, --fuel-fade-bottom 200ms ease-out;
+}
+
+.fuel-scroll-fade::-webkit-scrollbar {
+  display: none;
+}
+
+.fuel-scroll-fade[data-fade-top] {
+  --fuel-fade-top: 32px;
+}
+
+.fuel-scroll-fade[data-fade-bottom] {
+  --fuel-fade-bottom: 56px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fuel-scroll-fade {
+    transition: none;
+  }
+}
+
+/* Controls on a dither sit on a busy field, so their fills stay opaque. */
+.fuel-illustrated
+  :is(.rt-variant-soft, .rt-variant-ghost, .rt-variant-outline).rt-BaseButton {
+  background-color: var(--fuel-card);
+}
+
+.fuel-illustrated .rt-SegmentedControlRoot {
+  background-color: var(--fuel-muted);
+}
+
+.fuel-illustrated .rt-CalloutRoot:where(.rt-variant-soft) {
+  background-color: color-mix(in srgb, var(--accent-9) 18%, var(--fuel-card));
+}
+
+/* The sticky nav covers the top of the page, so anchors and focus scroll below it. */
+html {
+  --nav-height: 60px;
+  scroll-padding-top: var(--nav-height);
+}
+
+@media (min-width: 1024px) {
+  html {
+    --nav-height: 70px;
+  }
+}
+
+.fuel-page {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+/* Cells share 1px lines: the 1px gap shows the frame's line color. */
+.fuel-grid-frame {
+  position: relative;
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--fuel-line);
+  background: var(--fuel-line);
+}
+
+.fuel-grid-frame > * {
+  background: var(--fuel-background);
+}
+
+.fuel-grid-frame .fuel-RoundedContainer {
+  border: 0;
+}
+
+.fuel-grid-frame .fuel-edge::before,
+.fuel-grid-frame .fuel-edge::after {
+  display: none;
+}
+
+.fuel-grid-joint {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.fuel-grid-frame .rt-BaseCard::after {
+  box-shadow: none;
+}
+
+/* A tool cell holds a form whose cards keep their own border. */
+.fuel-grid-frame .fuel-tool-cell .rt-BaseCard::after {
+  box-shadow: inset 0 0 0 1px var(--fuel-border);
+}
+
+/* Frame corners: an 8px indicator with lines fading outward. --fuel-corner-reach
+   sets the line length, --fuel-corner-reach-y the vertical lines alone. */
+.fuel-corner {
+  position: absolute;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  pointer-events: none;
+}
+
+.fuel-corner::before,
+.fuel-corner::after {
+  content: "";
+  position: absolute;
+}
+
+.fuel-corner::before {
+  top: 3px;
+  width: var(--fuel-corner-reach, 60px);
+  height: 1px;
+}
+
+.fuel-corner::after {
+  left: 3px;
+  width: 1px;
+  height: var(--fuel-corner-reach-y, var(--fuel-corner-reach, 60px));
+}
+
+@media (max-width: 639px) {
+  .fuel-corner {
+    --fuel-corner-reach: 24px;
+  }
+}
+
+.fuel-corner-tl {
+  top: -5px;
+  left: -5px;
+}
+
+.fuel-corner-tr {
+  top: -5px;
+  right: -5px;
+}
+
+.fuel-corner-bl {
+  bottom: -5px;
+  left: -5px;
+}
+
+.fuel-corner-br {
+  bottom: -5px;
+  right: -5px;
+}
+
+.fuel-corner-tl::before,
+.fuel-corner-bl::before {
+  right: 100%;
+  background: linear-gradient(to left, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-tr::before,
+.fuel-corner-br::before {
+  left: 100%;
+  background: linear-gradient(to right, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-tl::after,
+.fuel-corner-tr::after {
+  bottom: 100%;
+  background: linear-gradient(to top, var(--fuel-grid-line), transparent);
+}
+
+.fuel-corner-bl::after,
+.fuel-corner-br::after {
+  top: 100%;
+  background: linear-gradient(to bottom, var(--fuel-grid-line), transparent);
+}
+
+.fuel-footer {
+  background: var(--fuel-footer-bg);
+}
+
+.fuel-grid-divider {
+  border-bottom: 1px solid var(--fuel-grid-line);
+}
+
+.fuel-edge {
+  position: relative;
+}
+
+.fuel-edge::before,
+.fuel-edge::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--fuel-indicator-border);
+  background: var(--fuel-indicator-fill);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.fuel-edge::before {
+  top: 0;
+  left: 0;
+}
+
+.fuel-edge::after {
+  top: 100%;
+  left: 100%;
+}
+
+@keyframes fuel-row-arrive {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fuel-row-new {
+  animation: fuel-row-arrive 300ms ease-out;
+}
+
+/* Entrances for content that mounts: a short rise, or a fade alone.
+   `backwards` holds the first frame through --fuel-enter-delay and leaves no
+   transform behind afterwards. Reduced motion keeps the fade and drops the rise. */
+@keyframes fuel-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fuel-rise {
+  animation: fuel-rise 400ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: var(--fuel-enter-delay, 0ms);
+}
+
+.fuel-appear {
+  animation: fuel-row-arrive 200ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.fuel-hover-fill {
+  transition: background-color 300ms;
+}
+
+@media (hover: hover) {
+  .fuel-hover-fill:hover {
+    background-color: var(--fuel-muted);
+  }
+}
+
+/* A card inside a link fills on hover. Radix paints the card on ::before. */
+.fuel-card-link .rt-BaseCard::before {
+  transition: background-color 300ms;
+}
+
+@media (hover: hover) {
+  .fuel-card-link:hover .rt-BaseCard::before {
+    background-color: var(--fuel-muted);
+  }
+}
+
+/* Questions list. Opening folds the answer down out of a soft blur, draws the
+   brand square in and moves the question over to make room for it; closing
+   runs faster than opening. Hover draws a hairline along the row's bottom edge
+   from the left, and it leaves to the right. */
+.fuel-faq {
+  --fuel-faq-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --fuel-faq-exit: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fuel-faq-item::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--fuel-element-high-em);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 450ms var(--fuel-faq-enter);
+  pointer-events: none;
+}
+
+.fuel-faq-label {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16px;
+  color: var(--fuel-element-low-em);
+  transition: color 200ms, transform 300ms var(--fuel-faq-exit);
+}
+
+/* 18px: the 12px row padding plus half of the 20px line, less half the square. */
+.fuel-faq-marker {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  opacity: 0;
+  transform: scale(0) rotate(-90deg);
+  transition: opacity 150ms, transform 250ms var(--fuel-faq-exit);
+}
+
+.fuel-faq-toggle {
+  flex: none;
+  color: var(--fuel-element-low-em);
+  transition: rotate 450ms var(--fuel-faq-enter), scale 150ms
+    var(--fuel-faq-enter), color 200ms;
+}
+
+.fuel-faq-item button:active .fuel-faq-toggle {
+  scale: 0.8;
+}
+
+.fuel-faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 280ms var(--fuel-faq-exit), visibility 0s 280ms;
+}
+
+.fuel-faq-answer {
+  opacity: 0;
+  transform: translateY(-6px);
+  filter: blur(4px);
+  transition: opacity 150ms, transform 200ms var(--fuel-faq-exit), filter 150ms;
+}
+
+.fuel-faq-item[data-open] .fuel-faq-label {
+  color: var(--fuel-element-high-em);
+  transform: translateX(16px);
+  transition: color 200ms, transform 500ms var(--fuel-faq-enter);
+}
+
+.fuel-faq-item[data-open] .fuel-faq-marker {
+  opacity: 1;
+  transform: none;
+  transition: opacity 200ms 80ms, transform 500ms var(--fuel-faq-enter) 80ms;
+}
+
+.fuel-faq-item[data-open] .fuel-faq-toggle {
+  rotate: 45deg;
+  color: var(--fuel-element-high-em);
+}
+
+.fuel-faq-item[data-open] > .fuel-faq-panel {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 500ms var(--fuel-faq-enter), visibility 0s;
+}
+
+.fuel-faq-item[data-open] .fuel-faq-answer {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: opacity 350ms 100ms, transform 500ms var(--fuel-faq-enter) 100ms,
+    filter 400ms 100ms;
+}
+
+/* Touch screens skip hover, so a tap does not leave the hairline drawn. */
+@media (hover: hover) {
+  .fuel-faq-item:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .fuel-faq-item:hover .fuel-faq-label,
+  .fuel-faq-item:hover .fuel-faq-toggle {
+    color: var(--fuel-element-high-em);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fuel-row-new {
+    animation: none;
+  }
+
+  .fuel-rise {
+    animation: fuel-row-arrive 200ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .fuel-hover-fill,
+  .rt-BaseButton {
+    transition: none;
+  }
+
+  /* Questions keep the fades and colour changes and drop all movement. */
+  .fuel-faq-item::after,
+  .fuel-faq-panel,
+  .fuel-faq-item[data-open] > .fuel-faq-panel {
+    transition: none;
+  }
+
+  /* The question still moves over for the square, in one step. */
+  .fuel-faq-label,
+  .fuel-faq-item[data-open] .fuel-faq-label {
+    transition: color 200ms;
+  }
+
+  .fuel-faq-marker,
+  .fuel-faq-item[data-open] .fuel-faq-marker,
+  .fuel-faq-answer,
+  .fuel-faq-item[data-open] .fuel-faq-answer {
+    transform: none;
+    filter: none;
+    transition: opacity 200ms;
+  }
+
+  .fuel-faq-toggle {
+    transition: color 200ms;
+  }
+}

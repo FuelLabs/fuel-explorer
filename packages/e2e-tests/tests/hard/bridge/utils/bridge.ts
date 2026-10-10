@@ -3,7 +3,6 @@ import type { BrowserContext, Page } from '@playwright/test';
 import { shortAddress } from '../../../../../app-portal/src/systems/Core/utils';
 import {
   getByAriaLabel,
-  hasText,
   waitAriaLabel,
 } from '../../../../src/helpers/fuel-utils.js';
 
@@ -35,7 +34,10 @@ export const goToTransactionsPage = async (page: Page) => {
   await transactionList.click();
 
   await waitAriaLabel(page, 'Back to home');
-  await hasText(page, 'Back');
+  await expect(page.getByLabel('Back to home')).toHaveText('Back', {
+    ignoreCase: true,
+    useInnerText: true,
+  });
   await page.waitForTimeout(2500);
 };
 

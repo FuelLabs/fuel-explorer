@@ -1,6 +1,7 @@
 import { GQLReceiptType } from '@fuel-explorer/graphql/sdk';
 import { Code, Collapsible, Flex, HStack, VStack } from '@fuels/ui';
 import { useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TxOperationHeader } from '~/systems/Transaction/component/TxScripts/TxOperationHeader';
 import { TxReceiptAmount } from '~/systems/Transaction/component/TxScripts/TxReceiptAmount';
 import { TxReceiptBadge } from '~/systems/Transaction/component/TxScripts/TxReceiptBadge/TxReceiptBadge';
@@ -33,6 +34,7 @@ const TX_ICON_MAP: Record<GQLReceiptType, TxIconType> = {
 };
 
 export function TxReceiptHeader() {
+  const { t } = useTranslation();
   const { receipt: item } = useContext(ReceiptContext);
   const receipt = item?.item;
   const classes = styles();
@@ -80,10 +82,10 @@ export function TxReceiptHeader() {
           <VStack className="flex-1 gap-[2px]">
             {decoded && (
               <Code
-                className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+                className="text-xs tablet:text-sm font-mono bg-transparent text-[var(--fuel-element-low-em)] p-0"
                 color="gray"
               >
-                {`${decoded.kind === 'call' ? 'Method:' : 'Event:'} ${
+                {`${decoded.kind === 'call' ? t('tx.method_prefix') : t('tx.event_prefix')} ${
                   decoded.name
                 }${decoded.contractName ? ` (${decoded.contractName})` : ''}`}
               </Code>

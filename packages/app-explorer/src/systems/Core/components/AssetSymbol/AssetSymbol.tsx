@@ -1,7 +1,6 @@
 import type { GQLAsset } from '@fuel-explorer/graphql';
 import type { HStackProps } from '@fuels/ui';
 import {
-  Badge,
   Copyable,
   HStack,
   IconRosetteDiscountCheck,
@@ -9,9 +8,11 @@ import {
   Text,
   Tooltip,
 } from '@fuels/ui';
-import { IconAlertOctagon } from '@tabler/icons-react';
+import { IconAlertOctagon } from '@fuels/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Routes } from '~/routes';
+import { AssetNftTag } from '~/systems/Asset/components/AssetItem/AssetNftTag';
 import { useNFT } from '~/systems/Asset/hooks/useNFT';
 import type { TxIconType } from '~/systems/Transaction/types';
 
@@ -25,8 +26,7 @@ type AssetItemProps = HStackProps & {
 };
 
 export function AssetSymbol({ assetId, asset, linkContract }: AssetItemProps) {
-  if (!asset) return null;
-
+  const { t } = useTranslation();
   const { data: nft } = useNFT({
     contractId: asset?.contractId,
     assetId: asset?.assetId,
@@ -34,13 +34,15 @@ export function AssetSymbol({ assetId, asset, linkContract }: AssetItemProps) {
 
   const name = useMemo<string | null>(() => {
     if (nft?.name) {
-      return `${nft.symbol} (${asset.name})`;
+      return `${nft.symbol} (${asset?.name})`;
     }
     if (asset?.symbol) return asset.symbol;
     if (asset?.name) return asset.name;
 
     return null;
   }, [asset?.symbol, asset?.name, nft?.name, nft?.symbol]);
+
+  if (!asset) return null;
 
   return (
     <HStack gap="1">
@@ -58,29 +60,31 @@ export function AssetSymbol({ assetId, asset, linkContract }: AssetItemProps) {
             </Link>
           )}
           {(!asset.contractId || linkContract) && (
-            <Text className="font-normal text-sm text-secondary font-mono">
+            <Text className="font-normal text-sm text-[var(--fuel-element-low-em)] font-mono">
               {name}
             </Text>
           )}
           {asset?.icon && (
-            <Tooltip content="Verified Asset">
+            <Tooltip content={t('asset.verified')}>
               <div className="mx-1">
-                <IconRosetteDiscountCheck size={18} color="#0084C2" />
+                <IconRosetteDiscountCheck
+                  size={18}
+                  className="text-[var(--fuel-brand-text)]"
+                />
               </div>
             </Tooltip>
           )}
           {asset?.suspicious && (
-            <Tooltip content="This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.">
+            <Tooltip content={t('asset.suspicious')}>
               <div className="mx-1">
-                <IconAlertOctagon size={16} color="orange" />
+                <IconAlertOctagon
+                  size={16}
+                  className="text-[var(--fuel-danger-text)]"
+                />
               </div>
             </Tooltip>
           )}
-          {nft?.nft && (
-            <Badge variant="ghost" color="green" size="1">
-              NFT
-            </Badge>
-          )}
+          {nft?.nft && <AssetNftTag />}
         </>
       ) : (
         <>
@@ -91,19 +95,15 @@ export function AssetSymbol({ assetId, asset, linkContract }: AssetItemProps) {
                   ? Routes.contractMintedAssets(asset.contractId)
                   : undefined
               }
-              className="font-mono text-sm text-muted"
+              className="font-mono text-sm text-[var(--fuel-element-low-em)]"
               onClick={(e) => {
                 e.stopPropagation();
               }}
             >
-              Unknown Asset
+              {t('asset.unknown')}
             </Link>
           </Copyable>
-          {nft?.nft && (
-            <Badge variant="ghost" color="green" size="1">
-              NFT
-            </Badge>
-          )}
+          {nft?.nft && <AssetNftTag />}
         </>
       )}
     </HStack>

@@ -1,6 +1,6 @@
-import { IconCircleCheckFilled } from '@tabler/icons-react';
 import React, { createContext, useContext, useMemo } from 'react';
 import { createComponent, withNamespace } from '../../utils/component';
+import { IconCheck } from '../Icons';
 import { icon, item, root } from './Stepper.styles';
 
 type StepperBaseProps = {
@@ -84,7 +84,7 @@ export const StepperItem = createComponent<StepperItemProps, 'li'>({
 
     return (
       <li className={classes}>
-        <span className="flex items-center whitespace-nowrap text-sm">
+        <span className="fuel-label flex items-center whitespace-nowrap">
           <StepperItemIconContext.Provider
             value={{ index: ctx.index, variant }}
           >
@@ -110,7 +110,16 @@ export const StepperItemIcon = createComponent<{}, 'div'>({
     if (ctx.variant === 'completed') {
       return (
         <span className={classes}>
-          <IconCircleCheckFilled size={18} className="text-current" />
+          <IconCheck size={16} className="text-current" />
+        </span>
+      );
+    }
+
+    if (ctx.variant === 'active') {
+      return (
+        <span className={classes}>
+          <span className="sr-only">{ctx.index}</span>
+          <span className="fuel-square" aria-hidden />
         </span>
       );
     }

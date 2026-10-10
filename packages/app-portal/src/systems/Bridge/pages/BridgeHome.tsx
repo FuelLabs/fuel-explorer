@@ -1,57 +1,43 @@
-import { Box, Button } from '@fuels/ui';
-import { IconArrowBack, IconHistory } from '@tabler/icons-react';
+import { Box } from '@fuels/ui';
 import { BridgePausedBanner, PageTitle } from 'app-commons';
-import { Routes } from 'app-commons';
 
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
+import { BridgeHistoryToggle } from '../components/BridgeHistoryToggle/BridgeHistoryToggle';
 import { LayerSwapBanner } from '../components/LayerSwapBanner/LayerSwapBanner';
+import { BridgeTabs } from '../containers/BridgeTabs';
+import { isBridgeHistory as isHistoryPath } from '../utils/isBridgeHistory';
 
 type BridgeHomeProps = {
   children: ReactNode;
 };
 
+// The form needs no title: Deposit and Withdraw already name it, and History
+// sits beside them. History keeps a title so the list is labelled.
 export const BridgeHome = ({ children }: BridgeHomeProps) => {
+  const { t } = useTranslation();
   const classes = styles();
   const location = useLocation();
-
-  // Determine if we're on the bridge history page
-  const isBridgeHistory = location.pathname === Routes.bridgeHistory();
+  const isBridgeHistory = isHistoryPath(location.pathname);
 
   return (
     <Box className={classes.content()}>
       <BridgePausedBanner />
       <LayerSwapBanner />
-      <PageTitle title="Fuel Bridge">
-        {isBridgeHistory ? (
-          <Button
-            as="a"
-            href={Routes.bridge()}
-            size="1"
-            color="gray"
-            variant="ghost"
-            leftIcon={IconArrowBack}
-            className="rounded-md"
-            aria-label="Back to home"
-          >
-            Back
-          </Button>
-        ) : (
-          <Button
-            as="a"
-            href={Routes.bridgeHistory()}
-            size="1"
-            color="gray"
-            variant="ghost"
-            leftIcon={IconHistory}
-            className="rounded-md"
-            aria-label="Transaction History"
-          >
-            History
-          </Button>
-        )}
-      </PageTitle>
+      {isBridgeHistory ? (
+        <PageTitle as="h2" title={t('portal.bridge.history')} mb="4">
+          <BridgeHistoryToggle />
+        </PageTitle>
+      ) : (
+        <div className={classes.bar()}>
+          <div className="min-w-0 flex-1">
+            <BridgeTabs />
+          </div>
+          <BridgeHistoryToggle />
+        </div>
+      )}
       {children}
     </Box>
   );
@@ -59,11 +45,7 @@ export const BridgeHome = ({ children }: BridgeHomeProps) => {
 
 const styles = tv({
   slots: {
-    content: 'w-full max-w-[455px]',
-    tabs: 'ml-0 color-inherit decoration-none :active:text-success',
-    toggle: [
-      'w-full mb-4 rounded-md fuel-[ToggleGroupItem]:h-9',
-      'fuel-[ToggleGroupItem]:text-md',
-    ],
+    content: 'flex w-full max-w-[520px] min-h-0 flex-1 flex-col',
+    bar: 'mb-4 flex items-center gap-2',
   },
 });

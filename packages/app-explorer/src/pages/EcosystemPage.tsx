@@ -1,63 +1,148 @@
-import { VStack } from '@fuels/ui';
-import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { EcosystemPage } from '~portal/systems/Ecosystem/pages/Ecosystem';
-import { fetchProjects } from '../services/ecosystemService';
+import { Button } from '@fuels/ui';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { EcosystemFilterBar } from '~/systems/Ecosystem/components/EcosystemFilterBar';
+import { EcosystemHero } from '~/systems/Ecosystem/components/EcosystemHero';
+import { EcosystemList } from '~/systems/Ecosystem/components/EcosystemList';
+import { EcosystemSection } from '~/systems/Ecosystem/components/EcosystemSection';
+import { EcosystemSectionSkeleton } from '~/systems/Ecosystem/components/EcosystemSectionSkeleton';
+import { EcosystemSpotlight } from '~/systems/Ecosystem/components/EcosystemSpotlight';
+import { SUITE_SECTION } from '~/systems/Ecosystem/constants';
+import { useEcosystemProjects } from '~/systems/Ecosystem/hooks/useEcosystemProjects';
+import {
+  groupProjects,
+  isFlagshipProject,
+  isSuiteProject,
+} from '~/systems/Ecosystem/utils/groupProjects';
 
 export function EcosystemPageWrapper() {
-  const [searchParams] = useSearchParams();
-  const _navigate = useNavigate();
+  const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('search') ?? '');
+  const activeSection = searchParams.get('section') ?? undefined;
+  const liveOnly = searchParams.get('liveOnly') !== 'off';
+  const filtered = !!activeSection || !!search.trim();
 
-  const search = searchParams.get('search');
-  const tag = searchParams.get('tag');
-  const liveOnlyParam = searchParams.get('liveOnly');
-  const liveOnly = liveOnlyParam === null ? true : liveOnlyParam === 'on';
+  // Search and section filter on the client, so typing never refetches.
+  const { data, isLoading, error, refetch, isFetching } =
+    useEcosystemProjects(liveOnly);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['ecosystem-projects', search, tag, liveOnly],
-    queryFn: () => fetchProjects({ search, tag, liveOnly }),
-    staleTime: 10 * 1000, // 10 seconds
-  });
+  const projects = useMemo(() => data?.initialProjects ?? [], [data]);
+  const sectionsWithProjects = useMemo(
+    () => groupProjects(projects, '').map((group) => group.section),
+    [projects],
+  );
+  const groups = useMemo(() => {
+    const all = groupProjects(projects, search.trim());
+    return activeSection
+      ? all.filter((group) => group.section.id === activeSection)
+      : all;
+  }, [projects, search, activeSection]);
+  const spotlight = projects.find(isFlagshipProject);
+  const suite = projects.filter(
+    (project) => isSuiteProject(project) && project !== spotlight,
+  );
+  const matches = useMemo(
+    () => groups.flatMap((group) => group.projects),
+    [groups],
+  );
 
-  if (isLoading) {
-    return (
-      <VStack gap="6" flexGrow="1" className="pb-20">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/4" />
-          <div className="h-8 bg-gray-200 rounded w-1/2" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-48 bg-gray-200 rounded" />
-            ))}
-          </div>
-        </div>
-      </VStack>
+  function updateParams(changes: Record<string, string | undefined>) {
+    setSearchParams(
+      (params) => {
+        for (const [key, value] of Object.entries(changes)) {
+          if (value) params.set(key, value);
+          else params.delete(key);
+        }
+        return params;
+      },
+      { replace: true },
     );
   }
 
-  if (error) {
-    return (
-      <VStack gap="6" flexGrow="1" className="pb-20">
-        <div className="text-center py-12">
-          <div className="text-red-500">
-            Error loading projects: {error.message}
-          </div>
-        </div>
-      </VStack>
-    );
+  function handleSearchChange(value: string) {
+    setSearch(value);
+    updateParams({ search: value || undefined });
   }
 
-  if (!data) {
-    return null;
+  function showAll() {
+    setSearch('');
+    updateParams({ search: undefined, section: undefined });
   }
 
   return (
-    <EcosystemPage
-      initialProjects={data.initialProjects}
-      initialTags={data.initialTags}
-      search={search || undefined}
-      tag={tag || undefined}
-      liveOnly={liveOnly}
-    />
+    <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-6 pb-16 tablet:gap-8 tablet:pb-20">
+      <EcosystemHero />
+      <div className="flex flex-col gap-10 px-4 tablet:gap-12 tablet:px-10 desktop:px-11">
+        <EcosystemFilterBar
+          sections={sectionsWithProjects}
+          activeSection={activeSection}
+          search={search}
+          onSearchChange={handleSearchChange}
+          onSectionChange={(section) => updateParams({ section })}
+        />
+        {isLoading && <EcosystemSectionSkeleton />}
+        {error && (
+          <PageState
+            tone="error"
+            title={t('ecosystem.load_error_title')}
+            description={t('ecosystem.load_error_body')}
+            action={
+              <Button
+                variant="surface"
+                color="gray"
+                onClick={() => refetch()}
+                isLoading={isFetching}
+              >
+                {t('core.retry')}
+              </Button>
+            }
+          />
+        )}
+        {data && projects.length === 0 && (
+          <PageState
+            title={t('ecosystem.empty_title')}
+            description={t('ecosystem.empty_body')}
+          />
+        )}
+        {data && projects.length > 0 && filtered && (
+          // Keyed by section so choosing another one re-enters the list. Typing
+          // keeps the same section, so results never replay on a keystroke.
+          <section key={activeSection} className="flex flex-col gap-6">
+            <div className="flex items-center gap-3 px-7 text-[14px] text-[var(--fuel-element-low-em)]">
+              <span>{t('ecosystem.app_count', { count: matches.length })}</span>
+              <span aria-hidden>·</span>
+              <button
+                type="button"
+                onClick={showAll}
+                className="cursor-pointer border-0 bg-transparent p-0 text-[14px] text-[var(--fuel-element-mid-em)] underline underline-offset-4 hover:text-heading focus-visible:text-heading"
+              >
+                {t('ecosystem.show_all')}
+              </button>
+            </div>
+            {matches.length > 0 ? (
+              <EcosystemList projects={matches} stagger={!search.trim()} />
+            ) : (
+              <p className="m-0 fuel-appear border-y border-[var(--fuel-line)] py-16 text-center text-[14px] text-[var(--fuel-element-low-em)]">
+                {t('ecosystem.no_results')}
+              </p>
+            )}
+          </section>
+        )}
+        {data && projects.length > 0 && !filtered && (
+          <>
+            {suite.length > 0 && (
+              <EcosystemSection section={SUITE_SECTION} projects={suite} />
+            )}
+            {spotlight && <EcosystemSpotlight project={spotlight} />}
+            {groups.map((group) => (
+              <EcosystemSection key={group.section.id} {...group} />
+            ))}
+          </>
+        )}
+      </div>
+    </div>
   );
 }

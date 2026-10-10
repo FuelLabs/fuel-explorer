@@ -1,0 +1,20 @@
+{
+  "faq": {
+    "assets": {
+      "question": "可以橋接哪些資產？",
+      "answer": "資產選擇器列出所有支援的資產。預設選中 ETH。"
+    },
+    "faster": {
+      "question": "有更快的路徑嗎？",
+      "answer": "表單上方連結的 LayerSwap 等合作橋提供通往 Fuel Ignition 的快速橋接。"
+    },
+    "history": {
+      "question": "在哪裡查看歷史轉賬？",
+      "answer": "打開橋接面板頂部的歷史記錄。待處理和已完成的轉賬都列在那裡。"
+    },
+    "cancel": {
+      "question": "可以取消轉賬嗎？",
+      "answer": "不能。簽名後的轉賬無法撤銷，請先核對兩個地址。"
+    }
+  }
+}

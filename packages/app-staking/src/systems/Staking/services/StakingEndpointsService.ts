@@ -32,7 +32,9 @@ class StakingEndpoints {
     const cometSecureApi =
       getEnvVar(`VITE_COMET_SECURE_API_${envSuffix}`) || '';
 
-    return {
+    // COMET also carries REST, which StakingEnvFallback (app-commons) does not
+    // list. Naming the object first keeps it from being an excess-property error.
+    const urls = {
       COSMOS: {
         REST: cosmosApi,
       },
@@ -41,6 +43,7 @@ class StakingEndpoints {
         SECURE: cometSecureApi,
       },
     };
+    return urls;
   }
 
   public getCurrentCosmosCometUrls(): StakingEnvFallback {

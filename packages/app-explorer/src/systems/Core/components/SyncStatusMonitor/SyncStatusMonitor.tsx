@@ -1,10 +1,10 @@
-import { Alert } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 import { type SyncMetrics, useSyncMetrics } from '../../hooks/useSyncMetrics';
 
 const SYNC_DELAY_THRESHOLD = 300;
 
 export function SyncStatusMonitor() {
+  const { t } = useTranslation();
   const { data: metrics, isLoading, isError } = useSyncMetrics();
 
   if (isLoading || isError || !metrics) {
@@ -20,14 +20,14 @@ export function SyncStatusMonitor() {
   }
 
   return (
-    <Alert variant="soft" size="3" color="blue" className="mt-1 mb-6">
-      <Alert.Icon>
-        <IconInfoCircle size="md" />
-      </Alert.Icon>
-      <Alert.Text>
-        Indexer is experiencing issues. Fuel team is currently working on a fix.
-        Some data may be outdated or unavailable.
-      </Alert.Text>
-    </Alert>
+    <div
+      role="status"
+      className="fuel-edge fuel-appear mt-1 mb-6 flex items-start gap-3 border border-[var(--fuel-line)] px-4 py-3"
+    >
+      <span aria-hidden className="fuel-square mt-[6px] shrink-0" />
+      <p className="m-0 text-[14px] text-[var(--fuel-element-low-em)] leading-[20px]">
+        {t('core.sync_status.message')}
+      </p>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   TOKENS,
 } from 'app-commons';
 import { useSafeWriteContract } from 'app-commons/useSafeWriteContract';
+import { getI18n } from 'react-i18next';
 import { tokenFaucetAbi } from '~staking/contracts/tokenFaucet/tokenFaucetAbi';
 import { ViewInExplorer } from '~staking/systems/Core/components/ViewInExplorer/ViewInExplorer';
 import { PendingTransactionTypeL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
@@ -37,8 +38,7 @@ export const useClaimFuelV2 = () => {
       layer: 'l1',
     });
     toast({
-      title:
-        'Fuel tokens have been claimed and will be reflected in your wallet shortly.',
+      title: getI18n().t('staking.toast.fuel_claimed'),
       action: <ViewInExplorer hash={res} layer="l1" />,
       variant: 'success',
     });

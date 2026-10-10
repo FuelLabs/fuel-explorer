@@ -1,8 +1,8 @@
 import { bn } from '@fuel-ts/math';
 import type { BNInput } from '@fuel-ts/math';
-import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
 import type { Asset as FuelsAsset } from 'fuels';
 import type { ReactNode } from 'react';
+import { IconArrowDown, IconArrowUp } from '../Icons';
 
 import { useStrictedChildren } from '../../hooks/useStrictedChildren';
 import { createComponent, withNamespace } from '../../utils/component';

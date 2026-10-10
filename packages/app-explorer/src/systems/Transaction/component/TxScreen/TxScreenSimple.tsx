@@ -1,32 +1,17 @@
 import { bn, format } from '@fuel-ts/math';
-import {
-  Address,
-  Badge,
-  Box,
-  Card,
-  HStack,
-  Heading,
-  LoadingBox,
-  LoadingWrapper,
-  Text,
-  VStack,
-} from '@fuels/ui';
-import { BlockieAvatar } from '@fuels/ui';
-import {
-  IconArrowRight,
-  IconCheck,
-  IconClock,
-  IconX,
-} from '@tabler/icons-react';
-import clsx from 'clsx';
+import { Address, BlockieAvatar, LoadingBox, LoadingWrapper } from '@fuels/ui';
 import { AddressType } from 'fuels';
+import { useTranslation } from 'react-i18next';
 
 import { Routes } from '~/routes';
 import { Amount } from '~/systems/Core/components/Amount/Amount';
+import { TX_STATUS_CHIP } from '~/systems/Transaction/component/TxItem/txStatusChip';
 import type { TransactionNode } from '../../types';
 import { TxActivity, TxActivityLoader } from '../TxActivity/TxActivity';
 import { TxContractIcon } from '../TxContractIcon/TxContractIcon';
 import { TxFullDateTimestamp } from '../TxFullDateTimestamp/TxFullDateTimestamp';
+import { TxChip, TxSquare } from '../TxItem/TxChip';
+import { TxRise, TxSection } from '../TxItem/TxSection';
 import { TxTimeAgoTimestamp } from '../TxTimeAgoTimestamp/TxTimeAgoTimestamp';
 
 type TxScreenProps = (
@@ -52,262 +37,224 @@ export function TxScreenSimple({
   isLoading,
   isActivityLoading,
 }: TxScreenProps) {
+  const { t } = useTranslation();
   if (!transaction && !isLoading) return null;
 
+  const status = TX_STATUS_CHIP[transaction?.status?.__typename ?? ''];
+  const hasSummary = !!transaction?.summary?.length;
+  const showTransfersTitle =
+    !isLoading && (transaction?.activity || isActivityLoading) && hasSummary;
+
   return (
-    <VStack>
-      {/* Header section - always visible structure */}
-      <HStack className="mobile:max-tablet:flex-col">
-        <HStack>
+    <div className="flex flex-col gap-8">
+      <TxRise className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+        <div className="flex flex-wrap items-center gap-2">
           <LoadingWrapper
             isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-20 h-6 rounded" />}
+            loadingEl={<LoadingBox className="h-6 w-20" />}
             regularEl={
-              transaction?.activity?.project ? (
-                <Badge color="blue">{transaction.activity.project}</Badge>
-              ) : (
-                <Badge color="blue" leftIcon={IconArrowRight}>
-                  Transfer
-                </Badge>
-              )
+              <TxChip>
+                {transaction?.activity?.project ?? t('tx.transfer')}
+              </TxChip>
             }
           />
-
           <LoadingWrapper
             isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-16 h-6 rounded" />}
+            loadingEl={<LoadingBox className="h-6 w-16" />}
             regularEl={
-              <>
-                {transaction?.status?.__typename === 'SuccessStatus' && (
-                  <Badge color="green" leftIcon={IconCheck}>
-                    Success
-                  </Badge>
-                )}
-
-                {transaction?.status?.__typename === 'FailureStatus' && (
-                  <Badge color="red" leftIcon={IconX}>
-                    Failed
-                  </Badge>
-                )}
-
-                {transaction?.status?.__typename === 'SubmittedStatus' && (
-                  <Badge color="yellow" leftIcon={IconClock}>
-                    Pending
-                  </Badge>
-                )}
-
-                {transaction?.status?.__typename === 'SqueezedOutStatus' && (
-                  <Badge color="red" leftIcon={IconX}>
-                    Squeezed Out
-                  </Badge>
-                )}
-              </>
+              status && <TxChip kind={status.kind}>{t(status.label)}</TxChip>
             }
           />
-        </HStack>
+        </div>
 
-        <HStack>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px]">
           <LoadingWrapper
             isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-16 h-5" />}
+            loadingEl={<LoadingBox className="h-5 w-16" />}
             regularEl={
-              <Text>
+              <span className="text-heading">
                 <TxTimeAgoTimestamp
                   timeStamp={Number(transaction?.time?.rawUnix)}
-                  loading={<LoadingBox className="w-16 h-5" />}
+                  loading={<LoadingBox className="h-5 w-16" />}
                 />
-              </Text>
+              </span>
             }
           />
           <LoadingWrapper
             isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-32 h-5" />}
+            loadingEl={<LoadingBox className="h-5 w-32" />}
             regularEl={
-              <Text className="text-muted">
+              <span className="text-[var(--fuel-element-low-em)]">
                 <TxFullDateTimestamp
                   timeStamp={Number(transaction?.time?.rawUnix)}
                 />
-              </Text>
+              </span>
             }
           />
-        </HStack>
-      </HStack>
+        </div>
+      </TxRise>
 
       {!isLoading && isActivityLoading && !transaction?.activity && (
-        <Box className="mt-8">
-          <TxActivityLoader />
-        </Box>
+        <TxActivityLoader />
       )}
 
       {!isLoading && transaction?.activity && (
-        <Box className="mt-8">
+        <TxRise index={1}>
           <TxActivity activity={transaction.activity} />
-        </Box>
+        </TxRise>
       )}
 
-      {!isLoading &&
-        (transaction?.activity || isActivityLoading) &&
-        !!transaction?.summary?.length && (
-          <Heading as="h2" size="5" className="leading-none mt-6">
-            Token transfers
-          </Heading>
-        )}
-
-      <Card
-        className={clsx(
-          'px-4 relative',
-          transaction?.activity || isActivityLoading ? 'mt-4' : 'mt-8',
-        )}
+      <TxSection
+        title={t('tx.token_transfers')}
+        index={2}
+        hideTitle={!showTransfersTitle}
       >
-        <LoadingWrapper
-          isLoading={isLoading}
-          loadingEl={
-            <VStack gap="0" className="mb-2">
-              <VStack gap="0">
-                <HStack>
-                  <LoadingBox className="w-8 h-8 rounded-full" />
-                  <LoadingBox className="w-40 h-5" />
-                </HStack>
+        <div className="fuel-edge border border-[var(--fuel-line)] px-4 py-4">
+          <LoadingWrapper
+            isLoading={isLoading}
+            loadingEl={
+              <div className="flex flex-col gap-0">
+                <div className="flex items-center gap-3">
+                  <LoadingBox className="size-8 rounded-full" />
+                  <LoadingBox className="h-5 w-40" />
+                </div>
 
-                <VStack gap="0" className="py-3">
-                  <Box className="border-l-2 border-l-gray-8 ml-4 py-3">
-                    <HStack className="ml-8 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
-                      <LoadingBox className="w-20 h-6 rounded" />
-                      <LoadingBox className="w-32 h-6" />
-                    </HStack>
-                  </Box>
-                  <Box className="border-l-2 border-l-gray-8 ml-4 py-3">
-                    <HStack className="ml-8 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
-                      <LoadingBox className="w-20 h-6 rounded" />
-                      <LoadingBox className="w-40 h-6" />
-                    </HStack>
-                  </Box>
-                </VStack>
+                <div className="flex flex-col py-3">
+                  {['w-20', 'w-32'].map((w) => (
+                    <div
+                      key={w}
+                      className="relative ml-4 border-l border-[var(--fuel-line)] py-3"
+                    >
+                      <div className="ml-8 flex items-center gap-2 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
+                        <LoadingBox className="h-6 w-20" />
+                        <LoadingBox className={`h-6 ${w}`} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-                <HStack className="items-center">
-                  <LoadingBox className="w-8 h-8 rounded-full" />
-                  <LoadingBox className="w-4 h-4" />
-                  <LoadingBox className="w-40 h-5" />
-                </HStack>
-              </VStack>
-            </VStack>
-          }
-          regularEl={transaction?.summary?.map((operation, index) => (
-            <VStack
-              key={`${operation.from?.address}-${operation.to?.address}-${operation.name}`}
-              gap="0"
-              className={clsx({
-                'mb-8': index + 1 < (transaction.summary?.length || 0),
-                'mb-2': index + 1 === (transaction.summary?.length || 0),
-              })}
-            >
-              <HStack>
-                <TxContractIcon
-                  contractId={operation.from?.address || ''}
-                  size="32px"
-                >
-                  <BlockieAvatar
-                    address={operation.from?.address || ''}
-                    size={32}
-                  />
-                </TxContractIcon>
-                {operation.from && (
-                  <Address
-                    value={operation.from.address}
-                    linkProps={{
-                      href: detailsLink[operation.from.type](
-                        operation.from.address,
-                      ),
-                    }}
-                    isAccount={operation.from.type === AddressType.account}
-                  />
-                )}
-              </HStack>
-              <VStack gap="0" className="py-3">
-                {operation.assetsSent?.map((assetSent) => (
-                  <Box
-                    className="border-l-2 border-l-gray-8 ml-4 py-3"
-                    key={assetSent.assetId}
+                <div className="flex items-center gap-3">
+                  <LoadingBox className="size-8 rounded-full" />
+                  <LoadingBox className="h-5 w-40" />
+                </div>
+              </div>
+            }
+            regularEl={transaction?.summary?.map((operation, index) => (
+              <div
+                key={`${operation.from?.address}-${operation.to?.address}-${operation.name}`}
+                className={
+                  index + 1 < (transaction.summary?.length || 0)
+                    ? 'mb-8 flex flex-col'
+                    : 'mb-2 flex flex-col'
+                }
+              >
+                <div className="flex items-center gap-3">
+                  <TxContractIcon
+                    contractId={operation.from?.address || ''}
+                    size="32px"
                   >
-                    <HStack className="ml-8 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
-                      <Badge color="blue" leftIcon={IconArrowRight}>
-                        Transfer
-                      </Badge>
-                      <HStack className="flex items-center">
-                        <Amount
-                          className="text-heading font-semibold"
-                          assetId={assetSent.assetId}
-                          value={bn(assetSent.amount)}
-                          decimals={assetSent.asset?.decimals?.toString()}
-                          asset={assetSent.asset}
-                        />
-                        {assetSent.asset?.amountInUsd && (
-                          <Text as="div" className="text-secondary" size="2">
-                            ({assetSent.asset?.amountInUsd})
-                          </Text>
-                        )}
-                      </HStack>
-                    </HStack>
-                  </Box>
-                ))}
-              </VStack>
-              <HStack className="items-center">
-                <TxContractIcon
-                  contractId={operation.to?.address || ''}
-                  size="32px"
-                >
-                  <BlockieAvatar
-                    address={operation.to?.address || ''}
-                    size={32}
-                  />
-                </TxContractIcon>
+                    <BlockieAvatar
+                      address={operation.from?.address || ''}
+                      size={32}
+                    />
+                  </TxContractIcon>
+                  {operation.from && (
+                    <Address
+                      value={operation.from.address}
+                      linkProps={{
+                        href: detailsLink[operation.from.type](
+                          operation.from.address,
+                        ),
+                      }}
+                      isAccount={operation.from.type === AddressType.account}
+                    />
+                  )}
+                </div>
+                <div className="flex flex-col py-3">
+                  {operation.assetsSent?.map((assetSent) => (
+                    <div
+                      className="relative ml-4 border-l border-[var(--fuel-line)] py-3"
+                      key={assetSent.assetId}
+                    >
+                      <TxSquare className="absolute top-[22px] -left-[4.5px]" />
+                      <div className="ml-8 flex items-center gap-2 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
+                        <TxChip>{t('tx.transfer')}</TxChip>
+                        <div className="flex flex-wrap items-baseline gap-x-2">
+                          <Amount
+                            className="font-medium text-heading"
+                            assetId={assetSent.assetId}
+                            value={bn(assetSent.amount)}
+                            decimals={assetSent.asset?.decimals?.toString()}
+                            asset={assetSent.asset}
+                          />
+                          {assetSent.asset?.amountInUsd && (
+                            <span className="text-[13px] text-[var(--fuel-element-low-em)]">
+                              ({assetSent.asset?.amountInUsd})
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center gap-3">
+                  <TxContractIcon
+                    contractId={operation.to?.address || ''}
+                    size="32px"
+                  >
+                    <BlockieAvatar
+                      address={operation.to?.address || ''}
+                      size={32}
+                    />
+                  </TxContractIcon>
 
-                <Text>to</Text>
+                  <span className="text-[var(--fuel-element-low-em)]">
+                    {t('tx.to')}
+                  </span>
 
-                {operation.to && (
-                  <Address
-                    value={operation.to.address}
-                    linkProps={{
-                      href: detailsLink[operation.to.type](
-                        operation.to.address,
-                      ),
-                    }}
-                    isAccount={operation.to.type === AddressType.account}
-                  />
-                )}
-              </HStack>
-            </VStack>
-          ))}
-        />
+                  {operation.to && (
+                    <Address
+                      value={operation.to.address}
+                      linkProps={{
+                        href: detailsLink[operation.to.type](
+                          operation.to.address,
+                        ),
+                      }}
+                      isAccount={operation.to.type === AddressType.account}
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+          />
 
-        <VStack gap="2">
-          <HStack className="ml-12">
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-[var(--fuel-border)] pt-3 pl-12">
             <LoadingWrapper
               isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-5 h-4" />}
-              regularEl={<Text className="text-primary text-xs">Fee</Text>}
+              loadingEl={<LoadingBox className="h-4 w-5" />}
+              regularEl={<span className="fuel-label">{t('tx.fee')}</span>}
             />
             <LoadingWrapper
               isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-16 h-4" />}
+              loadingEl={<LoadingBox className="h-4 w-16" />}
               regularEl={
-                <Text className="text-primary text-xs">
+                <span className="text-xs text-heading">
                   {transaction?.gasCosts?.feeInUsd}
-                </Text>
+                </span>
               }
             />
             <LoadingWrapper
               isLoading={isLoading}
-              loadingEl={<LoadingBox className="w-24 h-4" />}
+              loadingEl={<LoadingBox className="h-4 w-24" />}
               regularEl={
-                <Text className="text-secondary text-xs">
+                <span className="text-xs text-[var(--fuel-element-low-em)]">
                   ({format(bn(transaction?.gasCosts?.fee || 0))} ETH)
-                </Text>
+                </span>
               }
             />
-          </HStack>
-        </VStack>
-      </Card>
-    </VStack>
+          </div>
+        </div>
+      </TxSection>
+    </div>
   );
 }
