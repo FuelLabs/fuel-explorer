@@ -1,5 +1,4 @@
-import { Tooltip } from '@fuels/ui';
-import { IconInfoCircle } from '@fuels/ui';
+import { HelperIcon, IconInfoCircle } from '@fuels/ui';
 import type { BN } from 'fuels';
 import type React from 'react';
 import { FormattedAmount } from '~staking/systems/Core/components/FormattedAmount/FormattedAmount';
@@ -10,11 +9,11 @@ type AmountCardProps = {
   amount: BN;
   symbol?: string;
   decimals?: number;
-  infoTooltip?: React.ReactNode;
+  infoTooltip?: string;
   actions?: React.ReactNode;
   secondaryTitle?: string;
   secondaryAmount?: BN;
-  secondaryInfoTooltip?: React.ReactNode;
+  secondaryInfoTooltip?: string;
 };
 
 // One figure cell. Cells sit in a strip that draws the 1px lines between them.
@@ -35,13 +34,11 @@ export function AmountCard({
       <div className="fuel-label flex items-center gap-2">
         {title}
         {infoTooltip ? (
-          <Tooltip
-            content={infoTooltip}
-            delayDuration={0}
-            className="text-center"
-          >
-            <IconInfoCircle size={16} className="hidden md:block" />
-          </Tooltip>
+          <HelperIcon
+            message={infoTooltip}
+            icon={IconInfoCircle}
+            iconSize={16}
+          />
         ) : null}
         {titleSuffix}
       </div>
@@ -57,7 +54,7 @@ export function AmountCard({
                 'fuel-stat-sm whitespace-nowrap overflow-hidden text-ellipsis',
             }}
           />
-          {symbol && <span className="fuel-label">{symbol}</span>}
+          {symbol && <span className="fuel-label normal-case">{symbol}</span>}
         </div>
         {actions}
       </div>
@@ -66,13 +63,11 @@ export function AmountCard({
           <div className="fuel-label flex items-center gap-2">
             {secondaryTitle}
             {secondaryInfoTooltip ? (
-              <Tooltip
-                content={secondaryInfoTooltip}
-                delayDuration={0}
-                className="text-center"
-              >
-                <IconInfoCircle size={16} className="hidden md:block" />
-              </Tooltip>
+              <HelperIcon
+                message={secondaryInfoTooltip}
+                icon={IconInfoCircle}
+                iconSize={16}
+              />
             ) : null}
           </div>
           <FormattedAmount

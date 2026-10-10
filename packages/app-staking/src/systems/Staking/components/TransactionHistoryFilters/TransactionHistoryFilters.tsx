@@ -5,8 +5,9 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  useSlidingIndicator,
 } from '@fuels/ui';
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import type { StakingEventType } from '../../types/l1/events';
@@ -44,8 +45,6 @@ export function TransactionHistoryFilters({
   const { t } = useTranslation();
   const classes = styles();
   const chipsRef = useRef<HTMLDivElement>(null);
-  const indicatorRef = useRef<HTMLSpanElement>(null);
-  const placed = useRef(false);
 
   // A status with no transactions has no chip, unless it is the one selected.
   const chips: StatusFilter[] = [
@@ -55,41 +54,13 @@ export function TransactionHistoryFilters({
   // Counts change chip widths, so they are part of the key.
   const chipKey = chips.map((value) => `${value}:${counts[value]}`).join('|');
 
-  // The active fill is one element that slides between chips, as on the
-  // ecosystem filter bar. It is a 1px box scaled to the chip's width, so only
-  // transform animates.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: chipKey tracks the chip set
-  useLayoutEffect(() => {
-    const row = chipsRef.current;
-    const indicator = indicatorRef.current;
-    if (!row || !indicator) return;
-
-    function place(animate: boolean) {
-      if (!row || !indicator) return;
-      const chip = row.querySelector<HTMLElement>('[aria-pressed="true"]');
-      indicator.style.opacity = chip ? '1' : '0';
-      if (!chip) return;
-      if (!animate) indicator.style.transition = 'none';
-      const box = chip.getBoundingClientRect();
-      const x = box.left - row.getBoundingClientRect().left;
-      indicator.style.transform = `translateX(${x}px) scaleX(${box.width})`;
-      if (!animate) {
-        void indicator.offsetWidth;
-        indicator.style.transition = '';
-      }
-    }
-
-    place(placed.current);
-    placed.current = true;
-    let width = row.offsetWidth;
-    const observer = new ResizeObserver(() => {
-      if (row.offsetWidth === width) return;
-      width = row.offsetWidth;
-      place(false);
-    });
-    observer.observe(row);
-    return () => observer.disconnect();
-  }, [status, chipKey]);
+  // The active fill is one element that slides between chips. Counts change
+  // chip widths, so they are part of the deps.
+  const indicatorRef = useSlidingIndicator<HTMLDivElement, HTMLSpanElement>(
+    chipsRef,
+    '[aria-pressed="true"]',
+    [status, chipKey],
+  );
 
   const statusLabel = (value: StatusFilter) =>
     value === 'all' ? t('common.all') : t(`staking.history.status_${value}`);
@@ -207,6 +178,10 @@ const styles = tv({
     },
   },
   compoundVariants: [
-    { failed: true, active: false, class: { count: 'text-[var(--red-11)]' } },
+    {
+      failed: true,
+      active: false,
+      class: { count: 'text-[var(--fuel-danger-text)]' },
+    },
   ],
 });

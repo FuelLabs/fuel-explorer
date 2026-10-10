@@ -39,6 +39,19 @@ const GLIDE = {
   mass: 0.9,
 } as const;
 
+// 24 px below the tablet width so a long balance fits 320 px. The full value
+// stays in the title when the figure is cut.
+function Figure({ value }: { value: string | undefined }) {
+  return (
+    <span
+      title={value}
+      className="fuel-stat min-w-0 truncate whitespace-nowrap text-[24px] leading-[28px] tablet:text-[32px] tablet:leading-[34px]"
+    >
+      {value}
+    </span>
+  );
+}
+
 function Lane({
   to,
   active,
@@ -59,8 +72,8 @@ function Lane({
       aria-busy={busy || undefined}
       className={[
         'group relative isolate grid min-w-0 gap-6 px-6 py-6 text-inherit no-underline tablet:px-10 tablet:py-8',
-        'min-[720px]:grid-cols-[1fr_auto] min-[720px]:items-end',
-        'fuel-hover-fill focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-ring)]',
+        'laptop:grid-cols-[1fr_auto] laptop:items-end',
+        'fuel-hover-fill focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
       ].join(' ')}
     >
       {active && (
@@ -91,13 +104,13 @@ function Lane({
           {name}
         </span>
       </span>
-      <span className="flex flex-col gap-1 min-[720px]:items-end">
+      <span className="flex flex-col gap-1 laptop:items-end">
         {readout ?? (
           <>
             <span className="fuel-label">{figureLabel}</span>
             <span className="flex items-baseline gap-2">
-              <span className="fuel-stat whitespace-nowrap">{figure}</span>
-              <span className="fuel-label">{unit}</span>
+              <Figure value={figure} />
+              <span className="fuel-label normal-case">{unit}</span>
             </span>
           </>
         )}
@@ -122,7 +135,7 @@ function RigReadout({
     return (
       <button
         type="button"
-        className="m-0 max-w-[280px] cursor-pointer border-0 bg-transparent p-0 text-left text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] min-[720px]:text-right"
+        className="m-0 max-w-[280px] cursor-pointer border-0 bg-transparent p-0 text-left text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] laptop:text-right"
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
@@ -150,7 +163,7 @@ function RigReadout({
         <span className="fuel-label">{t('staking.lane_rig_figure')}</span>
         <span
           role="alert"
-          className="max-w-[220px] text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] min-[720px]:text-right"
+          className="max-w-[220px] text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] laptop:text-right"
         >
           {t('home.unavailable')}
         </span>
@@ -166,8 +179,59 @@ function RigReadout({
     <>
       <span className="fuel-label">{t('staking.lane_rig_figure')}</span>
       <span className="flex items-baseline gap-2">
-        <span className="fuel-stat whitespace-nowrap">{figure}</span>
-        <span className="fuel-label">stFUEL</span>
+        <Figure value={figure} />
+        <span className="fuel-label normal-case">stFUEL</span>
+      </span>
+    </>
+  );
+}
+
+function EthereumReadout({
+  connected,
+  loading,
+  failed,
+  figure,
+}: {
+  connected: boolean;
+  loading: boolean;
+  failed: boolean;
+  figure: string;
+}) {
+  const { t } = useTranslation();
+  const label = (
+    <span className="fuel-label">{t('staking.lane_ethereum_figure')}</span>
+  );
+
+  if (connected && loading) {
+    return (
+      <>
+        {label}
+        <span className="sr-only">{t('staking.status.loading')}</span>
+        <LoadingBox className="h-[34px] w-24 !rounded-none" />
+      </>
+    );
+  }
+
+  if (connected && failed) {
+    return (
+      <>
+        {label}
+        <span
+          role="alert"
+          className="max-w-[220px] text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] laptop:text-right"
+        >
+          {t('home.unavailable')}
+        </span>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {label}
+      <span className="flex items-baseline gap-2">
+        <Figure value={figure} />
+        <span className="fuel-label normal-case">{symbol}</span>
       </span>
     </>
   );
@@ -178,7 +242,7 @@ export function StakingLanes() {
   const { pathname } = useLocation();
   const { isConnected } = useAccount();
   const { pendingDeposit, status } = useRigClaimable();
-  const { total } = useStakedBalanceL1();
+  const { total, isPending, isError } = useStakedBalanceL1();
   const onEthereum = pathname.includes('/on-ethereum');
 
   const ethereumFigure = isConnected
@@ -188,7 +252,7 @@ export function StakingLanes() {
   return (
     <nav
       aria-label={t('staking.lanes_label')}
-      className="fuel-edge grid min-w-0 min-[720px]:grid-cols-2 [&>*+*]:border-t [&>*+*]:border-[var(--fuel-line)] min-[720px]:[&>*+*]:border-t-0 min-[720px]:[&>*+*]:border-l"
+      className="fuel-edge grid min-w-0 laptop:grid-cols-2 [&>*+*]:border-t [&>*+*]:border-[var(--fuel-line)] laptop:[&>*+*]:border-t-0 laptop:[&>*+*]:border-l"
     >
       <Lane
         to={Routes.stakingRig()}
@@ -209,9 +273,15 @@ export function StakingLanes() {
           />
         }
         name={t('staking.tab_ethereum')}
-        figureLabel={t('staking.lane_ethereum_figure')}
-        figure={ethereumFigure}
-        unit={symbol}
+        busy={isConnected && isPending}
+        readout={
+          <EthereumReadout
+            connected={isConnected}
+            loading={isPending}
+            failed={isError}
+            figure={ethereumFigure}
+          />
+        }
       />
     </nav>
   );

@@ -37,7 +37,7 @@ export const ConvertDialogContent = ({
       aria-describedby="Convert"
       className={clsx(
         responsiveDialogStyle.content({ sizing: 'auto' }),
-        'h-[440px] min-h-[440px]',
+        'h-[440px] tablet:min-h-[440px]',
       )}
     >
       <div className="flex flex-col h-full flex-grow-0 max-h-[100%]">

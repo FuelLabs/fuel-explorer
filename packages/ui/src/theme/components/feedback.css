@@ -38,7 +38,7 @@
 }
 
 .rt-CalloutRoot:where([data-accent-color="red"]) {
-  border-left-color: var(--red-10);
+  border-left-color: var(--fuel-danger);
 }
 
 .rt-CalloutRoot:where(
@@ -53,7 +53,7 @@
 }
 
 .rt-CalloutRoot:where([data-accent-color="red"]) .rt-CalloutIcon {
-  color: var(--red-11);
+  color: var(--fuel-danger-text);
 }
 
 .rt-CalloutText {
@@ -112,6 +112,10 @@
 
 [data-copied] .fuel-copy-swap > :last-child {
   opacity: 1;
+}
+
+[data-failed] .fuel-copy-swap > :first-child {
+  color: var(--fuel-danger-text);
 }
 
 @media (prefers-reduced-motion: reduce) {

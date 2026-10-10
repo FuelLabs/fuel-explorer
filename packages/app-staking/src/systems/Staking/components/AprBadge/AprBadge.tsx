@@ -1,5 +1,4 @@
-import { Tooltip } from '@fuels/ui';
-import { IconInfoCircle } from '@fuels/ui';
+import { HelperIcon, IconInfoCircle } from '@fuels/ui';
 import { useQuery } from '@tanstack/react-query';
 import { FUEL_INDEXER_API } from 'app-commons';
 import clsx from 'clsx';
@@ -27,9 +26,11 @@ export function AprBadge({ className }: { className?: string }) {
       )}
     >
       {t('staking.apr.value', { apy })}
-      <Tooltip content={t('staking.apr.tip')}>
-        <IconInfoCircle size={14} />
-      </Tooltip>
+      <HelperIcon
+        message={t('staking.apr.tip')}
+        icon={IconInfoCircle}
+        iconSize={14}
+      />
     </span>
   ) : null;
 }

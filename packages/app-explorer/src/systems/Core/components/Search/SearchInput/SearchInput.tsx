@@ -11,7 +11,7 @@ import {
 } from '@fuels/ui';
 import { IconCheck, IconSearch, IconX } from '@fuels/ui';
 import type { KeyboardEvent } from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMedia } from 'react-use';
 
@@ -63,6 +63,7 @@ export function SearchInput({
   const { isMobile } = useBreakpoints();
   const isCompactNav = useMedia(BELOW_LAPTOP_QUERY, false);
   const { t } = useTranslation();
+  const resultsId = useId();
   const placeholder =
     _placeholder ?? (isMobile ? t('common.search_short') : t('common.search'));
   const recents = useRecentSearches();
@@ -184,7 +185,7 @@ export function SearchInput({
   }
 
   return (
-    <div className="laptop:relative">
+    <div className="md:relative">
       <VStack gap="0" className={classes.searchBox()} data-active={active}>
         <Focus.ArrowNavigator autoFocus={autoFocus}>
           <div ref={containerRef} className={classes.inputContainer()}>
@@ -201,6 +202,10 @@ export function SearchInput({
               data-active={active}
               className={cx(className, classes.inputWrapper())}
               type="search"
+              role="combobox"
+              aria-expanded={openDropdown}
+              aria-controls={resultsId}
+              aria-autocomplete="list"
               autoComplete="off"
               onFocus={handleFocus}
               onBlur={handleBlur}
@@ -242,7 +247,7 @@ export function SearchInput({
                       takeover ? t('common.close') : t('common.clear')
                     }
                     icon={IconX}
-                    iconColor="text-gray-11"
+                    iconColor="text-icon"
                     className={classes.iconClear()}
                     variant="link"
                     disabled={loading}
@@ -267,6 +272,7 @@ export function SearchInput({
         </Focus.ArrowNavigator>
         <SearchResultDropdown
           ref={dropdownRef}
+          id={resultsId}
           width={dropdownWidth}
           searchResult={searchResult}
           searchValue={value}

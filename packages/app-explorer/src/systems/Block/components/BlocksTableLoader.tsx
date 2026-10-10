@@ -1,8 +1,7 @@
 import { LoadingBox } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 
-const GRID =
-  'grid min-w-[900px] grid-cols-[1fr_1.4fr_1fr_1fr_1.4fr_1.2fr_1.2fr_0.8fr] items-center gap-x-4 px-4';
+const GRID = 'grid min-w-[900px] grid-cols-8 items-center gap-x-4 px-4';
 const HEADS = [
   'col_block',
   'col_blockhash',

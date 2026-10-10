@@ -1,4 +1,4 @@
-import { Skeleton } from '@fuels/ui';
+import { LoadingBox } from '@fuels/ui';
 import { IconFileOff } from '@fuels/ui';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
@@ -32,7 +32,7 @@ export const NFTImage = ({ assetId, image }: NFTImageProps) => {
         {/* The skeleton sits under the image, which fades in over it once loaded. */}
         {isLoading && (
           <div className="absolute inset-0">
-            <Skeleton width="100%" height="100%" />
+            <LoadingBox className="size-full" />
           </div>
         )}
         <img

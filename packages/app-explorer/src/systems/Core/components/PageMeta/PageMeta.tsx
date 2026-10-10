@@ -21,10 +21,7 @@ export function PageMeta() {
         }),
       }
     : found;
-  const url =
-    typeof window === 'undefined'
-      ? ''
-      : `${window.location.origin}${pathname}${search}`;
+  const url = `${window.location.origin}${pathname}${search}`;
 
   return (
     <Helmet>

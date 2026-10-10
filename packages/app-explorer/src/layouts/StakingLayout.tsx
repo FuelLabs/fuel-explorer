@@ -1,6 +1,5 @@
 import { Button, GridFrame } from '@fuels/ui';
 import { BridgePausedBanner } from 'app-commons';
-import { AttentionBoard, StakingLanes, TabTransition } from 'app-staking';
 import clsx from 'clsx';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +8,10 @@ import { ToolFaq } from '~/systems/Core/components/ToolPage/ToolFaq';
 import { ToolPageHeader } from '~/systems/Core/components/ToolPage/ToolPageHeader';
 import { VerifySelectedChainDialog } from '~/systems/Core/components/VerifySelectedChainDialog';
 import { RIG_URL, STAKING_DOCS_URL } from '~/systems/Staking/constants/page';
+import { TabTransition } from '~staking/systems/Core/components/TabTransition/TabTransition';
 import { AprBadge } from '~staking/systems/Staking/components/AprBadge/AprBadge';
+import { AttentionBoard } from '~staking/systems/Staking/components/AttentionBoard/AttentionBoard';
+import { StakingLanes } from '~staking/systems/Staking/components/StakingLanes/StakingLanes';
 
 // Header items that belong to one lane fade out instead of unmounting, so the
 // header measures the same on both lanes. `invisible` also drops them from the

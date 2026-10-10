@@ -118,7 +118,7 @@ export const TokenGrant = ({ account }: TokenGrantProps) => {
                   1
                 </span>
               </Tooltip>
-              <span className="fuel-label">{symbol}</span>
+              <span className="fuel-label normal-case">{symbol}</span>
             </div>
             {!unpaid.amount.isZero() && (
               <div className="flex flex-col items-start">

@@ -4,7 +4,10 @@ import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
-import { formatAmount } from '~staking/systems/Core/utils/bn';
+import {
+  formatAmount,
+  truncateToIntegerString,
+} from '~staking/systems/Core/utils/bn';
 import { useVesting } from '~staking/systems/Staking/hooks/useVesting';
 import { stakingTxDialogStore } from '~staking/systems/Staking/store/stakingTxDialogStore';
 import { useFormatBalance } from '../../../Core/hooks/useFormatBalance';
@@ -54,11 +57,7 @@ export const Balance = () => {
 
   const rewardBalance = useMemo(
     // Cosmos API returns decimal strings - truncate to integer for bn
-    () =>
-      formatAmount(
-        bn(Math.floor(Number(reward?.amount ?? 0)).toString()),
-        decimals,
-      ),
+    () => formatAmount(bn(truncateToIntegerString(reward?.amount)), decimals),
     [reward],
   );
 

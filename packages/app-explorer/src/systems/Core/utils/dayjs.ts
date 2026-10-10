@@ -1,4 +1,4 @@
-import { syncDayjsLocale } from 'app-commons/src/utils/dayjs';
+import { syncDayjsLocale } from 'app-commons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);

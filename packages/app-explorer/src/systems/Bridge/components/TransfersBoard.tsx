@@ -3,12 +3,8 @@ import { Routes } from 'app-commons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import {
-  BRIDGE_STEP_ID,
-  BRIDGE_STEP_STATUS_ID,
-  type BridgeStepId,
-  type BridgeStepStatusId,
-} from '~portal/systems/Bridge/components/BridgeSteps';
+import { useBridgeStepLabels } from '~portal/systems/Bridge/components/BridgeSteps';
+import type { BridgeStep } from '~portal/systems/Bridge/components/BridgeSteps';
 import { useBridgeTxs } from '~portal/systems/Bridge/hooks';
 import {
   isEthChain,
@@ -17,23 +13,16 @@ import {
   useTxEthToFuel,
   useTxFuelToEth,
 } from '~portal/systems/Chains';
+import {
+  type TransferKind as Kind,
+  currentStep,
+  kindOf,
+} from '../utils/transferKind';
 import type { TransfersRailProps } from './BridgePageShell';
-
-type Kind = 'loading' | 'action' | 'progress' | 'settled';
-
-type Step = {
-  id: BridgeStepId;
-  name: string;
-  status: string;
-  statusId?: BridgeStepStatusId;
-  isLoading?: boolean;
-  isDone?: boolean;
-  isSelected?: boolean;
-};
 
 type RowData = {
   direction: 'deposit' | 'withdraw';
-  steps?: Step[];
+  steps?: BridgeStep[];
   settled: boolean;
   loading: boolean;
   amount?: string;
@@ -42,7 +31,7 @@ type RowData = {
 };
 
 const COLUMNS =
-  'items-center gap-x-6 gap-y-3 px-6 tablet:px-10 tablet:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1.4fr)_96px]';
+  'items-center gap-x-6 gap-y-3 px-6 tablet:px-10 laptop:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1.4fr)_96px]';
 const ROW_GRID = `grid ${COLUMNS} border-t border-[var(--fuel-border)] py-4`;
 const GROUP: Record<Kind, number> = {
   action: 0,
@@ -52,29 +41,10 @@ const GROUP: Record<Kind, number> = {
 };
 
 type Entry =
-  | { id: string; txHash: string; nonce: BigInt }
+  | { id: string; txHash: string; nonce: bigint }
   | { id: string; txHash: string; nonce?: undefined };
 
-function currentStep(steps: Step[] | undefined) {
-  return steps?.find((s) => s.isSelected) ?? steps?.find((s) => !s.isDone);
-}
-
-function kindOf({ steps, settled }: RowData): Kind {
-  if (settled) return 'settled';
-  if (!steps) return 'loading';
-  const current = currentStep(steps);
-  // Automatic confirmations need nothing from the user.
-  if (
-    current?.id === BRIDGE_STEP_ID.confirmTransaction &&
-    !current.isLoading &&
-    current.statusId !== BRIDGE_STEP_STATUS_ID.automatic
-  ) {
-    return 'action';
-  }
-  return 'progress';
-}
-
-function StepTrack({ steps }: { steps: Step[] }) {
+function StepTrack({ steps }: { steps: BridgeStep[] }) {
   const current = currentStep(steps);
   return (
     <span aria-hidden className="flex w-full max-w-[160px] gap-[2px]">
@@ -96,6 +66,7 @@ function StepTrack({ steps }: { steps: Step[] }) {
 
 function TransferRow({ data, kind }: { data: RowData; kind: Kind }) {
   const { t } = useTranslation();
+  const { stepName, stepStatus } = useBridgeStepLabels();
   if (kind === 'settled') return null;
 
   const deposit = data.direction === 'deposit';
@@ -120,7 +91,7 @@ function TransferRow({ data, kind }: { data: RowData; kind: Kind }) {
             <span className="fuel-stat-sm whitespace-nowrap">
               {data.amount}
             </span>
-            <span className="fuel-label">{data.symbol}</span>
+            <span className="fuel-label normal-case">{data.symbol}</span>
           </>
         ) : (
           <LoadingBox className="h-5 w-24" />
@@ -150,7 +121,7 @@ function TransferRow({ data, kind }: { data: RowData; kind: Kind }) {
               >
                 {kind === 'action'
                   ? t('bridge.board.action_needed')
-                  : `${current.name} · ${current.status}`}
+                  : `${stepName(current)} · ${stepStatus(current)}`}
               </span>
             </span>
             {data.steps && <StepTrack steps={data.steps} />}
@@ -158,7 +129,7 @@ function TransferRow({ data, kind }: { data: RowData; kind: Kind }) {
         )}
       </span>
 
-      <span className="tablet:justify-self-end">
+      <span className="laptop:justify-self-end">
         {kind === 'action' && (
           <Button size="2" onClick={data.onOpen}>
             {t('bridge.board.continue')}
@@ -181,7 +152,7 @@ function DepositRow({
   nonce,
   id,
   report,
-}: ReportProps & { txHash: string; nonce: BigInt }) {
+}: ReportProps & { txHash: string; nonce: bigint }) {
   const tx = useTxEthToFuel({ id: txHash, messageSentEventNonce: nonce });
   const data: RowData = {
     direction: 'deposit',
@@ -223,8 +194,13 @@ export function TransfersBoard({
 }: Partial<TransfersRailProps>) {
   const { t } = useTranslation();
   const { handlers: fuelHandlers, isConnecting } = useFuelAccountConnection();
-  const { bridgeTxs, isLoading, shouldShowNotConnected, shouldShowEmpty } =
-    useBridgeTxs();
+  const {
+    bridgeTxs,
+    isLoading,
+    hasMorePages,
+    shouldShowNotConnected,
+    shouldShowEmpty,
+  } = useBridgeTxs();
   const [kinds, setKinds] = useState<Record<string, Kind>>({});
 
   const report = useCallback((id: string, kind: Kind) => {
@@ -246,7 +222,7 @@ export function TransfersBoard({
             {
               id: `${tx.txHash}-${tx.nonce}`,
               txHash: tx.txHash as string,
-              nonce: tx.nonce as BigInt,
+              nonce: tx.nonce as bigint,
             },
           ];
         }
@@ -280,7 +256,11 @@ export function TransfersBoard({
   const stillLoading = entries.some(
     (e) => (kinds[e.id] ?? 'loading') === 'loading',
   );
-  const showEmpty = !isLoading && !stillLoading && open.length === 0;
+  // Only the latest transfers are read. Older ones can still be in progress,
+  // so the board never claims that nothing is open while some are unread.
+  const truncated = !!hasMorePages;
+  const showEmpty =
+    !isLoading && !stillLoading && open.length === 0 && !truncated;
   const known = !shouldShowNotConnected && !isLoading && !stillLoading;
   const openCount = known ? open.length : 0;
 
@@ -321,7 +301,7 @@ export function TransfersBoard({
       {!shouldShowNotConnected && open.length > 0 && (
         <div
           aria-hidden
-          className={`fuel-label hidden tablet:grid ${COLUMNS} py-3`}
+          className={`fuel-label hidden laptop:grid ${COLUMNS} py-3`}
         >
           <span>{t('bridge.board.col_what')}</span>
           <span>{t('bridge.board.col_amount')}</span>
@@ -358,6 +338,26 @@ export function TransfersBoard({
           aria-label={t('bridge.board.loading')}
         >
           <LoadingBox className="h-6 w-full max-w-[420px]" />
+        </div>
+      )}
+
+      {!shouldShowNotConnected && !isLoading && truncated && (
+        <div className="flex flex-col items-start gap-4 border-t border-[var(--fuel-border)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">
+          <p
+            role="status"
+            className="m-0 text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)]"
+          >
+            {t('bridge.board.truncated', { count: entries.length })}
+          </p>
+          <Button
+            as={Link}
+            to={Routes.bridgeHistory()}
+            size="2"
+            color="gray"
+            variant="outline"
+          >
+            {t('bridge.board.open_history')}
+          </Button>
         </div>
       )}
 

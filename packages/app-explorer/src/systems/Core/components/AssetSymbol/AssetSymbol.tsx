@@ -27,8 +27,6 @@ type AssetItemProps = HStackProps & {
 
 export function AssetSymbol({ assetId, asset, linkContract }: AssetItemProps) {
   const { t } = useTranslation();
-  if (!asset) return null;
-
   const { data: nft } = useNFT({
     contractId: asset?.contractId,
     assetId: asset?.assetId,
@@ -36,13 +34,15 @@ export function AssetSymbol({ assetId, asset, linkContract }: AssetItemProps) {
 
   const name = useMemo<string | null>(() => {
     if (nft?.name) {
-      return `${nft.symbol} (${asset.name})`;
+      return `${nft.symbol} (${asset?.name})`;
     }
     if (asset?.symbol) return asset.symbol;
     if (asset?.name) return asset.name;
 
     return null;
   }, [asset?.symbol, asset?.name, nft?.name, nft?.symbol]);
+
+  if (!asset) return null;
 
   return (
     <HStack gap="1">
@@ -77,7 +77,10 @@ export function AssetSymbol({ assetId, asset, linkContract }: AssetItemProps) {
           {asset?.suspicious && (
             <Tooltip content={t('asset.suspicious')}>
               <div className="mx-1">
-                <IconAlertOctagon size={16} className="text-[var(--red-10)]" />
+                <IconAlertOctagon
+                  size={16}
+                  className="text-[var(--fuel-danger-text)]"
+                />
               </div>
             </Tooltip>
           )}

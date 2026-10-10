@@ -89,19 +89,35 @@ const txFuelToEthSelectors = {
       return { status: 'Action', statusId: BRIDGE_STEP_STATUS_ID.action };
     }
 
-    function getSettlementStatusText() {
-      if (status.isSettlementDone) return 'Done!';
-      if (estimatedTimeRemaining) return `~${estimatedTimeRemaining} left`;
-      return 'Waiting';
+    function getSettlementStatus(): {
+      status: string;
+      statusId: BridgeStepStatusId;
+      eta?: string;
+    } {
+      if (status.isSettlementDone) {
+        return { status: 'Done!', statusId: BRIDGE_STEP_STATUS_ID.done };
+      }
+      if (estimatedTimeRemaining) {
+        return {
+          status: `~${estimatedTimeRemaining} left`,
+          statusId: BRIDGE_STEP_STATUS_ID.timeLeft,
+          eta: estimatedTimeRemaining,
+        };
+      }
+      return { status: 'Waiting', statusId: BRIDGE_STEP_STATUS_ID.waiting };
     }
 
     const confirmStatus = getConfirmStatus();
+    const settlementStatus = getSettlementStatus();
     const steps = [
       {
         id: BRIDGE_STEP_ID.submitToBridge,
         name: 'Submit to bridge',
         // TODO: put correct time left '~XX minutes left', how?
         status: status.isSubmitToBridgeDone ? 'Done!' : 'Waiting',
+        statusId: status.isSubmitToBridgeDone
+          ? BRIDGE_STEP_STATUS_ID.done
+          : BRIDGE_STEP_STATUS_ID.waiting,
         isLoading: status.isSubmitToBridgeLoading,
         isSelected: status.isSubmitToBridgeSelected,
         isDone: status.isSubmitToBridgeDone,
@@ -109,7 +125,9 @@ const txFuelToEthSelectors = {
       {
         id: BRIDGE_STEP_ID.settlement,
         name: 'Settlement',
-        status: getSettlementStatusText(),
+        status: settlementStatus.status,
+        statusId: settlementStatus.statusId,
+        eta: settlementStatus.eta,
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
@@ -127,6 +145,9 @@ const txFuelToEthSelectors = {
         id: BRIDGE_STEP_ID.receiveOnEthereum,
         name: 'Receive on Ethereum',
         status: status.isReceiveDone ? 'Done!' : 'Automatic',
+        statusId: status.isReceiveDone
+          ? BRIDGE_STEP_STATUS_ID.done
+          : BRIDGE_STEP_STATUS_ID.automatic,
         isLoading: status.isReceiveLoading,
         isDone: status.isReceiveDone,
         isSelected: status.isReceiveSelected,

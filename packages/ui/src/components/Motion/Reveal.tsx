@@ -4,11 +4,18 @@ export interface RevealProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  /** Skips the fade. Use it for content already in the first viewport. */
+  immediate?: boolean;
 }
 
-export function Reveal({ children, className, delay = 0 }: RevealProps) {
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+  immediate = false,
+}: RevealProps) {
   const reduceMotion = useReducedMotion();
-  if (reduceMotion) {
+  if (reduceMotion || immediate) {
     return <div className={className}>{children}</div>;
   }
   return (

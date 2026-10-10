@@ -125,6 +125,24 @@ describe('TxScriptsContent', () => {
 
     expect(receiptTypes()).toEqual(['A', 'E']);
   });
+
+  it('pins the first and last receipts across operations with empty receipts', () => {
+    render(
+      <TxScriptsContent
+        tx={
+          txFrom([
+            [],
+            [receipt('A'), receipt('B'), receipt('C')],
+            [receipt('D')],
+            [],
+          ]) as never
+        }
+        opened={false}
+      />,
+    );
+
+    expect(receiptTypes()).toEqual(['A', 'D']);
+  });
 });
 
 describe('Collapsible', () => {
@@ -155,10 +173,16 @@ describe('Collapsible', () => {
       </Collapsible>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Expand' }));
+    const toggle = screen.getByRole('button', {
+      name: 'ui.collapsible.toggle',
+    });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByText('json-viewer')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Collapse' }));
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expect(screen.getByText('json-viewer')).toBeInTheDocument();
 
     await waitFor(() => {

@@ -16,4 +16,5 @@ export type SearchDropdownProps = {
   loading: boolean;
   error?: boolean;
   loadingMore?: boolean;
+  id?: string;
 };

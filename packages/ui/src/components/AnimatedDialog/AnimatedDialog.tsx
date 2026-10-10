@@ -15,7 +15,7 @@ export type AnimatedDialogOverlayProps = PropsOf<typeof RD.Overlay>;
 export type AnimatedDialogTitleProps = PropsOf<typeof RD.Title>;
 export interface AnimatedDialogContentProps extends PropsOf<typeof RD.Content> {
   open: boolean;
-  color?: 'green' | 'orange';
+  color?: 'grass' | 'green' | 'orange';
   hideClose?: boolean;
 }
 export type AnimatedDialogCloseProps = PropsOf<typeof RD.Close>;
@@ -102,7 +102,7 @@ export const AnimatedDialogCloseButton = createComponent<
         icon={IconX}
         iconColor="text-heading"
         className={clsx(
-          'fuel-hover-fill absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
+          'fuel-hover-fill fuel-hit absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
           props.className,
         )}
       />
@@ -121,7 +121,7 @@ export const AnimatedDialogContent = createComponent<
   },
   render: (
     _,
-    { children, open, hideClose = false, color = 'green', ...props },
+    { children, open, hideClose = false, color = 'grass', ...props },
   ) => {
     const reduced = useReducedMotion();
     const variants = getContentVariants(reduced);

@@ -3,7 +3,7 @@ import { type ReactNode, act } from 'react';
 import { type Root, createRoot } from 'react-dom/client';
 
 const COPY: Record<string, string> = {
-  'staking.board.title': 'Waiting on you',
+  'staking.board.title': 'Open items',
   'staking.board.continue': 'Continue',
   'staking.board.action_needed': 'Action needed',
   'staking.status.loading': 'Loading...',
@@ -13,7 +13,7 @@ const COPY: Record<string, string> = {
     'Connect your wallet to view available tokens for staking.',
   'staking.connect_ethereum': 'Connect Ethereum Wallet',
   'staking.board.load_error':
-    'Error on fetching what is waiting on you. Something went wrong, try again later.',
+    'Error on fetching your open items. Something went wrong, try again later.',
   'staking.review.retry': 'Retry',
 };
 
@@ -115,7 +115,7 @@ const { AttentionBoard } = require('./AttentionBoard') as {
 };
 
 const BOARD_ERROR =
-  'Error on fetching what is waiting on you. Something went wrong, try again later.';
+  'Error on fetching your open items. Something went wrong, try again later.';
 
 const pendingQuery = () => ({
   data: undefined,
@@ -181,7 +181,7 @@ describe('AttentionBoard', () => {
     useAccountValidators.mockReturnValue(pendingQuery());
     useAllStakingEvents.mockReturnValue(pendingQuery());
     render();
-    expect(container.textContent).toContain('Waiting on you');
+    expect(container.textContent).toContain('Open items');
     const status = container.querySelector('[role="status"]');
     expect(status?.getAttribute('aria-label')).toBe('Loading...');
     expect(
@@ -197,7 +197,7 @@ describe('AttentionBoard', () => {
       isFetchingNextPage: true,
     });
     render();
-    expect(container.textContent).toContain('Waiting on you');
+    expect(container.textContent).toContain('Open items');
     expect(container.querySelector('[role="status"]')).not.toBeNull();
     expect(container.textContent).not.toContain(BOARD_ERROR);
   });
@@ -205,7 +205,7 @@ describe('AttentionBoard', () => {
   it('stays up with an error when a query fails and there are no rows', () => {
     useAllStakingEvents.mockReturnValue(errorQuery());
     render();
-    expect(container.textContent).toContain('Waiting on you');
+    expect(container.textContent).toContain('Open items');
     expect(container.textContent).toContain(BOARD_ERROR);
     expect(container.querySelector('[role="alert"]')).not.toBeNull();
     expect(container.querySelector('[role="status"]')).toBeNull();
@@ -231,7 +231,7 @@ describe('AttentionBoard', () => {
     useAccountValidators.mockReturnValue(pendingQuery());
     useAllStakingEvents.mockReturnValue(pendingQuery());
     render();
-    expect(container.textContent).toContain('Waiting on you');
+    expect(container.textContent).toContain('Open items');
     expect(container.textContent).toContain(
       'Connect your wallet to view available tokens for staking.',
     );

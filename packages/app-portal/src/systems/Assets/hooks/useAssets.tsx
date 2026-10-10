@@ -11,6 +11,7 @@ import {
   bn,
 } from 'fuels';
 import { useMemo } from 'react';
+import { getI18n } from 'react-i18next';
 import type { AlchemyAssetBalance } from '~portal/systems/Assets/types';
 import {
   getAssetEthCurrentChain,
@@ -152,7 +153,12 @@ export const useAssets = (params?: UseAssetParams) => {
     try {
       await addAssetFuel(asset);
     } catch (_e) {
-      toast.error('Failed to add asset to wallet');
+      const english = 'Failed to add asset to wallet';
+      toast.error(
+        getI18n()?.t('portal.assets_toast.add_failed', {
+          defaultValue: english,
+        }) ?? english,
+      );
     }
   }
 

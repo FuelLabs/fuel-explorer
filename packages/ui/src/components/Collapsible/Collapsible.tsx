@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 import { IconChevronDown } from '../Icons';
@@ -95,6 +96,7 @@ export const CollapsibleHeader = createComponent<
   render: (Root, { children, className, ...props }) => {
     const classes = styles();
     const { opened, setOpened, hideIcon } = useContext(ctx);
+    const { t } = useTranslation();
     return (
       <Root
         {...props}
@@ -111,7 +113,9 @@ export const CollapsibleHeader = createComponent<
             iconSize={20}
             iconColor="text-muted"
             variant="link"
-            aria-label={opened ? 'Collapse' : 'Expand'}
+            aria-label={t('ui.collapsible.toggle', {
+              defaultValue: 'Show or hide details',
+            })}
             aria-expanded={opened}
             className={classes.icon()}
             icon={IconChevronDown}

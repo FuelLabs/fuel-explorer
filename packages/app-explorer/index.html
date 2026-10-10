@@ -16,6 +16,20 @@
         if (code) document.documentElement.lang = code;
       } catch (e) {}
     </script>
+    <script>
+      // Sets the theme class before first paint. ThemeProvider (app-commons)
+      // reads the same key and falls back to dark when nothing is stored.
+      try {
+        var theme = localStorage.getItem('fuel-ui-theme');
+        var resolved = theme === 'light' ? 'light' : 'dark';
+        var root = document.documentElement;
+        root.classList.remove('light', 'dark');
+        root.classList.add(resolved);
+        root.style.colorScheme = resolved;
+      } catch (e) {}
+    </script>
+    <link rel="preload" href="/fonts/abc-monument-grotesk-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/IBMPlexMono-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>__PAGE_TITLE__</title>

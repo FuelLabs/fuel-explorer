@@ -52,11 +52,55 @@
   box-shadow: inset 0 0 0 1px var(--fuel-border-light);
 }
 
-.rt-BaseButton:where([data-disabled]),
-[data-accent-color="gray"].rt-BaseButton:where([data-disabled]) {
+.rt-BaseButton:where([data-disabled]) {
   cursor: var(--cursor-disabled);
-  color: var(--fuel-element-disabled);
+  color: var(--fuel-disabled-text);
+}
+
+/* Only filled buttons get a disabled fill. A 1px line keeps the shape on white. */
+.rt-BaseButton:where(
+    .rt-variant-solid,
+    .rt-variant-soft,
+    .rt-variant-surface
+  ):where([data-disabled]),
+[data-accent-color="gray"].rt-BaseButton:where(.rt-variant-solid):where(
+    [data-disabled]
+  ) {
+  color: var(--fuel-disabled-text);
   background-color: var(--fuel-muted);
+  box-shadow: inset 0 0 0 1px var(--fuel-line);
+}
+
+.rt-BaseButton:where(.rt-variant-ghost, .rt-variant-outline):where(
+    [data-disabled]
+  ) {
+  color: var(--fuel-disabled-text);
+  background-color: transparent;
+}
+
+.rt-BaseButton:where(.rt-variant-outline):where([data-disabled]) {
+  box-shadow: inset 0 0 0 1px var(--fuel-line);
+}
+
+/* Soft, ghost and surface take the fuel tokens instead of the Radix slate scale. */
+.rt-BaseButton:where(.rt-variant-soft):where(:not([data-disabled])) {
+  background-color: var(--fuel-muted);
+  color: var(--fuel-element-high-em);
+}
+
+.rt-BaseButton:where(.rt-variant-surface):where(:not([data-disabled])) {
+  background-color: var(--fuel-card);
+  color: var(--fuel-element-high-em);
+  box-shadow: inset 0 0 0 1px var(--fuel-line);
+}
+
+.rt-BaseButton:where(.rt-variant-ghost):where(:not([data-disabled])) {
+  color: var(--fuel-element-high-em);
+}
+
+/* The corner glyph would sit on the label at the smallest size. */
+.rt-Button:where(.rt-variant-solid):where(.rt-r-size-1)::after {
+  display: none;
 }
 
 @media (hover: hover) {
@@ -69,6 +113,13 @@
       :hover
     ):where(:not([data-disabled])) {
     background-color: var(--fuel-secondary-hover);
+  }
+  .rt-BaseButton:where(
+      .rt-variant-soft,
+      .rt-variant-surface,
+      .rt-variant-ghost
+    ):where(:hover):where(:not([data-disabled])) {
+    background-color: var(--fuel-border);
   }
   [data-accent-color="gray"].rt-BaseButton:where(.rt-variant-outline):where(
       :hover

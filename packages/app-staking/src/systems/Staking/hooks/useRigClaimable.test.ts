@@ -22,8 +22,9 @@ jest.mock('@tanstack/react-query', () => ({
 
 jest.mock('app-commons', () => {
   const contracts = { L2_STAKING: '0xcontract' };
-  (globalThis as { __rigContracts?: typeof contracts }).__rigContracts =
-    contracts;
+  (
+    globalThis as unknown as { __rigContracts?: typeof contracts }
+  ).__rigContracts = contracts;
   return { CURRENT_NETWORK_CONTRACTS: contracts };
 });
 
@@ -45,7 +46,8 @@ jest.mock('~staking/contracts/rig/StakingMigration', () => ({
 }));
 
 const contracts = () =>
-  (globalThis as { __rigContracts: { L2_STAKING: string } }).__rigContracts;
+  (globalThis as unknown as { __rigContracts: { L2_STAKING: string } })
+    .__rigContracts;
 
 const idleQuery = {
   data: undefined,
@@ -144,8 +146,9 @@ describe('useRigClaimable', () => {
     });
     settledAccount(null);
     settledWallet(null);
-    (globalThis as { __rigDryRun?: () => Promise<unknown> }).__rigDryRun =
-      undefined;
+    (
+      globalThis as unknown as { __rigDryRun?: () => Promise<unknown> }
+    ).__rigDryRun = undefined;
   });
 
   it('does not treat a missing Fuel wallet as a zero balance', () => {
@@ -189,8 +192,9 @@ describe('useRigClaimable', () => {
     const consoleError = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
-    (globalThis as { __rigDryRun: () => Promise<never> }).__rigDryRun = () =>
-      Promise.reject(error);
+    (
+      globalThis as unknown as { __rigDryRun: () => Promise<never> }
+    ).__rigDryRun = () => Promise.reject(error);
 
     mockUseQuery.mockImplementation((options: QueryOptions) => {
       queryOptions = options;
@@ -219,8 +223,9 @@ describe('useRigClaimable', () => {
 
   it('keeps a successful zero as a ready balance with nothing to claim', async () => {
     connect();
-    (globalThis as { __rigDryRun: () => Promise<unknown> }).__rigDryRun = () =>
-      Promise.resolve({ value: { gt: () => false } });
+    (
+      globalThis as unknown as { __rigDryRun: () => Promise<unknown> }
+    ).__rigDryRun = () => Promise.resolve({ value: { gt: () => false } });
     mockUseQuery.mockImplementation((options: QueryOptions) => {
       queryOptions = options;
       return {
@@ -242,8 +247,9 @@ describe('useRigClaimable', () => {
   it('returns a positive claim from a successful read', async () => {
     connect();
     const pendingDeposit = { gt: () => true };
-    (globalThis as { __rigDryRun: () => Promise<unknown> }).__rigDryRun = () =>
-      Promise.resolve({ value: pendingDeposit });
+    (
+      globalThis as unknown as { __rigDryRun: () => Promise<unknown> }
+    ).__rigDryRun = () => Promise.resolve({ value: pendingDeposit });
     mockUseQuery.mockImplementation((options: QueryOptions) => {
       queryOptions = options;
       return {

@@ -15,8 +15,7 @@ type StakeStatusDialogProps = {
 const v2 = TOKENS[FuelToken.V2];
 const { symbol, decimals } = v2;
 
-export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
-  if (!identifier) return null;
+const StakeStatusDialogContent = ({ identifier }: { identifier: string }) => {
   const { t } = useTranslation();
 
   const {
@@ -86,7 +85,7 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
         isFinalized ? t('staking.status.funds_staked_on') : undefined
       }
       finalizedAt={dateFinalized}
-      minHeightClass="min-h-[450px]"
+      minHeightClass="tablet:min-h-[450px]"
     >
       {STAKE_STEPS.filter((step) => {
         if (step.status === 'Skipped') {
@@ -125,3 +124,8 @@ export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) => {
     </StatusLayout>
   );
 };
+
+// Hooks cannot sit below an early return, so the dialog body mounts only
+// once there is an identifier.
+export const StakeStatusDialog = ({ identifier }: StakeStatusDialogProps) =>
+  identifier ? <StakeStatusDialogContent identifier={identifier} /> : null;

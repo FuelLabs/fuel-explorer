@@ -68,10 +68,6 @@ import {
 import { fromLucide } from './fromLucide';
 
 export const IconAlertCircle = fromLucide(CircleAlert, 'IconAlertCircle');
-export const IconAlertCircleFilled = fromLucide(
-  CircleAlert,
-  'IconAlertCircleFilled',
-);
 export const IconAlertOctagon = fromLucide(OctagonAlert, 'IconAlertOctagon');
 export const IconAlertTriangle = fromLucide(TriangleAlert, 'IconAlertTriangle');
 export const IconArrowBack = fromLucide(Undo2, 'IconArrowBack');
@@ -104,10 +100,6 @@ export const IconChevronDown = fromLucide(ChevronDown, 'IconChevronDown');
 export const IconChevronLeft = fromLucide(ChevronLeft, 'IconChevronLeft');
 export const IconChevronRight = fromLucide(ChevronRight, 'IconChevronRight');
 export const IconCircleCheck = fromLucide(CircleCheck, 'IconCircleCheck');
-export const IconCircleCheckFilled = fromLucide(
-  CircleCheck,
-  'IconCircleCheckFilled',
-);
 export const IconCircleMinus = fromLucide(CircleMinus, 'IconCircleMinus');
 export const IconClock = fromLucide(Clock, 'IconClock');
 export const IconCode = fromLucide(Code, 'IconCode');
@@ -127,24 +119,23 @@ export const IconHelpCircle = fromLucide(CircleHelp, 'IconHelpCircle');
 export const IconHistory = fromLucide(History, 'IconHistory');
 export const IconHourglassEmpty = fromLucide(Hourglass, 'IconHourglassEmpty');
 export const IconInfoCircle = fromLucide(Info, 'IconInfoCircle');
-export const IconInfoCircleFilled = fromLucide(Info, 'IconInfoCircleFilled');
 export const IconInputSearch = fromLucide(TextSearch, 'IconInputSearch');
 export const IconKey = fromLucide(Key, 'IconKey');
 export const IconLink = fromLucide(Link, 'IconLink');
 export const IconLock = fromLucide(Lock, 'IconLock');
 export const IconLogout = fromLucide(LogOut, 'IconLogout');
 export const IconMailForward = fromLucide(Forward, 'IconMailForward');
-export const IconMoonFilled = fromLucide(Moon, 'IconMoonFilled');
+export const IconMoon = fromLucide(Moon, 'IconMoon');
 export const IconPhoto = fromLucide(Image, 'IconPhoto');
 export const IconPlus = fromLucide(Plus, 'IconPlus');
 export const IconReceipt = fromLucide(Receipt, 'IconReceipt');
 export const IconRefresh = fromLucide(RefreshCw, 'IconRefresh');
 export const IconScript = fromLucide(ScrollText, 'IconScript');
 export const IconSearch = fromLucide(Search, 'IconSearch');
-export const IconSettingsFilled = fromLucide(Settings, 'IconSettingsFilled');
+export const IconSettings = fromLucide(Settings, 'IconSettings');
 export const IconShieldDown = fromLucide(ShieldMinus, 'IconShieldDown');
 export const IconSquareLetterX = fromLucide(SquareX, 'IconSquareLetterX');
-export const IconSunFilled = fromLucide(Sun, 'IconSunFilled');
+export const IconSun = fromLucide(Sun, 'IconSun');
 export const IconSwitch3 = fromLucide(Shuffle, 'IconSwitch3');
 export const IconSwitchHorizontal = fromLucide(
   ArrowRightLeft,

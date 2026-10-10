@@ -71,12 +71,12 @@ export const AccountConnectionInput = ({
             {disconnectIcon}
           </button>
           {account.address ? (
-            <span
-              className={classes.address()}
-              aria-label={t('portal.account.connected_wallet', {
-                network: networkName,
-              })}
-            >
+            <span className={classes.address()} title={account.address}>
+              <span className="sr-only">
+                {t('portal.account.connected_wallet', {
+                  network: networkName,
+                })}{' '}
+              </span>
               {shortAddress(account.alias, {
                 minLength: 16,
               }) ||
@@ -105,7 +105,8 @@ export const styles = tv({
     disconnect: [
       'fuel-label inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0',
       'transition-colors duration-150 hover:text-heading focus-visible:text-heading',
-      'focus-visible:outline-none disabled:cursor-default disabled:opacity-50',
+      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
+      'disabled:cursor-default disabled:opacity-50',
       'motion-reduce:transition-none',
     ],
     address:

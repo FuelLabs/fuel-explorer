@@ -1,4 +1,4 @@
-import { intlLanguage } from 'app-commons/src/utils/dayjs';
+import { intlLanguage } from 'app-commons';
 import type { FormatAmountResult } from '~staking/systems/Core/types/bn';
 
 type FormatAnimatedBalanceParams = {

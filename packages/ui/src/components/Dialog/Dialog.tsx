@@ -57,7 +57,7 @@ export const DialogCloseButton = createComponent<
         icon={IconX}
         iconColor="text-heading"
         className={clsx(
-          'fuel-hover-fill absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
+          'fuel-hover-fill fuel-hit absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
           props.className,
         )}
       />

@@ -64,6 +64,8 @@ function refColorVariablesAsObj() {
 }
 
 const preset: Config = {
+  // hover: variants only apply on devices that hover, so a tap does not stick.
+  future: { hoverOnlyWhenSupported: true },
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/**/*.stories.{js,jsx,ts,tsx}',

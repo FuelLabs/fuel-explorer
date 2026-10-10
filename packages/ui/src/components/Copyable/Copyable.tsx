@@ -69,23 +69,32 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
     },
   ) => {
     const { t } = useTranslation();
-    const tooltip = tooltipMessage ?? t('core.copy.tooltip');
-    const idleLabel = iconAriaLabel ?? t('core.copy.aria');
-    const copiedLabel = copiedMessage ?? t('core.copy.copied');
-    const { copied, markCopied } = useCopied();
+    const tooltip =
+      tooltipMessage ??
+      t('ui.copy.tooltip', { defaultValue: 'Click here to copy to clipboard' });
+    const idleLabel =
+      iconAriaLabel ?? t('ui.copy.aria', { defaultValue: 'Copy to clipboard' });
+    const copiedLabel =
+      copiedMessage ??
+      t('ui.copy.copied', { defaultValue: 'Copied to clipboard' });
+    const failedLabel = t('ui.copy.failed', {
+      defaultValue: 'Could not copy. Select the text and copy it by hand.',
+    });
+    const { copied, failed, copy } = useCopied();
     const SwapIcon = useMemo(() => makeSwapIcon(CopyIcon), [CopyIcon]);
-
-    async function handleCopy() {
-      await navigator.clipboard.writeText(value);
-      markCopied();
-    }
 
     return (
       <Box {...props} as={Root}>
         {children}
-        <Tooltip content={copied ? copiedLabel : tooltip}>
+        <span role="status" className="sr-only">
+          {copied ? copiedLabel : failed ? failedLabel : ''}
+        </span>
+        <Tooltip
+          content={copied ? copiedLabel : failed ? failedLabel : tooltip}
+        >
           <IconButton
             aria-label={copied ? copiedLabel : idleLabel}
+            className="fuel-hit relative"
             color="gray"
             icon={SwapIcon}
             iconClassName={styles().icon({ className: iconClassName })}
@@ -94,9 +103,10 @@ export const Copyable = createComponent<CopyableProps, 'span'>({
             iconStroke={iconStroke}
             variant="link"
             data-copied={copied ? '' : undefined}
+            data-failed={failed ? '' : undefined}
             onClick={(e: SyntheticEvent) => {
               e.stopPropagation();
-              handleCopy();
+              copy(value);
             }}
           />
         </Tooltip>

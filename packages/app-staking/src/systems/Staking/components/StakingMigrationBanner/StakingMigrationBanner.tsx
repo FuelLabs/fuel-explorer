@@ -1,8 +1,7 @@
 import { Button } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
+import { RIG_URL } from '../../constants/rig';
 import { IconRig } from './IconRig';
-
-const RIG_URL = 'https://rig.st';
 
 // Claimable stFUEL is listed by the attention board above, so this block only
 // carries the pointer to The Rig.

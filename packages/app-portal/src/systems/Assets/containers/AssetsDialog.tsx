@@ -191,13 +191,13 @@ const enterDelay = (index: number) =>
 const styles = tv({
   slots: {
     contentWrapper: 'mr-[-12px]',
-    contentScrollable: 'max-h-[min(535px,60vh)] pr-[12px]',
+    contentScrollable: 'max-h-[min(535px,60dvh)] pr-[12px]',
     search:
-      'group relative my-4 flex h-11 items-center border border-[var(--fuel-line)] bg-transparent',
+      'group relative my-4 flex h-11 items-center border border-[var(--fuel-line)] bg-transparent focus-within:border-[var(--fuel-focus)] focus-within:outline focus-within:outline-1 focus-within:outline-[var(--fuel-focus)]',
     searchIcon:
-      'ml-4 shrink-0 text-[var(--fuel-element-low-em)] transition-colors duration-200 group-focus-within:text-[var(--fuel-primary)] motion-reduce:transition-none',
+      'ml-4 shrink-0 text-[var(--fuel-element-low-em)] transition-colors duration-200 group-focus-within:text-[var(--fuel-brand-text)] motion-reduce:transition-none',
     input: [
-      'h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[13px] text-heading outline-none',
+      'h-full min-w-0 flex-1 border-0 bg-transparent px-3 text-[16px] text-heading tablet:text-[13px] outline-none',
       'placeholder:text-[var(--fuel-element-low-em)]',
     ],
     spinnerSlot:

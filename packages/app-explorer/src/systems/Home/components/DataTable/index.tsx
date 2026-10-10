@@ -34,7 +34,7 @@ export const DataTable = (props: DataTableProps) => {
                 isExternal={false}
                 href={`/block/${block.blockNo}/simple`}
                 aria-label={t('home.block_link', { number: block.blockNo })}
-                className="absolute inset-0 z-0 border-0"
+                className="absolute inset-0 z-0 border-0 focus-visible:outline-offset-[-2px]"
               />
               <div className="relative z-10 h-full pointer-events-none">
                 <BlockTableTile

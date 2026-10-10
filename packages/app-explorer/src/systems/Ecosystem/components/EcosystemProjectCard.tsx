@@ -100,7 +100,7 @@ const styles = tv({
       'tablet:min-h-[112px] tablet:px-5 tablet:py-4',
     ],
     logo: [
-      'grid size-12 shrink-0 place-items-center overflow-hidden rounded-[8px] shadow-sm',
+      'grid size-12 shrink-0 place-items-center overflow-hidden',
       'border border-[var(--fuel-line)] bg-[var(--fuel-background)] tablet:size-16',
     ],
     image: 'size-full object-cover',
@@ -112,7 +112,7 @@ const styles = tv({
       'm-0 mt-0.5 line-clamp-2 text-[14px] leading-[20px] text-[var(--fuel-element-low-em)]',
     arrow: [
       'ml-auto shrink-0 text-[var(--fuel-element-low-em)]',
-      'transition-[color,transform] duration-200 ease-out group-hover:text-[var(--fuel-primary)] group-focus-visible:text-[var(--fuel-primary)]',
+      'transition-[color,transform] duration-200 ease-out group-hover:text-[var(--fuel-brand-text)] group-focus-visible:text-[var(--fuel-brand-text)]',
       'group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5',
       'motion-reduce:transition-none motion-reduce:transform-none',
     ],

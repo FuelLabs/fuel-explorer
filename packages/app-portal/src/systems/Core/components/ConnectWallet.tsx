@@ -93,7 +93,7 @@ export const ConnectWallet = () => {
               {t('portal.wallet.bridge_history')}
             </Dropdown.Item>
             <Dropdown.Item
-              className={`${ITEM} text-[var(--red-11)]`}
+              className={`${ITEM} fuel-danger-item`}
               onClick={handleDisconnect}
             >
               <IconLogout size="1em" />
@@ -115,7 +115,7 @@ export const ConnectWallet = () => {
        */}
       <Button
         onClick={connect}
-        className="tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]"
+        className="fuel-hit relative tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]"
         size={{
           initial: '1',
           lg: '2',

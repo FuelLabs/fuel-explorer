@@ -15,10 +15,9 @@ type UndelegateStatusDialogProps = {
 const v2 = TOKENS[FuelToken.V2];
 const { symbol, decimals } = v2;
 
-export const UndelegateStatusDialog = ({
+const UndelegateStatusDialogContent = ({
   identifier,
-}: UndelegateStatusDialogProps) => {
-  if (!identifier) return null;
+}: { identifier: string }) => {
   const { t } = useTranslation();
 
   const {
@@ -88,7 +87,7 @@ export const UndelegateStatusDialog = ({
         isFinalized ? t('staking.status.undelegation_completed_on') : undefined
       }
       finalizedAt={dateFinalized}
-      minHeightClass="min-h-[450px]"
+      minHeightClass="tablet:min-h-[450px]"
     >
       {UNDELEGATE_STEPS.filter((step) => {
         if (step.status === 'Skipped') {
@@ -127,3 +126,10 @@ export const UndelegateStatusDialog = ({
     </StatusLayout>
   );
 };
+
+// Hooks cannot sit below an early return, so the dialog body mounts only
+// once there is an identifier.
+export const UndelegateStatusDialog = ({
+  identifier,
+}: UndelegateStatusDialogProps) =>
+  identifier ? <UndelegateStatusDialogContent identifier={identifier} /> : null;

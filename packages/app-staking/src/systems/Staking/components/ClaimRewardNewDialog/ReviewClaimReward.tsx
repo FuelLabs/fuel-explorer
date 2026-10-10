@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
-import { formatAmount } from '~staking/systems/Core/utils/bn';
+import {
+  formatAmount,
+  truncateToIntegerString,
+} from '~staking/systems/Core/utils/bn';
 import { useValidator } from '../../services/useValidator';
 import { useValidatorRewards } from '../../services/useValidatorRewards/useValidatorRewards';
 import {
@@ -54,7 +57,7 @@ function _ReviewClaimReward({
   const rewardBN = useMemo(() => {
     return rewardsData?.reduce((acc, curr) => {
       // Cosmos API returns decimal strings - truncate to integer for BN
-      const integerAmount = Math.floor(Number(curr.amount ?? 0)).toString();
+      const integerAmount = truncateToIntegerString(curr.amount);
       return acc.add(new BN(integerAmount));
     }, new BN(0));
   }, [rewardsData]);

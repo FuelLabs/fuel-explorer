@@ -36,11 +36,11 @@ const _TransactionHistoryItem = ({
   }, [event.amount]);
 
   return (
+    // biome-ignore lint/a11y/useFocusableInteractive: a row holds its own buttons and is not a tab stop
     <div
       key={event.id}
       className={`fuel-hover-fill w-full flex align-center ${LIST_SEPARATOR_BORDER} ${hideSeparator ? '' : 'border-b'}`}
       role="row"
-      tabIndex={0}
     >
       <div
         className={`${transactionHistoryItemClassNames.dateCol} font-medium text-heading min-h-[54px]`}

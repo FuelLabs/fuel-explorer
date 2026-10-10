@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconEye, IconEyeOff, IconLock } from '../Icons';
 
 import { createComponent } from '../../utils/component';
@@ -12,6 +13,7 @@ export type InputPasswordProps = Omit<InputProps, 'type'>;
 export const InputPassword = createComponent<InputPasswordProps, typeof Input>({
   id: 'InputPassword',
   render: (_, { size, className, variant, color, ...props }) => {
+    const { t } = useTranslation();
     const [opened, setOpened] = useState(false);
     const type = opened ? 'text' : 'password';
     return (
@@ -28,7 +30,9 @@ export const InputPassword = createComponent<InputPasswordProps, typeof Input>({
         </Input.Slot>
         <Input.Slot className="mr-1" side="right">
           <IconButton
-            aria-label="Toggle passowrd"
+            aria-label={t('ui.password.toggle', {
+              defaultValue: 'Show or hide password',
+            })}
             color="gray"
             icon={opened ? IconEye : IconEyeOff}
             iconColor={opened ? 'text-brand' : 'text-icon'}

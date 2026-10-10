@@ -9,7 +9,7 @@ export const styles = tv({
     ],
     menuItem: [
       'flex items-center',
-      'relative h-auto py-3 tablet:py-0',
+      'relative h-auto min-h-11 py-3 tablet:min-h-0 tablet:py-0',
       'font-mono font-medium text-[14px] leading-none uppercase tracking-[0.05em]',
       'text-muted transition-colors duration-300',
       'data-[active=true]:text-heading hover:text-heading',
@@ -18,7 +18,7 @@ export const styles = tv({
     navNetwork: 'h-8',
     spacer: 'flex-1 opacity-0',
     themeToggle: [
-      'relative cursor-pointer flex items-center justify-center w-10 h-10 border border-border',
+      'relative cursor-pointer flex items-center justify-center w-11 h-11 border border-border',
       'fuel-hover-fill bg-transparent select-none',
     ],
     themeToggleIcon: [
@@ -31,13 +31,13 @@ export const styles = tv({
       'md:px-8 min-h-[var(--nav-height)]',
     ],
     desktopWrapper: [
-      'sticky top-0 z-30 backdrop-blur-lg',
-      'bg-[color-mix(in_oklch,var(--fuel-background)_72%,transparent)]',
+      'sticky top-0 z-30',
+      'bg-[var(--fuel-background)]',
       'fuel-grid-divider min-h-[var(--nav-height)]',
     ],
     mobileWrapper: [
-      'sticky top-0 z-30 backdrop-blur-lg',
-      'bg-[color-mix(in_oklch,var(--fuel-background)_72%,transparent)]',
+      'sticky top-0 z-30',
+      'bg-[var(--fuel-background)]',
       'pl-3 pr-2 fuel-grid-divider min-h-[var(--nav-height)]',
     ],
     mobile: ['md:hidden flex-col fuel-[NavLogo]:flex-1'],

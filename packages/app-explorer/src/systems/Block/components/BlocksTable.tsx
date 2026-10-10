@@ -1,6 +1,6 @@
 import type { GQLBlocksQuery } from '@fuel-explorer/graphql';
 import { GridTable, IconArrowRight, Link } from '@fuels/ui';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InfoHint } from '~/systems/Core/components/InfoHint/InfoHint';
 import BlockEfficiencyItem from './BlockEfficiencyItem';
@@ -70,12 +70,14 @@ const tableStyles = {
 // hairline squares.
 const PAGER = [
   '[&_.pagination_li]:m-0',
-  '[&_.pagination]:gap-0 [&_.pagination]:border [&_.pagination]:border-[var(--fuel-line)] [&_.pagination]:w-fit [&_.pagination]:ml-auto [&_.pagination]:bg-[var(--fuel-background)]',
+  '[&_.pagination]:flex-wrap [&_.pagination]:max-w-full [&_.pagination]:gap-0 [&_.pagination]:border [&_.pagination]:border-[var(--fuel-line)] [&_.pagination]:w-fit [&_.pagination]:ml-auto [&_.pagination]:bg-[var(--fuel-background)]',
   '[&_.pagination_li_a]:block [&_.pagination_li_a]:rounded-none [&_.pagination_li_a]:bg-transparent [&_.pagination_li_a]:px-3 [&_.pagination_li_a]:py-2.5 [&_.pagination_li_a]:font-mono [&_.pagination_li_a]:text-[12px] [&_.pagination_li_a]:text-[var(--fuel-element-mid-em)] [&_.pagination_li_a]:transition-colors',
   '[&_.pagination_li_a:hover]:bg-[var(--fuel-muted)] [&_.pagination_li_a:hover]:text-[var(--fuel-element-high-em)]',
   '[&_.pagination_li.selected_a]:bg-[var(--fuel-primary)] [&_.pagination_li.selected_a]:text-[var(--fuel-primary-foreground)]',
   '[&_.pagination_li.previous_a]:px-3 [&_.pagination_li.next_a]:px-3',
-  '[&_.pagination_li.disabled_a]:text-[var(--fuel-element-disabled)] [&_.pagination_li.disabled_a:hover]:bg-transparent',
+  // Below tablet Previous and Next keep their icons and hide the words.
+  '[&_.pagination_li.previous_a>span]:text-[0px] [&_.pagination_li.next_a>span]:text-[0px] tablet:[&_.pagination_li.previous_a>span]:text-[12px] tablet:[&_.pagination_li.next_a>span]:text-[12px]',
+  '[&_.pagination_li.disabled_a]:text-[var(--fuel-disabled-text)] [&_.pagination_li.disabled_a:hover]:bg-transparent',
 ].join(' ');
 
 type BlocksTableProps = {
@@ -222,8 +224,33 @@ function BlocksTable({
     [t, i18n.language],
   );
 
+  // The 8 columns scroll sideways below about 1000 px. The right edge fades
+  // while there is more to scroll and the fade goes away at the end.
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const scroller = wrapperRef.current?.querySelector('.rdt_Table')
+      ?.parentElement as HTMLElement | null | undefined;
+    if (!scroller) return;
+    const update = () => {
+      const more =
+        scroller.scrollWidth - scroller.clientWidth - scroller.scrollLeft > 1;
+      scroller.style.maskImage = more
+        ? 'linear-gradient(to right, black calc(100% - 48px), transparent)'
+        : '';
+    };
+    update();
+    scroller.addEventListener('scroll', update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(scroller);
+    return () => {
+      scroller.removeEventListener('scroll', update);
+      observer.disconnect();
+      scroller.style.maskImage = '';
+    };
+  }, []);
+
   return (
-    <div className={`fuel-appear ${PAGER}`}>
+    <div ref={wrapperRef} className={`fuel-appear ${PAGER}`}>
       <GridTable
         columns={columns}
         data={blocks.edges}

@@ -131,7 +131,7 @@ const GasSpentChart = ({ blocks }: GasSpentProps) => {
                   fontWeight: 'bold',
                 }}
                 itemStyle={{
-                  color: 'var(--fuel-primary)',
+                  color: 'var(--fuel-brand-text)',
                 }}
                 cursor={{ strokeWidth: 0.1, radius: 10 }}
               />

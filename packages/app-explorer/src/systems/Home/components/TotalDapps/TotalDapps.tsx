@@ -1,6 +1,7 @@
 import { AnimatedNumber, RoundedContainer } from '@fuels/ui';
-import { getProjectImage } from 'app-commons';
+import { Routes, getProjectImage } from 'app-commons';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import type React from 'react';
 
@@ -8,12 +9,15 @@ interface ValidatorStatusProps {
   active: number;
   total: number;
   featured: any;
+  /** True when the list is ranked from recent blocks, false for the curated fallback. */
+  ranked?: boolean;
 }
 
 const TotalDapps: React.FC<ValidatorStatusProps> = ({
   active,
   total,
   featured,
+  ranked = false,
 }) => {
   const { t } = useTranslation();
   const activeRatio = total > 0 ? Math.min(active / total, 1) : 0;
@@ -23,13 +27,9 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <h2 className="fuel-label m-0">{t('home.fuel_dapps')}</h2>
-          <a
-            className="fuel-label block"
-            href="https://app.fuel.network/ecosystem"
-            rel="noreferrer"
-          >
+          <Link className="fuel-label block" to={Routes.ecosystem()}>
             {t('common.view_all')}
-          </a>
+          </Link>
         </div>
         <p className="fuel-stat m-0">
           <AnimatedNumber value={total} />
@@ -52,10 +52,10 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
           </span>
         </div>
 
-        <div className="my-1 h-[1px] bg-[rgba(255,255,255,0.04)]" />
+        <div className="my-1 h-[1px] bg-[var(--fuel-line)]" />
 
         <span className="text-[12px] leading-[20px] text-muted block font-bold">
-          {t('common.top_apps')}
+          {ranked ? t('home.apps_recently_active') : t('home.apps_featured')}
         </span>
 
         {featured.map(
@@ -65,7 +65,7 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
                 <img
                   src={getProjectImage(feature.image ?? '')}
                   alt={feature.name}
-                  className="w-5 h-5 shrink-0 rounded"
+                  className="w-5 h-5 shrink-0 rounded-none"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}

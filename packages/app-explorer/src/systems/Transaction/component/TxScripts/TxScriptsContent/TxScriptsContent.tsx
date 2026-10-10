@@ -48,7 +48,13 @@ function _TxScriptsContent({ tx, opened }: ScriptsContentProps) {
   // Receipts in between are not mounted. The Expand control is in the header.
   const foldable = hasFoldedOperations(tx);
   const open = !foldable || Boolean(opened);
-  const lastOp = operations.length - 1;
+  // First and last receipt over the flattened list, so an operation with no
+  // receipts at either end does not hide the pinned rows.
+  const withReceipts = operations
+    .map((o, i) => (o?.receipts?.length ? i : -1))
+    .filter((i) => i >= 0);
+  const firstOp = withReceipts[0] ?? 0;
+  const lastOp = withReceipts[withReceipts.length - 1] ?? operations.length - 1;
   const lastIdx = (operations[lastOp]?.receipts?.length ?? 0) - 1;
 
   const foldedMarker = (
@@ -64,12 +70,12 @@ function _TxScriptsContent({ tx, opened }: ScriptsContentProps) {
   return (
     <div className="flex flex-col gap-3">
       {operations.map((item, i) => {
-        if (foldable && !open && i !== 0 && i !== lastOp) return null;
+        if (foldable && !open && i !== firstOp && i !== lastOp) return null;
         return (
           <div key={`${i}-${item?.type ?? ''}`} className={classes.operation()}>
             {item?.receipts?.map((receipt, idx) => {
               const key = `${idx}-${receipt?.item?.receiptType ?? ''}`;
-              const isFirst = i === 0 && idx === 0;
+              const isFirst = i === firstOp && idx === 0;
               const isLast = i === lastOp && idx === lastIdx;
               if (foldable && !open && !isFirst && !isLast) return null;
               const pinned = foldable && (isFirst || isLast);

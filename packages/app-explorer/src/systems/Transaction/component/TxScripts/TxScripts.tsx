@@ -38,12 +38,18 @@ export function TxScripts({ tx, isLoading, index, className }: TxScriptsProps) {
         (opened ? (
           toggle
         ) : (
-          <HoverCard openDelay={100}>
-            <HoverCard.Trigger>{toggle}</HoverCard.Trigger>
-            <HoverCard.Content className="p-2 px-3">
-              <TypesCounter receipts={tx?.receipts ?? []} />
-            </HoverCard.Content>
-          </HoverCard>
+          <span className="flex items-center gap-2">
+            {/* Touch has no hover, so the count is also printed inline. */}
+            <span className="fuel-caption tabular-nums">
+              {t('tx.expand_more', { count: tx?.receipts?.length ?? 0 })}
+            </span>
+            <HoverCard openDelay={100}>
+              <HoverCard.Trigger>{toggle}</HoverCard.Trigger>
+              <HoverCard.Content className="p-2 px-3">
+                <TypesCounter receipts={tx?.receipts ?? []} />
+              </HoverCard.Content>
+            </HoverCard>
+          </span>
         ))
       }
     >

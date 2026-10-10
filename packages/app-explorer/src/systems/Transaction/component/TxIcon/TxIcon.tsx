@@ -40,7 +40,7 @@ export const TX_CHIP_KIND_MAP: Record<TxStatus, TxChipKind | undefined> = {
 
 const ICON_COLOR: Record<TxStatus, string> = {
   Success: 'text-[var(--fuel-brand-text)]',
-  Failure: 'text-[var(--red-10)]',
+  Failure: 'text-[var(--fuel-danger-text)]',
   Submitted: 'text-[var(--fuel-element-mid-em)]',
   Info: 'text-[var(--fuel-element-mid-em)]',
   Warning: 'text-[var(--fuel-element-low-em)]',

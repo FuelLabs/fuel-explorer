@@ -56,7 +56,7 @@ export function TxAssetItem({
             <IconArrowDown
               aria-hidden
               size={16}
-              className="text-[var(--red-10)]"
+              className="text-[var(--fuel-danger-text)]"
             />
             {format(amountOut)} {asset.symbol}
           </span>

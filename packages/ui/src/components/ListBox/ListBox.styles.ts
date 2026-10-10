@@ -11,7 +11,7 @@ export const item = tv({
     variant: {
       idle: [
         'text-[var(--fuel-element-high-em)]',
-        'shadow-[inset_0_0_0_1px_var(--fuel-line)] hover:shadow-[inset_0_0_0_1px_var(--fuel-primary)]',
+        'shadow-[inset_0_0_0_1px_var(--fuel-line)] hover:shadow-[inset_0_0_0_1px_var(--fuel-focus)]',
       ],
       focused: [
         'text-[var(--fuel-element-high-em)]',
@@ -19,7 +19,7 @@ export const item = tv({
       ],
       selected: [
         'text-[var(--fuel-element-high-em)]',
-        'shadow-[inset_0_0_0_1px_var(--fuel-primary)]',
+        'shadow-[inset_0_0_0_1px_var(--fuel-focus)]',
       ],
     },
   },

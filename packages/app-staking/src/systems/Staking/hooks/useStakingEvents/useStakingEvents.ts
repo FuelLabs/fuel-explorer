@@ -1,4 +1,9 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  type QueryKey,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { FUEL_INDEXER_API } from 'app-commons';
 import type { Address } from 'viem';
 import { api } from '~staking/systems/Core/utils/api';
@@ -46,13 +51,59 @@ type AllStakingEventsCache = {
   hasNextPage: boolean;
 };
 
-// One cached read shared by the board and the transactions tab. Pages are
-// newest first and chained on endCursor, so each page waits for the one
-// before it. The page is written into the cache before the next request,
-// so the first page renders while older pages are still loading. A failed
-// page rejects and leaves the query in isError. The key starts with the
-// shared events key and includes 'all' and the address, so the existing
-// invalidations refresh it.
+// Reads every page, newest first, chained on endCursor. Each page is written
+// into the cache before the next request, so the first page renders while older
+// pages load. A refetch keeps the list already cached until the new walk has
+// at least as many events, so the Transactions tab does not shrink to one page
+// while it refreshes. A failed page rejects and leaves the pages already
+// written in the cache.
+export async function walkStakingEvents({
+  address,
+  queryClient,
+  queryKey,
+}: {
+  address: Address | undefined;
+  queryClient: QueryClient;
+  queryKey: QueryKey;
+}): Promise<AllStakingEventsCache> {
+  const previous = queryClient.getQueryData<AllStakingEventsCache>(queryKey);
+  const nodes: StakingEvent[] = [];
+  let before: number | undefined;
+  let result: AllStakingEventsCache = {
+    nodes: [],
+    truncated: false,
+    hasNextPage: false,
+  };
+
+  for (let page = 0; page < ALL_EVENTS_MAX_PAGES; page++) {
+    const data = await getStakingEvents({
+      address,
+      before,
+      after: undefined,
+      itemsPerPage: ALL_EVENTS_PAGE_SIZE,
+    });
+    nodes.push(...data.nodes);
+    const historyEnded = !data.pageInfo.hasPreviousPage;
+    const hitCap = page + 1 >= ALL_EVENTS_MAX_PAGES;
+    result = {
+      nodes: nodes.slice(),
+      truncated: hitCap && !historyEnded,
+      hasNextPage: !historyEnded && !hitCap,
+    };
+    const last = historyEnded || hitCap;
+    if (!previous || last || nodes.length >= previous.nodes.length) {
+      queryClient.setQueryData(queryKey, result);
+    }
+    if (last) return result;
+    before = data.pageInfo.endCursor;
+  }
+
+  return result;
+}
+
+// One cached read shared by the board and the transactions tab. The key starts
+// with the shared events key and includes 'all' and the address, so the
+// existing invalidations refresh it.
 export const useAllStakingEvents = (address: Address | undefined) => {
   const queryClient = useQueryClient();
   const queryKey = [
@@ -64,37 +115,7 @@ export const useAllStakingEvents = (address: Address | undefined) => {
   const query = useQuery({
     queryKey,
     enabled: !!address,
-    queryFn: async (): Promise<AllStakingEventsCache> => {
-      const nodes: StakingEvent[] = [];
-      let before: number | undefined;
-      let result: AllStakingEventsCache = {
-        nodes: [],
-        truncated: false,
-        hasNextPage: false,
-      };
-
-      for (let page = 0; page < ALL_EVENTS_MAX_PAGES; page++) {
-        const data = await getStakingEvents({
-          address,
-          before,
-          after: undefined,
-          itemsPerPage: ALL_EVENTS_PAGE_SIZE,
-        });
-        nodes.push(...data.nodes);
-        const historyEnded = !data.pageInfo.hasPreviousPage;
-        const hitCap = page + 1 >= ALL_EVENTS_MAX_PAGES;
-        result = {
-          nodes: nodes.slice(),
-          truncated: hitCap && !historyEnded,
-          hasNextPage: !historyEnded && !hitCap,
-        };
-        queryClient.setQueryData(queryKey, result);
-        if (historyEnded || hitCap) return result;
-        before = data.pageInfo.endCursor;
-      }
-
-      return result;
-    },
+    queryFn: () => walkStakingEvents({ address, queryClient, queryKey }),
   });
 
   const hasNextPage = query.data?.hasNextPage ?? false;

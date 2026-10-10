@@ -4,8 +4,8 @@ export type TxChipKind = 'plain' | 'success' | 'failed' | 'pending' | 'neutral';
 
 const SQUARE: Partial<Record<TxChipKind, CSSProperties>> = {
   failed: {
-    background: 'var(--red-10)',
-    borderColor: 'var(--red-10)',
+    background: 'var(--fuel-danger)',
+    borderColor: 'var(--fuel-danger)',
   },
   pending: {
     background: 'var(--fuel-element-low-em)',

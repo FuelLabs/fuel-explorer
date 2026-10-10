@@ -1,18 +1,21 @@
 import { Button } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { base, description, subtitle, title } from './styles';
+import { useNavigate } from 'react-router-dom';
+import { PageState } from '../PageState/PageState';
 
 export function ErrorPageComponent() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   return (
-    <div className={base}>
-      <h1 className={title}>404</h1>
-      <h2 className={subtitle}>{t('errors.not_found')}</h2>
-      <p className={description}>{t('errors.not_found_body')}</p>
-      <Button>
-        <Link to="/">{t('errors.go_home')}</Link>
-      </Button>
+    <div className="py-8 tablet:py-16">
+      <h1 className="sr-only">404</h1>
+      <PageState
+        title={t('errors.not_found')}
+        description={t('errors.not_found_body')}
+        action={
+          <Button onClick={() => navigate('/')}>{t('errors.go_home')}</Button>
+        }
+      />
     </div>
   );
 }

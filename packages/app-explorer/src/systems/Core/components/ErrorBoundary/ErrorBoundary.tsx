@@ -1,6 +1,7 @@
 import { Button } from '@fuels/ui';
 import i18n from '@i18n';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { PageState } from '../PageState/PageState';
 
 type Props = {
   children: ReactNode;
@@ -25,14 +26,17 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center gap-4 pt-16 pb-16 text-center">
-          <h1 className="text-2xl font-medium">
-            {i18n.t('errors.unexpected')}
-          </h1>
-          <p className="text-base">{i18n.t('errors.unexpected_body')}</p>
-          <Button onClick={() => window.location.reload()}>
-            {i18n.t('errors.reload')}
-          </Button>
+        <div className="mx-auto max-w-screen-lg px-4 py-16">
+          <PageState
+            tone="error"
+            title={i18n.t('errors.unexpected')}
+            description={i18n.t('errors.unexpected_body')}
+            action={
+              <Button onClick={() => window.location.reload()}>
+                {i18n.t('errors.reload')}
+              </Button>
+            }
+          />
         </div>
       );
     }

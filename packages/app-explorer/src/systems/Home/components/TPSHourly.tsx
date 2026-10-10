@@ -82,7 +82,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
           {peakTps > 0 && (
             <span className="text-[12px] text-muted">
               {t('home.peak')}{' '}
-              <span className="text-[var(--color-error)] font-medium">
+              <span className="text-heading font-medium">
                 {peakTps.toFixed(2)}
               </span>{' '}
               {t('home.tx_per_second')}
@@ -103,7 +103,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
               />
               <XAxis
                 dataKey="time"
-                tick={{ className: 'fill-heading', fontSize: '10px' }}
+                tick={{ className: 'fill-heading', fontSize: '12px' }}
                 interval={Math.max(0, Math.floor(chartData.length / 6) - 1)}
               />
               <XAxis dataKey="time" xAxisId="overlay" hide />
@@ -138,7 +138,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                       >
                         {label}
                       </div>
-                      <div style={{ color: 'var(--fuel-primary)' }}>
+                      <div style={{ color: 'var(--fuel-brand-text)' }}>
                         {t('home.peak_tps')}: {data.max.toFixed(2)}{' '}
                         {t('home.tx_per_second')}
                       </div>
@@ -154,7 +154,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
               {peakTps > 0 && (
                 <ReferenceLine
                   y={peakTps}
-                  stroke="var(--red-10)"
+                  stroke="var(--fuel-element-low-em)"
                   strokeDasharray="5 3"
                 />
               )}
@@ -168,7 +168,7 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
                 {chartData.map((_, index) => (
                   <Cell
                     key={`avg-${index}`}
-                    className="text-[rgb(180,180,180)] dark:text-[rgb(223,223,223)] fill-current"
+                    fill="var(--fuel-element-low-em)"
                   />
                 ))}
               </Bar>

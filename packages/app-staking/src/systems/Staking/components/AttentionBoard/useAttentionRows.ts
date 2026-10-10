@@ -2,7 +2,10 @@ import { FuelToken, TOKENS } from 'app-commons';
 import { DECIMAL_FUEL, bn } from 'fuels';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
-import { formatAmount } from '~staking/systems/Core/utils/bn';
+import {
+  formatAmount,
+  truncateToIntegerString,
+} from '~staking/systems/Core/utils/bn';
 import { useRigClaimable } from '../../hooks/useRigClaimable';
 import { useAllStakingEvents } from '../../hooks/useStakingEvents/useStakingEvents';
 import { useAccountValidators } from '../../services/useAccountValidators';
@@ -45,7 +48,7 @@ export function useAttentionRows(lane: Lane) {
   const onEthereum = lane === 'ethereum';
   const { address: walletAddress, isConnected } = useAccount();
   const address = onEthereum ? walletAddress : undefined;
-  const { pendingDeposit } = useRigClaimable();
+  const { pendingDeposit } = useRigClaimable({ enabled: !onEthereum });
   const rewards = useRewards(address);
   const positions = useAccountValidators(address, {
     select: (data) => data.validators,
@@ -66,7 +69,7 @@ export function useAttentionRows(lane: Lane) {
     for (const entry of onEthereum ? (rewards.data?.rewards ?? []) : []) {
       // The API returns decimal strings, so each amount is cut to an integer first.
       const total = (entry.reward ?? []).reduce(
-        (sum, item) => sum.add(bn(Math.floor(Number(item.amount ?? 0)))),
+        (sum, item) => sum.add(bn(truncateToIntegerString(item.amount))),
         bn(0),
       );
       if (total.isZero()) continue;

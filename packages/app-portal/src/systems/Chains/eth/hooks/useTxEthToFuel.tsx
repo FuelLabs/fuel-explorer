@@ -8,9 +8,11 @@ import {
   BRIDGE_STEP_ID,
   BRIDGE_STEP_STATUS_ID,
   type BridgeStep,
+  type BridgeStepStatusId,
 } from '~portal/systems/Bridge/components/BridgeSteps';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
 import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
+import { ethToFuelTxKey } from '~portal/systems/Bridge/utils/txKey';
 
 import { useAsset } from '../../../Assets/hooks/useAsset';
 import { distanceToNow, useFuelAccountConnection } from '../../fuel';
@@ -74,28 +76,43 @@ const txEthToFuelSelectors = {
         ? BRIDGE_STEP_STATUS_ID.automatic
         : BRIDGE_STEP_STATUS_ID.action;
 
-    function getSettlementStatusText() {
-      if (status.isSettlementDone) return 'Done!';
+    function getSettlementStatus(): {
+      status: string;
+      statusId: BridgeStepStatusId;
+      eta?: string;
+    } {
+      if (status.isSettlementDone) {
+        return { status: 'Done!', statusId: BRIDGE_STEP_STATUS_ID.done };
+      }
       if (date) {
         const target = dayjs(date)
           .add(DEPOSIT_DURATION_MINUTES, 'minutes')
           .toDate();
-        return `~${distanceToNow(target)} left`;
+        const eta = distanceToNow(target);
+        return {
+          status: `~${eta} left`,
+          statusId: BRIDGE_STEP_STATUS_ID.timeLeft,
+          eta,
+        };
       }
-      return 'Waiting';
+      return { status: 'Waiting', statusId: BRIDGE_STEP_STATUS_ID.waiting };
     }
+    const settlementStatus = getSettlementStatus();
 
     const steps = [
       {
         id: BRIDGE_STEP_ID.submitToBridge,
         name: 'Submit to bridge',
         status: 'Done!',
+        statusId: BRIDGE_STEP_STATUS_ID.done,
         isDone: true,
       },
       {
         id: BRIDGE_STEP_ID.settlement,
         name: 'Settlement',
-        status: getSettlementStatusText(),
+        status: settlementStatus.status,
+        statusId: settlementStatus.statusId,
+        eta: settlementStatus.eta,
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
@@ -113,6 +130,9 @@ const txEthToFuelSelectors = {
         id: BRIDGE_STEP_ID.receiveOnFuel,
         name: 'Receive on Fuel',
         status: status.isReceiveDone ? 'Done!' : 'Automatic',
+        statusId: status.isReceiveDone
+          ? BRIDGE_STEP_STATUS_ID.done
+          : BRIDGE_STEP_STATUS_ID.automatic,
         isLoading: false,
         isDone: status.isReceiveDone,
         isSelected: false,
@@ -162,7 +182,7 @@ export function useTxEthToFuel({
     network: 'ethereum',
     id: id ?? '',
   });
-  const machineId = `${txId}-${messageSentEventNonce}`;
+  const machineId = ethToFuelTxKey(txId, messageSentEventNonce);
 
   const txEthToFuelState = store.useSelector(
     Services.bridgeTxs,

@@ -37,7 +37,9 @@ export function InputAmountRelativeValue({
       weight="medium"
       className="w-full whitespace-nowrap overflow-hidden text-ellipsis text-[var(--fuel-element-low-em)] font-semibold"
     >
-      {t('core.amount.relative_usd')}{' '}
+      {t('core.amount.relative_usd', {
+        defaultValue: 'Relative value in USD:',
+      })}{' '}
       <span className="text-[var(--fuel-element-high-em)]">{formatted}</span>
     </Text>
   );

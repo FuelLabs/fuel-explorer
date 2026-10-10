@@ -1,4 +1,4 @@
-import { createDayjs } from 'app-commons';
+import { createDayjs, formatDateTimeTitle } from 'app-commons';
 import { useTranslation } from 'react-i18next';
 
 const dayjs = createDayjs();
@@ -25,16 +25,8 @@ export function TxDayTime({ timeStamp }: { timeStamp?: string | null }) {
     minute: '2-digit',
     second: '2-digit',
   }).format(date);
-  const title = new Intl.DateTimeFormat(i18n.language, {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(date);
   return (
-    <span title={title}>
+    <span title={formatDateTimeTitle(date, i18n.language)}>
       {label} · {clock}
     </span>
   );

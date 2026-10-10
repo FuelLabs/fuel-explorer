@@ -53,14 +53,23 @@
   --fuel-element-high-em: var(--fuel-stone-950);
   --fuel-element-mid-em: var(--fuel-stone-700);
   --fuel-element-low-em: var(--fuel-stone-600);
-  --fuel-element-disabled: var(--fuel-stone-400);
+  /* Disabled text: about 3.2:1 on white, distinct from the mid and low emphasis text. */
+  --fuel-disabled-text: oklch(0.6 0.01 70);
+  --fuel-element-disabled: var(--fuel-disabled-text);
   --fuel-primary: var(--fuel-brand-600);
   --fuel-primary-hover: var(--fuel-brand-400);
   --fuel-primary-foreground: var(--fuel-stone-950);
+  /* Danger: fill and border 4.8:1, text and icons 7:1 on white. */
+  --fuel-danger: oklch(0.577 0.235 27.3);
+  --fuel-danger-text: oklch(0.49 0.2 27);
+  /* Warning: amber fill, brown text 6:1 on white. */
+  --fuel-warning: oklch(0.76 0.16 75);
+  --fuel-warning-text: oklch(0.48 0.11 65);
+  --fuel-scrim: rgb(0 0 0 / 0.5);
   /* brand-600 is 1.70:1 on white, so green text uses brand-900 (6.42:1). */
   --fuel-brand-text: var(--fuel-brand-900);
   /* Focus rings follow brand-text. brand-900 is 6.42:1 on white. */
-  --fuel-focus: var(--fuel-brand-text);
+  --fuel-focus: var(--fuel-brand-900);
   --fuel-secondary: var(--fuel-stone-950);
   --fuel-secondary-hover: var(--fuel-stone-800);
   --fuel-secondary-foreground: oklch(0.922 0 0);
@@ -83,15 +92,22 @@
   --fuel-element-high-em: var(--fuel-white);
   --fuel-element-mid-em: var(--fuel-stone-400);
   --fuel-element-low-em: var(--fuel-gray-alpha-light);
-  --fuel-element-disabled: var(--fuel-stone-400);
+  /* Disabled text: below the mid and low emphasis text, about 3:1 on the card. */
+  --fuel-disabled-text: oklch(0.55 0 0);
+  --fuel-element-disabled: var(--fuel-disabled-text);
   --fuel-primary: var(--fuel-brand-600);
   --fuel-primary-hover: var(--fuel-brand-400);
   --fuel-primary-foreground: var(--fuel-stone-950);
+  --fuel-danger: oklch(0.66 0.21 25);
+  --fuel-danger-text: oklch(0.76 0.16 22);
+  --fuel-warning: oklch(0.8 0.16 85);
+  --fuel-warning-text: oklch(0.83 0.15 85);
+  --fuel-scrim: rgb(0 0 0 / 0.5);
   --fuel-brand-text: var(--fuel-brand-600);
   /* Focus rings follow brand-text. brand-600 is 11.63:1 on the dark canvas. */
-  --fuel-focus: var(--fuel-brand-text);
+  --fuel-focus: var(--fuel-brand-600);
   --fuel-secondary: oklch(0.269 0 0);
-  --fuel-secondary-hover: var(--fuel-stone-800);
+  --fuel-secondary-hover: oklch(0.34 0 0);
   --fuel-secondary-foreground: oklch(0.985 0 0);
   --fuel-grid-line: var(--fuel-border-dark);
   --fuel-line: var(--fuel-border-dark);
@@ -110,12 +126,24 @@
   --accent-11: var(--fuel-brand-text);
   --accent-contrast: var(--fuel-primary-foreground);
   --accent-indicator: var(--fuel-primary);
-  --focus-8: var(--fuel-ring);
+  --focus-8: var(--fuel-focus);
 }
 
 .rt-Heading {
   font-weight: 500;
   letter-spacing: -0.04em;
+}
+
+/* Tight tracking is tuned for Latin. CJK fallback fonts need none. */
+:lang(ja),
+:lang(ko),
+:lang(zh),
+.radix-themes:is(:lang(ja), :lang(ko), :lang(zh)),
+:is(:lang(ja), :lang(ko), :lang(zh)) .rt-Heading,
+.rt-Heading:is(:lang(ja), :lang(ko), :lang(zh)) {
+  --default-letter-spacing: normal;
+  --heading-letter-spacing: normal;
+  letter-spacing: normal;
 }
 
 .rt-Button,
@@ -149,6 +177,18 @@
   color: var(--fuel-element-low-em);
 }
 
+.fuel-body {
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.32px;
+}
+
+.fuel-caption {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--fuel-element-low-em);
+}
+
 .fuel-stat {
   font-size: 32px;
   font-weight: 500;
@@ -173,6 +213,17 @@
   letter-spacing: -0.4px;
   font-variant-numeric: tabular-nums;
   color: var(--fuel-element-high-em);
+}
+
+/* Grows the tap target to 44px without changing the visual size. The element must be positioned. */
+.fuel-hit::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
 }
 
 .fuel-square {
@@ -289,6 +340,18 @@
 
 .fuel-illustrated .rt-CalloutRoot:where(.rt-variant-soft) {
   background-color: color-mix(in srgb, var(--accent-9) 18%, var(--fuel-card));
+}
+
+/* The sticky nav covers the top of the page, so anchors and focus scroll below it. */
+html {
+  --nav-height: 60px;
+  scroll-padding-top: var(--nav-height);
+}
+
+@media (min-width: 1024px) {
+  html {
+    --nav-height: 70px;
+  }
 }
 
 .fuel-page {
@@ -497,8 +560,10 @@
   transition: background-color 300ms;
 }
 
-.fuel-hover-fill:hover {
-  background-color: var(--fuel-muted);
+@media (hover: hover) {
+  .fuel-hover-fill:hover {
+    background-color: var(--fuel-muted);
+  }
 }
 
 /* A card inside a link fills on hover. Radix paints the card on ::before. */
@@ -506,8 +571,10 @@
   transition: background-color 300ms;
 }
 
-.fuel-card-link:hover .rt-BaseCard::before {
-  background-color: var(--fuel-muted);
+@media (hover: hover) {
+  .fuel-card-link:hover .rt-BaseCard::before {
+    background-color: var(--fuel-muted);
+  }
 }
 
 /* Questions list. Opening folds the answer down out of a soft blur, draws the

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface BridgeTxProgressProps {
   initial: Date | undefined;
@@ -19,6 +20,7 @@ export function BridgeTxProgress({
   duration,
   isDone,
 }: BridgeTxProgressProps) {
+  const { t } = useTranslation();
   const target = useMemo(
     () => dayjs(initial).add(duration, 'minutes'),
     [initial, duration],
@@ -85,8 +87,13 @@ export function BridgeTxProgress({
   }
 
   return (
+    // biome-ignore lint/a11y/useFocusableInteractive: a progressbar is read-only and not focusable
     <div
-      aria-hidden
+      role="progressbar"
+      aria-label={t('portal.bridge.progress_label')}
+      aria-valuemin={0}
+      aria-valuemax={MAX}
+      aria-valuenow={progress}
       className="mt-2 h-0.5 w-full overflow-hidden bg-[var(--fuel-line)] transition-opacity duration-300 ease-out motion-reduce:transition-none"
       style={{ opacity: progress === MAX ? 0 : 1 }}
     >

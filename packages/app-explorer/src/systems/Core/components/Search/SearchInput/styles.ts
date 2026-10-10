@@ -6,12 +6,12 @@ export const styles = tv({
       'transition-all duration-200 [&[data-active=false]]:ease-in [&[data-active=true]]:ease-out',
       'group justify-center items-center',
       'block left-0 w-full', // needed for properly execution of transitions
-      // Focused below the laptop breakpoint, the box covers the compact nav bar (the header is positioned).
+      // Focused below the md breakpoint, the box covers the compact nav bar (the header is positioned).
       '[&[data-active=true]]:absolute [&[data-active=true]]:inset-0 [&[data-active=true]]:z-50',
       '[&[data-active=true]]:px-4 [&[data-active=true]]:py-[10px]',
       '[&[data-active=true]]:bg-[var(--fuel-background)]',
-      'laptop:[&[data-active=true]]:static laptop:[&[data-active=true]]:p-0',
-      'laptop:[&[data-active=true]]:bg-transparent',
+      'md:[&[data-active=true]]:static md:[&[data-active=true]]:p-0',
+      'md:[&[data-active=true]]:bg-transparent',
     ],
     inputContainer: 'w-full',
     inputWrapper: [

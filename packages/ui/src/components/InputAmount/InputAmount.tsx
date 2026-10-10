@@ -211,7 +211,8 @@ export const InputAmountBalance = createComponent<
     { className, label, balance: customBalance, children, ...props },
   ) => {
     const { t } = useTranslation();
-    const balanceLabel = label ?? t('core.amount.balance');
+    const balanceLabel =
+      label ?? t('core.amount.balance', { defaultValue: 'Balance' });
     const { balance: originalBalance, formatOpts } =
       useContext(InputAmountRootCtx);
     const balance = customBalance ?? originalBalance;
@@ -243,7 +244,7 @@ export const InputAmountBalance = createComponent<
           size="1"
           radius="none"
           className={clsx(
-            'fuel-label self-start bg-transparent px-0 text-[var(--fuel-element-mid-em)]',
+            'fuel-label self-start bg-transparent px-0 shadow-none text-[var(--fuel-element-mid-em)]',
             className,
           )}
           aria-label={balanceLabel}
@@ -264,14 +265,14 @@ export const InputAmountButtonMaxBalance = createComponent<
   defaultProps: {
     variant: 'ghost',
     size: '1',
-    color: 'green',
+    color: 'gray',
   },
   render: (
     _,
     { className, children, onClick, disabled: disabledProp, ...props },
   ) => {
     const { t } = useTranslation();
-    const fallback = t('core.amount.max');
+    const fallback = t('core.amount.max', { defaultValue: 'MAX' });
     const visible = children ?? fallback;
     const classes = styles();
     const { balance, formatOpts } = useContext(InputAmountRootCtx);
@@ -331,7 +332,9 @@ export const InputAmountCoinSelector = createComponent<
     return (
       <Button
         id="CoinSelector"
-        aria-label={t('core.amount.coin_selector')}
+        aria-label={t('core.amount.coin_selector', {
+          defaultValue: 'Coin selector',
+        })}
         variant="surface"
         color="gray"
         onClick={onClick}
@@ -349,13 +352,18 @@ export const InputAmountCoinSelector = createComponent<
         {asset.name}
         {asset.decimals === 0 ? (
           <Badge variant="ghost" color="green" size="1">
-            {t('asset.nft_tag')}
+            {t('asset.nft_tag', { defaultValue: 'NFT' })}
           </Badge>
         ) : (
           ''
         )}
         {asset.suspicious && (
-          <Tooltip content={t('asset.suspicious')}>
+          <Tooltip
+            content={t('asset.suspicious', {
+              defaultValue:
+                'This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.',
+            })}
+          >
             <div className="mx-1">
               <IconAlertOctagon size={16} color="orange" />
             </div>
@@ -382,7 +390,11 @@ const styles = tv({
       'flex-row flex-wrap bg-clip-border w-auto h-auto py-3',
       'first-child:flex-1 first-child:basis-2/5 first-child:indent-[var(--space-3)]',
     ],
-    maxBalance: ['fuel-hover-fill', 'h-6 px-2', 'mr-2', 'rounded-none'],
+    maxBalance: [
+      'fuel-hover-fill fuel-hit fuel-label relative',
+      'h-6 px-2 mr-2 rounded-none',
+      'border border-[var(--fuel-line)] text-[var(--fuel-element-high-em)]',
+    ],
     coinSelector: 'gap-2 text-xs py-1 px-3',
   },
 });

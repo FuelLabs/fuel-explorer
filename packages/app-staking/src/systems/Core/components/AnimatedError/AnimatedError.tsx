@@ -11,7 +11,7 @@ export function AnimatedError({ error, className }: AnimatedErrorProps) {
       {/* // should line break and not overflow parent */}
       <Text
         className={cx(
-          'break-words text-[var(--red-11)] break-all whitespace-pre-wrap font-semibold',
+          'break-words text-[var(--fuel-danger-text)] break-all whitespace-pre-wrap font-semibold',
           className,
         )}
       >

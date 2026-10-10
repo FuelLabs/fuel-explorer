@@ -1,7 +1,10 @@
 import { useAccount, useWallet } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
 import * as AppCommons from 'app-commons';
-import { StakingMigration } from '~staking/contracts/rig/StakingMigration';
+import {
+  type IdentityInput,
+  StakingMigration,
+} from '~staking/contracts/rig/StakingMigration';
 
 // A missing Fuel wallet, an in-flight read, and a failed read are not a balance.
 // Only `ready` means the contract answered, including a real zero.
@@ -31,7 +34,10 @@ function hasStakingContract() {
 }
 
 // stFUEL waiting to be claimed on The Rig, read from the L2 staking contract.
-export function useRigClaimable() {
+// `enabled: false` skips the wallet read for screens that do not show it.
+export function useRigClaimable({
+  enabled = true,
+}: { enabled?: boolean } = {}) {
   const accountQuery = useAccount();
   const walletQuery = useWallet();
   const accountAddress = accountQuery.account ?? undefined;
@@ -47,7 +53,7 @@ export function useRigClaimable() {
         !wallet &&
         (walletQuery.isLoading || walletQuery.isFetching)));
 
-  const canQuery = isConnected && hasStakingContract();
+  const canQuery = enabled && isConnected && hasStakingContract();
 
   const query = useQuery({
     queryKey: ['staking-migration-claimable', accountAddress],
@@ -63,7 +69,9 @@ export function useRigClaimable() {
           wallet,
         );
 
-        const identity = { Address: { bits: wallet.address.toB256() } } as any;
+        const identity: IdentityInput = {
+          Address: { bits: wallet.address.toB256() },
+        };
 
         const { value: pendingDeposit } = await stakingMigration.functions
           .get_pending_deposit_to_be_claimed(identity)
@@ -84,11 +92,7 @@ export function useRigClaimable() {
   const status = selectRigClaimStatus({
     isConnected,
     isResolvingConnection,
-    isQueryLoading:
-      canQuery &&
-      !query.isSuccess &&
-      !query.isError &&
-      (query.isPending || query.isFetching),
+    isQueryLoading: canQuery && query.isPending,
     isQueryError: query.isError,
     isQuerySuccess: query.isSuccess,
   });

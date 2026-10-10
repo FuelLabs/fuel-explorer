@@ -1,15 +1,9 @@
 import type { GQLTransactionItemFragment } from '@fuel-explorer/graphql';
-import {
-  HStack,
-  HelperIcon,
-  LoadingBox,
-  LoadingWrapper,
-  Tooltip,
-  VStack,
-} from '@fuels/ui';
+import { HStack, LoadingBox, LoadingWrapper, Tooltip, VStack } from '@fuels/ui';
 import { bn } from 'fuels';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { InfoHint } from '~/systems/Core/components/InfoHint/InfoHint';
 import { TxFact } from '../TxItem/TxFact';
 
 type TxPoliciesProps = {
@@ -108,7 +102,7 @@ function PolicyItem({
     <div className="flex items-center justify-between gap-2 text-[13px]">
       <HStack gap="1" align="center" className="shrink-0">
         <span className="text-[var(--fuel-element-low-em)]">{name}</span>
-        <HelperIcon message={description} iconSize={12} />
+        <InfoHint content={description} />
       </HStack>
       <Tooltip content={description}>
         <span className="truncate text-heading">{formattedValue}</span>

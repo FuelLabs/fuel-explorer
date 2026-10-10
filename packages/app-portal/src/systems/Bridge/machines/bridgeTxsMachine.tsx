@@ -9,6 +9,7 @@ import {
 import { txEthToFuelMachine } from '~portal/systems/Chains/eth/machines';
 import { FetchMachine } from '~portal/systems/Core/machines';
 import { delay } from '~portal/systems/Core/utils';
+import { ethToFuelTxKey } from '../utils/txKey';
 
 import type { HexAddress } from 'app-commons';
 import type { PublicClient } from 'viem';
@@ -173,7 +174,7 @@ export const bridgeTxsMachine = createMachine(
           );
 
           const newRefs = ethToFuelBridgeTxs?.reduce((prev, tx) => {
-            const key = `${tx.txHash}-${tx.nonce}`;
+            const key = ethToFuelTxKey(tx.txHash, tx.nonce);
             // safely avoid overriding instance
             if (ctx.ethToFuelTxRefs?.[key]) return prev;
 
@@ -235,10 +236,10 @@ export const bridgeTxsMachine = createMachine(
             ethPublicClient,
             inputEthTxNonce,
           } = ev.input || {};
-          if (!ethTxId || ctx.ethToFuelTxRefs?.[ethTxId])
-            return ctx.ethToFuelTxRefs;
+          if (!ethTxId) return ctx.ethToFuelTxRefs;
 
-          const key = `${ethTxId}-${inputEthTxNonce}`;
+          const key = ethToFuelTxKey(ethTxId, inputEthTxNonce);
+          if (ctx.ethToFuelTxRefs?.[key]) return ctx.ethToFuelTxRefs;
 
           const newRef = {
             [key]: spawn(
@@ -250,7 +251,7 @@ export const bridgeTxsMachine = createMachine(
                 fuelProvider: fuelProvider,
                 ethPublicClient: ethPublicClient,
               }),
-              { name: ethTxId, sync: true },
+              { name: key, sync: true },
             ),
           };
 

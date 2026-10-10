@@ -1,5 +1,5 @@
 .fuel-AnimatedDialogOverlay {
-  background-color: rgb(0 0 0 / 0.5);
+  background-color: var(--fuel-scrim);
   position: fixed;
   top: 0;
   left: 0;

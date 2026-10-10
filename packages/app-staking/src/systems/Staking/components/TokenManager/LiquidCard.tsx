@@ -43,11 +43,11 @@ export const LiquidCard = ({
       <div className="fuel-edge flex min-w-0 items-center gap-3 px-6 py-5 tablet:px-10">
         <span
           aria-hidden
-          className="size-2 shrink-0 border border-[var(--red-10)] bg-[var(--red-10)]"
+          className="size-2 shrink-0 border border-[var(--fuel-danger)] bg-[var(--fuel-danger)]"
         />
         <p
           role="alert"
-          className="m-0 text-[14px] leading-[18px] text-[var(--red-11)]"
+          className="m-0 text-[14px] leading-[18px] text-[var(--fuel-danger-text)]"
         >
           {error.message}
         </p>
@@ -70,7 +70,7 @@ export const LiquidCard = ({
               0
             </span>
           </Tooltip>
-          <span className="fuel-label">{symbol}</span>
+          <span className="fuel-label normal-case">{symbol}</span>
         </div>
         {actionEl || null}
       </div>

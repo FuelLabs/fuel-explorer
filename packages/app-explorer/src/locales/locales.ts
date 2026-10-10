@@ -1,16 +1,25 @@
 import type { Resource } from 'i18next';
 import en from './en.json';
-import ja from './ja.json';
-import ko from './ko.json';
-import zhCn from './zh-cn.json';
-import zhHk from './zh-hk.json';
 
-export const locales = {
+// English is bundled (it is the fallback). The other languages are separate
+// chunks, fetched only when the stored or selected language needs them.
+export const bundledLocales = {
   en: { translation: en },
-  ja: { translation: ja },
-  ko: { translation: ko },
-  'zh-CN': { translation: zhCn },
-  'zh-HK': { translation: zhHk },
 } satisfies Resource;
 
-export type Locale = keyof typeof locales;
+export const localeLoaders = {
+  ja: () => import('./ja.json'),
+  ko: () => import('./ko.json'),
+  'zh-CN': () => import('./zh-cn.json'),
+  'zh-HK': () => import('./zh-hk.json'),
+} as const;
+
+export type Locale = 'en' | keyof typeof localeLoaders;
+
+export const locales: Record<Locale, true> = {
+  en: true,
+  ja: true,
+  ko: true,
+  'zh-CN': true,
+  'zh-HK': true,
+};

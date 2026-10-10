@@ -20,7 +20,7 @@ import {
   VStack,
   shortAddress,
 } from '@fuels/ui';
-import { IconAlertCircle, IconInfoCircleFilled } from '@fuels/ui';
+import { IconAlertCircle, IconInfoCircle } from '@fuels/ui';
 import { IconUserCircle } from '@fuels/ui';
 import { AnimatedHeight } from '@fuels/ui';
 import { Routes } from 'app-commons';
@@ -94,7 +94,7 @@ export const Bridge = () => {
               <AnimatedHeight enabled={isEthFrom && !!toCustomAddress}>
                 <Alert size="1">
                   <Alert.Icon>
-                    <IconInfoCircleFilled size={16} />
+                    <IconInfoCircle size={16} />
                   </Alert.Icon>
 
                   <Alert.Text>
@@ -110,7 +110,7 @@ export const Bridge = () => {
               <div className="pt-2">
                 <Alert size="1">
                   <Alert.Icon>
-                    <IconInfoCircleFilled size={16} />
+                    <IconInfoCircle size={16} />
                   </Alert.Icon>
                   <Alert.Text>
                     <Trans
@@ -140,6 +140,7 @@ export const Bridge = () => {
             <InputAmount balance={assetBalance} formatOpts={assetFormat}>
               <InputAmount.Field
                 disabled={!ethAddress && !fuelAddress}
+                aria-label={t('portal.bridge.amount_label')}
                 value={assetAmount}
                 onChange={(val) =>
                   handlers.changeAssetAmount({
@@ -188,8 +189,8 @@ export const Bridge = () => {
                 isFuelChain(toNetwork) && !!balance?.eq(0) && !!ethAssetAddress
               }
             >
-              <Alert>
-                <Alert.Icon>
+              <Alert className="!border-l-[var(--fuel-warning)]">
+                <Alert.Icon className="!text-[var(--fuel-warning-text)]">
                   <IconAlertCircle size={16} />
                 </Alert.Icon>
                 <Alert.Text>{t('portal.bridge.no_gas_warning')}</Alert.Text>
@@ -206,7 +207,7 @@ export const Bridge = () => {
       <BridgeButton />
       <Alert>
         <Alert.Icon>
-          <IconAlertCircle size={16} />
+          <IconInfoCircle size={16} />
         </Alert.Icon>
         <Alert.Text>
           {t('portal.bridge.withdraw_delay', { time: timeToWithdrawFormatted })}{' '}

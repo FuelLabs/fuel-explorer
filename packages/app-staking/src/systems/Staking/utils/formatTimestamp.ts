@@ -1,4 +1,4 @@
-import { intlLanguage } from 'app-commons/src/utils/dayjs';
+import { intlLanguage } from 'app-commons';
 import { getI18n } from 'react-i18next';
 
 export const formatTimestamp = (timestamp?: number) => {

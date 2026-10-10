@@ -8,11 +8,13 @@ import type { i18n as I18n } from 'i18next';
 
 const DURATION = 560; // ms until the last character lands
 const SPREAD = 0.45; // share of DURATION over which characters start, left to right
-const SETTLE = 300; // ms without a React change before watching stops
+const SETTLE = 300; // ms without a React change before watching stops (once no run is active)
 const GIVE_UP = 10_000; // ms to wait for languageChanged after languageChanging
 const MAX_NODES = 250;
 const MAX_LENGTH = 150;
 const NOISE = Array.from('·-_/\\|+*#');
+// Polled numbers, hashes and addresses change on their own. They are not copy.
+const DYNAMIC = /\d|0x[0-9a-f]{4,}/i;
 const SKIP = 'input, textarea, script, style, [contenteditable], [aria-live]';
 
 type Run = {
@@ -24,6 +26,8 @@ type Run = {
   begins: number[];
   lands: number[];
   start: number;
+  /** What this effect last wrote. A different value means React wrote since. */
+  written: string;
 };
 
 const runs = new Map<Text, Run>();
@@ -82,6 +86,7 @@ function start(node: Text, from: string, now: number) {
   if (
     from === to ||
     to.length > MAX_LENGTH ||
+    DYNAMIC.test(to) ||
     runs.size >= MAX_NODES ||
     node.parentElement?.closest(SKIP) ||
     !visible(node)
@@ -120,6 +125,7 @@ function start(node: Text, from: string, now: number) {
     begins,
     lands,
     start: now,
+    written: to,
   });
 }
 
@@ -151,8 +157,15 @@ function write(now: number) {
       runs.delete(run.node);
       continue;
     }
+    // React wrote after the last frame and the observer has not delivered it
+    // yet. Its text is newer than the frame, so the run ends.
+    if (run.node.data !== run.written) {
+      runs.delete(run.node);
+      continue;
+    }
     const done = now - run.start >= DURATION;
-    run.node.data = done ? run.to.join('') : frame(run, now);
+    run.written = done ? run.to.join('') : frame(run, now);
+    run.node.data = run.written;
     if (done) runs.delete(run.node);
   }
   observer?.takeRecords();
@@ -160,6 +173,8 @@ function write(now: number) {
 
 function watching(now: number) {
   if (!observer) return false;
+  // Runs last longer than SETTLE, and React can write while one is active.
+  if (runs.size > 0) return true;
   if (!changedAt) return now - changingAt < GIVE_UP;
   return now - Math.max(changedAt, lastChangeAt) < SETTLE;
 }

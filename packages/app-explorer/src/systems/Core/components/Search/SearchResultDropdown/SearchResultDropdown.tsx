@@ -34,6 +34,7 @@ export const SearchResultDropdown = forwardRef<
       isFocused,
       loading,
       error,
+      id,
     },
     ref,
   ) => {
@@ -42,8 +43,8 @@ export const SearchResultDropdown = forwardRef<
     const classes = styles();
     const searchClasses = searchStyles();
     const { isMobile } = useBreakpoints();
-    const trimL = isMobile ? 8 : 12;
-    const trimR = isMobile ? 6 : 10;
+    const trimL = isMobile ? 15 : 20;
+    const trimR = isMobile ? 13 : 18;
 
     const hits = hitsFromResult(searchResult, searchValue);
     const showRecents =
@@ -73,7 +74,9 @@ export const SearchResultDropdown = forwardRef<
             if (!isModified(event)) event.preventDefault();
           }}
         >
-          {shortAddress(hit.value, trimL, trimR)}
+          <span title={hit.value} className="truncate">
+            {shortAddress(hit.value, trimL, trimR)}
+          </span>
         </Link>
         {trailing}
       </Dropdown.Item>
@@ -82,14 +85,15 @@ export const SearchResultDropdown = forwardRef<
     let body: React.ReactNode;
     if (error) {
       body = (
-        <div className={classes.errorContainer()}>
+        <div role="status" className={classes.errorContainer()}>
           <p className={classes.errorTitle()}>{t('common.search_error')}</p>
         </div>
       );
     } else if (loading) {
       body = (
-        <div className={classes.loadingContainer()}>
-          <Spinner size={20} color="brand" aria-label="loading" />
+        <div role="status" className={classes.loadingContainer()}>
+          <Spinner size={20} color="brand" aria-hidden />
+          <span className="sr-only">{t('common.search_loading')}</span>
         </div>
       );
     } else if (showRecents) {
@@ -129,7 +133,7 @@ export const SearchResultDropdown = forwardRef<
       ));
     } else {
       body = (
-        <div className={classes.emptyContainer()}>
+        <div role="status" className={classes.emptyContainer()}>
           <p className={classes.emptyTitle()}>{t('common.no_results')}</p>
           <p className={classes.emptyHint()}>{t('common.no_results_hint')}</p>
         </div>
@@ -144,6 +148,7 @@ export const SearchResultDropdown = forwardRef<
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
+          id={id}
           style={{ width }}
           onCloseAutoFocus={(event) => event.preventDefault()}
           onInteractOutside={(event) => {

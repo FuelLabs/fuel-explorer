@@ -1,8 +1,10 @@
 import type { IconProps, TabsProps } from '@fuels/ui';
+import { useSlidingIndicator } from '@fuels/ui';
 import {
   Fragment,
   cloneElement,
   isValidElement,
+  useEffect,
   useLayoutEffect,
   useRef,
 } from 'react';
@@ -33,46 +35,54 @@ export function NavigationTab({
 }: NavigationTabsProps) {
   const classes = styles();
   const listRef = useRef<HTMLDivElement>(null);
-  const indicatorRef = useRef<HTMLSpanElement>(null);
-  const placed = useRef(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const active = value ?? defaultValue;
 
-  // The indicator is one 1px element that slides between tabs. It is scaled
-  // to the tab's width, so only transform animates.
+  // The indicator is one 1px element that slides between tabs.
   const itemKey = items.map((item) => item.value).join('|');
-  // biome-ignore lint/correctness/useExhaustiveDependencies: itemKey tracks the tab set
+  const indicatorRef = useSlidingIndicator<HTMLDivElement, HTMLSpanElement>(
+    listRef,
+    '[data-active="true"]',
+    [active, itemKey],
+  );
+
+  // The row scrolls sideways when the tabs do not fit. Bring the active tab
+  // into view, and fade the right edge only while there is more to scroll.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the active tab and tab set move the scroll
   useLayoutEffect(() => {
-    const list = listRef.current;
-    const indicator = indicatorRef.current;
-    if (!list || !indicator) return;
-
-    function place(animate: boolean) {
-      if (!list || !indicator) return;
-      const tab = list.querySelector<HTMLElement>('[data-active="true"]');
-      indicator.style.opacity = tab ? '1' : '0';
-      if (!tab) return;
-      // Skip the first placement and resizes, which should not travel.
-      if (!animate) indicator.style.transition = 'none';
-      const box = tab.getBoundingClientRect();
-      const x = box.left - list.getBoundingClientRect().left;
-      indicator.style.transform = `translateX(${x}px) scaleX(${box.width})`;
-      if (!animate) {
-        void indicator.offsetWidth;
-        indicator.style.transition = '';
-      }
+    const root = rootRef.current;
+    const tab = listRef.current?.querySelector<HTMLElement>(
+      '[data-active="true"]',
+    );
+    if (!root || !tab) return;
+    const rootBox = root.getBoundingClientRect();
+    const tabBox = tab.getBoundingClientRect();
+    if (tabBox.left < rootBox.left || tabBox.right > rootBox.right) {
+      root.scrollLeft +=
+        tabBox.left - rootBox.left - (rootBox.width - tabBox.width) / 2;
     }
-
-    place(placed.current);
-    placed.current = true;
-    let width = list.offsetWidth;
-    const observer = new ResizeObserver(() => {
-      if (list.offsetWidth === width) return;
-      width = list.offsetWidth;
-      place(false);
-    });
-    observer.observe(list);
-    return () => observer.disconnect();
   }, [active, itemKey]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const update = () => {
+      const more = root.scrollWidth - root.clientWidth - root.scrollLeft > 1;
+      root.style.maskImage = more
+        ? 'linear-gradient(to right, #000 calc(100% - 40px), transparent)'
+        : '';
+    };
+    update();
+    root.addEventListener('scroll', update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(root);
+    if (listRef.current) observer.observe(listRef.current);
+    return () => {
+      root.removeEventListener('scroll', update);
+      observer.disconnect();
+      root.style.maskImage = '';
+    };
+  }, []);
 
   // Arrow keys move and activate, matching the previous Radix tabs. A link
   // follows its route; a button still calls onValueChange.
@@ -116,6 +126,8 @@ export function NavigationTab({
     return cloneElement(node as ReactElement<Record<string, unknown>>, {
       role: 'tab',
       'aria-selected': isActive,
+      // A link to the current page. Buttons carry their state in aria-selected.
+      'aria-current': isActive && node.type !== 'button' ? 'page' : undefined,
       'aria-disabled': disabled || undefined,
       tabIndex: disabled ? -1 : isActive ? 0 : -1,
       onKeyDown: onTabKeyDown,
@@ -123,7 +135,7 @@ export function NavigationTab({
   }
 
   return (
-    <div className={classes.root({ className })}>
+    <div ref={rootRef} className={classes.root({ className })}>
       <div ref={listRef} role="tablist" className={classes.list()}>
         <span ref={indicatorRef} aria-hidden className={classes.indicator()} />
         {items.map((item) => {
@@ -174,7 +186,6 @@ const styles = tv({
   slots: {
     root: [
       'mb-5 max-w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-      'max-tablet:[mask-image:linear-gradient(to_right,#000_calc(100%-40px),transparent)]',
     ],
     list: 'relative flex min-w-max border-b border-[var(--fuel-line)]',
     cell: [

@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { tv } from 'tailwind-variants';
 import type { Project } from '~/types/ecosystem';
-import { prefersReducedMotion } from '../utils/prefersReducedMotion';
 import { projectSlug } from '../utils/projectSlug';
 import { EcosystemLogo } from './EcosystemProjectCard';
+import { EcosystemVideo } from './EcosystemVideo';
 
 const POSTER = '/illustrations/o2-turbo-card.jpg';
 const VIDEO = '/illustrations/o2-turbo.mp4';
@@ -48,28 +48,12 @@ export function EcosystemSpotlight({ project }: { project: Project }) {
         </div>
       </div>
       <div className={classes.media()}>
-        {prefersReducedMotion() ? (
-          <img
-            src={POSTER}
-            alt={t('ecosystem.spotlight.image_alt', { name: project.name })}
-            loading="lazy"
-            className={classes.mediaFill()}
-          />
-        ) : (
-          <video
-            src={VIDEO}
-            poster={POSTER}
-            aria-label={t('ecosystem.spotlight.image_alt', {
-              name: project.name,
-            })}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className={classes.mediaFill()}
-          />
-        )}
+        <EcosystemVideo
+          src={VIDEO}
+          poster={POSTER}
+          label={t('ecosystem.spotlight.image_alt', { name: project.name })}
+          className={classes.mediaFill()}
+        />
       </div>
     </section>
   );
@@ -91,8 +75,8 @@ const styles = tv({
     lead: 'm-0 mt-4 max-w-[46ch] text-[14px] leading-[24px] text-[var(--fuel-stone-400)] tablet:text-[16px] tablet:leading-[28px]',
     actions: 'mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-12',
     viewLink: [
-      'fuel-eyebrow shrink-0 text-[11px] tracking-[0.08em] text-[var(--fuel-stone-400)] no-underline',
-      'transition-colors duration-200 hover:text-[var(--fuel-primary)] focus-visible:text-[var(--fuel-primary)] motion-reduce:transition-none',
+      'fuel-eyebrow shrink-0 text-[var(--fuel-stone-400)] no-underline',
+      'transition-colors duration-200 hover:text-[var(--fuel-brand-text)] focus-visible:text-[var(--fuel-brand-text)] motion-reduce:transition-none',
     ],
     media:
       'relative order-first aspect-video overflow-hidden bg-black md:order-none md:aspect-auto md:min-h-[320px]',

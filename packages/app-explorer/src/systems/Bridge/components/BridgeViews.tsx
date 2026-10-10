@@ -16,14 +16,9 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
 } from 'react';
-import {
-  UNSAFE_LocationContext,
-  useLocation,
-  useNavigationType,
-} from 'react-router-dom';
+import { PinLocation } from '~staking/systems/Core/components/PinLocation/PinLocation';
 
 export type BridgeView = 'form' | 'history';
 
@@ -289,14 +284,6 @@ const PanelView = forwardRef<HTMLDivElement, PanelViewProps>(function PanelView(
 
 export function BridgeViews({ view, form, history }: BridgeViewsProps) {
   const reduce = useReducedMotion();
-  const location = useLocation();
-  const navigationType = useNavigationType();
-  // Each view keeps the URL it rendered with. The outgoing form reads the new
-  // URL otherwise, and useBridge redirects /bridge/history back to /bridge.
-  const frozenLocation = useMemo(
-    () => ({ location, navigationType }),
-    [location, navigationType],
-  );
   const lastView = useRef(view);
   const switches = useRef(0);
   if (lastView.current !== view) {
@@ -309,9 +296,7 @@ export function BridgeViews({ view, form, history }: BridgeViewsProps) {
     <div className="relative flex min-h-0 flex-1 flex-col">
       <AnimatePresence mode="popLayout" initial={false}>
         <PanelView key={view} view={view} animateIn={hasSwitched}>
-          <UNSAFE_LocationContext.Provider value={frozenLocation}>
-            {view === 'history' ? history : form}
-          </UNSAFE_LocationContext.Provider>
+          <PinLocation>{view === 'history' ? history : form}</PinLocation>
         </PanelView>
       </AnimatePresence>
       {hasSwitched && view === 'history' && !reduce && (

@@ -1,6 +1,5 @@
-import { Button, Dropdown, Link } from '@fuels/ui';
+import { Button, Dropdown } from '@fuels/ui';
 import { IconChevronDown } from '@fuels/ui';
-import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { languages } from '~/locales/languages';
 import { type Locale, locales } from '~/locales/locales';
@@ -18,8 +17,8 @@ export function LanguageSelect() {
           color="gray"
           size="1"
           rightIcon={IconChevronDown}
-          aria-label={t('common.language')}
-          className="m-0 h-10 px-4 text-color-gray-3"
+          aria-label={`${t('common.language')}: ${current?.name ?? ''}`}
+          className="m-0 h-10 px-4 text-[var(--fuel-element-mid-em)]"
         >
           {current?.name}
         </Button>
@@ -28,25 +27,17 @@ export function LanguageSelect() {
         {languages.map((language) => {
           const selected = language.code === value;
           return (
-            <Dropdown.Item
+            <Dropdown.CheckboxItem
               key={language.code}
-              disabled={selected}
-              className={clsx('px-4', {
-                'hover:bg-gray-3': !selected,
-                'hover:bg-transparent': selected,
-              })}
-              onSelect={() => {
-                void i18n.changeLanguage(language.code);
+              lang={language.code}
+              checked={selected}
+              className="px-4"
+              onCheckedChange={() => {
+                if (!selected) void i18n.changeLanguage(language.code);
               }}
             >
-              <Link
-                color={selected ? 'green' : 'gray'}
-                underline="none"
-                className="decoration-none pointer-events-none w-full"
-              >
-                {language.name}
-              </Link>
-            </Dropdown.Item>
+              {language.name}
+            </Dropdown.CheckboxItem>
           );
         })}
       </Dropdown.Content>

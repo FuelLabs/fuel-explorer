@@ -1,4 +1,4 @@
-import { HStack, Skeleton } from '@fuels/ui';
+import { HStack, LoadingBox } from '@fuels/ui';
 import { IconCopy } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
 import { useTranslation } from 'react-i18next';
@@ -12,10 +12,7 @@ export function TxHeaderLoader({ isSimple }: { isSimple?: boolean }) {
       subtitle={
         isSimple ? null : (
           <HStack gap="3" align="center" justify="center">
-            <Skeleton
-              height="20px"
-              className="mobile:max-tablet:w-[200px] w-[514px]"
-            />
+            <LoadingBox className="h-5 mobile:max-tablet:w-[200px] w-[514px]" />
             <IconCopy
               className="text-icon opacity-[0.6]"
               width={16}

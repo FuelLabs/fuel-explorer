@@ -1,4 +1,4 @@
-import { intlLanguage } from 'app-commons/src/utils/dayjs';
+import { intlLanguage } from 'app-commons';
 
 export function formatFullDate(dateString?: string): string {
   if (!dateString) return '';
