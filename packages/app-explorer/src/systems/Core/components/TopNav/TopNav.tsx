@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Nav } from '@fuels/ui';
+import { Box, HStack, Nav } from '@fuels/ui';
 import { isRoute } from 'app-commons';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -61,6 +61,16 @@ export function TopNav() {
     />
   );
 
+  // Filled like the language and network buttons beside it.
+  const mobileThemeToggle = (
+    <Nav.ThemeToggle
+      whenOpened="no-effect"
+      theme={resolvedTheme}
+      onToggle={setTheme}
+      className="h-10 w-10 border-0 bg-[var(--fuel-muted)]"
+    />
+  );
+
   const logo = (
     <Link to="/" className="fuel-hit relative flex items-center">
       <Nav.Logo />
@@ -113,10 +123,8 @@ export function TopNav() {
         </Nav.MobileContent>
         <Nav.Menu className="bg-[var(--fuel-background)]">
           <div className="flex w-full flex-col gap-4">
-            <Flex className="w-full">
-              <Box className="flex-1">{tooling}</Box>
-              <ConnectWallet />
-            </Flex>
+            <Box>{tooling}</Box>
+            <ConnectWallet block />
             <HStack
               gap="2"
               align="center"
@@ -124,7 +132,7 @@ export function TopNav() {
             >
               <LanguageSelect />
               <NetworkSelector />
-              {themeToggle}
+              {mobileThemeToggle}
             </HStack>
           </div>
         </Nav.Menu>

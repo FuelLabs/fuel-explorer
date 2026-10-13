@@ -16,7 +16,12 @@ import { useSwitchChain } from 'wagmi';
 
 const ITEM = 'cursor-pointer justify-start gap-2 px-4';
 
-export const ConnectWallet = () => {
+type ConnectWalletProps = {
+  /** Full width, for the mobile menu. Drops the corner squares, which mark a frame cell. */
+  block?: boolean;
+};
+
+export const ConnectWallet = ({ block = false }: ConnectWalletProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { connect, isConnected } = useConnectUI();
@@ -45,13 +50,13 @@ export const ConnectWallet = () => {
 
   if (isConnected && account) {
     return (
-      <div key="dropdown" className="fuel-appear">
+      <div key="dropdown" className={`fuel-appear ${block ? 'w-full' : ''}`}>
         <Dropdown>
           <Dropdown.Trigger>
             {/* Same height as the language and network controls beside it. */}
             <button
               type="button"
-              className="fuel-edge fuel-hover-fill fuel-label m-0 flex h-10 min-w-[165px] cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]"
+              className={`${block ? 'w-full' : 'fuel-edge min-w-[165px]'} fuel-hover-fill fuel-label m-0 flex h-10 cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]`}
             >
               <span className="font-mono normal-case">
                 {shortAddress(account)}
@@ -60,7 +65,10 @@ export const ConnectWallet = () => {
             </button>
           </Dropdown.Trigger>
 
-          <Dropdown.Content align="end" className="w-[200px]">
+          <Dropdown.Content
+            align={block ? 'start' : 'end'}
+            className="w-[200px]"
+          >
             {!isChainSupported && (
               <Dropdown.Item
                 className={ITEM}
@@ -106,7 +114,7 @@ export const ConnectWallet = () => {
   }
 
   return (
-    <div key="button" className="fuel-appear">
+    <div key="button" className={`fuel-appear ${block ? 'w-full' : ''}`}>
       {/*
        * TODO: Add isLoading back to the button.
        *
@@ -115,11 +123,12 @@ export const ConnectWallet = () => {
        */}
       <Button
         onClick={connect}
-        className="fuel-hit relative tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]"
-        size={{
-          initial: '1',
-          lg: '2',
-        }}
+        className={
+          block
+            ? 'fuel-hit relative h-10 w-full'
+            : 'fuel-hit relative tablet:h-[40px] tablet:max-w-[165px] tablet:min-w-[140px] laptop:w-[165px]'
+        }
+        size={block ? '2' : { initial: '1', lg: '2' }}
       >
         {t('portal.wallet.connect')}
       </Button>
