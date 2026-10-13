@@ -31,7 +31,7 @@ export function TxContractIcon({
           {(isImageLoading || isMetadataLoading) && (
             <LoadingBox
               style={{ height: size, width: size }}
-              className="rounded-full"
+              className="!rounded-none"
             />
           )}
           {data?.project?.image && data?.metadata && (
@@ -40,7 +40,7 @@ export function TxContractIcon({
               alt={data.metadata.name}
               width={size}
               height={size}
-              className={clsx('rounded-full overflow-hidden', {
+              className={clsx('overflow-hidden', {
                 hidden: isImageLoading,
               })}
               onLoad={() => setIsImageLoading(false)}

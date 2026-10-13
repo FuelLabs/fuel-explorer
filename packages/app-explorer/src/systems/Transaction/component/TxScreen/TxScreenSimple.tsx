@@ -115,7 +115,7 @@ export function TxScreenSimple({
             loadingEl={
               <div className="flex flex-col gap-0">
                 <div className="flex items-center gap-3">
-                  <LoadingBox className="size-8 rounded-full" />
+                  <LoadingBox className="size-8 !rounded-none" />
                   <LoadingBox className="h-5 w-40" />
                 </div>
 
@@ -134,7 +134,7 @@ export function TxScreenSimple({
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <LoadingBox className="size-8 rounded-full" />
+                  <LoadingBox className="size-8 !rounded-none" />
                   <LoadingBox className="h-5 w-40" />
                 </div>
               </div>
