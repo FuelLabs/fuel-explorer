@@ -5,6 +5,7 @@ import {
   InputAmount,
   LoadingBox,
   LoadingWrapper,
+  Square,
   VStack,
 } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS } from 'app-commons';
@@ -172,10 +173,7 @@ export const StepAllowance = ({
             role="status"
             className="mt-3 flex items-start gap-3 border-t border-[var(--fuel-border)] pt-3"
           >
-            <span
-              aria-hidden
-              className="mt-[3px] size-2 shrink-0 border border-[var(--fuel-indicator-border)] bg-transparent"
-            />
+            <Square kind="pending" className="mt-[3px]" />
             <p className="m-0 text-[14px] leading-[18px] text-[var(--fuel-element-low-em)]">
               {t('staking.upgrade.waiting_allowance')}
               <br />

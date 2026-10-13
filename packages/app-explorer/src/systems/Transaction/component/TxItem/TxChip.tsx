@@ -1,23 +1,17 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { Square, type SquareKind } from '@fuels/ui';
+import type { ReactNode } from 'react';
 
 export type TxChipKind = 'plain' | 'success' | 'failed' | 'pending' | 'neutral';
 
-const SQUARE: Partial<Record<TxChipKind, CSSProperties>> = {
-  failed: {
-    background: 'var(--fuel-danger)',
-    borderColor: 'var(--fuel-danger)',
-  },
-  pending: {
-    background: 'var(--fuel-element-low-em)',
-    borderColor: 'var(--fuel-element-low-em)',
-  },
-  neutral: {
-    background: 'transparent',
-    borderColor: 'var(--fuel-element-low-em)',
-  },
+const SQUARE_KIND: Record<TxChipKind, SquareKind> = {
+  plain: 'brand',
+  success: 'brand',
+  failed: 'danger',
+  pending: 'pending',
+  neutral: 'idle',
 };
 
-// The 8px brand square, coloured by status.
+// The status square for a transaction. A thin map onto the shared Square.
 export function TxSquare({
   kind = 'success',
   className,
@@ -25,13 +19,7 @@ export function TxSquare({
   kind?: TxChipKind;
   className?: string;
 }) {
-  return (
-    <span
-      aria-hidden
-      className={`fuel-square ${className ?? ''}`}
-      style={SQUARE[kind]}
-    />
-  );
+  return <Square kind={SQUARE_KIND[kind]} className={className} />;
 }
 
 type TxChipProps = {

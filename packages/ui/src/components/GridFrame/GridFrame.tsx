@@ -28,9 +28,9 @@ function findJoints(frame: HTMLElement): Joint[] {
   const top = origin.top + frame.clientTop;
   const width = frame.clientWidth;
   const height = frame.clientHeight;
-  const cells = [...frame.querySelectorAll<HTMLElement>('.fuel-edge')].filter(
+  const cells = [...frame.querySelectorAll<HTMLElement>('.fuel-cell')].filter(
     (cell) =>
-      cell.parentElement?.closest('.fuel-edge, .fuel-grid-frame') === frame,
+      cell.parentElement?.closest('.fuel-cell, .fuel-grid-frame') === frame,
   );
 
   const joints = new Map<string, Joint>();
@@ -82,23 +82,26 @@ export function GridFrame({
     });
     const observeCells = () => {
       resize.observe(frame);
-      for (const cell of frame.querySelectorAll('.fuel-edge')) {
+      for (const cell of frame.querySelectorAll('.fuel-cell')) {
         resize.observe(cell);
       }
     };
     const mutations = new MutationObserver(observeCells);
     mutations.observe(frame, { childList: true, subtree: true });
     observeCells();
-    // Fades change visibility without a resize, so measure again when one ends.
+    // Fades change visibility without a resize, and entrance animations move
+    // cells without one, so measure again when either ends.
     const remeasure = () => {
       if (!pending) pending = requestAnimationFrame(measure);
     };
     frame.addEventListener('transitionend', remeasure);
+    frame.addEventListener('animationend', remeasure);
     return () => {
       cancelAnimationFrame(pending);
       resize.disconnect();
       mutations.disconnect();
       frame.removeEventListener('transitionend', remeasure);
+      frame.removeEventListener('animationend', remeasure);
     };
   }, []);
 

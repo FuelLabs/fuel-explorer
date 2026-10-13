@@ -165,7 +165,7 @@ export function TxScreenStandard({
   return (
     <div className={classes.wrapper()}>
       <TxRise>
-        <TxItemGroup className="fuel-edge">{facts}</TxItemGroup>
+        <TxItemGroup corners>{facts}</TxItemGroup>
       </TxRise>
       <ContentMain tx={tx} isLoading={isLoading} />
     </div>

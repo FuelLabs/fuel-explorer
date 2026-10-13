@@ -1,4 +1,4 @@
-import { Button, LoadingBox, Tooltip } from '@fuels/ui';
+import { Button, LoadingBox, Square, Tooltip } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { useModal } from 'connectkit';
 import { useState } from 'react';
@@ -26,12 +26,7 @@ function Lane({ rig }: { rig: boolean }) {
   const { t } = useTranslation();
   return (
     <span className="fuel-label flex items-center gap-2 text-[var(--fuel-element-mid-em)]">
-      <span
-        aria-hidden
-        className={`size-2 shrink-0 border border-[var(--fuel-indicator-border)] ${
-          rig ? 'bg-transparent' : 'bg-[var(--fuel-element-high-em)]'
-        }`}
-      />
+      <Square kind={rig ? 'idle' : 'strong'} />
       {rig ? t('staking.lane_rig') : t('staking.lane_ethereum')}
     </span>
   );
@@ -73,7 +68,7 @@ function Amount({
 function ReadyMark({ label }: { label: string }) {
   return (
     <span className="flex items-center gap-2 text-[var(--fuel-element-high-em)]">
-      <span aria-hidden className="fuel-square" />
+      <Square />
       <span className="fuel-label text-[var(--fuel-element-high-em)]">
         {label}
       </span>
@@ -90,10 +85,7 @@ function ProgressMark({
   return (
     <span className="flex min-w-0 flex-col gap-2">
       <span className="flex items-center gap-2">
-        <span
-          aria-hidden
-          className="size-2 shrink-0 border border-[var(--fuel-indicator-border)]"
-        />
+        <Square kind="pending" />
         <span className="fuel-label text-[var(--fuel-element-mid-em)]">
           {eta
             ? t('staking.board.time_left', { eta })
@@ -238,7 +230,7 @@ export function AttentionBoard() {
 
   return (
     <section
-      className="fuel-edge min-w-0"
+      className="fuel-cell min-w-0"
       aria-labelledby="board-title"
       aria-busy={isLoading || undefined}
     >

@@ -1,4 +1,4 @@
-import { Button, IconChevronRight, LoadingBox } from '@fuels/ui';
+import { Button, IconChevronRight, LoadingBox, Square } from '@fuels/ui';
 import { Routes } from 'app-commons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -104,14 +104,7 @@ function TransferRow({ data, kind }: { data: RowData; kind: Kind }) {
         ) : (
           <>
             <span className="flex items-center gap-2">
-              <span
-                aria-hidden
-                className={
-                  kind === 'action'
-                    ? 'fuel-square'
-                    : 'size-2 shrink-0 border border-[var(--fuel-indicator-border)]'
-                }
-              />
+              <Square kind={kind === 'action' ? 'brand' : 'pending'} />
               <span
                 className={`fuel-label ${
                   kind === 'action'
@@ -267,7 +260,7 @@ export function TransfersBoard({
   useEffect(() => onCountChange?.(openCount), [onCountChange, openCount]);
 
   return (
-    <section className="fuel-edge min-w-0" aria-labelledby="transfers-title">
+    <section className="fuel-cell min-w-0" aria-labelledby="transfers-title">
       <div className="flex items-center justify-between gap-4 px-6 pt-8 pb-6 tablet:px-10">
         <h2
           id="transfers-title"

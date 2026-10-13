@@ -1,4 +1,10 @@
-import { Button, Dropdown, shortAddress, useToast } from '@fuels/ui';
+import {
+  Button,
+  Dropdown,
+  FrameCorners,
+  shortAddress,
+  useToast,
+} from '@fuels/ui';
 import {
   IconChevronDown,
   IconCopy,
@@ -17,7 +23,7 @@ import { useSwitchChain } from 'wagmi';
 const ITEM = 'cursor-pointer justify-start gap-2 px-4';
 
 type ConnectWalletProps = {
-  /** Full width, for the mobile menu. Drops the corner squares, which mark a frame cell. */
+  /** Full width, for the mobile menu, without the corner squares. */
   block?: boolean;
 };
 
@@ -56,12 +62,13 @@ export const ConnectWallet = ({ block = false }: ConnectWalletProps) => {
             {/* Same height as the language and network controls beside it. */}
             <button
               type="button"
-              className={`${block ? 'w-full' : 'fuel-edge min-w-[165px]'} fuel-hover-fill fuel-label m-0 flex h-10 cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]`}
+              className={`${block ? 'w-full' : 'min-w-[165px]'} relative fuel-hover-fill fuel-label m-0 flex h-10 cursor-pointer items-center justify-between gap-2 border border-[var(--fuel-line)] bg-transparent px-4 text-[var(--fuel-element-high-em)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)]`}
             >
               <span className="font-mono normal-case">
                 {shortAddress(account)}
               </span>
               <IconChevronDown size={14} className="shrink-0 opacity-60" />
+              {!block && <FrameCorners variant="pair" />}
             </button>
           </Dropdown.Trigger>
 

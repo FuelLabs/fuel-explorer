@@ -1,4 +1,4 @@
-import { Spinner } from '@fuels/ui';
+import { Spinner, Square } from '@fuels/ui';
 import { IconCheck } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
@@ -71,7 +71,7 @@ export const BridgeSteps = ({ steps }: BridgeStepsProps) => {
                       className={`${classes.icon()} fuel-appear`}
                     />
                   ) : step.isSelected ? (
-                    <span aria-hidden className="fuel-square" />
+                    <Square />
                   ) : (
                     <span className={classes.number()}>{index + 1}</span>
                   )}

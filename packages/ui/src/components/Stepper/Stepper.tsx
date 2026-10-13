@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { createComponent, withNamespace } from '../../utils/component';
 import { IconCheck } from '../Icons';
+import { Square } from '../Square/Square';
 import { icon, item, root } from './Stepper.styles';
 
 type StepperBaseProps = {
@@ -119,7 +120,7 @@ export const StepperItemIcon = createComponent<{}, 'div'>({
       return (
         <span className={classes}>
           <span className="sr-only">{ctx.index}</span>
-          <span className="fuel-square" aria-hidden />
+          <Square />
         </span>
       );
     }

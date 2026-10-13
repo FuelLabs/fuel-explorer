@@ -10,7 +10,7 @@ import {
 } from '../hooks/useWithdrawWarning';
 
 const LABEL =
-  'fuel-eyebrow flex cursor-pointer items-start gap-2 !leading-5 text-[var(--fuel-element-mid-em)]';
+  'fuel-eyebrow flex cursor-pointer items-start gap-2 !leading-[20px] text-[var(--fuel-element-mid-em)]';
 
 export const BridgeButton = () => {
   const { t } = useTranslation();

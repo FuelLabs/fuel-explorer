@@ -68,7 +68,7 @@
   "ecosystem": {
     "eyebrow": "Fuel エコシステム",
     "built_on_fuel": "Fuel 上で動く",
-    "lead": "アプリ、ウォレット、インフラが最速の実行レイヤーで稼働しています。",
+    "lead": "Fuel を基盤とするアプリケーション、プロダクト、インフラを探索しましょう。",
     "sections": {
       "fuel": {
         "title": "Fuel Suite"

@@ -1,4 +1,11 @@
-import { Box, HStack, LoadingBox, LoadingWrapper, ScrollArea } from '@fuels/ui';
+import {
+  Box,
+  FrameCorners,
+  HStack,
+  LoadingBox,
+  LoadingWrapper,
+  ScrollArea,
+} from '@fuels/ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
@@ -46,6 +53,7 @@ export function CodeBlock({
 
   return (
     <div className={classes.root()}>
+      <FrameCorners variant="pair" />
       <div className={classes.cardHeader()}>
         <LoadingWrapper
           isLoading={isLoading}
@@ -95,7 +103,7 @@ export function CodeBlock({
 const styles = tv({
   slots: {
     root: [
-      'fuel-edge fuel-appear group block border border-[var(--fuel-line)] bg-[var(--fuel-background)] p-0',
+      'relative fuel-appear group block border border-[var(--fuel-line)] bg-[var(--fuel-background)] p-0',
       'transition-[max-height]',
       'data-[compact=true]:max-h-[210px]',
     ],

@@ -9,7 +9,7 @@ export const ConversionToolLoader = () => {
         {[1, 2].map((cell) => (
           <div
             key={cell}
-            className="fuel-edge flex flex-col justify-between gap-6 px-6 py-5 tablet:px-10"
+            className="fuel-cell flex flex-col justify-between gap-6 px-6 py-5 tablet:px-10"
           >
             <LoadingBox className="h-4 w-32 !rounded-none" />
             <LoadingBox className="h-6 w-40 !rounded-none" />

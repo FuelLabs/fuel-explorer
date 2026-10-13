@@ -104,7 +104,7 @@ export default function StakingLayout() {
           panelClassName={LANE_PANEL}
         >
           <AttentionBoard />
-          <div className="fuel-edge min-w-0">
+          <div className="fuel-cell min-w-0">
             <div className="px-6 pt-6 tablet:px-10 empty:hidden">
               <BridgePausedBanner />
             </div>

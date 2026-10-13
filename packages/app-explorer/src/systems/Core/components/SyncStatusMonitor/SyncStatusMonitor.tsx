@@ -1,3 +1,4 @@
+import { FrameCorners, Square } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 import { type SyncMetrics, useSyncMetrics } from '../../hooks/useSyncMetrics';
 
@@ -22,9 +23,10 @@ export function SyncStatusMonitor() {
   return (
     <div
       role="status"
-      className="fuel-edge fuel-appear mt-1 mb-6 flex items-start gap-3 border border-[var(--fuel-line)] px-4 py-3"
+      className="relative fuel-appear mt-1 mb-6 flex items-start gap-3 border border-[var(--fuel-line)] px-4 py-3"
     >
-      <span aria-hidden className="fuel-square mt-[6px] shrink-0" />
+      <FrameCorners variant="pair" />
+      <Square className="mt-[6px]" />
       <p className="m-0 text-[14px] text-[var(--fuel-element-low-em)] leading-[20px]">
         {t('core.sync_status.message')}
       </p>

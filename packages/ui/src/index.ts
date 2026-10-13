@@ -61,6 +61,7 @@ export * from './components/Popover';
 export * from './components/RadioGroup';
 export * from './components/ScrollArea';
 export * from './components/SectionTitle';
+export * from './components/Square';
 export * from './components/Select';
 export * from './components/Separator';
 export * from './components/Skeleton';

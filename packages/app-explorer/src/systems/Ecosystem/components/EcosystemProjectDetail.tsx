@@ -319,9 +319,12 @@ const styles = tv({
     // The frames stack 40 px apart, so the vertical corner lines stay short
     // enough not to cross into the next frame.
     page: 'mx-auto w-full max-w-[1240px] [--fuel-corner-reach-y:12px]',
+    // Starts where the hero copy starts: its padding plus the 1px border. Sits
+    // 24 px below the nav, where other pages start their title, and 20 px
+    // above the frame, clear of the 12 px corner line.
     breadcrumb: [
-      'fuel-eyebrow mb-3 flex items-center gap-2 pl-2',
-      'text-[var(--fuel-element-low-em)] tablet:pl-3 desktop:mb-4 desktop:pl-4',
+      'fuel-eyebrow mt-6 mb-5 flex items-center gap-2 pl-[25px] tablet:pl-[41px] md:pl-[57px]',
+      'text-[var(--fuel-element-low-em)]',
     ],
     crumb: [
       'flex items-center gap-2 no-underline text-[var(--fuel-element-low-em)] transition-colors hover:text-heading',

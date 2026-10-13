@@ -110,7 +110,7 @@ export function BlockScreenSimple({
         as="h2"
         title={t('block.transactions')}
         mb={{ sm: '4', lg: '4' }}
-        className="mt-8"
+        className="mt-8 px-[17px]"
       />
       <LoadingWrapper
         isLoading={isLoading}

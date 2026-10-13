@@ -1,3 +1,4 @@
+import { Square } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 
 export const ActionRequiredBadge = () => {
@@ -5,7 +6,7 @@ export const ActionRequiredBadge = () => {
 
   return (
     <span className="fuel-label flex cursor-pointer items-center gap-2 text-[var(--fuel-element-high-em)]">
-      <span aria-hidden className="fuel-square" />
+      <Square />
       {t('portal.history.action_required')}
     </span>
   );

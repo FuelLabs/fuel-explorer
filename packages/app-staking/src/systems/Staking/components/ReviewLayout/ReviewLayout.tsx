@@ -4,6 +4,7 @@ import {
   IconArrowLeft,
   LoadingBox,
   LoadingWrapper,
+  Square,
   TokenBadge,
   Tooltip,
   convertToUsd,
@@ -129,10 +130,7 @@ export function ReviewLayout({
             role="status"
             className="fuel-appear mb-4 flex items-start gap-3 border-t border-[var(--fuel-border)] pt-4"
           >
-            <span
-              aria-hidden
-              className="mt-[5px] size-2 shrink-0 border border-[var(--fuel-warning)] bg-[var(--fuel-warning)]"
-            />
+            <Square kind="warning" className="mt-[5px]" />
             <div className="flex min-w-0 flex-col gap-1">
               <span className="fuel-label text-[var(--fuel-warning-text)]">
                 {warning.title}
