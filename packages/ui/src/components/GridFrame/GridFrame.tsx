@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { cx } from '../../utils/css';
+import { FrameCorners } from './FrameCorners';
 
 export interface GridFrameProps {
   children: React.ReactNode;
@@ -12,7 +13,13 @@ interface Joint {
   y: number;
 }
 
-const CORNERS = ['tl', 'tr', 'bl', 'br'] as const;
+// Current option names plus the older aliases some browsers still use.
+const VISIBLE_ONLY = {
+  opacityProperty: true,
+  visibilityProperty: true,
+  checkOpacity: true,
+  checkVisibilityCSS: true,
+} as CheckVisibilityOptions;
 
 // Cells meet on 1px lines, so a cell corner sits half a pixel outside its box.
 function findJoints(frame: HTMLElement): Joint[] {
@@ -28,6 +35,8 @@ function findJoints(frame: HTMLElement): Joint[] {
 
   const joints = new Map<string, Joint>();
   for (const cell of cells) {
+    // A faded-out cell, such as a collapsed panel, keeps its box but draws nothing.
+    if (cell.checkVisibility?.(VISIBLE_ONLY) === false) continue;
     const box = cell.getBoundingClientRect();
     if (!box.width || !box.height) continue;
     for (const x of [box.left - left - 0.5, box.right - left + 0.5]) {
@@ -80,23 +89,22 @@ export function GridFrame({
     const mutations = new MutationObserver(observeCells);
     mutations.observe(frame, { childList: true, subtree: true });
     observeCells();
+    // Fades change visibility without a resize, so measure again when one ends.
+    const remeasure = () => {
+      if (!pending) pending = requestAnimationFrame(measure);
+    };
+    frame.addEventListener('transitionend', remeasure);
     return () => {
       cancelAnimationFrame(pending);
       resize.disconnect();
       mutations.disconnect();
+      frame.removeEventListener('transitionend', remeasure);
     };
   }, []);
 
   return (
     <div ref={ref} className={cx('fuel-grid-frame', className)}>
-      {corners &&
-        CORNERS.map((corner) => (
-          <span
-            key={corner}
-            aria-hidden
-            className={`fuel-corner fuel-corner-${corner}`}
-          />
-        ))}
+      {corners && <FrameCorners />}
       {joints.map(({ x, y }) => (
         <span
           key={`${Math.round(x)}:${Math.round(y)}`}
