@@ -144,8 +144,7 @@
     "ecosystem": "Ecosystem",
     "wallet": "Wallet",
     "bridge": "Bridge",
-    "rights": "© {{year}} Fuel Labs. All rights reserved",
-    "version": "version: {{hash}}"
+    "rights": "© {{year}} Fuel Labs. All rights reserved"
   },
   "staking": {
     "title": "Help secure the Fuel network",

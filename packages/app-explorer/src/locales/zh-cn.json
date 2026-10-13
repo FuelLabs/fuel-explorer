@@ -143,8 +143,7 @@
     "ecosystem": "生态",
     "wallet": "钱包",
     "bridge": "跨链桥",
-    "rights": "© {{year}} Fuel Labs. All rights reserved",
-    "version": "version: {{hash}}"
+    "rights": "© {{year}} Fuel Labs. All rights reserved"
   },
   "staking": {
     "title": "帮助保障 Fuel 网络安全",
