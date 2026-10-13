@@ -30,8 +30,10 @@ export const styles = tv({
       'hidden md:flex justify-between flex-row items-center',
       'md:px-8 min-h-[var(--nav-height)]',
     ],
+    // Hidden below md, where the mobile nav takes over; otherwise its empty
+    // bar sits above the mobile nav.
     desktopWrapper: [
-      'sticky top-0 z-30',
+      'hidden md:block sticky top-0 z-30',
       'bg-[var(--fuel-background)]',
       'fuel-grid-divider min-h-[var(--nav-height)]',
     ],
