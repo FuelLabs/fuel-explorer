@@ -3,7 +3,6 @@ import { useProvider } from '@fuels/react';
 import {
   Alert,
   Avatar,
-  Badge,
   Button,
   Dialog,
   Dropdown,
@@ -17,10 +16,12 @@ import {
   VStack,
   shortAddress,
 } from '@fuels/ui';
-import { IconAlertCircle, IconAlertOctagon } from '@tabler/icons-react';
+import { IconAlertCircle, IconAlertOctagon } from '@fuels/ui';
 import { Address, isB256 } from 'fuels';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
+import { TxChip } from '~/systems/Transaction/component/TxItem/TxChip';
 import { getAsset } from '../../actions/get-asset';
 import { useSendTransactionDialog } from '../../hooks/useSendTransactionDialog';
 
@@ -28,9 +29,25 @@ type SendTransactionDialogContentProps = {
   balances: GQLBalanceItemFragment[];
 };
 
+const ADDRESS_TYPE_KEY: Record<string, string> = {
+  account: 'tx.account_type.wallet',
+  contract: 'tx.account_type.contract',
+  predicate: 'tx.account_type.predicate',
+};
+
+function addressTypeName(
+  type: string | undefined,
+  translate: (key: string) => string,
+) {
+  if (!type) return '';
+  const key = ADDRESS_TYPE_KEY[type.toLowerCase()];
+  return key ? translate(key) : type;
+}
+
 export function SendTransactionDialogContent({
   balances,
 }: SendTransactionDialogContentProps) {
+  const { t } = useTranslation();
   const { data, handlers } = useSendTransactionDialog({ balances });
   const [addressError, setAddressError] = useState<string | undefined>(
     undefined,
@@ -79,10 +96,10 @@ export function SendTransactionDialogContent({
   ]);
 
   const loadingText = useMemo<string>(() => {
-    if (isConfirmingTransaction) return 'Confirming (2/3)';
-    if (isBuildingTransactionPage) return 'Redirecting (3/3)';
-    return 'Sending (1/3)';
-  }, [isConfirmingTransaction, isBuildingTransactionPage]);
+    if (isConfirmingTransaction) return t('account.send.confirming');
+    if (isBuildingTransactionPage) return t('account.send.redirecting');
+    return t('account.send.sending');
+  }, [isConfirmingTransaction, isBuildingTransactionPage, t]);
 
   useEffect(() => {
     const checkAddress = async () => {
@@ -92,18 +109,20 @@ export function SendTransactionDialogContent({
         if (isB256(destinyAddress)) {
           const asset = await getAsset({ assetId: destinyAddress });
           if (asset) {
-            setAddressError('You cannot send assets to an asset address.');
+            setAddressError(t('account.send.error_asset_address'));
             return;
           }
           const type = await provider?.getAddressType(destinyAddress);
           if (type !== 'Account') {
-            setAddressError(`You cannot send assets to a ${type} address.`);
+            setAddressError(
+              t('account.send.error_address_type', {
+                type: addressTypeName(type, t),
+              }),
+            );
             return;
           }
           if (!Address.isChecksumValid(destinyAddress)) {
-            setAddressWarning(
-              "We couldn't verify the address. Make sure you are sending to a valid address.",
-            );
+            setAddressWarning(t('account.send.warning_checksum'));
           }
         }
       } catch (e: any) {
@@ -112,28 +131,28 @@ export function SendTransactionDialogContent({
     };
 
     checkAddress();
-  }, [destinyAddress, provider]);
+  }, [destinyAddress, provider, t]);
 
   const inputAmountButtonMaxBalance = (
     <InputAmount.ButtonMaxBalance
       className="text-xs font-normal py-0.5 px-1.5 mr-0 h-5"
       disabled={isUsingMaxBalance}
     >
-      Max
+      {t('account.send.max')}
     </InputAmount.ButtonMaxBalance>
   );
 
   return (
     <Dialog.Content className="max-w-sm">
-      <Dialog.Title>Send Asset</Dialog.Title>
+      <Dialog.Title>{t('account.send.title')}</Dialog.Title>
       <VStack className="mt-8">
         <label className="w-full mb-1" htmlFor="evm-dialog-destiny-address">
           <Text as="div" mb="1" size="2" weight="bold">
-            To
+            {t('account.send.to')}
           </Text>
           <Input
             id="evm-dialog-destiny-address"
-            placeholder="Enter the recipient address"
+            placeholder={t('account.send.recipient_placeholder')}
             value={destinyAddress}
             onChange={(e) => setDestinyAddress(e.target.value)}
             size="3"
@@ -148,13 +167,12 @@ export function SendTransactionDialogContent({
         </label>
         <label className="w-full mb-1" htmlFor="evm-dialog-amount">
           <Text as="div" mb="1" size="2" weight="bold">
-            Amount
+            {t('account.send.amount')}
           </Text>
           <InputAmount balance={balance || undefined} formatOpts={assetFormat}>
             <InputAmount.Field
               id="evm-dialog-amount"
               value={amount}
-              color="green"
               onChange={(val) => setAmount(val || undefined)}
               placeholder="0.00"
               className="py-2.5"
@@ -195,12 +213,10 @@ export function SendTransactionDialogContent({
                             shortAddress(balance?.assetId)}
                           {Number.parseInt(balance?.decimals as string) ===
                             0 && (
-                            <Badge variant="ghost" color="green" size="1">
-                              NFT
-                            </Badge>
+                            <TxChip kind="success">{t('asset.nft_tag')}</TxChip>
                           )}
                           {balance.suspicious && (
-                            <Tooltip content="This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.">
+                            <Tooltip content={t('asset.suspicious')}>
                               <div className="mx-1">
                                 <IconAlertOctagon size={16} color="orange" />
                               </div>
@@ -219,7 +235,7 @@ export function SendTransactionDialogContent({
                     regularEl={
                       <InputAmount.Balance
                         color="gray"
-                        className="bg-transparent text-xs p-0 self-center text-muted"
+                        className="bg-transparent text-xs p-0 self-center text-[var(--fuel-element-low-em)]"
                       />
                     }
                   />
@@ -227,7 +243,7 @@ export function SendTransactionDialogContent({
                     inputAmountButtonMaxBalance
                   ) : (
                     <Tooltip
-                      content="You have selected the max balance"
+                      content={t('account.send.max_selected')}
                       delayDuration={0}
                     >
                       {inputAmountButtonMaxBalance}
@@ -241,10 +257,7 @@ export function SendTransactionDialogContent({
                 <Alert.Icon>
                   <IconAlertCircle size="md" />
                 </Alert.Icon>
-                <Alert.Text>
-                  Insufficient balance, please inform an amount lower or equal
-                  to your balance.
-                </Alert.Text>
+                <Alert.Text>{t('account.send.insufficient')}</Alert.Text>
               </Alert>
             )}
           </InputAmount>
@@ -253,7 +266,7 @@ export function SendTransactionDialogContent({
       <HStack className="mt-8" justify="end">
         <Dialog.Close>
           <Button color="gray" variant="ghost">
-            Cancel
+            {t('account.send.cancel')}
           </Button>
         </Dialog.Close>
         <Button
@@ -262,7 +275,7 @@ export function SendTransactionDialogContent({
           isLoading={isLoading}
           loadingText={loadingText}
         >
-          Send
+          {t('account.send.submit')}
         </Button>
       </HStack>
     </Dialog.Content>
@@ -273,13 +286,13 @@ const styles = tv({
   slots: {
     trigger: [
       'cursor-pointer gap-2.5 shadow-none pr-0 text-base',
-      '[&_.tabler-icon]:ml-[-6px] [&_.tabler-icon]:w-3.5 [&_.tabler-icon]:h-3.5',
+      '[&_.lucide]:ml-[-6px] [&_.lucide]:w-3.5 [&_.lucide]:h-3.5',
     ],
   },
   variants: {
     assetsType: {
       single: {
-        trigger: '!cursor-auto [&_.tabler-icon]:hidden',
+        trigger: '!cursor-auto [&_.lucide]:hidden',
       },
     },
   },

@@ -1,6 +1,7 @@
 import { AnimatedDialog, VStack } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, FuelToken, TOKENS } from 'app-commons';
 import { AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useIsStakingContractPaused } from '~staking/hooks/useIsStakingContractPaused';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
 import { RedelegateAmount } from '~staking/systems/Staking/components/RedelegateNewDialog/RedelegateAmount';
@@ -11,9 +12,11 @@ import { useValidator } from '../../services/useValidator';
 import { LastPageWrapper } from '../PagesTransition/PagesTransition';
 import { FirstPageWrapper } from '../PagesTransition/PagesTransition';
 import { PausedContractDialogStakingContent } from '../PausedContractDialogStakingContent/PausedContractDialogStakingContent';
+import { StepIndicator } from '../StepIndicator/StepIndicator';
 export const RedelegateNewDialog = ({
   validator,
 }: { validator: SequencerValidatorAddress }) => {
+  const { t } = useTranslation();
   const {
     amount,
     stakedAmount,
@@ -80,19 +83,31 @@ export const RedelegateNewDialog = ({
           }
         >
           <VStack className="h-full" gap="7">
-            <AnimatePresence mode="wait" initial={false}>
-              {!isReviewPage ? (
-                <FirstPageWrapper>
-                  <AnimatedDialog.Title>Redelegate</AnimatedDialog.Title>
-                </FirstPageWrapper>
-              ) : (
-                <LastPageWrapper>
-                  <AnimatedDialog.Title>
-                    Review: Redelegate
-                  </AnimatedDialog.Title>
-                </LastPageWrapper>
-              )}
-            </AnimatePresence>
+            <div className="flex items-center justify-between gap-4">
+              <AnimatePresence mode="wait" initial={false}>
+                {!isReviewPage ? (
+                  <FirstPageWrapper>
+                    <AnimatedDialog.Title>
+                      {t('staking.dialog.redelegate')}
+                    </AnimatedDialog.Title>
+                  </FirstPageWrapper>
+                ) : (
+                  <LastPageWrapper>
+                    <AnimatedDialog.Title>
+                      {t('staking.dialog.review_redelegate')}
+                    </AnimatedDialog.Title>
+                  </LastPageWrapper>
+                )}
+              </AnimatePresence>
+              <StepIndicator
+                current={isReviewPage ? 1 : 0}
+                total={2}
+                label={t('staking.dialog.step_of', {
+                  current: (isReviewPage ? 1 : 0) + 1,
+                  total: 2,
+                })}
+              />
+            </div>
 
             <AnimatePresence mode="wait" initial={false}>
               {!isReviewPage ? (

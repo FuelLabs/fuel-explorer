@@ -1,56 +1,29 @@
-import type { CardProps, HeadingProps, TextProps } from '@fuels/ui';
-import { Card, Heading, Text, createComponent, withNamespace } from '@fuels/ui';
+import { withNamespace } from '@fuels/ui';
+import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
-import EmptySvg from './empty.svg?react';
+type PartProps = { className?: string; children?: ReactNode };
 
-export type EmptyCardProps = CardProps & { hideImage?: boolean };
-export type EmptyCardTitleProps = HeadingProps;
-export type EmptyCardDescriptionProps = TextProps;
+// hideImage stays accepted so existing callers keep compiling; the empty row
+// has no illustration.
+export type EmptyCardProps = PartProps & { hideImage?: boolean };
+export type EmptyCardTitleProps = PartProps;
+export type EmptyCardDescriptionProps = PartProps;
 
-export const EmptyCardRoot = createComponent<EmptyCardProps, typeof Card>({
-  id: 'EmptyCard',
-  render: (_, { children, className, hideImage, ...props }) => {
-    const classes = styles({ className });
-    return (
-      <Card {...props} className={classes.root({ className })}>
-        {!hideImage && (
-          <EmptySvg
-            width={80}
-            height={80}
-            viewBox="0 0 682.66 682.66"
-            className={classes.image({
-              className: '[&_path]:stroke-[8] text-muted',
-            })}
-          />
-        )}
-        {children}
-      </Card>
-    );
-  },
-});
+export function EmptyCardRoot({ children, className }: EmptyCardProps) {
+  return <div className={styles().root({ className })}>{children}</div>;
+}
 
-export const EmptyCardTitle = createComponent<
-  EmptyCardTitleProps,
-  typeof Card.Title
->({
-  id: 'EmptyCardTitle',
-  render: (_, { className, ...props }) => {
-    const classes = styles({ className });
-    return <Heading {...props} as="h4" size="5" className={classes.title()} />;
-  },
-});
+export function EmptyCardTitle({ children, className }: EmptyCardTitleProps) {
+  return <h4 className={styles().title({ className })}>{children}</h4>;
+}
 
-export const EmptyCardDescription = createComponent<
-  EmptyCardDescriptionProps,
-  typeof Text
->({
-  id: 'EmptyCardDescription',
-  render: (_, { className, ...props }) => {
-    const classes = styles({ className });
-    return <Text {...props} className={classes.description()} />;
-  },
-});
+export function EmptyCardDescription({
+  children,
+  className,
+}: EmptyCardDescriptionProps) {
+  return <p className={styles().description({ className })}>{children}</p>;
+}
 
 export const EmptyCard = withNamespace(EmptyCardRoot, {
   Title: EmptyCardTitle,
@@ -59,9 +32,9 @@ export const EmptyCard = withNamespace(EmptyCardRoot, {
 
 const styles = tv({
   slots: {
-    root: 'p-6 text-center flex flex-col items-center gap-0',
-    image: 'mb-6',
-    title: 'font-semibold text-heading',
-    description: 'text-sm text-secondary mt-2',
+    root: 'fuel-appear flex flex-col items-start gap-1 border-t border-[var(--fuel-border)] px-6 py-8 tablet:px-10',
+    title: 'm-0 font-medium text-[16px] text-heading leading-[20px]',
+    description:
+      'm-0 text-[16px] text-[var(--fuel-element-low-em)] leading-[20px] tracking-[-0.32px]',
   },
 });

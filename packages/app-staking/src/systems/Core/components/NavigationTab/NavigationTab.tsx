@@ -34,7 +34,6 @@ export function NavigationTab({
               leftIcon={item.icon}
               disabled={item.disabled}
               onClick={item.onClick}
-              size="4"
             >
               <Text>{item.label}</Text>
             </Tabs.Trigger>

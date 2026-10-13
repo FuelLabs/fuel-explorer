@@ -61,7 +61,7 @@ function _TxOperationHeader({
         iconSize={16}
         assetId={receipt?.assetId}
         value={bn(value)}
-        className="text-primary text-base"
+        className="text-heading text-base"
       />
     );
   }
@@ -84,7 +84,7 @@ function _TxOperationHeader({
     <HStack gap="1" className="items-center">
       <Code
         key={key}
-        className="text-xs tablet:text-sm font-mono bg-transparent text-muted p-0"
+        className="text-xs tablet:text-sm font-mono bg-transparent text-[var(--fuel-element-low-em)] p-0"
         color="gray"
       >
         {`${field.label} ${value}`}

@@ -1,4 +1,5 @@
-import { Button, Card, Flex, Text, VStack } from '@fuels/ui';
+import { Button } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 
 type BridgeTxListEmptyProps = {
@@ -10,40 +11,30 @@ export const BridgeTxListNotConnected = ({
   isConnecting,
   onClick,
 }: BridgeTxListEmptyProps) => {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
-    <Card className="border-0">
-      <Card.Body className={classes.cardBody()}>
-        <VStack justify="center" align="center" gap="6">
-          <VStack justify="center" align="center" gap="1">
-            <Text className={classes.title()}>Wallet not detected</Text>
-            <Text className={classes.subtitle()}>
-              Connect a wallet to see your transactions
-            </Text>
-          </VStack>
-          <Flex justify="center">
-            <Button
-              isLoading={isConnecting}
-              color="green"
-              className={classes.connectButton()}
-              onClick={onClick}
-              aria-label="Connect Fuel Wallet"
-            >
-              Connect Fuel Wallet
-            </Button>
-          </Flex>
-        </VStack>
-      </Card.Body>
-    </Card>
+    <div className={classes.root()}>
+      <p className={classes.text()}>{t('portal.history.not_connected')}</p>
+      <Button
+        isLoading={isConnecting}
+        variant="ghost"
+        color="gray"
+        className={classes.connectButton()}
+        onClick={onClick}
+        aria-label={t('portal.history.connect_fuel_wallet')}
+      >
+        {t('portal.history.connect_fuel_wallet')}
+      </Button>
+    </div>
   );
 };
 
 const styles = tv({
   slots: {
-    connectButton: 'w-[180px]',
-    cardBody: 'p-3',
-    title: 'text-md text-heading',
-    subtitle: 'text-xs text-muted',
+    root: 'fuel-appear flex flex-wrap items-center justify-between gap-4 border-t border-[var(--fuel-border)] py-8',
+    connectButton: 'whitespace-nowrap',
+    text: 'm-0 text-base text-[var(--fuel-element-low-em)]',
   },
 });

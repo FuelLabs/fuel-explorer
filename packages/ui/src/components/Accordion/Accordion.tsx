@@ -1,5 +1,5 @@
 import * as AC from '@radix-ui/react-accordion';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconChevronDown } from '../Icons';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';

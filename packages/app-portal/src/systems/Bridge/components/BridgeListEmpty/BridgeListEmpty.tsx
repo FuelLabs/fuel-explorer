@@ -1,28 +1,20 @@
-import { Card, Text, VStack } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 
 export const BridgeListEmpty = () => {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
-    <Card>
-      <Card.Body className={classes.cardBody()}>
-        <VStack justify="center" align="center" gap="1">
-          <Text className={classes.title()}>No activity yet</Text>
-          <Text className={classes.subtitle()}>
-            When you make a transaction you&apos;ll see it here
-          </Text>
-        </VStack>
-      </Card.Body>
-    </Card>
+    <div className={classes.root()}>
+      <p className={classes.text()}>{t('portal.history.empty')}</p>
+    </div>
   );
 };
 
 const styles = tv({
   slots: {
-    connectButton: 'w-[180px]',
-    cardBody: 'p-3',
-    title: 'text-md text-heading',
-    subtitle: 'text-xs text-heading',
+    root: 'fuel-appear border-t border-[var(--fuel-border)] py-8',
+    text: 'm-0 text-base text-[var(--fuel-element-low-em)]',
   },
 });

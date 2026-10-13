@@ -62,7 +62,7 @@ type WithdrawNewMachineServices = {
     data: HexAddress;
   };
   getFinalizationPeriod: {
-    data: string;
+    data: string | undefined;
   };
 };
 

@@ -1,57 +1,50 @@
-import { Address, Flex, HStack, Text, VStack } from '@fuels/ui';
+import { Address } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 
-import { DEFAULT_PAGETITLE_MB, PageTitle } from 'app-commons';
 import { useContractMetadata } from '~/hooks/useApi';
 import { MetadataLogo } from '~/systems/Core/components/MetadataLogo/MetadataLogo';
 import { ContractLinks } from './ContractLinks';
 import { ContractTabs } from './ContractTabs';
 
 export function ContractHeader({ id }: { id: string }) {
+  const { t } = useTranslation();
   const hasValidId = Boolean(id && id.length > 0);
   const { data, isLoading } = useContractMetadata(hasValidId ? id : null);
 
   const { metadata, project } = data || { metadata: null, project: null };
 
   if (!hasValidId) {
-    return (
-      <VStack gap="2" mb={DEFAULT_PAGETITLE_MB}>
-        <div className="h-10" />
-      </VStack>
-    );
+    return <div className="h-10 pb-6" />;
   }
 
   return (
     <>
-      <VStack gap="2" mb={DEFAULT_PAGETITLE_MB}>
-        <Flex
-          gap="2"
-          align="start"
-          direction={{
-            initial: 'column',
-            md: 'row',
-          }}
-          justify="between"
-        >
-          <HStack align="start" gap="4">
+      <header className="flex flex-wrap items-start justify-between gap-x-10 gap-y-4 pt-6 pb-6">
+        <div className="flex min-w-0 items-start gap-4">
+          {/* The logo is a square here; MetadataLogo rounds its own image. */}
+          <div className="shrink-0 [&_img]:rounded-none [&_svg]:rounded-none [&>*]:rounded-none">
             <MetadataLogo
               type="ContractCall"
               name={!isLoading && metadata?.name}
               image={!isLoading && project?.image}
             />
-            <PageTitle
-              title={metadata?.name ? `Contract: ${metadata.name}` : 'Contract'}
-              subtitle={<Address value={id} full={true} />}
-              mb="0"
-            />
-          </HStack>
-          {<ContractLinks project={project} links={metadata?.links} />}
-        </Flex>
-        {metadata?.description && (
-          <Text as="div" color="gray" size="1">
-            {metadata.description}
-          </Text>
-        )}
-      </VStack>
+          </div>
+          <div className="flex min-w-0 flex-col gap-2">
+            <h1 className="m-0 font-medium text-heading text-[32px] leading-[36px] tracking-[-1.28px]">
+              {metadata?.name
+                ? t('contract.title_named', { name: metadata.name })
+                : t('contract.title')}
+            </h1>
+            <Address value={id} full={true} />
+            {metadata?.description && (
+              <p className="m-0 max-w-[720px] text-[14px] leading-[20px] text-[var(--fuel-element-low-em)]">
+                {metadata.description}
+              </p>
+            )}
+          </div>
+        </div>
+        <ContractLinks project={project} links={metadata?.links} />
+      </header>
       <ContractTabs contractId={id} />
     </>
   );

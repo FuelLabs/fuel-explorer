@@ -2,7 +2,10 @@ import { tv } from 'tailwind-variants';
 
 export const styles = tv({
   slots: {
-    receiptRow: 'peer relative',
+    receiptRow: [
+      'peer relative',
+      'transition-[margin-left] duration-300 motion-reduce:transition-none',
+    ],
   },
   variants: {
     indent: {
@@ -12,7 +15,7 @@ export const styles = tv({
           'tablet:ml-10 tablet:before:left-[-40px]',
           'before:bottom-[20px] before:right-[100%]',
           'before:content-[""] before:block before:border-l before:border-b',
-          'before:border-border before:border-dashed before:rounded-bl',
+          'before:border-[var(--fuel-line)] before:border-dashed ',
           '[&[data-opened=true]:before+&]:top-[-120px]',
         ],
       },

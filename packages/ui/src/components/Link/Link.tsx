@@ -1,7 +1,7 @@
 import { Link as RadixLink } from '@radix-ui/themes';
-import { IconLink } from '@tabler/icons-react';
 import { tv } from 'tailwind-variants';
 import type { VariantProps } from 'tailwind-variants';
+import { IconLink } from '../Icons';
 
 import { createPolymorphicComponent } from '../../utils/component';
 import type { PropsOf, WithAsProps } from '../../utils/types';

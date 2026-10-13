@@ -1,5 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useContractTransactions } from '~/hooks/useApi';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { TxDim } from '~/systems/Transaction/component/TxNotice/TxNotice';
 import { TxListLoader } from '~/systems/Transactions/components/TxList/TxListLoader';
 import { ContractTransactionsList } from '../components/ContractTransactionsList';
 
@@ -14,6 +17,7 @@ export function ContractTransactions({
   cursor,
   dir = 'after',
 }: ContractTransactionsProps) {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const _cursor = searchParams.get('cursor') ?? cursor;
   const _dir = (searchParams.get('dir') ?? dir) as 'after' | 'before';
@@ -27,7 +31,7 @@ export function ContractTransactions({
     direction: _dir,
   });
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return (
       <TxListLoader
         numberOfTxs={10}
@@ -37,12 +41,12 @@ export function ContractTransactions({
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-red-600">Failed to load contract transactions</p>
-      </div>
-    );
+    return <PageState tone="error" title={t('contract.error_transactions')} />;
   }
 
-  return <ContractTransactionsList contractId={id} txs={txs} />;
+  return (
+    <TxDim busy={isFetching}>
+      <ContractTransactionsList contractId={id} txs={txs} />
+    </TxDim>
+  );
 }

@@ -1,6 +1,9 @@
 import { useAccount } from 'wagmi';
 import { useSequencerOperationCompletion } from '~staking/systems/Staking/hooks/useSequencerOperationCompletion';
-import { usePendingTransactions } from '../../hooks/usePendingTransactions';
+import {
+  type PendingTransactionL1,
+  usePendingTransactions,
+} from '../../hooks/usePendingTransactions';
 import { TransactionReceiptWatcher } from './TransactionReceiptWatcher/TransactionReceiptWatcher';
 
 export function PendingTransactionsWatcher() {
@@ -17,7 +20,9 @@ export function PendingTransactionsWatcher() {
         return (
           <TransactionReceiptWatcher
             key={transaction.hash}
-            transaction={transaction}
+            // Sequencer operations have always reached this watcher too; the
+            // cast keeps that behavior and only settles the type.
+            transaction={transaction as PendingTransactionL1}
           />
         );
       })}

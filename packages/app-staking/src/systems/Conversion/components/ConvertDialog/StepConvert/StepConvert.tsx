@@ -1,16 +1,12 @@
 import {
-  BadgeAsset,
   Button,
-  HStack,
   LoadingBox,
   LoadingWrapper,
-  Separator,
-  Text,
   Tooltip,
-  VStack,
   useToast,
 } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, FuelToken, TOKENS } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { Address } from 'viem';
 import { Routes } from '~staking/routes';
@@ -39,6 +35,7 @@ const { symbol: symbolV1, decimals: decimalsV1 } = TOKENS[FuelToken.V1];
 const { symbol: symbolV2, decimals: decimalsV2 } = TOKENS[FuelToken.V2];
 
 export const StepConvert = ({ token, ctx, onClose }: StepConvertProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { addPendingTransaction } = usePendingTransactionsCache();
@@ -68,7 +65,7 @@ export const StepConvert = ({ token, ctx, onClose }: StepConvertProps) => {
           });
           onClose();
           toast({
-            title: 'Migration has been submitted',
+            title: t('staking.upgrade.migration_submitted'),
             description: `${amountV1Format.formatted.display} ${symbolV1}`,
             action: <ViewInExplorer hash={hash} />,
             variant: 'info',
@@ -81,70 +78,54 @@ export const StepConvert = ({ token, ctx, onClose }: StepConvertProps) => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col flex-1">
-      <VStack gap="0" className="flex-1 mt-8">
-        <VStack gap="4">
-          <VStack flexGrow="1" gap="4">
-            <Text size="2" weight="medium" className="text-gray-11">
-              V1 Amount
-            </Text>
-            <HStack gap="3" align="center">
-              <LoadingWrapper
-                isLoading={!amountV1Format}
-                loadingEl={<LoadingBox className="w-28 h-6" />}
-                regularEl={
-                  <Tooltip
-                    content={`${amountV1Format.original.display} ${symbolV1}`}
-                    delayDuration={0}
-                  >
-                    <Text className="font-mono" size="6" weight="bold">
-                      {amountV1Format.formatted.display}
-                    </Text>
-                  </Tooltip>
-                }
-              />
-              <BadgeAsset icon="/assets/fuel.png" variant="transparent">
-                {symbolV1}
-              </BadgeAsset>
-            </HStack>
-          </VStack>
-          <VStack flexGrow="1" gap="3">
-            <Text size="2" weight="medium" className="text-gray-11 mt-4">
-              You'll receive
-            </Text>
-            <HStack gap="3" align="center">
-              <LoadingWrapper
-                isLoading={amountV2Format == null}
-                loadingEl={<LoadingBox className="w-28 h-6" />}
-                regularEl={
-                  <Tooltip
-                    content={`${amountV2Format.original.display} ${symbolV2}`}
-                    delayDuration={0}
-                  >
-                    <Text className="font-mono" size="6" weight="bold">
-                      {amountV2Format.formatted.display}
-                    </Text>
-                  </Tooltip>
-                }
-              />
-              <BadgeAsset icon="/assets/fuel.png" variant="transparent">
-                {symbolV2}
-              </BadgeAsset>
-            </HStack>
-          </VStack>
-        </VStack>
+      <div className="mt-8 flex flex-1 flex-col">
+        <div className="flex flex-col gap-3 pb-4">
+          <span className="fuel-label">{t('staking.upgrade.v1_amount')}</span>
+          <div className="flex items-baseline gap-2">
+            <LoadingWrapper
+              isLoading={!amountV1Format}
+              loadingEl={<LoadingBox className="h-6 w-28 !rounded-none" />}
+              regularEl={
+                <Tooltip
+                  content={`${amountV1Format.original.display} ${symbolV1}`}
+                  delayDuration={0}
+                >
+                  <span className="fuel-stat-sm fuel-appear">
+                    {amountV1Format.formatted.display}
+                  </span>
+                </Tooltip>
+              }
+            />
+            <span className="fuel-label normal-case">{symbolV1}</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 border-t border-[var(--fuel-border)] pt-4">
+          <span className="fuel-label">{t('staking.upgrade.receive')}</span>
+          <div className="flex items-baseline gap-2">
+            <LoadingWrapper
+              isLoading={amountV2Format == null}
+              loadingEl={<LoadingBox className="h-6 w-28 !rounded-none" />}
+              regularEl={
+                <Tooltip
+                  content={`${amountV2Format.original.display} ${symbolV2}`}
+                  delayDuration={0}
+                >
+                  <span className="fuel-stat-sm fuel-appear">
+                    {amountV2Format.formatted.display}
+                  </span>
+                </Tooltip>
+              }
+            />
+            <span className="fuel-label normal-case">{symbolV2}</span>
+          </div>
+        </div>
         <AnimatedError
           error={errorMigration ? getShortError(errorMigration) : undefined}
         />
-      </VStack>
-      <Separator size="4" className="my-5" />
-      <Button
-        variant="solid"
-        color="green"
-        className="w-full"
-        isLoading={isMigrating}
-        type="submit"
-      >
-        Upgrade
+      </div>
+      <div className="my-5 border-t border-[var(--fuel-border)]" />
+      <Button className="w-full" isLoading={isMigrating} type="submit">
+        {t('staking.upgrade.submit')}
       </Button>
     </form>
   );

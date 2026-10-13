@@ -2,7 +2,7 @@ import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
 import { AccountAssets } from './AccountAssets';
 
 export function AccountAssetsLoader() {
-  const balances = [{ assetId: '0x00' }, { assetId: '0x00' }];
+  const balances = [{ assetId: '0x00' }, { assetId: '0x01' }];
   return (
     <AccountAssets
       isLoading

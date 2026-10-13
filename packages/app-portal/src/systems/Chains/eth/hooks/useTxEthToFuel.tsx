@@ -4,8 +4,15 @@ import {
   getAssetEthCurrentChain,
   getAssetFuelCurrentChain,
 } from '~portal/systems/Assets/utils';
+import {
+  BRIDGE_STEP_ID,
+  BRIDGE_STEP_STATUS_ID,
+  type BridgeStep,
+  type BridgeStepStatusId,
+} from '~portal/systems/Bridge/components/BridgeSteps';
 import { useExplorerLink } from '~portal/systems/Bridge/hooks/useExplorerLink';
 import type { BridgeTxsMachineState } from '~portal/systems/Bridge/machines';
+import { ethToFuelTxKey } from '~portal/systems/Bridge/utils/txKey';
 
 import { useAsset } from '../../../Assets/hooks/useAsset';
 import { distanceToNow, useFuelAccountConnection } from '../../fuel';
@@ -61,49 +68,76 @@ const txEthToFuelSelectors = {
 
     if (!ethTxId) return undefined;
 
-    const confirmTransactionText = isErc20Address(erc20Token?.address)
-      ? 'Action'
-      : 'Automatic';
+    const confirmIsAutomatic = !isErc20Address(erc20Token?.address);
+    const confirmTransactionText = confirmIsAutomatic ? 'Automatic' : 'Action';
+    const confirmStatusId = status.isReceiveDone
+      ? BRIDGE_STEP_STATUS_ID.done
+      : confirmIsAutomatic
+        ? BRIDGE_STEP_STATUS_ID.automatic
+        : BRIDGE_STEP_STATUS_ID.action;
 
-    function getSettlementStatusText() {
-      if (status.isSettlementDone) return 'Done!';
+    function getSettlementStatus(): {
+      status: string;
+      statusId: BridgeStepStatusId;
+      eta?: string;
+    } {
+      if (status.isSettlementDone) {
+        return { status: 'Done!', statusId: BRIDGE_STEP_STATUS_ID.done };
+      }
       if (date) {
         const target = dayjs(date)
           .add(DEPOSIT_DURATION_MINUTES, 'minutes')
           .toDate();
-        return `~${distanceToNow(target)} left`;
+        const eta = distanceToNow(target);
+        return {
+          status: `~${eta} left`,
+          statusId: BRIDGE_STEP_STATUS_ID.timeLeft,
+          eta,
+        };
       }
-      return 'Waiting';
+      return { status: 'Waiting', statusId: BRIDGE_STEP_STATUS_ID.waiting };
     }
+    const settlementStatus = getSettlementStatus();
 
     const steps = [
       {
+        id: BRIDGE_STEP_ID.submitToBridge,
         name: 'Submit to bridge',
         status: 'Done!',
+        statusId: BRIDGE_STEP_STATUS_ID.done,
         isDone: true,
       },
       {
+        id: BRIDGE_STEP_ID.settlement,
         name: 'Settlement',
-        status: getSettlementStatusText(),
+        status: settlementStatus.status,
+        statusId: settlementStatus.statusId,
+        eta: settlementStatus.eta,
         isLoading: status.isSettlementLoading,
         isDone: status.isSettlementDone,
         isSelected: status.isSettlementSelected,
       },
       {
+        id: BRIDGE_STEP_ID.confirmTransaction,
         name: 'Confirm transaction',
         status: status.isReceiveDone ? 'Done!' : confirmTransactionText,
+        statusId: confirmStatusId,
         isLoading: status.isConfirmTransactionLoading,
         isDone: status.isReceiveDone,
         isSelected: status.isConfirmTransactionSelected,
       },
       {
+        id: BRIDGE_STEP_ID.receiveOnFuel,
         name: 'Receive on Fuel',
         status: status.isReceiveDone ? 'Done!' : 'Automatic',
+        statusId: status.isReceiveDone
+          ? BRIDGE_STEP_STATUS_ID.done
+          : BRIDGE_STEP_STATUS_ID.automatic,
         isLoading: false,
         isDone: status.isReceiveDone,
         isSelected: false,
       },
-    ];
+    ] satisfies BridgeStep[];
 
     return steps;
   },
@@ -136,17 +170,19 @@ const txEthToFuelSelectors = {
   },
 };
 
+// `id` is undefined while the dialog plays its exit animation: closing the
+// overlay clears its metadata before the dialog unmounts.
 export function useTxEthToFuel({
   id,
   messageSentEventNonce,
-}: { id: string; messageSentEventNonce: BigInt }) {
+}: { id: string | undefined; messageSentEventNonce: BigInt | undefined }) {
   const { wallet: fuelWallet } = useFuelAccountConnection();
-  const txId = id.startsWith('0x') ? (id as HexAddress) : undefined;
+  const txId = id?.startsWith('0x') ? (id as HexAddress) : undefined;
   const { href: explorerLink } = useExplorerLink({
     network: 'ethereum',
-    id,
+    id: id ?? '',
   });
-  const machineId = `${txId}-${messageSentEventNonce}`;
+  const machineId = ethToFuelTxKey(txId, messageSentEventNonce);
 
   const txEthToFuelState = store.useSelector(
     Services.bridgeTxs,

@@ -1,5 +1,6 @@
 import { AnimatedDialog, VStack } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, FuelToken, TOKENS } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import { useIsStakingContractPaused } from '~staking/hooks/useIsStakingContractPaused';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
 import { responsiveDialogStyles } from '~staking/systems/Staking/constants/styles/dialogContent';
@@ -10,6 +11,7 @@ import { ReviewClaimReward } from './ReviewClaimReward';
 export const ClaimRewardNewDialog = ({
   validator,
 }: { validator: SequencerValidatorAddress }) => {
+  const { t } = useTranslation();
   const {
     isSubmitting,
     isGettingReviewDetails,
@@ -46,7 +48,9 @@ export const ClaimRewardNewDialog = ({
           })}
         >
           <VStack className="h-full" gap="7">
-            <AnimatedDialog.Title>Review: Claim Rewards</AnimatedDialog.Title>
+            <AnimatedDialog.Title>
+              {t('staking.dialog.review_claim')}
+            </AnimatedDialog.Title>
 
             <ReviewClaimReward
               validator={validator}
