@@ -1,6 +1,6 @@
+import { FrameCorners } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
-import { EcosystemCorners } from './EcosystemCorners';
 import { EcosystemVideo } from './EcosystemVideo';
 
 // White dots on black. Screen blending drops the black onto the dark panel.
@@ -13,7 +13,7 @@ export function EcosystemHero() {
 
   return (
     <section className={classes.root()}>
-      <EcosystemCorners />
+      <FrameCorners />
       <EcosystemVideo
         eager
         src={VIDEO}
