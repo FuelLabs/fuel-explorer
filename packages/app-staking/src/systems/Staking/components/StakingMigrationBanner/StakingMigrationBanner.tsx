@@ -25,7 +25,8 @@ export const StakingMigrationBanner = () => {
         size="2"
         onClick={() => window.open(RIG_URL, '_blank', 'noopener,noreferrer')}
         leftIcon={IconRig}
-        leftIconClassName="relative -top-[1px]"
+        // The brand red fails contrast on the green fill, so the mark takes the label color.
+        leftIconClassName="relative -top-[1px] [&_path]:fill-current"
         className="shrink-0"
       >
         {t('staking.open_rig')}
