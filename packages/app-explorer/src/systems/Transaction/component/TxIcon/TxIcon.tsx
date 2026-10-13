@@ -61,6 +61,8 @@ type TxIconProps = VariantProps<typeof styles> &
     radius?: string;
     color?: string;
     label?: string;
+    /** Off where a status chip already sits next to the icon. */
+    marker?: boolean;
   }>;
 
 // Corners are always square; radius and color are kept so callers still compile.
@@ -72,12 +74,13 @@ export function TxIcon({
   radius: _radius,
   color: _color,
   label: initLabel,
+  marker = true,
   ...props
 }: TxIconProps) {
   const current = status || 'Submitted';
   const label = initLabel ?? TX_STATUS_MAP[current];
   const classes = styles({ size });
-  const kind = TX_CHIP_KIND_MAP[current];
+  const kind = marker ? TX_CHIP_KIND_MAP[current] : undefined;
   return (
     <span
       {...props}

@@ -2,7 +2,7 @@
   "faq": {
     "rig": {
       "question": "什么是 The Rig？",
-      "answer": "The Rig 是 Ignition 上的流动性质押协议。在那里质押，奖励会自动复利。"
+      "answer": "The Rig 是 RIG Labs 打造的 FUEL 流动性质押协议。在 Ignition 存入 FUEL 即可获得 stFUEL。stFUEL 在钱包中保持流动，存入的 FUEL 会被质押，奖励自动复利。"
     },
     "unstake": {
       "question": "解除质押需要多久？",
@@ -15,6 +15,26 @@
     "apr": {
       "question": "APR 徽章显示什么？",
       "answer": "在 Ethereum 上质押的年化奖励率估计。数据来自 Fuel 索引器，并会随时间变化。"
+    },
+    "stfuel": {
+      "question": "stFUEL 如何获得奖励？",
+      "answer": "stFUEL 不会 rebase。余额保持不变，随着奖励累积，每个 stFUEL 可兑回的 FUEL 会增加。发生罚没时该比率会下降。"
+    },
+    "rig_exit": {
+      "question": "如何取回我的 FUEL？",
+      "answer": "The Rig 的提取功能仍在开发中。在此之前，可以在 Mira 将 stFUEL 卖出换成 FUEL 或 USDC。计划中的提取会销毁 stFUEL，并在 14 天解绑期加跨链时间后到账。"
+    },
+    "rig_fees": {
+      "question": "The Rig 收取什么费用？",
+      "answer": "收取质押奖励的 10%，进入 The Rig 金库。存入没有手续费和最低金额，只需支付 gas。"
+    },
+    "rig_validators": {
+      "question": "The Rig 使用哪些验证者？",
+      "answer": "The Rig 委托给 Fuel 去中心化排序器上的 8 个验证者，每个验证者的佣金最多 5%。"
+    },
+    "rig_audit": {
+      "question": "The Rig 经过审计吗？",
+      "answer": "是的。Oak Security 审计了 The Rig。"
     }
   }
 }

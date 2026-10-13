@@ -4,7 +4,6 @@ import {
   type DOMKeyframesDefinition,
   type DynamicAnimationOptions,
   frame,
-  motion,
   useAnimate,
   usePresence,
   useReducedMotion,
@@ -28,8 +27,8 @@ type BridgeViewsProps = {
   history: ReactNode;
 };
 
-// Rows print in as the scan line passes them, so each row's delay is its
-// offset down the list scaled to the sweep.
+// Rows print in top to bottom, so each row's delay is its offset down the
+// list scaled to this duration.
 const SCAN_S = 0.52;
 const SPRING = {
   type: 'spring',
@@ -283,7 +282,6 @@ const PanelView = forwardRef<HTMLDivElement, PanelViewProps>(function PanelView(
 });
 
 export function BridgeViews({ view, form, history }: BridgeViewsProps) {
-  const reduce = useReducedMotion();
   const lastView = useRef(view);
   const switches = useRef(0);
   if (lastView.current !== view) {
@@ -299,21 +297,6 @@ export function BridgeViews({ view, form, history }: BridgeViewsProps) {
           <PinLocation>{view === 'history' ? history : form}</PinLocation>
         </PanelView>
       </AnimatePresence>
-      {hasSwitched && view === 'history' && !reduce && (
-        <motion.div
-          key={switches.current}
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 z-10 h-px bg-[var(--fuel-brand-600)] shadow-[0_0_10px_1px_var(--fuel-brand-600)]"
-          initial={{ top: '0%', opacity: 0 }}
-          animate={{ top: '100%', opacity: [0, 1, 1, 0] }}
-          transition={{
-            top: { duration: SCAN_S + 0.12, ease: 'linear' },
-            opacity: { duration: SCAN_S + 0.12, times: [0, 0.08, 0.82, 1] },
-          }}
-        >
-          <div className="absolute inset-x-0 bottom-px h-8 bg-gradient-to-b from-transparent to-[color-mix(in_srgb,var(--fuel-brand-600)_14%,transparent)]" />
-        </motion.div>
-      )}
     </div>
   );
 }

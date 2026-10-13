@@ -369,7 +369,9 @@ html {
   background: var(--fuel-line);
 }
 
+/* Each cell keeps its z-index inside itself, so the corners and joints stay on top. */
 .fuel-grid-frame > * {
+  isolation: isolate;
   background: var(--fuel-background);
 }
 
@@ -404,10 +406,13 @@ html {
 }
 
 /* Frame corners: an 8px indicator with lines fading outward. --fuel-corner-reach
-   sets the line length, --fuel-corner-reach-y the vertical lines alone. */
+   sets the line length, --fuel-corner-reach-y the vertical lines alone.
+   The square is centred on the host's 1px border, half a pixel outside its
+   padding box. Above cell content (z-10), below the nav (z-30). */
 .fuel-corner {
+  --fuel-corner-at: -4.5px;
   position: absolute;
-  z-index: 2;
+  z-index: 20;
   width: 8px;
   height: 8px;
   box-sizing: border-box;
@@ -423,13 +428,13 @@ html {
 }
 
 .fuel-corner::before {
-  top: 3px;
+  top: 2.5px;
   width: var(--fuel-corner-reach, 60px);
   height: 1px;
 }
 
 .fuel-corner::after {
-  left: 3px;
+  left: 2.5px;
   width: 1px;
   height: var(--fuel-corner-reach-y, var(--fuel-corner-reach, 60px));
 }
@@ -441,23 +446,23 @@ html {
 }
 
 .fuel-corner-tl {
-  top: -5px;
-  left: -5px;
+  top: var(--fuel-corner-at);
+  left: var(--fuel-corner-at);
 }
 
 .fuel-corner-tr {
-  top: -5px;
-  right: -5px;
+  top: var(--fuel-corner-at);
+  right: var(--fuel-corner-at);
 }
 
 .fuel-corner-bl {
-  bottom: -5px;
-  left: -5px;
+  bottom: var(--fuel-corner-at);
+  left: var(--fuel-corner-at);
 }
 
 .fuel-corner-br {
-  bottom: -5px;
-  right: -5px;
+  bottom: var(--fuel-corner-at);
+  right: var(--fuel-corner-at);
 }
 
 .fuel-corner-tl::before,

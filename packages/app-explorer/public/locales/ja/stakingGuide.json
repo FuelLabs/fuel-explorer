@@ -2,7 +2,7 @@
   "faq": {
     "rig": {
       "question": "The Rig とは？",
-      "answer": "The Rig は Ignition 上のリキッドステーキングです。そこでステークすると報酬は自動で複利になります。"
+      "answer": "The Rig は RIG Labs が開発した FUEL のリキッドステーキングプロトコルです。Ignition で FUEL を預けると stFUEL を受け取ります。stFUEL はウォレットで自由に使え、預けた FUEL はステークされて報酬が自動で複利になります。"
     },
     "unstake": {
       "question": "解除にはどれくらいかかりますか？",
@@ -15,6 +15,26 @@
     "apr": {
       "question": "APR バッジは何を示しますか？",
       "answer": "Ethereum でのステーキングの年間報酬率の推定です。Fuel のインデクサから読み取り、時間とともに変わります。"
+    },
+    "stfuel": {
+      "question": "stFUEL はどのように報酬を得ますか？",
+      "answer": "stFUEL はリベースしません。残高は変わらず、報酬が貯まるほど 1 stFUEL で償還できる FUEL が増えます。スラッシングが起きるとこの比率は下がります。"
+    },
+    "rig_exit": {
+      "question": "FUEL を取り戻すには？",
+      "answer": "The Rig からの引き出しは開発中です。それまでは Mira で stFUEL を FUEL または USDC に売却できます。予定されている引き出しでは stFUEL をバーンし、14 日のアンボンディング期間とブリッジ時間のあとに受け取ります。"
+    },
+    "rig_fees": {
+      "question": "The Rig の手数料は？",
+      "answer": "ステーキング報酬の 10% が The Rig のトレジャリーに入ります。預け入れに手数料や最低額はなく、ガス代のみかかります。"
+    },
+    "rig_validators": {
+      "question": "The Rig はどのバリデータを使いますか？",
+      "answer": "The Rig は Fuel の分散型シーケンサー上の 8 つのバリデータに委任します。各バリデータの手数料は最大 5% です。"
+    },
+    "rig_audit": {
+      "question": "The Rig は監査を受けていますか？",
+      "answer": "はい。Oak Security が The Rig を監査しました。"
     }
   }
 }

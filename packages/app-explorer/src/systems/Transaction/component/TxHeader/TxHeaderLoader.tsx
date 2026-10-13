@@ -8,7 +8,7 @@ export function TxHeaderLoader({ isSimple }: { isSimple?: boolean }) {
   return (
     <PageTitle
       title={t('tx.details_title')}
-      className="mobile:max-tablet:mb-[24px]"
+      className="mobile:max-tablet:mb-[24px] px-[17px]"
       subtitle={
         isSimple ? null : (
           <HStack gap="3" align="center" justify="center">

@@ -1,6 +1,6 @@
+import { FrameCorners } from '@fuels/ui';
 import { useEffect, useRef } from 'react';
 import type { Project } from '~/types/ecosystem';
-import { EcosystemCorners } from './EcosystemCorners';
 import { EcosystemProjectCard } from './EcosystemProjectCard';
 
 // Stagger covers the first row of cards a reader sees: 11 steps of 30ms keep
@@ -28,9 +28,11 @@ export function EcosystemList({
   const cascade = stagger && !mounted.current;
 
   return (
-    <div className="relative">
-      <EcosystemCorners />
-      <div className="grid grid-cols-1 border-t border-l border-[var(--fuel-line)] tablet:grid-cols-2 md:grid-cols-3 desktop:grid-cols-4">
+    // The frame keeps its own border, so a short last row still closes. The grid
+    // reaches 1px under the right and bottom border, where the card lines land on it.
+    <div className="relative border border-[var(--fuel-line)]">
+      <FrameCorners />
+      <div className="-mr-px -mb-px grid grid-cols-1 tablet:grid-cols-2 md:grid-cols-3 desktop:grid-cols-4">
         {projects.map((project, index) => (
           <EcosystemProjectCard
             key={project.name}

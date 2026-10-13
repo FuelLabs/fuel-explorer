@@ -321,20 +321,16 @@ export function BlockieAvatar({ address, size = 40 }: BlockieAvatarProps) {
   };
 
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      style={{
-        borderRadius: '50%',
-        transform: `rotate(${svgProps.rotation}deg)`,
-      }}
-    >
-      <circle cx="50" cy="50" r="50" fill={svgProps.backgroundColor} />
-      {renderPattern()}
-      {renderAccessory()}
-      {renderEyes()}
-      {renderMouth()}
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      {/* Square tile, like every other corner in the design system. The face
+          tilts inside it so the edges stay straight. */}
+      <rect width="100" height="100" fill={svgProps.backgroundColor} />
+      <g transform={`rotate(${svgProps.rotation} 50 50)`}>
+        {renderPattern()}
+        {renderAccessory()}
+        {renderEyes()}
+        {renderMouth()}
+      </g>
     </svg>
   );
 }

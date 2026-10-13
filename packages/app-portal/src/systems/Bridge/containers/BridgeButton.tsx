@@ -42,6 +42,7 @@ export const BridgeButton = () => {
           <label className={LABEL}>
             <Checkbox
               size="1"
+              className="!h-5"
               aria-label={t('portal.bridge.withdraw_warning_label')}
               checked={acceptWithdrawWarning}
               onCheckedChange={(value) => {
@@ -59,6 +60,7 @@ export const BridgeButton = () => {
           <label className={LABEL}>
             <Checkbox
               size="1"
+              className="!h-5"
               aria-label={t('portal.bridge.terms_label')}
               checked={agree}
               onCheckedChange={(value) => handlers.setAgree(Boolean(value))}

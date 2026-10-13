@@ -21,7 +21,7 @@ export function AprBadge({ className }: { className?: string }) {
   return apy ? (
     <span
       className={clsx(
-        'fuel-label fuel-appear inline-flex items-center gap-2 border border-[var(--fuel-line)] px-2 py-1 text-[var(--fuel-brand-text)]',
+        'fuel-label fuel-appear inline-flex items-center gap-2 border border-[color-mix(in_srgb,var(--fuel-brand-600)_30%,transparent)] bg-[color-mix(in_srgb,var(--fuel-brand-600)_12%,transparent)] px-2 py-1 text-[var(--fuel-brand-text)]',
         className,
       )}
     >

@@ -2,7 +2,7 @@
   "faq": {
     "rig": {
       "question": "What is The Rig?",
-      "answer": "The Rig is the liquid staking protocol on Ignition. Stake there and rewards compound automatically."
+      "answer": "The Rig is a liquid staking protocol for FUEL, built by RIG Labs. Deposit FUEL on Ignition and you receive stFUEL, which stays liquid in your wallet while the deposit is staked and rewards compound automatically."
     },
     "unstake": {
       "question": "How long does unstaking take?",
@@ -15,6 +15,26 @@
     "apr": {
       "question": "What does the APR badge show?",
       "answer": "An estimate of the yearly reward rate for staking on Ethereum. It is read from the Fuel indexer and changes over time."
+    },
+    "stfuel": {
+      "question": "How does stFUEL earn rewards?",
+      "answer": "stFUEL does not rebase. Its balance stays the same and each stFUEL is redeemable for more FUEL as rewards accumulate. Slashing would lower that ratio."
+    },
+    "rig_exit": {
+      "question": "How do I get my FUEL back?",
+      "answer": "Withdrawals from The Rig are still in development. Until they open, you can sell stFUEL for FUEL or USDC on Mira. Planned withdrawals burn stFUEL and pay out after the 14-day unbonding period plus bridging time."
+    },
+    "rig_fees": {
+      "question": "What does The Rig charge?",
+      "answer": "A 10% fee on staking rewards, paid to The Rig's treasury. Deposits have no fee and no minimum amount; you only pay gas."
+    },
+    "rig_validators": {
+      "question": "Which validators does The Rig use?",
+      "answer": "The Rig delegates across 8 validators on the Fuel decentralized sequencer, each with a commission of at most 5%."
+    },
+    "rig_audit": {
+      "question": "Is The Rig audited?",
+      "answer": "Yes. Oak Security audited The Rig."
     }
   }
 }

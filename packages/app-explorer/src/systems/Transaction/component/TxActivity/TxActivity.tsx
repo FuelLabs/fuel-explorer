@@ -228,7 +228,7 @@ export function TxActivityLoader() {
   return (
     <div className="fuel-edge border border-[var(--fuel-line)] px-4 py-4">
       <div className="flex items-center gap-3">
-        <LoadingBox className="size-8 shrink-0 rounded-full" />
+        <LoadingBox className="size-8 shrink-0 !rounded-none" />
         <LoadingBox className="h-6 w-72" />
       </div>
       <div className="flex flex-col py-3">

@@ -12,6 +12,7 @@ import {
 import { IconCheck, IconSearch, IconX } from '@fuels/ui';
 import type { KeyboardEvent } from 'react';
 import { useContext, useEffect, useId, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useMedia } from 'react-use';
 
@@ -173,6 +174,28 @@ export function SearchInput({
   function handleButtonMouseUp() {
     // Fixes onBlur triggering before the button is clicked
     isPressingFloatingIcon.current = false;
+  }
+
+  function handleOpenButton() {
+    // Focus inside the tap so mobile browsers open the keyboard.
+    flushSync(() => setIsFocused(true));
+    inputRef.current?.focus();
+  }
+
+  // Below the laptop width an idle, empty search is only a button.
+  if (isCompactNav && !active && !value) {
+    return (
+      <div className="flex justify-end">
+        <button
+          type="button"
+          aria-label={t('common.search')}
+          onClick={handleOpenButton}
+          className={classes.openButton()}
+        >
+          <Icon icon={IconSearch} size={20} />
+        </button>
+      </div>
+    );
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {

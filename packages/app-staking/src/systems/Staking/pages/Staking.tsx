@@ -56,7 +56,7 @@ export const StakingPage = () => {
 
   return (
     <Box className="py-8">
-      <div className="flex flex-col gap-2 mb-6 px-6 tablet:px-10 tablet:flex-row tablet:justify-end tablet:items-center">
+      <div className="flex flex-wrap items-center justify-end gap-2 mb-6 px-6 tablet:px-10">
         <ClaimV2Button />
         {hasV1Involvement && SHOW_CONVERT_BUTTON === 'true' && (
           <Link to="/upgrade" className="tablet:w-auto w-full">

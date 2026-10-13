@@ -99,9 +99,11 @@ const styles = tv({
       'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
       'tablet:min-h-[112px] tablet:px-5 tablet:py-4',
     ],
+    // Many logos sit on a dark tile, so a grey edge keeps them apart from the
+    // page in both themes.
     logo: [
       'grid size-12 shrink-0 place-items-center overflow-hidden',
-      'border border-[var(--fuel-line)] bg-[var(--fuel-background)] tablet:size-16',
+      'border border-[var(--fuel-stone-400)] bg-[var(--fuel-background)] dark:border-[var(--fuel-stone-700)] tablet:size-16',
     ],
     image: 'size-full object-cover',
     monogram:

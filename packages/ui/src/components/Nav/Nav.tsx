@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Children, cloneElement, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { IconMenu2, IconMoon, IconSun, IconWallet, IconX } from '../Icons';
 
@@ -134,6 +135,23 @@ export const NavMobile = createComponent<NavMobileProps, 'nav'>({
         >
           {children}
         </Root>
+        {createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                key="nav-backdrop"
+                aria-hidden
+                className={classes.backdrop()}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setOpen(false)}
+              />
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
       </NavMobileProvider>
     );
   },
@@ -161,9 +179,9 @@ export const NavMobileContent = createComponent<
         </AnimatePresence>
         <IconButton
           aria-label={t('ui.nav.toggle_menu', { defaultValue: 'Toggle menu' })}
-          className="fuel-hit relative ml-2"
+          className="fuel-hit relative !size-10 !p-0"
           icon={isOpen ? IconX : IconMenu2}
-          iconSize={24}
+          iconSize={22}
           variant="link"
           onClick={() => onOpenChange((s) => !s)}
         />
@@ -215,7 +233,7 @@ export const NavMenu = createComponent<NavMenuProps, 'div'>({
         {mobileProps.isOpen && (
           <motion.div
             key="content"
-            className="max-h-[calc(100dvh-var(--nav-height))] overflow-y-auto"
+            className={styles().mobileMenu()}
             animate="open"
             exit="collapsed"
             initial="collapsed"

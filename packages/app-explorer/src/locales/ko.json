@@ -143,8 +143,7 @@
     "ecosystem": "생태계",
     "wallet": "지갑",
     "bridge": "브리지",
-    "rights": "© {{year}} Fuel Labs. All rights reserved",
-    "version": "version: {{hash}}"
+    "rights": "© {{year}} Fuel Labs. All rights reserved"
   },
   "staking": {
     "title": "Fuel 네트워크 보안에 참여",

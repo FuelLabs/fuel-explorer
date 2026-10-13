@@ -16,7 +16,7 @@ export function BlockHeader({
   return (
     <PageTitle
       title={t('block.title')}
-      className="flex-col tablet:flex-row tablet:justify-between tablet:items-center gap-4 tablet:gap-0"
+      className="flex-col tablet:flex-row tablet:justify-between tablet:items-center gap-4 tablet:gap-0 px-[17px]"
       subtitle={
         <LoadingWrapper
           isLoading={isLoading}

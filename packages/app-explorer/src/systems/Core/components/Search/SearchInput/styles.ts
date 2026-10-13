@@ -14,6 +14,13 @@ export const styles = tv({
       'md:[&[data-active=true]]:bg-transparent',
     ],
     inputContainer: 'w-full',
+    openButton: [
+      // Bare, like the menu toggle beside it.
+      'fuel-hit flex size-10 cursor-pointer items-center justify-center',
+      'border-0 bg-transparent text-icon',
+      'hover:text-[var(--fuel-element-high-em)]',
+      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)]',
+    ],
     inputWrapper: [
       'outline-none h-[40px]',
       'border-x-[1px] border-y-[1px] border-[var(--color-border)] shadow-none',

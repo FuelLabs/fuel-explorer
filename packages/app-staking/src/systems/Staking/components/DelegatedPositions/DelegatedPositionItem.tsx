@@ -10,7 +10,7 @@ import {
 import { IconMenu } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { BN } from 'fuels';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import type { SequencerValidatorAddress } from '~staking/systems/Core';
@@ -40,6 +40,16 @@ type DelegatedPositionItemProps = {
 const { symbol, decimals } = TOKENS[FuelToken.V2];
 const EMPTY_REWARDS: Array<ValidatorReward> = [];
 
+// The last value a query returned for this address. A row keeps showing it
+// while a refresh or a wallet reconnect leaves the query without data for a
+// moment. A different address starts empty.
+function useLastDefined<T>(value: T | undefined, key: string | undefined) {
+  const last = useRef<{ key?: string; value?: T }>({});
+  if (value !== undefined && key) last.current = { key, value };
+  if (value !== undefined) return value;
+  return last.current.key === key || !key ? last.current.value : undefined;
+}
+
 const _DelegatedPositionItem = ({
   name,
   validator,
@@ -55,7 +65,7 @@ const _DelegatedPositionItem = ({
   };
 
   const { address } = useAccount();
-  const { data: totalDelegated, isLoading: isLoadingDelegations } =
+  const { data: delegatedData, isLoading: isLoadingDelegations } =
     useAccountValidatorDelegations({
       address,
       validator,
@@ -63,13 +73,12 @@ const _DelegatedPositionItem = ({
         select: (data) => data?.delegation_response?.balance?.amount,
       },
     });
-  const { data: rewardsData = EMPTY_REWARDS } = useValidatorRewards(
-    validator,
-    address,
-    {
-      select: ({ rewards }) => rewards,
-    },
-  );
+  const totalDelegated = useLastDefined(delegatedData, address);
+  const { data: rewardsQueryData } = useValidatorRewards(validator, address, {
+    select: ({ rewards }) => rewards,
+  });
+  const rewardsData =
+    useLastDefined(rewardsQueryData, address) ?? EMPTY_REWARDS;
   const delegatedBN = useMemo(
     () => new BN(totalDelegated || '0'),
     [totalDelegated],
@@ -115,7 +124,7 @@ const _DelegatedPositionItem = ({
         role="cell"
       >
         <LoadingWrapper
-          isLoading={isLoading || isLoadingDelegations}
+          isLoading={isLoading || (isLoadingDelegations && !totalDelegated)}
           loadingEl={<LoadingBox className="w-20 h-6 !rounded-none" />}
           regularEl={
             <Tooltip

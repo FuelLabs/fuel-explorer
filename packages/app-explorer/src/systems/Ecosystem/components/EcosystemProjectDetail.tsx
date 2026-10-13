@@ -1,5 +1,7 @@
 import {
+  FrameCorners,
   IconArrowLeft,
+  IconArrowRight,
   IconArrowUpRight,
   IconBrandDiscord,
   IconBrandGithub,
@@ -16,7 +18,6 @@ import { cx } from '~/systems/Core/utils/cx';
 import type { Project } from '~/types/ecosystem';
 import type { EcosystemSection } from '../constants';
 import { isSuiteProject } from '../utils/groupProjects';
-import { EcosystemCorners } from './EcosystemCorners';
 import { EcosystemList } from './EcosystemList';
 import { EcosystemLogo } from './EcosystemProjectCard';
 import { LogoDither } from './LogoDither';
@@ -78,7 +79,7 @@ export function EcosystemProjectDetail({
       </nav>
 
       <div className={classes.hero()}>
-        <EcosystemCorners />
+        <FrameCorners />
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
@@ -102,11 +103,9 @@ export function EcosystemProjectDetail({
         </div>
       </div>
 
-      <article className="relative mt-10 tablet:mt-12">
-        <EcosystemCorners />
-        <div
-          className={cx(classes.split(), 'border border-[var(--fuel-line)]')}
-        >
+      <article className="relative mt-10 border border-[var(--fuel-line)] tablet:mt-12">
+        <FrameCorners />
+        <div className={classes.split()}>
           <div className={classes.about()}>
             <h2 className={classes.label()}>
               {t('about', { name: project.name })}
@@ -230,6 +229,7 @@ export function EcosystemProjectDetail({
             </h2>
             <Link to={sectionUrl} className={classes.seeAll()}>
               {t('see_all')}
+              <IconArrowRight size={14} aria-hidden />
             </Link>
           </div>
           <EcosystemList projects={related} />
@@ -316,7 +316,9 @@ export function EcosystemProjectSkeleton() {
 
 const styles = tv({
   slots: {
-    page: 'mx-auto w-full max-w-[1240px]',
+    // The frames stack 40 px apart, so the vertical corner lines stay short
+    // enough not to cross into the next frame.
+    page: 'mx-auto w-full max-w-[1240px] [--fuel-corner-reach-y:12px]',
     breadcrumb: [
       'fuel-eyebrow mb-3 flex items-center gap-2 pl-2',
       'text-[var(--fuel-element-low-em)] tablet:pl-3 desktop:mb-4 desktop:pl-4',
@@ -387,6 +389,7 @@ const styles = tv({
     ],
     relatedTitle: 'm-0 font-medium text-heading text-[24px] leading-[32px]',
     seeAll: [
+      'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap',
       'text-[14px] text-[var(--fuel-element-low-em)] underline underline-offset-4',
       'decoration-[var(--fuel-line)] transition-colors hover:text-heading',
     ],

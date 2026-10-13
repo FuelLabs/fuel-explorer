@@ -2,7 +2,7 @@
   "faq": {
     "rig": {
       "question": "The Rig란?",
-      "answer": "The Rig는 Ignition의 리퀴드 스테이킹 프로토콜입니다. 그곳에서 스테이킹하면 보상이 자동으로 복리됩니다."
+      "answer": "The Rig는 RIG Labs가 만든 FUEL 리퀴드 스테이킹 프로토콜입니다. Ignition에서 FUEL을 예치하면 stFUEL을 받습니다. stFUEL은 지갑에서 자유롭게 쓸 수 있고, 예치한 FUEL은 스테이킹되어 보상이 자동으로 복리됩니다."
     },
     "unstake": {
       "question": "언스테이킹은 얼마나 걸리나요?",
@@ -15,6 +15,26 @@
     "apr": {
       "question": "APR 배지는 무엇을 보여 주나요?",
       "answer": "Ethereum 스테이킹의 연간 보상률 추정치입니다. Fuel 인덱서에서 읽으며 시간이 지나면 바뀝니다."
+    },
+    "stfuel": {
+      "question": "stFUEL은 어떻게 보상을 받나요?",
+      "answer": "stFUEL은 리베이스되지 않습니다. 잔액은 그대로이고, 보상이 쌓일수록 stFUEL 1개로 상환할 수 있는 FUEL이 늘어납니다. 슬래싱이 발생하면 이 비율이 낮아집니다."
+    },
+    "rig_exit": {
+      "question": "FUEL은 어떻게 돌려받나요?",
+      "answer": "The Rig 출금 기능은 아직 개발 중입니다. 그 전까지는 Mira에서 stFUEL을 FUEL 또는 USDC로 팔 수 있습니다. 예정된 출금은 stFUEL을 소각하고 14일 언본딩 기간과 브리지 시간이 지난 뒤 지급됩니다."
+    },
+    "rig_fees": {
+      "question": "The Rig 수수료는 얼마인가요?",
+      "answer": "스테이킹 보상의 10%가 The Rig 트레저리로 갑니다. 예치에는 수수료와 최소 금액이 없고 가스비만 냅니다."
+    },
+    "rig_validators": {
+      "question": "The Rig는 어떤 검증인을 쓰나요?",
+      "answer": "The Rig는 Fuel 탈중앙 시퀀서의 검증인 8곳에 위임하며, 각 검증인의 수수료는 최대 5%입니다."
+    },
+    "rig_audit": {
+      "question": "The Rig는 감사를 받았나요?",
+      "answer": "네. Oak Security가 The Rig를 감사했습니다."
     }
   }
 }

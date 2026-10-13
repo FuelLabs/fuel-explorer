@@ -73,7 +73,7 @@ export function EcosystemPageWrapper() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-6 pb-16 tablet:gap-8 tablet:pb-20">
+    <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-6 pt-6 pb-16 tablet:gap-8 tablet:pt-8 tablet:pb-20">
       <EcosystemHero />
       <div className="flex flex-col gap-10 px-4 tablet:gap-12 tablet:px-10 desktop:px-11">
         <EcosystemFilterBar

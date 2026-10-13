@@ -13,9 +13,10 @@ export function ToolPageHeader({ badge, title, actions }: ToolPageHeaderProps) {
 
   return (
     <header className={classes.root()}>
+      {/* Inline, so the badge follows the last word of a wrapped title. */}
       <div className={classes.heading()}>
         <h1 className={classes.title()}>{title}</h1>
-        {badge}
+        {badge && <span className={classes.badge()}>{badge}</span>}
       </div>
       {actions && <div className={classes.actions()}>{actions}</div>}
     </header>
@@ -28,9 +29,10 @@ const styles = tv({
       'flex flex-wrap items-center justify-between gap-x-10 gap-y-4',
       'px-6 py-6 tablet:px-10',
     ],
-    heading: 'flex flex-wrap items-center gap-x-4 gap-y-2',
+    heading: 'min-w-0',
     title:
-      'm-0 font-medium text-heading text-[32px] leading-[36px] tracking-[-1.28px]',
-    actions: 'flex w-full flex-wrap gap-2 tablet:w-auto',
+      'm-0 inline align-middle font-medium text-heading text-[32px] leading-[36px] tracking-[-1.28px]',
+    badge: 'ml-4 inline-block align-middle',
+    actions: 'flex flex-wrap gap-2',
   },
 });

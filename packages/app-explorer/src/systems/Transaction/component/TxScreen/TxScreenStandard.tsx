@@ -62,11 +62,12 @@ export function TxScreenStandard({
       <div className="flex items-center gap-4">
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="size-11 rounded-full" />}
+          loadingEl={<LoadingBox className="size-11 !rounded-none" />}
           regularEl={
             <TxIcon
               type={title as TxIconType}
               size="lg"
+              marker={false}
               status={tx?.hasPredicate ? 'Info' : (tx?.statusType as TxStatus)}
             />
           }

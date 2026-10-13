@@ -13,6 +13,10 @@ export const styles = tv({
       'font-mono font-medium text-[14px] leading-none uppercase tracking-[0.05em]',
       'text-muted transition-colors duration-300',
       'data-[active=true]:text-heading hover:text-heading',
+      // In the mobile menu a square marks the current page. Every item keeps
+      // the slot so the labels stay in one column.
+      'gap-3 md:gap-0 before:size-2 before:shrink-0 before:border before:border-transparent before:content-[""] md:before:hidden',
+      'data-[active=true]:before:border-[var(--fuel-square-border)] data-[active=true]:before:bg-[var(--fuel-square)]',
     ],
     navConnection: 'items-center',
     navNetwork: 'h-8',
@@ -21,6 +25,10 @@ export const styles = tv({
       'relative cursor-pointer flex items-center justify-center w-11 h-11 border border-border',
       'fuel-hover-fill bg-transparent select-none',
     ],
+    // The page dims behind the open mobile menu. It sits under the sticky nav (z-30).
+    backdrop: 'md:hidden fixed inset-0 z-20 bg-black/50',
+    mobileMenu:
+      'max-h-[calc(100dvh-var(--nav-height))] overflow-y-auto border-b border-[var(--fuel-line)]',
     themeToggleIcon: [
       'absolute transition-opacity duration-300 text-icon',
       'aria-[label=Sun]:opacity-100 aria-[label=Moon]:opacity-0',
@@ -30,8 +38,10 @@ export const styles = tv({
       'hidden md:flex justify-between flex-row items-center',
       'md:px-8 min-h-[var(--nav-height)]',
     ],
+    // Hidden below md, where the mobile nav takes over; otherwise its empty
+    // bar sits above the mobile nav.
     desktopWrapper: [
-      'sticky top-0 z-30',
+      'hidden md:block sticky top-0 z-30',
       'bg-[var(--fuel-background)]',
       'fuel-grid-divider min-h-[var(--nav-height)]',
     ],

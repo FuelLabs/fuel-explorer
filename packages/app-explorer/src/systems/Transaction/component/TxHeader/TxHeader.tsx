@@ -23,7 +23,7 @@ export function TxHeader({
   return (
     <PageTitle
       title={t('tx.details_title')}
-      className={`${className} flex-col tablet:flex-row tablet:justify-between tablet:items-center gap-4 tablet:gap-0`}
+      className={`${className} flex-col tablet:flex-row tablet:justify-between tablet:items-center gap-4 tablet:gap-0 px-[17px]`}
       subtitle={
         isSimple ? null : (
           <>

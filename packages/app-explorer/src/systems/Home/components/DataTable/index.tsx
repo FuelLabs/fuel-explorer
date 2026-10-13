@@ -1,7 +1,8 @@
-import { Link, RoundedContainer, cx, useNewKeys } from '@fuels/ui';
+import { RoundedContainer, cx, useNewKeys } from '@fuels/ui';
 
 import type { GQLBlocksDashboard } from '@fuel-explorer/graphql';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useBlockApps } from '~/systems/Transactions/hooks/useBlockApps';
 
 import { BlockTableTile } from '../BlockTableTile';
@@ -31,8 +32,7 @@ export const DataTable = (props: DataTableProps) => {
               )}
             >
               <Link
-                isExternal={false}
-                href={`/block/${block.blockNo}/simple`}
+                to={`/block/${block.blockNo}/simple`}
                 aria-label={t('home.block_link', { number: block.blockNo })}
                 className="absolute inset-0 z-0 border-0 focus-visible:outline-offset-[-2px]"
               />

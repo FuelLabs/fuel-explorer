@@ -15,7 +15,6 @@ import {
 import dayjs from 'dayjs';
 import { tv } from 'tailwind-variants';
 
-import { APP_COMMIT_HASH } from 'app-commons';
 import { useTranslation } from 'react-i18next';
 import data from './data.json';
 
@@ -152,9 +151,6 @@ export function Footer() {
           <HStack justify={'between'}>
             <Text className={classes.meta()} size="2">
               {t('footer.rights', { year: dayjs().year() })}
-            </Text>
-            <Text className={classes.meta()} size="2">
-              {t('footer.version', { hash: APP_COMMIT_HASH })}
             </Text>
           </HStack>
         </VStack>
