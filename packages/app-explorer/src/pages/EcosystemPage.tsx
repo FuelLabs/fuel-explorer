@@ -72,8 +72,10 @@ export function EcosystemPageWrapper() {
     updateParams({ search: undefined, section: undefined });
   }
 
+  // Vertical corner lines reach 40 px from tablet up, 24 px below; the top
+  // padding follows from that reach.
   return (
-    <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-6 pt-6 pb-16 tablet:gap-8 tablet:pt-8 tablet:pb-20">
+    <div className="fuel-corner-clear-top mx-auto flex w-full max-w-[1240px] flex-col gap-6 pb-16 tablet:gap-8 tablet:pb-20 tablet:[--fuel-corner-reach-y:40px]">
       <EcosystemHero />
       <div className="flex flex-col gap-10 px-4 tablet:gap-12 tablet:px-10 desktop:px-11">
         <EcosystemFilterBar
