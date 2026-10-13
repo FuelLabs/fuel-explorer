@@ -88,7 +88,7 @@ function Hero() {
             {/* Row 1-2, Col 1-4: Daily Transactions */}
             <Reveal
               immediate
-              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-4"
+              className="order-[-5] laptop:order-none row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-4"
             >
               <LoadingWrapper
                 isLoading={isChartsLoading}
@@ -106,7 +106,7 @@ function Hero() {
             {/* Row 1-2, Col 5-7: Fuel Dapps */}
             <Reveal
               immediate
-              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-3"
+              className="order-[-2] laptop:order-none row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-3"
             >
               <LoadingWrapper
                 isLoading={isEcosystemLoading}
@@ -126,47 +126,55 @@ function Hero() {
               />
             </Reveal>
 
-            {/* Row 1-4, Col 8-12: Latest Block + Recent Blocks */}
-            <Reveal
-              immediate
-              className="row-span-4 col-span-12 laptop:col-span-5 flex flex-col gap-px bg-[var(--fuel-line)]"
-            >
-              <LoadingWrapper
-                isLoading={isRollingLoading}
-                noItems={rollingUnavailable}
-                noItemsEl={<TileUnavailable label={t('home.live_stats')} />}
-                loadingEl={<LoadingBox className="w-full h-[120px]" />}
-                regularEl={
-                  <RollingStats
-                    tps={Number(rollingStats60sData?.tps) || 0}
-                    avgTxPerBlock={
-                      Number(rollingStats60sData?.avgTxPerBlock) || 0
-                    }
-                    avgBlockSize={
-                      Number(rollingStats60sData?.avgBlockSize) || 0
-                    }
-                  />
-                }
-              />
-              <div className="flex-1 min-h-0">
+            {/* Row 1-4, Col 8-12: Live Stats + Recent Blocks. On mobile the
+                wrapper vanishes so each tile is ordered on its own. */}
+            <div className="contents laptop:flex laptop:flex-col laptop:gap-px laptop:col-span-5 laptop:row-span-4 laptop:bg-[var(--fuel-line)]">
+              <Reveal
+                immediate
+                className="order-[-6] col-span-12 laptop:order-none"
+              >
                 <LoadingWrapper
-                  isLoading={isBlocksLoading}
-                  noItems={blocksUnavailable}
-                  noItemsEl={
-                    <TileUnavailable label={t('home.recent_blocks')} />
+                  isLoading={isRollingLoading}
+                  noItems={rollingUnavailable}
+                  noItemsEl={<TileUnavailable label={t('home.live_stats')} />}
+                  loadingEl={<LoadingBox className="w-full h-[120px]" />}
+                  regularEl={
+                    <RollingStats
+                      tps={Number(rollingStats60sData?.tps) || 0}
+                      avgTxPerBlock={
+                        Number(rollingStats60sData?.avgTxPerBlock) || 0
+                      }
+                      avgBlockSize={
+                        Number(rollingStats60sData?.avgBlockSize) || 0
+                      }
+                    />
                   }
-                  loadingEl={
-                    <LoadingBox className="w-full h-[384px] laptop:h-full" />
-                  }
-                  regularEl={<DataTable blocks={blocks.slice(0, 4)} />}
                 />
-              </div>
-            </Reveal>
+              </Reveal>
+              <Reveal
+                immediate
+                className="order-[-1] col-span-12 flex flex-col laptop:order-none laptop:flex-1 laptop:min-h-0"
+              >
+                <div className="flex-1 min-h-0">
+                  <LoadingWrapper
+                    isLoading={isBlocksLoading}
+                    noItems={blocksUnavailable}
+                    noItemsEl={
+                      <TileUnavailable label={t('home.recent_blocks')} />
+                    }
+                    loadingEl={
+                      <LoadingBox className="w-full h-[384px] laptop:h-full" />
+                    }
+                    regularEl={<DataTable blocks={blocks.slice(0, 4)} />}
+                  />
+                </div>
+              </Reveal>
+            </div>
 
             {/* Row 3-4, Col 1-4: Hourly TPS */}
             <Reveal
               delay={0.15}
-              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-4"
+              className="order-[-4] laptop:order-none row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-4"
             >
               <LoadingWrapper
                 isLoading={isChartsLoading}
@@ -187,7 +195,7 @@ function Hero() {
             {/* Row 3-4, Col 5-7: Fee Spent */}
             <Reveal
               delay={0.2}
-              className="row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-3"
+              className="order-[-3] laptop:order-none row-span-2 col-span-12 tablet:col-span-6 laptop:col-span-3"
             >
               <LoadingWrapper
                 isLoading={isChartsLoading}
