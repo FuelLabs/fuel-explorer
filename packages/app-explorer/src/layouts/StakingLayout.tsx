@@ -23,28 +23,23 @@ const LANE_HIDDEN = 'invisible opacity-0';
 const LANE_PANEL =
   'grid gap-px bg-[var(--fuel-line)] [&>*]:bg-[var(--fuel-background)]';
 
-// Three of the answers describe Ethereum delegation, so the Rig path keeps only
-// its own question.
+const ETHEREUM_FAQ = ['rig', 'unstake', 'position', 'apr'];
+// The Rig answers paraphrase the FAQ at rig.st/docs.
+const RIG_FAQ = [
+  'rig',
+  'stfuel',
+  'rig_exit',
+  'rig_fees',
+  'rig_validators',
+  'rig_audit',
+];
+
 function StakingGuide({ ethereum }: { ethereum: boolean }) {
   const { t } = useTranslation('stakingGuide');
-  const rigFaq = {
-    question: t('faq.rig.question'),
-    answer: t('faq.rig.answer'),
-  };
-  const faq = ethereum
-    ? [
-        rigFaq,
-        {
-          question: t('faq.unstake.question'),
-          answer: t('faq.unstake.answer'),
-        },
-        {
-          question: t('faq.position.question'),
-          answer: t('faq.position.answer'),
-        },
-        { question: t('faq.apr.question'), answer: t('faq.apr.answer') },
-      ]
-    : [rigFaq];
+  const faq = (ethereum ? ETHEREUM_FAQ : RIG_FAQ).map((key) => ({
+    question: t(`faq.${key}.question`),
+    answer: t(`faq.${key}.answer`),
+  }));
 
   return <ToolFaq items={faq} />;
 }
