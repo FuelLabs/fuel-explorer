@@ -484,9 +484,23 @@ html {
 }
 
 @media (max-width: 639px) {
-  .fuel-corner {
+  :root {
     --fuel-corner-reach: 24px;
   }
+}
+
+/* Corner lines reach past the frame. The space above a frame holds the
+   vertical reach plus --fuel-corner-clear, or the pinned nav crops the lines.
+   Put fuel-corner-clear-top on the frame's wrapper, beside any reach override. */
+:root {
+  --fuel-corner-clear: 24px;
+}
+
+.fuel-corner-clear-top {
+  padding-top: calc(
+    var(--fuel-corner-reach-y, var(--fuel-corner-reach, 60px)) +
+    var(--fuel-corner-clear)
+  );
 }
 
 .fuel-corner-tl {

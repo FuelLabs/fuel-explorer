@@ -78,6 +78,9 @@ jest.mock('fuels', () => ({
 
 jest.mock('@fuels/ui', () => ({
   LoadingBox: () => <span data-testid="rig-claim-loading" />,
+  Square: ({ children }: { children?: React.ReactNode }) => (
+    <span>{children}</span>
+  ),
 }));
 
 jest.mock('~staking/routes', () => ({

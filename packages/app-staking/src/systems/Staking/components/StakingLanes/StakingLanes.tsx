@@ -135,22 +135,67 @@ function RigReadout({
 }) {
   const { t } = useTranslation();
   const { connect } = useConnectUI();
+  const disconnected = status === 'disconnected';
 
-  if (status === 'disconnected') {
-    return (
-      <button
-        type="button"
-        className="m-0 max-w-[280px] cursor-pointer border-0 bg-transparent p-0 text-left text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] laptop:text-right"
-        onClick={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          connect();
-        }}
-      >
-        {t('staking.lane_rig_connect')}
-      </button>
-    );
-  }
+  // The wallet check settles into either the connect prompt or a figure, and
+  // the two differ in height. The unused one stays in the same grid cell as an
+  // invisible spacer, so the lane keeps one height and the page below does not
+  // move. Spacer text comes from CSS content, so it never reaches the DOM text.
+  return (
+    <span className="grid laptop:justify-items-end [&>*]:col-start-1 [&>*]:row-start-1 [&>*]:self-end">
+      {disconnected ? (
+        <>
+          <button
+            type="button"
+            className={`${CONNECT_TEXT} cursor-pointer border-0 bg-transparent p-0`}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              connect();
+            }}
+          >
+            {t('staking.lane_rig_connect')}
+          </button>
+          <span
+            aria-hidden
+            className="invisible flex flex-col gap-1 laptop:items-end"
+          >
+            <span
+              data-text={t('staking.lane_rig_figure')}
+              className="fuel-label before:content-[attr(data-text)]"
+            />
+            <span className="h-6 tablet:h-[34px]" />
+          </span>
+        </>
+      ) : (
+        <>
+          <span
+            aria-hidden
+            data-text={t('staking.lane_rig_connect')}
+            className={`${CONNECT_TEXT} invisible before:content-[attr(data-text)]`}
+          />
+          <span className="flex flex-col gap-1 laptop:items-end">
+            <RigFigure status={status} pendingDeposit={pendingDeposit} />
+          </span>
+        </>
+      )}
+    </span>
+  );
+}
+
+const CONNECT_TEXT =
+  'm-0 max-w-[280px] text-left text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] laptop:text-right';
+
+function RigFigure({
+  status,
+  pendingDeposit,
+}: {
+  status: Exclude<RigClaimStatus, 'disconnected'>;
+  pendingDeposit:
+    | { format: (options: { units: number; precision: number }) => string }
+    | undefined;
+}) {
+  const { t } = useTranslation();
 
   if (status === 'loading') {
     return (

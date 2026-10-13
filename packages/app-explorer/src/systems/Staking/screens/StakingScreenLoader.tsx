@@ -5,12 +5,9 @@ export function StakingScreenLoader({
   tab = 'ethereum',
 }: { tab?: 'fuel' | 'ethereum' }) {
   if (tab === 'fuel') {
-    // The Rig notices wrap, so their height follows the width.
+    // The Rig card measures 196 px stacked and 136 px in one row from tablet up.
     return (
-      <LoadingBox
-        aria-hidden
-        className="h-[380px] w-full tablet:h-[284px] laptop:h-[260px] desktop:h-[236px]"
-      />
+      <LoadingBox aria-hidden className="h-[196px] w-full tablet:h-[136px]" />
     );
   }
 
