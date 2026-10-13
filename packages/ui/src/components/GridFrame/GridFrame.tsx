@@ -89,16 +89,19 @@ export function GridFrame({
     const mutations = new MutationObserver(observeCells);
     mutations.observe(frame, { childList: true, subtree: true });
     observeCells();
-    // Fades change visibility without a resize, so measure again when one ends.
+    // Fades change visibility without a resize, and entrance animations move
+    // cells without one, so measure again when either ends.
     const remeasure = () => {
       if (!pending) pending = requestAnimationFrame(measure);
     };
     frame.addEventListener('transitionend', remeasure);
+    frame.addEventListener('animationend', remeasure);
     return () => {
       cancelAnimationFrame(pending);
       resize.disconnect();
       mutations.disconnect();
       frame.removeEventListener('transitionend', remeasure);
+      frame.removeEventListener('animationend', remeasure);
     };
   }, []);
 
