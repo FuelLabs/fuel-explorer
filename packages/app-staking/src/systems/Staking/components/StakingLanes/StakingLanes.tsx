@@ -18,6 +18,15 @@ import { IconRig } from '../StakingMigrationBanner/IconRig';
 
 const { symbol, decimals } = TOKENS[FuelToken.V2];
 
+// The ecosystem banner's dither, kept to the two corners. The art is white dots
+// on black: screen drops the black on dark, and inverted, multiply drops the white on light.
+const LANE_ART = '/illustrations/liquid-dither-poster.webp';
+const LANE_ART_CLASS = [
+  'pointer-events-none absolute inset-0 size-full object-cover opacity-40 [image-rendering:pixelated]',
+  'invert mix-blend-multiply dark:invert-0 dark:mix-blend-screen dark:brightness-75',
+  '[mask-image:radial-gradient(ellipse_47%_90%_at_0%_0%,black_26%,transparent_72%),radial-gradient(ellipse_47%_90%_at_100%_100%,black_26%,transparent_72%)]',
+].join(' ');
+
 type LaneProps = {
   to: string;
   active: boolean;
@@ -30,8 +39,8 @@ type LaneProps = {
   busy?: boolean;
 };
 
-// One highlight and one marker are shared by both lanes, so they glide to the
-// lane you pick instead of switching on and off.
+// Both lanes sit side by side at every width, so they read as tabs. One
+// highlight is shared, so it glides sideways to the lane you pick.
 const GLIDE = {
   type: 'spring',
   stiffness: 520,
@@ -39,13 +48,13 @@ const GLIDE = {
   mass: 0.9,
 } as const;
 
-// 24 px below the tablet width so a long balance fits 320 px. The full value
+// 20 px below the tablet width so a long balance fits half of 320 px. The full value
 // stays in the title when the figure is cut.
 function Figure({ value }: { value: string | undefined }) {
   return (
     <span
       title={value}
-      className="fuel-stat min-w-0 truncate whitespace-nowrap text-[24px] leading-[28px] tablet:text-[32px] tablet:leading-[34px]"
+      className="fuel-stat min-w-0 truncate whitespace-nowrap text-[20px] leading-[24px] tablet:text-[32px] tablet:leading-[34px]"
     >
       {value}
     </span>
@@ -71,7 +80,7 @@ function Lane({
       aria-current={active ? 'page' : undefined}
       aria-busy={busy || undefined}
       className={[
-        'group relative isolate grid min-w-0 gap-6 px-6 py-6 text-inherit no-underline tablet:px-10 tablet:py-8',
+        'group relative isolate grid min-w-0 content-between gap-4 px-4 py-5 text-inherit no-underline tablet:gap-6 tablet:px-10 tablet:py-8',
         'laptop:grid-cols-[1fr_auto] laptop:items-end',
         'fuel-hover-fill focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--fuel-focus)]',
       ].join(' ')}
@@ -81,8 +90,10 @@ function Lane({
           aria-hidden
           layoutId="staking-lane-highlight"
           transition={transition}
-          className="absolute inset-0 -z-10 bg-[var(--fuel-card)]"
-        />
+          className="absolute inset-0 -z-10 overflow-hidden bg-[var(--fuel-card)]"
+        >
+          <img src={LANE_ART} alt="" className={LANE_ART_CLASS} />
+        </motion.span>
       )}
       <span className="flex min-w-0 flex-col gap-3">
         <span className="flex items-center gap-3">
@@ -90,17 +101,14 @@ function Lane({
             aria-hidden
             className="relative size-2 shrink-0 border border-[var(--fuel-indicator-border)]"
           >
-            {active && (
-              <motion.span
-                layoutId="staking-lane-marker"
-                transition={transition}
-                className="fuel-square absolute -inset-px"
-              />
-            )}
+            {/* The marker stays in place and fades, while the highlight glides. */}
+            <span
+              className={`fuel-square absolute -inset-px transition-opacity duration-200 motion-reduce:transition-none ${active ? 'opacity-100' : 'opacity-0'}`}
+            />
           </span>
           <span className="flex h-7 items-center">{logo}</span>
         </span>
-        <span className="font-medium text-heading text-[24px] leading-[28px] tracking-[-0.96px]">
+        <span className="font-medium text-heading text-[18px] leading-[22px] tracking-[-0.54px] tablet:text-[24px] tablet:leading-[28px] tablet:tracking-[-0.96px]">
           {name}
         </span>
       </span>
@@ -152,7 +160,7 @@ function RigReadout({
       <>
         <span className="fuel-label">{t('staking.lane_rig_figure')}</span>
         <span className="sr-only">{t('staking.lane_rig_checking')}</span>
-        <LoadingBox className="h-[34px] w-24 !rounded-none" />
+        <LoadingBox className="h-6 w-24 !rounded-none tablet:h-[34px]" />
       </>
     );
   }
@@ -207,7 +215,7 @@ function EthereumReadout({
       <>
         {label}
         <span className="sr-only">{t('staking.status.loading')}</span>
-        <LoadingBox className="h-[34px] w-24 !rounded-none" />
+        <LoadingBox className="h-6 w-24 !rounded-none tablet:h-[34px]" />
       </>
     );
   }
@@ -252,7 +260,7 @@ export function StakingLanes() {
   return (
     <nav
       aria-label={t('staking.lanes_label')}
-      className="fuel-edge grid min-w-0 laptop:grid-cols-2 [&>*+*]:border-t [&>*+*]:border-[var(--fuel-line)] laptop:[&>*+*]:border-t-0 laptop:[&>*+*]:border-l"
+      className="fuel-edge grid min-w-0 grid-cols-2 [&>*+*]:border-l [&>*+*]:border-[var(--fuel-line)]"
     >
       <Lane
         to={Routes.stakingRig()}
