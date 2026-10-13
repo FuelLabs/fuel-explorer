@@ -3,7 +3,7 @@ import { LoadingBox } from '@fuels/ui';
 // Holds the board's header and first row while its chunk loads.
 export function TransfersBoardSkeleton() {
   return (
-    <div aria-hidden className="fuel-edge min-w-0">
+    <div aria-hidden className="fuel-cell min-w-0">
       <div className="px-6 pt-8 pb-6 tablet:px-10">
         <LoadingBox className="h-8 w-64" />
       </div>

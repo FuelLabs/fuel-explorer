@@ -1,4 +1,4 @@
-import { IconPlus } from '@fuels/ui';
+import { IconPlus, Square } from '@fuels/ui';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
@@ -47,7 +47,7 @@ function ToolFaqRow({ item }: { item: ToolFaqItem }) {
           onClick={() => setOpen((value) => !value)}
           className={classes.question()}
         >
-          <span aria-hidden className="fuel-square fuel-faq-marker" />
+          <Square className="fuel-faq-marker" />
           <span className="fuel-faq-label">{item.question}</span>
           <IconPlus
             aria-hidden
@@ -73,7 +73,7 @@ function ToolFaqRow({ item }: { item: ToolFaqItem }) {
 
 const styles = tv({
   slots: {
-    root: 'fuel-edge col-span-full px-6 py-6 tablet:px-10 tablet:py-8',
+    root: 'fuel-cell col-span-full px-6 py-6 tablet:px-10 tablet:py-8',
     title:
       'fuel-label m-0 mb-3 text-[12px] leading-[18px] tracking-[0.6px] text-[var(--fuel-element-low-em)]',
     item: 'fuel-faq-item relative border-b border-[var(--fuel-border)] last:border-b-0',

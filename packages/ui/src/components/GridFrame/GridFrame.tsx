@@ -28,9 +28,9 @@ function findJoints(frame: HTMLElement): Joint[] {
   const top = origin.top + frame.clientTop;
   const width = frame.clientWidth;
   const height = frame.clientHeight;
-  const cells = [...frame.querySelectorAll<HTMLElement>('.fuel-edge')].filter(
+  const cells = [...frame.querySelectorAll<HTMLElement>('.fuel-cell')].filter(
     (cell) =>
-      cell.parentElement?.closest('.fuel-edge, .fuel-grid-frame') === frame,
+      cell.parentElement?.closest('.fuel-cell, .fuel-grid-frame') === frame,
   );
 
   const joints = new Map<string, Joint>();
@@ -82,7 +82,7 @@ export function GridFrame({
     });
     const observeCells = () => {
       resize.observe(frame);
-      for (const cell of frame.querySelectorAll('.fuel-edge')) {
+      for (const cell of frame.querySelectorAll('.fuel-cell')) {
         resize.observe(cell);
       }
     };

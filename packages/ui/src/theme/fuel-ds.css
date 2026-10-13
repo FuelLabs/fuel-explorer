@@ -226,13 +226,57 @@
   transform: translate(-50%, -50%);
 }
 
+/* The 8px status square. Use the <Square> component; data-kind sets the colour.
+   pending is filled grey, idle is an empty outline. */
 .fuel-square {
   display: inline-block;
+  flex-shrink: 0;
   width: 8px;
   height: 8px;
   box-sizing: border-box;
   border: 1px solid var(--fuel-square-border);
   background: var(--fuel-square);
+}
+
+.fuel-square[data-kind="danger"] {
+  border-color: var(--fuel-danger);
+  background: var(--fuel-danger);
+}
+
+.fuel-square[data-kind="warning"] {
+  border-color: var(--fuel-warning);
+  background: var(--fuel-warning);
+}
+
+.fuel-square[data-kind="pending"] {
+  border-color: var(--fuel-element-low-em);
+  background: var(--fuel-element-low-em);
+}
+
+.fuel-square[data-kind="idle"] {
+  border-color: var(--fuel-indicator-border);
+  background: transparent;
+}
+
+.fuel-square:is([data-kind="strong"], [data-kind="active"]) {
+  border-color: var(--fuel-element-high-em);
+  background: var(--fuel-element-high-em);
+}
+
+.fuel-square[data-kind="active"] {
+  animation: fuel-square-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes fuel-square-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fuel-square[data-kind="active"] {
+    animation: none;
+  }
 }
 
 .fuel-dither-art {
@@ -379,8 +423,8 @@ html {
   border: 0;
 }
 
-.fuel-grid-frame .fuel-edge::before,
-.fuel-grid-frame .fuel-edge::after {
+/* A frame draws its own corners and joints, so boxes inside it drop their pair. */
+.fuel-grid-frame .fuel-corner-pair {
   display: none;
 }
 
@@ -465,6 +509,12 @@ html {
   right: var(--fuel-corner-at);
 }
 
+/* The pair variant marks a single box: squares only, no lines. */
+.fuel-corner-pair::before,
+.fuel-corner-pair::after {
+  display: none;
+}
+
 .fuel-corner-tl::before,
 .fuel-corner-bl::before {
   right: 100%;
@@ -497,32 +547,9 @@ html {
   border-bottom: 1px solid var(--fuel-grid-line);
 }
 
-.fuel-edge {
+/* Marks a GridFrame cell, so the frame can find its joints. It draws nothing. */
+.fuel-cell {
   position: relative;
-}
-
-.fuel-edge::before,
-.fuel-edge::after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  width: 8px;
-  height: 8px;
-  box-sizing: border-box;
-  border: 1px solid var(--fuel-indicator-border);
-  background: var(--fuel-indicator-fill);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.fuel-edge::before {
-  top: 0;
-  left: 0;
-}
-
-.fuel-edge::after {
-  top: 100%;
-  left: 100%;
 }
 
 @keyframes fuel-row-arrive {

@@ -1,4 +1,4 @@
-import { Button } from '@fuels/ui';
+import { Button, Square } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 import { RIG_URL } from '../../constants/rig';
 import { IconRig } from './IconRig';
@@ -12,7 +12,7 @@ export const StakingMigrationBanner = () => {
     <div className="fuel-appear flex flex-col items-start gap-6 px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10">
       <div className="flex min-w-0 flex-col gap-2">
         <div className="flex items-center gap-3">
-          <span aria-hidden className="fuel-square shrink-0" />
+          <Square />
           <p className="m-0 text-[20px] font-medium leading-[24px] tracking-[-0.4px] text-heading">
             {t('staking.rig_card_title')}
           </p>

@@ -1,3 +1,4 @@
+import { FrameCorners, Square } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 import { useFuelStreamXPaused } from '../../hooks/useFuelStreamXPaused/useFuelStreamXPaused';
 
@@ -11,9 +12,10 @@ export const BridgePausedBanner = () => {
   if (!isPaused) return null;
 
   return (
-    <div className="fuel-edge fuel-appear mb-4 flex flex-col gap-2 border border-[var(--fuel-line)] bg-[var(--fuel-card)] p-4">
+    <div className="relative fuel-appear mb-4 flex flex-col gap-2 border border-[var(--fuel-line)] bg-[var(--fuel-card)] p-4">
+      <FrameCorners variant="pair" />
       <span className="fuel-label flex items-center gap-2 text-[var(--fuel-element-high-em)]">
-        <span aria-hidden className="fuel-square" />
+        <Square />
         {t('portal.paused.tag')}
       </span>
       <p role="alert" className="m-0 text-sm text-[var(--fuel-element-mid-em)]">

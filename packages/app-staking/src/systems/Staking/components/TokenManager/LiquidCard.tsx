@@ -1,4 +1,4 @@
-import { Tooltip } from '@fuels/ui';
+import { Square, Tooltip } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
 import type { Address } from 'viem';
 
@@ -40,11 +40,8 @@ export const LiquidCard = ({
 
   if (error) {
     return (
-      <div className="fuel-edge flex min-w-0 items-center gap-3 px-6 py-5 tablet:px-10">
-        <span
-          aria-hidden
-          className="size-2 shrink-0 border border-[var(--fuel-danger)] bg-[var(--fuel-danger)]"
-        />
+      <div className="fuel-cell flex min-w-0 items-center gap-3 px-6 py-5 tablet:px-10">
+        <Square kind="danger" />
         <p
           role="alert"
           className="m-0 text-[14px] leading-[18px] text-[var(--fuel-danger-text)]"
@@ -56,7 +53,7 @@ export const LiquidCard = ({
   }
 
   return (
-    <div className="fuel-edge flex min-w-0 flex-col justify-between gap-6 px-6 py-5 tablet:px-10">
+    <div className="fuel-cell flex min-w-0 flex-col justify-between gap-6 px-6 py-5 tablet:px-10">
       <span className="fuel-label">
         {t('staking.upgrade.liquid', { version })}
       </span>

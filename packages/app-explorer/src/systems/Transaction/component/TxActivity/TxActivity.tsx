@@ -1,4 +1,11 @@
-import { Address, BlockieAvatar, Code, Link, LoadingBox } from '@fuels/ui';
+import {
+  Address,
+  BlockieAvatar,
+  Code,
+  FrameCorners,
+  Link,
+  LoadingBox,
+} from '@fuels/ui';
 import { IconAlertTriangle } from '@fuels/ui';
 import { bn } from 'fuels';
 import { useTranslation } from 'react-i18next';
@@ -159,7 +166,8 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
   const showContract = locations.size > 1;
 
   return (
-    <div className="fuel-edge border border-[var(--fuel-line)] px-4 py-4">
+    <div className="relative border border-[var(--fuel-line)] px-4 py-4">
+      <FrameCorners variant="pair" />
       <div className="flex items-start gap-3">
         <div className="shrink-0">
           <TxContractIcon contractId={iconContract ?? ''} size="32px">
@@ -226,7 +234,8 @@ export function TxActivity({ activity }: { activity: TxActivityData }) {
 
 export function TxActivityLoader() {
   return (
-    <div className="fuel-edge border border-[var(--fuel-line)] px-4 py-4">
+    <div className="relative border border-[var(--fuel-line)] px-4 py-4">
+      <FrameCorners variant="pair" />
       <div className="flex items-center gap-3">
         <LoadingBox className="size-8 shrink-0 !rounded-none" />
         <LoadingBox className="h-6 w-72" />

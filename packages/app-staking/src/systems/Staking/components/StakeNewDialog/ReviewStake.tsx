@@ -1,4 +1,4 @@
-import { Button, IconCheck, Tooltip } from '@fuels/ui';
+import { Button, IconCheck, Square, Tooltip } from '@fuels/ui';
 import { BN } from 'fuels';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -158,7 +158,7 @@ function _ReviewStake({
       />
       {hasAmountFromL1 && hasAmountFromSequencer && (
         <div className="flex items-start gap-3">
-          <span aria-hidden className="fuel-square mt-[5px] shrink-0" />
+          <Square className="mt-[5px]" />
           <div className="flex flex-col gap-1">
             <span className="text-[16px] text-heading">
               {t('staking.dialog.two_tx_title')}

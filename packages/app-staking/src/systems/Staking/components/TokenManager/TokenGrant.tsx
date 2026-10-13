@@ -103,7 +103,7 @@ export const TokenGrant = ({ account }: TokenGrantProps) => {
         {t('staking.upgrade.grant_title')}
       </h2>
       <GridFrame className="grid-cols-1">
-        <div className="fuel-edge flex min-w-0 flex-col gap-6 px-6 py-5 tablet:px-10">
+        <div className="fuel-cell flex min-w-0 flex-col gap-6 px-6 py-5 tablet:px-10">
           <span className="fuel-label">{t('staking.upgrade.unclaimed')}</span>
           <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-center">
             <div className="flex min-w-0 items-baseline gap-2">

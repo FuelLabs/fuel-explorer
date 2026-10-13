@@ -1,3 +1,4 @@
+import { FrameCorners } from '@fuels/ui';
 import type { ReactNode } from 'react';
 
 type PageStateProps = {
@@ -20,8 +21,9 @@ export function PageState({
   return (
     <section
       role={tone === 'error' ? 'alert' : 'status'}
-      className={`fuel-edge fuel-appear flex flex-col items-start gap-4 border border-[var(--fuel-line)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10 ${className}`}
+      className={`relative fuel-appear flex flex-col items-start gap-4 border border-[var(--fuel-line)] px-6 py-8 tablet:flex-row tablet:items-center tablet:justify-between tablet:px-10 ${className}`}
     >
+      <FrameCorners variant="pair" />
       <div className="min-w-0">
         <h2 className="m-0 font-medium text-[20px] text-heading leading-[24px] tracking-[-0.4px]">
           {title}

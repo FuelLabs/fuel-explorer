@@ -1,4 +1,4 @@
-import { IconX } from '@fuels/ui';
+import { IconX, Square, type SquareKind } from '@fuels/ui';
 
 export type StatusMarkerKind =
   | 'done'
@@ -7,13 +7,11 @@ export type StatusMarkerKind =
   | 'error'
   | 'pending';
 
-const SQUARE: Record<Exclude<StatusMarkerKind, 'error'>, string> = {
-  done: 'border-[var(--fuel-primary)] bg-[var(--fuel-primary)]',
-  active:
-    'border-[var(--fuel-element-high-em)] bg-[var(--fuel-element-high-em)] animate-pulse motion-reduce:animate-none',
-  action:
-    'border-[var(--fuel-element-high-em)] bg-[var(--fuel-element-high-em)]',
-  pending: 'border-[var(--fuel-indicator-border)] bg-transparent',
+const SQUARE_KIND: Record<Exclude<StatusMarkerKind, 'error'>, SquareKind> = {
+  done: 'brand',
+  active: 'active',
+  action: 'strong',
+  pending: 'pending',
 };
 
 // The one status mark for steps, dialogs and history rows. A failure is a
@@ -33,10 +31,5 @@ export function StatusMarker({
       </span>
     );
   }
-  return (
-    <span
-      aria-hidden
-      className={`size-2 shrink-0 border ${SQUARE[kind]} ${className}`}
-    />
-  );
+  return <Square kind={SQUARE_KIND[kind]} className={className} />;
 }

@@ -1,3 +1,4 @@
+import { FrameCorners, Square } from '@fuels/ui';
 import type { ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
@@ -29,7 +30,8 @@ export function TxNotice({ children, className }: TxNoticeProps) {
   const classes = styles();
   return (
     <div className={classes.notice({ className })}>
-      <span aria-hidden className="fuel-square mt-[5px] shrink-0" />
+      <FrameCorners variant="pair" />
+      <Square className="mt-[5px]" />
       <div className="min-w-0">{children}</div>
     </div>
   );
@@ -38,7 +40,7 @@ export function TxNotice({ children, className }: TxNoticeProps) {
 const styles = tv({
   slots: {
     notice: [
-      'fuel-edge fuel-appear flex items-start gap-3 border border-[var(--fuel-line)] px-4 py-3',
+      'relative fuel-appear flex items-start gap-3 border border-[var(--fuel-line)] px-4 py-3',
       'text-[14px] leading-[20px] text-[var(--fuel-element-low-em)]',
     ],
   },

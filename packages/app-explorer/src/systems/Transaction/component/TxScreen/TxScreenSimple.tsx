@@ -1,5 +1,11 @@
 import { bn, format } from '@fuel-ts/math';
-import { Address, BlockieAvatar, LoadingBox, LoadingWrapper } from '@fuels/ui';
+import {
+  Address,
+  BlockieAvatar,
+  FrameCorners,
+  LoadingBox,
+  LoadingWrapper,
+} from '@fuels/ui';
 import { AddressType } from 'fuels';
 import { useTranslation } from 'react-i18next';
 
@@ -109,7 +115,8 @@ export function TxScreenSimple({
         index={2}
         hideTitle={!showTransfersTitle}
       >
-        <div className="fuel-edge border border-[var(--fuel-line)] px-4 py-4">
+        <div className="relative border border-[var(--fuel-line)] px-4 py-4">
+          <FrameCorners variant="pair" />
           <LoadingWrapper
             isLoading={isLoading}
             loadingEl={

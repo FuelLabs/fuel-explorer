@@ -1,5 +1,5 @@
 import { useConnectUI } from '@fuels/react';
-import { LoadingBox } from '@fuels/ui';
+import { LoadingBox, Square } from '@fuels/ui';
 import { FuelToken, TOKENS } from 'app-commons';
 import { motion, useReducedMotion } from 'framer-motion';
 import { DECIMAL_FUEL } from 'fuels';
@@ -97,15 +97,12 @@ function Lane({
       )}
       <span className="flex min-w-0 flex-col gap-3">
         <span className="flex items-center gap-3">
-          <span
-            aria-hidden
-            className="relative size-2 shrink-0 border border-[var(--fuel-indicator-border)]"
-          >
+          <Square kind="idle" className="relative">
             {/* The marker stays in place and fades, while the highlight glides. */}
-            <span
-              className={`fuel-square absolute -inset-px transition-opacity duration-200 motion-reduce:transition-none ${active ? 'opacity-100' : 'opacity-0'}`}
+            <Square
+              className={`absolute -inset-px transition-opacity duration-200 motion-reduce:transition-none ${active ? 'opacity-100' : 'opacity-0'}`}
             />
-          </span>
+          </Square>
           <span className="flex h-7 items-center">{logo}</span>
         </span>
         <span className="font-medium text-heading text-[18px] leading-[22px] tracking-[-0.54px] tablet:text-[24px] tablet:leading-[28px] tablet:tracking-[-0.96px]">
@@ -260,7 +257,7 @@ export function StakingLanes() {
   return (
     <nav
       aria-label={t('staking.lanes_label')}
-      className="fuel-edge grid min-w-0 grid-cols-2 [&>*+*]:border-l [&>*+*]:border-[var(--fuel-line)]"
+      className="fuel-cell grid min-w-0 grid-cols-2 [&>*+*]:border-l [&>*+*]:border-[var(--fuel-line)]"
     >
       <Lane
         to={Routes.stakingRig()}

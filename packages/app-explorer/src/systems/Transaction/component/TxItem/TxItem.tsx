@@ -1,4 +1,4 @@
-import { IconChevronDown } from '@fuels/ui';
+import { FrameCorners, IconChevronDown } from '@fuels/ui';
 import { type MouseEvent, type ReactNode, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
@@ -72,15 +72,19 @@ export function TxItem({
 export function TxItemGroup({
   children,
   className,
+  corners = false,
 }: {
   children: ReactNode;
   className?: string;
+  /** Marks the top-left and bottom-right corners. They go last so items keep :first-child. */
+  corners?: boolean;
 }) {
   return (
     <div
-      className={`border border-[var(--fuel-line)] bg-[var(--fuel-background)] ${className ?? ''}`}
+      className={`relative border border-[var(--fuel-line)] bg-[var(--fuel-background)] ${className ?? ''}`}
     >
       {children}
+      {corners && <FrameCorners variant="pair" />}
     </div>
   );
 }

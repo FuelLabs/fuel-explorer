@@ -32,7 +32,7 @@ export function CardInfo({
 
 const styles = tv({
   slots: {
-    root: 'fuel-edge flex h-full flex-col gap-2 bg-[var(--fuel-background)] px-4 py-4',
+    root: 'fuel-cell flex h-full flex-col gap-2 bg-[var(--fuel-background)] px-4 py-4',
     name: 'fuel-label m-0',
     value: 'fuel-stat-sm min-w-0',
     description: 'text-[12px] leading-[18px] text-[var(--fuel-element-low-em)]',
