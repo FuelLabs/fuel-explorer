@@ -1,16 +1,37 @@
 import { Box, VStack } from '@fuels/ui';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useLocation, useNavigationType } from 'react-router-dom';
 import { PageMeta } from '~/systems/Core/components/PageMeta/PageMeta';
 import { TopNav } from '~/systems/Core/components/TopNav/TopNav';
 import HeroSection from '~/systems/Home/components/Hero/HeroSection';
 import { Footer } from '../Footer/Footer';
+
+// The page is the first two path segments, so tab routes like /tx/:id/advanced
+// keep the scroll position and a new page starts at the top.
+function pageOf(pathname: string) {
+  return pathname.split('/').slice(0, 3).join('/');
+}
+
+function useScrollToTopOnPageChange(pathname: string) {
+  const navigationType = useNavigationType();
+  const lastPage = useRef(pageOf(pathname));
+  useEffect(() => {
+    const page = pageOf(pathname);
+    if (page === lastPage.current) return;
+    lastPage.current = page;
+    // Back and forward leave the position to the browser.
+    if (navigationType !== 'POP') window.scrollTo(0, 0);
+  }, [pathname, navigationType]);
+}
 
 export type LayoutProps = {
   children: React.ReactNode;
 };
 
 export function Layout({ children }: LayoutProps) {
-  const isHome = useLocation().pathname === '/';
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
+  useScrollToTopOnPageChange(pathname);
 
   return (
     <VStack className="min-w-screen overflow-x-clip" gap="0">
