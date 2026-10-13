@@ -64,6 +64,7 @@ jest.mock('@fuels/ui', () => ({
   ),
   Tooltip: ({ children }: { children?: ReactNode }) => <>{children}</>,
   LoadingBox: () => <span data-testid="loading-box" />,
+  Square: () => <span />,
 }));
 
 jest.mock('~staking/systems/Staking/store/stakingTxDialogStore', () => ({
