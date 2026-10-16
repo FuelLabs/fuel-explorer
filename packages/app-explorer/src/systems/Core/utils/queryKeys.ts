@@ -14,17 +14,6 @@ export const QUERY_KEYS = {
 
     return QUERY_KEYS.base.concat('nft');
   },
-  contractMetadata: (address: string | null): QueryKey => {
-    if (address) {
-      return QUERY_KEYS.base.concat(
-        'contract',
-        'metadata',
-        address.toLowerCase(),
-      );
-    }
-
-    return QUERY_KEYS.base.concat('contract', 'metadata');
-  },
   transactionStatus: (txId: string | undefined = ''): QueryKey => {
     return QUERY_KEYS.base.concat('transaction', 'status', txId.toLowerCase());
   },

@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { relativeUrl } from 'app-commons';
-import { api } from '~/systems/Core/utils/api';
+import { ApiError, api } from '~/systems/Core/utils/api';
 import { QUERY_KEYS } from '~/systems/Core/utils/queryKeys';
 
 type UseNFTData = {
@@ -14,20 +13,35 @@ type UseNFTParams = {
   assetId: string | null | undefined;
 };
 
-const queryFn = async ({
-  contractId,
-  assetId,
-}: UseNFTParams): Promise<UseNFTData> => {
-  const data = await api.get<UseNFTData>(
-    relativeUrl(`/api/nft/${contractId}/${assetId}`),
-  );
-  return data;
+type AssetBody = {
+  name?: string;
+  symbol?: string;
+  isNFT?: boolean;
+};
+
+const NOT_NFT: UseNFTData = { name: null, symbol: null, nft: false };
+
+const queryFn = async (assetId: string): Promise<UseNFTData> => {
+  try {
+    const asset = await api.get<AssetBody>(
+      `${import.meta.env.VITE_FUEL_INDEXER_API}/assets/${assetId}`,
+    );
+    if (!asset.isNFT) return NOT_NFT;
+    return {
+      name: asset.name ?? null,
+      symbol: asset.symbol ?? null,
+      nft: true,
+    };
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return NOT_NFT;
+    throw error;
+  }
 };
 
 export const useNFT = ({ contractId = '', assetId = '' }: UseNFTParams) => {
   return useQuery({
     queryKey: QUERY_KEYS.nft(contractId, assetId),
-    queryFn: () => queryFn({ contractId, assetId }),
+    queryFn: () => queryFn(assetId as string),
     enabled: !!contractId && !!assetId,
     staleTime: Number.POSITIVE_INFINITY,
   });
