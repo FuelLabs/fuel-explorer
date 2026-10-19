@@ -103,7 +103,7 @@ jobs:
           pnpm-version: 9.10.0
       # The xstate *.typegen.ts files are gitignored, so generate them first.
       - name: xstate typegen
-        run: pnpm --filter app-portal xstate:typegen
+        run: pnpm --filter app-portal --filter app-staking xstate:typegen
       # These packages type-check cleanly. app-explorer (about 60 errors) is
       # not gated yet.
       - name: tsc
