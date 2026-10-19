@@ -77,6 +77,8 @@ jobs:
   unit-tests:
     name: Unit Tests
     if: ${{ github.head_ref != 'changeset-release/master' }}
+    permissions:
+      contents: read
     runs-on: warp-ubuntu-latest-x64-4x
     steps:
       - uses: actions/checkout@v3
@@ -90,6 +92,8 @@ jobs:
   type-check:
     name: Type Check
     if: ${{ github.head_ref != 'changeset-release/master' }}
+    permissions:
+      contents: read
     runs-on: warp-ubuntu-latest-x64-4x
     steps:
       - uses: actions/checkout@v3
@@ -97,6 +101,9 @@ jobs:
         with:
           node-version: 20.15.1
           pnpm-version: 9.10.0
+      # The xstate *.typegen.ts files are gitignored, so generate them first.
+      - name: xstate typegen
+        run: pnpm --filter app-portal xstate:typegen
       # These packages type-check cleanly. app-explorer (about 60 errors) is
       # not gated yet.
       - name: tsc
