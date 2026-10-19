@@ -109,6 +109,10 @@ export default defineConfig({
         __dirname,
         '../app-commons/src/chains/ethWagmi',
       ),
+      'app-commons/src/utils/dayjs': path.resolve(
+        __dirname,
+        '../app-commons/src/utils/dayjs',
+      ),
       'app-commons/PausedContractDialogContent': path.resolve(
         __dirname,
         '../app-commons/src/components/PausedContractDialogContent',

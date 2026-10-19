@@ -6,10 +6,16 @@ import { TopNav } from '~/systems/Core/components/TopNav/TopNav';
 import HeroSection from '~/systems/Home/components/Hero/HeroSection';
 import { Footer } from '../Footer/Footer';
 
+// Bridge and staking keep their tabs in one panel, so the whole section is
+// one page.
+const SINGLE_PAGE_SECTIONS = new Set(['bridge', 'staking']);
+
 // The page is the first two path segments, so tab routes like /tx/:id/advanced
 // keep the scroll position and a new page starts at the top.
 function pageOf(pathname: string) {
-  return pathname.split('/').slice(0, 3).join('/');
+  const segments = pathname.split('/');
+  if (SINGLE_PAGE_SECTIONS.has(segments[1])) return `/${segments[1]}`;
+  return segments.slice(0, 3).join('/');
 }
 
 function useScrollToTopOnPageChange(pathname: string) {

@@ -147,7 +147,7 @@ function RigReadout({
         <>
           <button
             type="button"
-            className={`${CONNECT_TEXT} cursor-pointer border-0 bg-transparent p-0`}
+            className={`${CONNECT_BUTTON} cursor-pointer`}
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
@@ -169,10 +169,13 @@ function RigReadout({
         </>
       ) : (
         <>
-          <span
+          <button
+            type="button"
+            disabled
+            tabIndex={-1}
             aria-hidden
             data-text={t('staking.lane_rig_connect')}
-            className={`${CONNECT_TEXT} invisible before:content-[attr(data-text)]`}
+            className={`${CONNECT_BUTTON} invisible before:content-[attr(data-text)]`}
           />
           <span className="flex flex-col gap-1 laptop:items-end">
             <RigFigure status={status} pendingDeposit={pendingDeposit} />
@@ -185,6 +188,10 @@ function RigReadout({
 
 const CONNECT_TEXT =
   'm-0 max-w-[280px] text-left text-[16px] leading-[20px] tracking-[-0.32px] text-[var(--fuel-element-low-em)] laptop:text-right';
+
+// The spacer uses the same element and classes as the live control, so the
+// two boxes wrap and size the same way.
+const CONNECT_BUTTON = `${CONNECT_TEXT} border-0 bg-transparent p-0`;
 
 function RigFigure({
   status,

@@ -71,12 +71,16 @@ export const AccountConnectionInput = ({
             {disconnectIcon}
           </button>
           {account.address ? (
-            <span className={classes.address()} title={account.address}>
-              <span className="sr-only">
-                {t('portal.account.connected_wallet', {
-                  network: networkName,
-                })}{' '}
-              </span>
+            // A named group keeps the label valid ARIA, and the bridge e2e
+            // tests find the address by this label.
+            <span
+              role="group"
+              aria-label={t('portal.account.connected_wallet', {
+                network: networkName,
+              })}
+              className={classes.address()}
+              title={account.address}
+            >
               {shortAddress(account.alias, {
                 minLength: 16,
               }) ||
