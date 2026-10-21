@@ -20,7 +20,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useAccount, useConnectUI, useDisconnect } from '@fuels/react';
-import { Routes } from 'app-commons';
+import { IS_EXPLORER_ONLY, Routes } from 'app-commons';
 import { useVerifySelectedChain } from 'app-commons';
 import { useSwitchChain } from 'wagmi';
 
@@ -119,13 +119,15 @@ export const ConnectWallet = ({ theme, setTheme }: ConnectWalletProps = {}) => {
                     <IconCopy size="1em" />
                     Copy address
                   </Dropdown.Item>
-                  <Dropdown.Item
-                    className="gap-2 px-[16px] justify-start hover:backdrop-blur-[5px] hover:bg-white/[.04] hover:text-black dark:hover:text-[inherit] h-[30px] cursor-pointer"
-                    onClick={() => handleNavigate(Routes.bridgeHistory())}
-                  >
-                    <IconHistory size="1em" />
-                    Bridge History
-                  </Dropdown.Item>
+                  {!IS_EXPLORER_ONLY && (
+                    <Dropdown.Item
+                      className="gap-2 px-[16px] justify-start hover:backdrop-blur-[5px] hover:bg-white/[.04] hover:text-black dark:hover:text-[inherit] h-[30px] cursor-pointer"
+                      onClick={() => handleNavigate(Routes.bridgeHistory())}
+                    >
+                      <IconHistory size="1em" />
+                      Bridge History
+                    </Dropdown.Item>
+                  )}
                 </>
               )}
               <Dropdown.Item
