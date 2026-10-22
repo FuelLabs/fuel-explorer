@@ -2,6 +2,9 @@
 import type { BrowserContext } from '@playwright/test';
 import { test as base, chromium, expect } from '@playwright/test';
 import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
+// Static import on purpose: a dynamic import() here makes Node 22 load a second
+// (ESM) copy of the module, so the instance set here is not the one tests read.
+import { setMetaMask } from '../utils/metamask';
 
 import fs from 'node:fs';
 import os from 'node:os';
@@ -106,7 +109,6 @@ export const test = base.extend<{
     // Wait for Fuel Wallet to load
     await waitForExtensions(context, extensions);
     // Setup MetaMask using Synpress v4 MetaMask class
-    const { setMetaMask } = await import('../utils/metamask');
     const synpressPW: any = await import('@synthetixio/synpress/playwright');
     const extensionsData: any = extensions as any;
     const metamaskId =

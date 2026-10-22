@@ -15,8 +15,11 @@ import {
 import dayjs from 'dayjs';
 import { tv } from 'tailwind-variants';
 
+import { IS_EXPLORER_ONLY } from 'app-commons';
 import { useTranslation } from 'react-i18next';
-import data from './data.json';
+import { type FooterLink, getFooterLinks } from './footerLinks';
+
+const links = getFooterLinks(IS_EXPLORER_ONLY);
 
 const SECTION_KEYS = {
   FUEL: 'footer.fuel',
@@ -47,10 +50,7 @@ const LINK_KEYS: Record<string, string> = {
 
 type FooterNavProps = {
   title: string;
-  links: {
-    href: string;
-    label: string;
-  }[];
+  links: FooterLink[];
 };
 
 function FooterNav({ title, links }: FooterNavProps) {
@@ -86,7 +86,7 @@ export function Footer() {
     Object.keys(SECTION_KEYS) as (keyof typeof SECTION_KEYS)[]
   ).map((key) => ({
     title: t(SECTION_KEYS[key]),
-    links: data.links[key].map((link) => ({
+    links: links[key].map((link) => ({
       ...link,
       label: t(LINK_KEYS[link.label] ?? link.label),
     })),

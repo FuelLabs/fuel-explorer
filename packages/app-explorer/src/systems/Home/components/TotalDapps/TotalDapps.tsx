@@ -1,5 +1,5 @@
 import { AnimatedNumber, RoundedContainer } from '@fuels/ui';
-import { Routes, getProjectImage } from 'app-commons';
+import { IS_EXPLORER_ONLY, Routes, getProjectImage } from 'app-commons';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -27,9 +27,11 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
       <div className="space-y-[16px]">
         <div className="flex items-center justify-between">
           <h2 className="fuel-label m-0">{t('home.fuel_dapps')}</h2>
-          <Link className="fuel-label block" to={Routes.ecosystem()}>
-            {t('common.view_all')}
-          </Link>
+          {!IS_EXPLORER_ONLY && (
+            <Link className="fuel-label block" to={Routes.ecosystem()}>
+              {t('common.view_all')}
+            </Link>
+          )}
         </div>
         <p className="fuel-stat m-0">
           <AnimatedNumber value={total} />

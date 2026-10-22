@@ -61,10 +61,12 @@
     "Environment": [
       {
         "href": "https://app.fuel.network/",
+        "hideInExplorerOnly": true,
         "label": "Block Explorer"
       },
       {
         "href": "https://app.fuel.network/ecosystem",
+        "hideInExplorerOnly": true,
         "label": "Ecosystem"
       },
       {
@@ -73,6 +75,7 @@
       },
       {
         "href": "https://app.fuel.network/bridge?from=eth&to=fuel",
+        "hideInExplorerOnly": true,
         "label": "Bridge"
       }
     ]

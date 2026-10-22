@@ -1,5 +1,5 @@
 import { Box, HStack, Nav } from '@fuels/ui';
-import { isRoute } from 'app-commons';
+import { IS_EXPLORER_ONLY, isRoute } from 'app-commons';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useMedia } from 'react-use';
@@ -86,18 +86,22 @@ export function TopNav() {
       >
         {t('nav.explorer')}
       </Nav.MenuItem>
-      <Nav.MenuItem isActive={isBridge} href={PortalRoutes.bridge()}>
-        {t('nav.bridge')}
-      </Nav.MenuItem>
-      <Nav.MenuItem isActive={isStake} href={StakingRoutes.stakingL1()}>
-        {t('nav.stake')}
-      </Nav.MenuItem>
-      <Nav.MenuItem
-        isActive={isEcosystemBridge}
-        href={PortalRoutes.ecosystem()}
-      >
-        {t('nav.ecosystem')}
-      </Nav.MenuItem>
+      {!IS_EXPLORER_ONLY && (
+        <>
+          <Nav.MenuItem isActive={isBridge} href={PortalRoutes.bridge()}>
+            {t('nav.bridge')}
+          </Nav.MenuItem>
+          <Nav.MenuItem isActive={isStake} href={StakingRoutes.stakingL1()}>
+            {t('nav.stake')}
+          </Nav.MenuItem>
+          <Nav.MenuItem
+            isActive={isEcosystemBridge}
+            href={PortalRoutes.ecosystem()}
+          >
+            {t('nav.ecosystem')}
+          </Nav.MenuItem>
+        </>
+      )}
     </>
   );
 
@@ -111,7 +115,7 @@ export function TopNav() {
         <Nav.Menu>{!isEcosystemBridge && <SearchWidget />}</Nav.Menu>
         <Nav.Menu className={'items-center laptop:gap-2'}>
           <LanguageSelect />
-          <NetworkSelector />
+          {!IS_EXPLORER_ONLY && <NetworkSelector />}
           {themeToggle}
           <ConnectWallet />
         </Nav.Menu>
@@ -131,7 +135,7 @@ export function TopNav() {
               className="border-t border-border pt-4"
             >
               <LanguageSelect />
-              <NetworkSelector />
+              {!IS_EXPLORER_ONLY && <NetworkSelector />}
               {mobileThemeToggle}
             </HStack>
           </div>

@@ -1,4 +1,5 @@
 import { TooltipProvider } from '@radix-ui/react-tooltip';
+import { IS_EXPLORER_ONLY } from 'app-commons';
 import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
@@ -33,6 +34,66 @@ const StakingOnFuelPage = lazy(() => import('./pages/StakingOnFuelPage'));
 
 const OverlayDialog = lazy(() =>
   import('app-portal').then((module) => ({ default: module.OverlayDialog })),
+);
+
+// Bridge, staking, ecosystem and token manager are left out of explorer-only builds,
+// so their URLs fall through to the 404 page.
+const portalRoutes = (
+  <>
+    <Route path="/bridge" element={<BridgeLayout />}>
+      <Route index />
+      <Route path="history" />
+    </Route>
+
+    <Route path="/staking" element={<StakingLayout />}>
+      <Route index element={<Navigate to="/staking/on-fuel" replace />} />
+      <Route
+        path="on-ethereum"
+        element={
+          <Suspense fallback={<StakingScreenLoader />}>
+            <StakingOnEthereumPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="on-ethereum/positions"
+        element={
+          <Suspense fallback={<StakingScreenLoader />}>
+            <StakingOnEthereumPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="on-ethereum/validators"
+        element={
+          <Suspense fallback={<StakingScreenLoader />}>
+            <StakingOnEthereumPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="on-ethereum/transactions"
+        element={
+          <Suspense fallback={<StakingScreenLoader />}>
+            <StakingOnEthereumPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="on-fuel"
+        element={
+          <Suspense fallback={<StakingScreenLoader tab="fuel" />}>
+            <StakingOnFuelPage />
+          </Suspense>
+        }
+      />
+    </Route>
+
+    <Route path="/ecosystem" element={<EcosystemPageWrapper />} />
+    <Route path="/ecosystem/:slug" element={<EcosystemProjectPage />} />
+
+    <Route path="/upgrade" element={<UpgradePage />} />
+  </>
 );
 
 function App() {
@@ -71,62 +132,7 @@ function App() {
               <Route path=":tab" element={<ContractPage />} />
             </Route>
 
-            <Route path="/bridge" element={<BridgeLayout />}>
-              <Route index />
-              <Route path="history" />
-            </Route>
-
-            <Route path="/staking" element={<StakingLayout />}>
-              <Route
-                index
-                element={<Navigate to="/staking/on-fuel" replace />}
-              />
-              <Route
-                path="on-ethereum"
-                element={
-                  <Suspense fallback={<StakingScreenLoader />}>
-                    <StakingOnEthereumPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="on-ethereum/positions"
-                element={
-                  <Suspense fallback={<StakingScreenLoader />}>
-                    <StakingOnEthereumPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="on-ethereum/validators"
-                element={
-                  <Suspense fallback={<StakingScreenLoader />}>
-                    <StakingOnEthereumPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="on-ethereum/transactions"
-                element={
-                  <Suspense fallback={<StakingScreenLoader />}>
-                    <StakingOnEthereumPage />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="on-fuel"
-                element={
-                  <Suspense fallback={<StakingScreenLoader tab="fuel" />}>
-                    <StakingOnFuelPage />
-                  </Suspense>
-                }
-              />
-            </Route>
-
-            <Route path="/ecosystem" element={<EcosystemPageWrapper />} />
-            <Route path="/ecosystem/:slug" element={<EcosystemProjectPage />} />
-
-            <Route path="/upgrade" element={<UpgradePage />} />
+            {!IS_EXPLORER_ONLY && portalRoutes}
 
             <Route path="*" element={<ErrorPageComponent />} />
           </Routes>

@@ -15,7 +15,7 @@ import {
 } from '@fuels/ui';
 
 import { useAccount, useConnectUI, useDisconnect } from '@fuels/react';
-import { Routes } from 'app-commons';
+import { IS_EXPLORER_ONLY, Routes } from 'app-commons';
 import { useVerifySelectedChain } from 'app-commons';
 import { useTranslation } from 'react-i18next';
 import { useSwitchChain } from 'wagmi';
@@ -100,13 +100,15 @@ export const ConnectWallet = ({ block = false }: ConnectWalletProps) => {
               <IconCopy size="1em" />
               {t('portal.wallet.copy_address')}
             </Dropdown.Item>
-            <Dropdown.Item
-              className={ITEM}
-              onClick={() => handleNavigate(Routes.bridgeHistory())}
-            >
-              <IconHistory size="1em" />
-              {t('portal.wallet.bridge_history')}
-            </Dropdown.Item>
+            {!IS_EXPLORER_ONLY && (
+              <Dropdown.Item
+                className={ITEM}
+                onClick={() => handleNavigate(Routes.bridgeHistory())}
+              >
+                <IconHistory size="1em" />
+                {t('portal.wallet.bridge_history')}
+              </Dropdown.Item>
+            )}
             <Dropdown.Item
               className={`${ITEM} fuel-danger-item`}
               onClick={handleDisconnect}
