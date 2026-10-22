@@ -8,6 +8,7 @@ import {
 import { FuelToken, TOKENS } from 'app-commons';
 import type { BN } from 'fuels';
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const { symbol, decimals } = TOKENS[FuelToken.V2];
 
@@ -32,6 +33,7 @@ function _Input({
   isLoading = false,
   tokenRate,
 }: InputProps) {
+  const { t } = useTranslation();
   const onMax = useCallback(() => {
     delegated != null && handleChange(delegated);
   }, [handleChange, delegated]);
@@ -50,11 +52,11 @@ function _Input({
           regularEl={
             <InputAmountMax
               amount={delegated as BN}
-              label="Available"
+              label={t('staking.upgrade.available')}
               onMax={onMax}
             />
           }
-          loadingEl={<LoadingBox className="w-40 h-6" />}
+          loadingEl={<LoadingBox className="w-40 h-6 !rounded-none" />}
         />
       }
       startAdornment={<InputAmountToken />}

@@ -1,0 +1,40 @@
+{
+  "faq": {
+    "rig": {
+      "question": "什麼是 The Rig？",
+      "answer": "The Rig 是 RIG Labs 打造的 FUEL 流動性質押協議。在 Ignition 存入 FUEL 即可獲得 stFUEL。stFUEL 在錢包中保持流動，存入的 FUEL 會被質押，獎勵自動複利。"
+    },
+    "unstake": {
+      "question": "解除質押需要多久？",
+      "answer": "解除質押要先完成同步，再經過解綁期，代幣才會釋放。狀態對話框會顯示每個階段。"
+    },
+    "position": {
+      "question": "在哪裡查看我的質押？",
+      "answer": "當前持倉列出你委託的每個驗證者。你的交易列出每一次質押和解除質押。"
+    },
+    "apr": {
+      "question": "APR 徽章顯示什麼？",
+      "answer": "在 Ethereum 上質押的年化獎勵率估計。數據來自 Fuel 索引器，並會隨時間變化。"
+    },
+    "stfuel": {
+      "question": "stFUEL 如何獲得獎勵？",
+      "answer": "stFUEL 不會 rebase。餘額保持不變，隨著獎勵累積，每個 stFUEL 可兌回的 FUEL 會增加。發生罰沒時該比率會下降。"
+    },
+    "rig_exit": {
+      "question": "如何取回我的 FUEL？",
+      "answer": "The Rig 的提取功能仍在開發中。在此之前，可以在 Mira 將 stFUEL 賣出換成 FUEL 或 USDC。計劃中的提取會銷毀 stFUEL，並在 14 天解綁期加跨鏈時間後到賬。"
+    },
+    "rig_fees": {
+      "question": "The Rig 收取甚麼費用？",
+      "answer": "收取質押獎勵的 10%，撥入 The Rig 庫房。存入沒有手續費和最低金額，只需支付 gas。"
+    },
+    "rig_validators": {
+      "question": "The Rig 使用哪些驗證者？",
+      "answer": "The Rig 委託給 Fuel 去中心化排序器上的 8 個驗證者，每個驗證者的佣金最多 5%。"
+    },
+    "rig_audit": {
+      "question": "The Rig 經過審計嗎？",
+      "answer": "是的。Oak Security 審計了 The Rig。"
+    }
+  }
+}

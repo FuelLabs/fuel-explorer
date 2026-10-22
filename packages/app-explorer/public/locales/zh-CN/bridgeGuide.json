@@ -1,0 +1,20 @@
+{
+  "faq": {
+    "assets": {
+      "question": "可以桥接哪些资产？",
+      "answer": "资产选择器列出所有支持的资产。默认选中 ETH。"
+    },
+    "faster": {
+      "question": "有更快的路径吗？",
+      "answer": "表单上方链接的 LayerSwap 等合作桥提供通往 Fuel Ignition 的快速桥接。"
+    },
+    "history": {
+      "question": "在哪里查看历史转账？",
+      "answer": "打开桥接面板顶部的历史记录。待处理和已完成的转账都列在那里。"
+    },
+    "cancel": {
+      "question": "可以取消转账吗？",
+      "answer": "不能。签名后的转账无法撤销，请先核对两个地址。"
+    }
+  }
+}

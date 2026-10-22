@@ -139,7 +139,9 @@ railway variables --service explorer \
 railway up --service api
 railway up --service explorer
 
-# Public domain for explorer, pointed at nginx's port 80.
+# Public domain for explorer, pointed at nginx's port 80. Railway then sets
+# RAILWAY_PUBLIC_DOMAIN on this service; nginx uses it as server_name for
+# share URLs. The image defaults that variable to localhost when it is unset.
 railway domain --service explorer --port 80
 ```
 

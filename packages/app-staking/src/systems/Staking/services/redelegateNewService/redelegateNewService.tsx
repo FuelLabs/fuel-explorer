@@ -1,12 +1,13 @@
-import { Link, toast } from '@fuels/ui';
+import { toast } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS } from 'app-commons';
 import { safeWriteContract } from 'app-commons/safeWriteContract';
 import type { BN } from 'fuels';
+import { getI18n } from 'react-i18next';
 import type { WalletClient } from 'viem';
 import type { PublicClient } from 'viem';
 import { sequencerAbi } from '~staking/contracts/sequencer/sequencerAbi';
+import { ViewInExplorer } from '~staking/systems/Core/components/ViewInExplorer/ViewInExplorer';
 import { bnToBigInt } from '~staking/systems/Core/utils/bn';
-import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
 import { convertSequencerValidatorAddressToEthAddress } from '../../utils/convertSequencerValidatorAddressToEthAddress';
 import type { SubmitRedelegateNewInput } from './types';
 
@@ -82,17 +83,8 @@ export class RedelegateNewService {
    */
   static showSuccessToast(txHash: `0x${string}`): void {
     toast({
-      title: 'Redelegate request has been submitted',
-      description: (
-        <Link
-          href={getTransactionLink(txHash, 'l1')}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="green"
-        >
-          View on Etherscan
-        </Link>
-      ),
+      title: getI18n().t('staking.toast.redelegate_submitted'),
+      action: <ViewInExplorer hash={txHash} layer="l1" />,
       variant: 'info',
       duration: 5_000,
     });

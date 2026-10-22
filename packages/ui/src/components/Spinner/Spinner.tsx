@@ -7,8 +7,11 @@ function getColor(color: string) {
   if (color === 'current') {
     return 'currentColor';
   }
-  if (['brand', 'muted', 'secondary', 'icon'].includes(color)) {
-    return `var(--color-${color})`;
+  if (color === 'brand') {
+    return 'var(--fuel-brand-text)';
+  }
+  if (['gray', 'muted', 'secondary', 'icon'].includes(color)) {
+    return 'var(--fuel-element-mid-em)';
   }
   return `var(--${color}-9)`;
 }

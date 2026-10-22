@@ -1,6 +1,6 @@
 import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
-import { VStack } from '@fuels/ui';
 import { BalanceItem } from '~/systems/Core/components/BalanceItem/BalanceItem';
+import { BalanceList } from '~/systems/Core/components/BalanceItem/BalanceList';
 import { EmptyAssets } from '~/systems/Core/components/EmptyBlocks/EmptyAsset';
 import { isNFT } from '../AccountNfts/groupNFTsByCollection';
 
@@ -14,7 +14,7 @@ export function AccountAssets({ balances, isLoading }: AccountAssetsProps) {
   if (!balances?.length) return <EmptyAssets entity="assets" />;
 
   return (
-    <VStack className="min-h-[45vh]">
+    <BalanceList>
       {balances
         ?.filter((balance) => !isNFT(balance))
         .map((balance) => {
@@ -26,6 +26,6 @@ export function AccountAssets({ balances, isLoading }: AccountAssetsProps) {
             />
           );
         })}
-    </VStack>
+    </BalanceList>
   );
 }

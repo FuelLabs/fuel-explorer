@@ -1,0 +1,42 @@
+{
+  "breadcrumb": "Ecosystem",
+  "suite_badge": "Fuel Suite",
+  "about": "About {{name}}",
+  "facts": {
+    "category": "Category",
+    "collection": "Collection",
+    "network": "Network",
+    "links": "Links"
+  },
+  "collection": {
+    "suite": "Fuel Suite",
+    "community": "Community",
+    "official": "Official"
+  },
+  "network_fuel": "Fuel",
+  "not_listed": "Not listed",
+  "on_x": "{{name}} on X",
+  "on_github": "{{name}} on GitHub",
+  "on_discord": "{{name}} on Discord",
+  "ways_to_use": "Ways to use",
+  "open_on": "Open on {{host}}",
+  "more_in": "More in {{category}}",
+  "see_all": "See all",
+  "not_found": {
+    "title": "Project not found",
+    "back": "Back to ecosystem"
+  },
+  "load_error": {
+    "title": "Could not load projects",
+    "body": "The project list is unavailable right now. Try again in a moment."
+  },
+  "context": {
+    "defi": "{{name}} is part of Fuel's growing onchain finance ecosystem, where applications can use Fuel's execution layer for responsive markets and efficient settlement.",
+    "ai": "{{name}} explores how intelligent, onchain applications can use Fuel's parallel execution and purpose-built virtual machine.",
+    "wallets": "{{name}} helps people access applications and manage assets while remaining connected to the broader Fuel ecosystem.",
+    "infrastructure": "{{name}} provides infrastructure that supports applications, developers, or network participants across Fuel.",
+    "tooling": "{{name}} gives builders practical tools for developing, understanding, and operating applications in the Fuel ecosystem.",
+    "security": "{{name}} contributes specialist security expertise to teams building and operating applications across the Fuel ecosystem.",
+    "more": "{{name}} is one of the projects live on Fuel."
+  }
+}

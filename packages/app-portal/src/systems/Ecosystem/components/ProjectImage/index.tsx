@@ -1,5 +1,5 @@
 import { useBreakpoints } from '@fuels/ui';
-import { IconBolt } from '@tabler/icons-react';
+import { IconBolt } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
 import { useState } from 'react';
 import { tv } from 'tailwind-variants';

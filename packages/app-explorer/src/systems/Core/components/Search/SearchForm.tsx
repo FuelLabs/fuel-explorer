@@ -54,6 +54,7 @@ export function SearchForm({ className, autoFocus }: SearchFormProps) {
         autoFocus={autoFocus}
         loading={loading}
         error={error}
+        onClear={() => setResults(undefined)}
       />
     </form>
   );

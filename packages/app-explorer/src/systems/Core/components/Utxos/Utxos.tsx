@@ -1,5 +1,5 @@
-import { Collapsible, useBreakpoints } from '@fuels/ui';
-import { IconCoins } from '@tabler/icons-react';
+import { useBreakpoints } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
 
 import { UtxoItem } from '~/systems/Core/components/UtxoItem/UtxoItem';
@@ -36,15 +36,23 @@ function VirtualList({ items, assetId, decimals }: UtxosProps) {
   );
 }
 
-export function Utxos({ items, assetId, decimals, ...props }: UtxosProps) {
+export function Utxos({
+  items,
+  assetId,
+  decimals,
+  className,
+  ...props
+}: UtxosProps) {
+  const { t } = useTranslation();
   return (
-    <Collapsible.Content className="bg-gray-2 dark:bg-gray-1" {...props}>
-      <Collapsible.Title leftIcon={IconCoins} iconColor="text-icon">
-        UTXOs ({items?.length ?? 0})
-      </Collapsible.Title>
-      <Collapsible.Body className="p-0">
-        <VirtualList items={items} assetId={assetId} decimals={decimals} />
-      </Collapsible.Body>
-    </Collapsible.Content>
+    <div
+      {...props}
+      className={`border-t border-[var(--fuel-border)] bg-[var(--fuel-card)] ${className ?? ''}`}
+    >
+      <div className="fuel-label px-4 pt-3 pb-2">
+        {t('asset.utxos', { count: items?.length ?? 0 })}
+      </div>
+      <VirtualList items={items} assetId={assetId} decimals={decimals} />
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import { FetchMachine } from '~portal/systems/Core/machines/fetchMachine';
 
 import { toast } from '@fuels/ui';
 import { getBridgeTokenContracts } from 'app-commons';
+import { getI18n } from 'react-i18next';
 import type { PublicClient, WalletClient } from 'viem';
 import { switchEthAssetNetworkIfNeeded } from '~portal/systems/Assets/utils';
 import type { AssetServiceInputs } from '../services/asset';
@@ -145,7 +146,12 @@ export const assetsMachine = createMachine(
         publicClient: () => undefined,
       }),
       notifyFaucetSuccess: () => {
-        toast.success('Added tokens to your wallet');
+        const english = 'Added tokens to your wallet';
+        toast.success(
+          getI18n()?.t('portal.assets_toast.faucet_success', {
+            defaultValue: english,
+          }) ?? english,
+        );
       },
     },
     services: {

@@ -1,10 +1,10 @@
 import { Dialog as RD } from '@radix-ui/themes';
 
-import { IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { createComponent, withNamespace } from '../../utils/component';
 import type { PropsOf } from '../../utils/types';
 import { IconButton } from '../IconButton';
+import { IconX } from '../Icons';
 
 export type DialogProps = PropsOf<typeof RD.Root>;
 export type DialogTriggerProps = PropsOf<typeof RD.Trigger>;
@@ -55,9 +55,9 @@ export const DialogCloseButton = createComponent<
         color="gray"
         iconSize={20}
         icon={IconX}
-        iconColor="text-gray-12"
+        iconColor="text-heading"
         className={clsx(
-          'rounded-full absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
+          'fuel-hover-fill fuel-hit absolute top-4 right-4 max-h-[32px] min-h-[32px] min-w-[32px] max-w-[32px]',
           props.className,
         )}
       />
@@ -68,7 +68,7 @@ export const DialogCloseButton = createComponent<
 export const DialogTitle = createComponent<DialogTitleProps, typeof RD.Title>({
   id: 'DialogTitle',
   baseElement: RD.Title,
-  className: () => 'font-mono text-2xl',
+  className: ({ className }) => clsx('fuel-stat-sm', className),
 });
 
 export const DialogDescription = createComponent<

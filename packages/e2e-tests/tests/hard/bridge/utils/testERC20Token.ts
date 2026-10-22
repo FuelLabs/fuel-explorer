@@ -4,7 +4,6 @@ import type { HDAccount } from 'viem';
 import {
   getButtonByText,
   getByAriaLabel,
-  hasText,
 } from '../../../../src/helpers/fuel-utils.js';
 import { testExpect as expect, test } from '../fixtures';
 import {
@@ -159,16 +158,15 @@ export const testERC20Token = async ({
               await page.locator(':text("Balance: ")').innerText(),
             );
 
-            const found = await hasText(page, `Balance: ${formattedBalance}`)
-              .then(async (b) => {
-                console.log('Balance text found:', await b.innerText());
-                return await b.innerText();
-              })
-              .catch(async (b) => {
-                console.log('Balance text not found:', await b.innerText());
-                return await b.innerText();
-              });
-            return found;
+            // The balance badge renders uppercase, so compare case-insensitively.
+            const expected = `Balance: ${formattedBalance}`;
+            const shown = await page
+              .getByText(expected)
+              .first()
+              .innerText()
+              .catch(() => '');
+            console.log('Balance text shown:', shown);
+            return shown.toLowerCase() === expected.toLowerCase();
           },
           { timeout: 60000 },
         )
