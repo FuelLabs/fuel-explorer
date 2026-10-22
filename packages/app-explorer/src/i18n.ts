@@ -11,8 +11,26 @@ import {
 import { installLanguageScramble } from './systems/Core/utils/languageScramble';
 
 const LANGUAGE_KEY = 'fuel-explorer-language';
-const savedLanguage = localStorage.getItem(LANGUAGE_KEY) as Locale;
-const defaultLanguage = locales[savedLanguage] ? savedLanguage : 'en';
+
+// Storage access throws when the browser blocks it, so the app falls back to
+// English instead of failing to mount.
+function readSavedLanguage() {
+  try {
+    return localStorage.getItem(LANGUAGE_KEY) as Locale;
+  } catch {
+    return null;
+  }
+}
+
+function saveLanguage(lng: string) {
+  try {
+    localStorage.setItem(LANGUAGE_KEY, lng);
+  } catch {}
+}
+
+const savedLanguage = readSavedLanguage();
+const defaultLanguage =
+  savedLanguage && locales[savedLanguage] ? savedLanguage : 'en';
 
 function documentLanguage(lng: string): Locale {
   const codes = Object.keys(locales) as Locale[];
@@ -68,7 +86,7 @@ export const i18nReady: Promise<unknown> = initialized
     // Registered after startup so the initial English init cannot overwrite
     // the stored language.
     i18next.on('languageChanged', (lng: string) => {
-      localStorage.setItem(LANGUAGE_KEY, lng);
+      saveLanguage(lng);
       applyDocumentLanguage(lng);
       syncDayjsLocale(lng);
     });
