@@ -1,5 +1,5 @@
 import { RoundedContainer } from '@fuels/ui';
-import { getProjectImage } from 'app-commons';
+import { IS_EXPLORER_ONLY, getProjectImage } from 'app-commons';
 
 import type React from 'react';
 
@@ -36,12 +36,14 @@ const TotalDapps: React.FC<ValidatorStatusProps> = ({
           <h3 className="text-[15px] leading-[24px] text-heading font-semibold">
             Fuel Dapps
           </h3>
-          <a
-            className="text-[13px] leading-[20px] text-muted block"
-            href="https://app.fuel.network/ecosystem"
-          >
-            View All
-          </a>
+          {!IS_EXPLORER_ONLY && (
+            <a
+              className="text-[13px] leading-[20px] text-muted block"
+              href="https://app.fuel.network/ecosystem"
+            >
+              View All
+            </a>
+          )}
         </div>
         <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
           {total}

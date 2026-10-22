@@ -1,6 +1,6 @@
 import { Alert, Button } from '@fuels/ui';
 import { IconInfoCircle, IconLink } from '@tabler/icons-react';
-import { Routes as PortalRoutes } from 'app-commons';
+import { IS_EXPLORER_ONLY, Routes as PortalRoutes } from 'app-commons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccountTransactions } from '~/hooks/useApi';
 import { EmptyTransactions } from '~/systems/Core/components/EmptyBlocks/EmptyTransactions';
@@ -34,7 +34,7 @@ export function AccountTransactionsSync({
   });
 
   // Bridge warning component - always visible
-  const BridgeWarning = (
+  const BridgeWarning = !IS_EXPLORER_ONLY && (
     <Alert color="blue" className="mt-1 mb-6">
       <Alert.Icon>
         <IconInfoCircle size="md" />

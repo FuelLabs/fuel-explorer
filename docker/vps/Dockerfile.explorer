@@ -28,6 +28,9 @@ RUN if [ -n "$VITE_FUEL_INDEXER_API" ]; then \
 # that omits VITE_FUEL_INDEXER_API skips the `if` above entirely and bakes whatever
 # key is sitting in the local .env.$NETWORK straight into the public JS bundle.
 RUN sed -i '/^VITE_FUEL_INDEXER_API_KEY=/d' packages/app-explorer/.env
+# Set to true for standalone explorer deployments (e.g. eval.app.fuel.network): hides
+# Bridge, Stake, Ecosystem and the network switch. Vite reads it from the build env.
+ARG VITE_EXPLORER_ONLY
 ENV NODE_ENV=production
 RUN pnpm build:prod
 
