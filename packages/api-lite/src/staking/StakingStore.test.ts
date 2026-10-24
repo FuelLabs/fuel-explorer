@@ -564,4 +564,152 @@ describe('StakingStore withdraw flow', () => {
     // (WithdrawalProcessed) runs before the proof fetch, and short-circuits it.
     expect(proofGet).not.toHaveBeenCalled();
   });
+
+  const OTHER = '0x1111111111111111111111111111111111111111';
+
+  const withdrawLog = (logIndex: number, amount: string) => ({
+    contractHash: '0xBa0e6bF94580D49B5Aaaa54279198D424B23eCC3',
+    blockHeight: 100,
+    txHash: `0xwithdraw${logIndex}`,
+    event: 'Withdraw',
+    signature: 'Withdraw(address,address,uint256)',
+    rawLog: '{}',
+    decodedArgs: JSON.stringify({
+      sender: ADDRESS,
+      recipient: RECIPIENT,
+      amount,
+    }),
+    decodedData: '{}',
+    timestamp: '2020-01-01T00:00:00.000Z',
+    logIndex,
+    args: { sender: ADDRESS, recipient: RECIPIENT, amount },
+  });
+
+  const syncBlock100 = () =>
+    cosmosIndex.insertResponse(
+      {
+        blockHeight: 50,
+        txHash: 'SYNCTX',
+        data: '{}',
+        timestamp: '2020-01-01T00:05:00Z',
+      },
+      [
+        {
+          type: 'fuelsequencer.bridge.EventEthereumBlockSynced',
+          key: 'block_number',
+          value: '"100"',
+          index: 0,
+        },
+      ],
+    );
+
+  const reports = (txHash: string, entries: Array<[string, string]>) =>
+    cosmosIndex.insertResponse(
+      {
+        blockHeight: 50,
+        txHash,
+        data: '{}',
+        timestamp: '2020-01-01T00:05:30Z',
+      },
+      entries.flatMap(([from, nonce], index) => [
+        {
+          type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
+          key: 'from',
+          value: `"${from.toLowerCase()}"`,
+          index,
+        },
+        {
+          type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
+          key: 'nonce',
+          value: `"${nonce}"`,
+          index,
+        },
+      ]),
+    );
+
+  const nonceByAmount = (nodes: unknown[]) =>
+    Object.fromEntries(
+      (nodes as Array<{ amount: string; nonce?: string; status: string }>).map(
+        (n) => [n.amount, { nonce: n.nonce, status: n.status }],
+      ),
+    );
+
+  it('gives each withdrawal in one L1 block its own sequencer nonce', async () => {
+    l1Index.insertLogs([withdrawLog(0, '111'), withdrawLog(1, '222')]);
+    syncBlock100();
+    reports('WITHDRAWTX', [
+      [ADDRESS, '21'],
+      [ADDRESS, '22'],
+    ]);
+    l1Index.insertLogs([
+      {
+        contractHash: '0x481aeEB9bdFe08f050d22F0b352356691c4B0b59',
+        blockHeight: 101,
+        txHash: '0xheadupdate',
+        event: 'HeadUpdate',
+        signature: 'HeadUpdate(uint256,uint256)',
+        rawLog: '{}',
+        decodedArgs: '{}',
+        decodedData: '{}',
+        timestamp: '2020-01-01T01:00:00.000Z',
+        logIndex: 0,
+        args: { blockNumber: '50' },
+      },
+      {
+        contractHash: '0x481aeEB9bdFe08f050d22F0b352356691c4B0b59',
+        blockHeight: 102,
+        txHash: '0xprocessed',
+        event: 'WithdrawalProcessed',
+        signature: 'WithdrawalProcessed(uint256)',
+        rawLog: '{}',
+        decodedArgs: '{}',
+        decodedData: '{}',
+        timestamp: '2020-01-01T02:00:00.000Z',
+        logIndex: 0,
+        args: { nonce: '21' },
+      },
+    ]);
+    const store = makeStore(l1Index, cosmosIndex, { timeToFinalizeMinutes: 0 });
+    const result = await store.getEvents(
+      ADDRESS,
+      new PaginatedParams({ last: '10' }),
+    );
+    expect(nonceByAmount(result.nodes)).toEqual({
+      '111': { nonce: '21', status: BaseStatusType.Finalized },
+      '222': {
+        nonce: '22',
+        status: WithdrawStatusType.ReadyToProcessWithdraw,
+      },
+    });
+  });
+
+  it("skips another sender's report in the same sequencer tx", async () => {
+    l1Index.insertLogs([withdrawLog(0, '111')]);
+    syncBlock100();
+    reports('WITHDRAWTX', [
+      [OTHER, '20'],
+      [ADDRESS, '21'],
+    ]);
+    const store = makeStore(l1Index, cosmosIndex);
+    const result = await store.getEvents(
+      ADDRESS,
+      new PaginatedParams({ last: '10' }),
+    );
+    expect(nonceByAmount(result.nodes)['111'].nonce).toBe('21');
+  });
+
+  it('reports a withdrawal the synced block has no report for as Skipped instead of borrowing a nonce', async () => {
+    l1Index.insertLogs([withdrawLog(0, '111'), withdrawLog(1, '222')]);
+    syncBlock100();
+    reports('WITHDRAWTX', [[ADDRESS, '21']]);
+    const store = makeStore(l1Index, cosmosIndex);
+    const result = await store.getEvents(
+      ADDRESS,
+      new PaginatedParams({ last: '10' }),
+    );
+    expect(nonceByAmount(result.nodes)).toEqual({
+      '111': { nonce: '21', status: BaseStatusType.WaitingSync },
+      '222': { nonce: undefined, status: BaseStatusType.Skipped },
+    });
+  });
 });
