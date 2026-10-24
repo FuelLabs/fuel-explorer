@@ -3,10 +3,12 @@ import {
   BN,
   Interface,
   type JsonAbi,
+  SCRIPT_FIXED_SIZE,
   StdStringCoder,
   TransactionCoder,
   TransactionType,
   arrayify,
+  calculateVmTxMemory,
   concat,
   hexlify,
   toBytes,
@@ -126,16 +128,6 @@ function flattenReceipts(
   return out;
 }
 
-function findSegment(whole: Uint8Array, segment: Uint8Array) {
-  outer: for (let i = 0; i <= whole.length - segment.length; i++) {
-    for (let j = 0; j < segment.length; j++) {
-      if (whole[i + j] !== segment[j]) continue outer;
-    }
-    return i;
-  }
-  return -1;
-}
-
 export function isLog(receiptType?: string | null) {
   return receiptType === 'LOG' || receiptType === 'LOG_DATA';
 }
@@ -168,33 +160,44 @@ function argsToObject(abi: JsonAbi, functionName: string, args: unknown[]) {
   );
 }
 
-// Same script data layout fuels reads in `getContractCalls`.
+// Same script data layout fuels reads in `getContractCalls`. The VM reads the
+// selector at param1 and the arguments at param2, so decoding starts there.
+// Searching the script data for the first matching call header instead let a
+// script carry a look-alike copy with other arguments ahead of the real one.
 function decodeScriptCall(
   node: ReceiptNode,
-  scriptData: Uint8Array,
+  script: ScriptData,
   source: AbiSource,
 ) {
   if (!node.to || node.param1 == null || node.param2 == null) return null;
-  const segment = concat([
-    arrayify(node.to),
-    toBytes(new BN(node.param1).toHex(), 8),
-    toBytes(new BN(node.param2).toHex(), 8),
-  ]);
-  const index = findSegment(scriptData, segment);
-  if (index === -1) return null;
+  const param1 = new BN(node.param1);
+  const param2 = new BN(node.param2);
+  const end = script.vmAddress + script.data.length;
+  if (param1.lt(script.vmAddress) || param2.lt(param1) || param2.gt(end))
+    return null;
+  const selectorOffset = param1.sub(new BN(script.vmAddress)).toNumber();
+  const argsOffset = param2.sub(new BN(script.vmAddress)).toNumber();
 
-  const selectorOffset = index + segment.length;
-  const [functionName, argsOffset] = new StdStringCoder().decode(
-    scriptData,
+  const header = concat([
+    arrayify(node.to),
+    toBytes(param1.toHex(), 8),
+    toBytes(param2.toHex(), 8),
+  ]);
+  const headerOffset = selectorOffset - header.length;
+  if (headerOffset < 0) return null;
+  for (let i = 0; i < header.length; i++) {
+    if (script.data[headerOffset + i] !== header[i]) return null;
+  }
+
+  const [functionName, selectorEnd] = new StdStringCoder().decode(
+    script.data,
     selectorOffset,
   );
-  // The VM reads the selector at param1 and the arguments at param2.
-  const distance = new BN(node.param2).sub(new BN(node.param1)).toNumber();
-  if (distance !== argsOffset - selectorOffset) return null;
+  if (selectorEnd !== argsOffset) return null;
   if (!hasFunction(source.abi, functionName)) return null;
   const iface = getInterface(source.abi);
   const fn = iface.getFunction(functionName);
-  const args = fn.decodeArguments(scriptData.slice(argsOffset)) ?? [];
+  const args = fn.decodeArguments(script.data.slice(argsOffset)) ?? [];
   return { functionName, args };
 }
 
@@ -223,12 +226,25 @@ function collectInnerCalls(args: unknown[]): PendingInnerCall[] {
   return calls;
 }
 
-function getScriptData(rawPayload?: string | null) {
+// maxInputs from the Fuel Ignition and testnet consensus parameters. On a
+// chain with another value the offsets miss and calls stay undecoded.
+const MAX_INPUTS = 255;
+
+type ScriptData = { data: Uint8Array; vmAddress: number };
+
+function getScriptData(rawPayload?: string | null): ScriptData | null {
   if (!rawPayload) return null;
   try {
     const [tx] = new TransactionCoder().decode(arrayify(rawPayload), 0);
     if (tx.type !== TransactionType.Script) return null;
-    return arrayify(tx.scriptData);
+    const scriptLength = arrayify(tx.script).length;
+    // Where the VM places script data, as fuels computes it for the calls it
+    // builds: tx memory, the script tx header, then the word-padded script.
+    const vmAddress =
+      calculateVmTxMemory({ maxInputs: MAX_INPUTS }) +
+      SCRIPT_FIXED_SIZE +
+      Math.ceil(scriptLength / 8) * 8;
+    return { data: arrayify(tx.scriptData), vmAddress };
   } catch {
     return null;
   }
