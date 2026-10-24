@@ -171,6 +171,41 @@ describe('createApp GraphQL request limits', () => {
     expect(JSON.stringify(json.errors)).not.toContain('Query depth limit');
   });
 
+  it('validates a chain of fragments that each spread the next one twice in linear time', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const n = 30;
+    const fragments = Array.from({ length: n }, (_, i) =>
+      i < n - 1
+        ? `fragment F${i} on Query { __typename ...F${i + 1} ...F${i + 1} }`
+        : `fragment F${i} on Query { __typename }`,
+    ).join(' ');
+    const started = Date.now();
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: `query Q { ...F0 } ${fragments}` }),
+    });
+    const json = await res.json();
+    expect(Date.now() - started).toBeLessThan(1000);
+    expect(json.errors).toBeUndefined();
+    expect(json.data).toEqual({ __typename: 'Query' });
+  });
+
+  it('still counts depth through fragment spreads', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: `{ ...Deep } fragment Deep on Query { ${'a { '.repeat(16)}x${' }'.repeat(16)} }`,
+      }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).toContain(
+      'Query depth limit of 15 exceeded',
+    );
+  });
+
   it('still serves a normal explorer query under the depth and batching limits', async () => {
     const { yoga } = createApp(fakeCtx());
     const res = await yoga.fetch('http://x/graphql', {
