@@ -603,7 +603,10 @@ describe('StakingStore withdraw flow', () => {
       ],
     );
 
-  const reports = (txHash: string, entries: Array<[string, string]>) =>
+  const reports = (
+    txHash: string,
+    entries: Array<[string, string] | [string, string, string]>,
+  ) =>
     cosmosIndex.insertResponse(
       {
         blockHeight: 50,
@@ -611,7 +614,7 @@ describe('StakingStore withdraw flow', () => {
         data: '{}',
         timestamp: '2020-01-01T00:05:30Z',
       },
-      entries.flatMap(([from, nonce], index) => [
+      entries.flatMap(([from, nonce, amount], index) => [
         {
           type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
           key: 'from',
@@ -624,6 +627,16 @@ describe('StakingStore withdraw flow', () => {
           value: `"${nonce}"`,
           index,
         },
+        ...(amount
+          ? [
+              {
+                type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
+                key: 'amount',
+                value: JSON.stringify({ amount, denom: 'fuel' }),
+                index,
+              },
+            ]
+          : []),
       ]),
     );
 
@@ -710,6 +723,21 @@ describe('StakingStore withdraw flow', () => {
     expect(nonceByAmount(result.nodes)).toEqual({
       '111': { nonce: '21', status: BaseStatusType.WaitingSync },
       '222': { nonce: undefined, status: BaseStatusType.Skipped },
+    });
+  });
+
+  it('leaves a rejected withdrawal without a report instead of shifting the next one onto it', async () => {
+    l1Index.insertLogs([withdrawLog(0, '111'), withdrawLog(1, '222')]);
+    syncBlock100();
+    reports('WITHDRAWTX', [[ADDRESS, '22', '222']]);
+    const store = makeStore(l1Index, cosmosIndex);
+    const result = await store.getEvents(
+      ADDRESS,
+      new PaginatedParams({ last: '10' }),
+    );
+    expect(nonceByAmount(result.nodes)).toEqual({
+      '111': { nonce: undefined, status: BaseStatusType.Skipped },
+      '222': { nonce: '22', status: BaseStatusType.WaitingSync },
     });
   });
 });
