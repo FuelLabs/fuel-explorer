@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeTypeDefs } from '@graphql-tools/merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import { GraphQLError } from 'graphql';
 import { PoliciesResolver } from '~/graphql/resolvers/PoliciesResolver';
 import { providerDocPath } from '../fuelcore/FuelCoreClient';
 import type { AppContext } from './context';
@@ -42,14 +43,28 @@ const coinsDoc = tryReadDoc('coins');
 
 // Matches production's BalanceResolver.utxos cap (packages/graphql/src/graphql/resolvers/BalanceResolver.ts).
 const UTXOS_PAGE_SIZE = 2500;
+// One full balances page (first: 100, the most the explorer asks for). Each
+// balance node costs a coins query upstream, so without a per-request budget
+// aliased balances pages multiply into thousands of them.
+const UTXOS_LOOKUPS_PER_REQUEST = 100;
+const utxosLookupsByRequest = new WeakMap<object, number>();
 
 const balanceResolvers = {
   async utxos(
     parent: { owner: string; assetId: string },
     _args: unknown,
-    ctx: AppContext,
+    ctx: AppContext & { request?: object },
   ) {
     if (!coinsDoc) return [];
+    if (ctx.request) {
+      const used = (utxosLookupsByRequest.get(ctx.request) ?? 0) + 1;
+      utxosLookupsByRequest.set(ctx.request, used);
+      if (used > UTXOS_LOOKUPS_PER_REQUEST) {
+        throw new GraphQLError(
+          `Requests are limited to ${UTXOS_LOOKUPS_PER_REQUEST} utxos lookups`,
+        );
+      }
+    }
     const data = await ctx.client.query<{ coins?: { nodes?: unknown[] } }>(
       coinsDoc,
       {

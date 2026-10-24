@@ -80,7 +80,15 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
     if (json.errors) throw new Error(JSON.stringify(json.errors));
     return json.data;
   };
-  return { gql };
+  const gqlRaw = async (query: string) => {
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query }),
+    });
+    return res.json();
+  };
+  return { gql, gqlRaw };
 }
 
 describe('Balance.utxos', () => {
@@ -110,5 +118,53 @@ describe('Balance.utxos', () => {
       first: 2500,
     });
     expect(seenQuery).toContain('coins');
+  });
+
+  const balancesPage = (count: number) => ({
+    balances: {
+      nodes: Array.from({ length: count }, (_, i) => ({
+        amount: '1',
+        assetId: hex(i + 1),
+        owner: hex(9),
+      })),
+    },
+  });
+
+  it('serves utxos for a full 100-balance page, the most the explorer requests', async () => {
+    let coinsCalls = 0;
+    const { gql } = await setup({
+      query: async (query: string) => {
+        if (query.includes('query coins')) {
+          coinsCalls += 1;
+          return { coins: { nodes: [] } };
+        }
+        return balancesPage(100);
+      },
+    });
+    const d = await gql(
+      `{ balances(filter: { owner: "${hex(9)}" }, first: 100) { nodes { utxos { utxoId } } } }`,
+    );
+    expect(d.balances.nodes).toHaveLength(100);
+    expect(coinsCalls).toBe(100);
+  });
+
+  it('stops at 100 coins lookups per request when aliases ask for more', async () => {
+    let coinsCalls = 0;
+    const { gqlRaw } = await setup({
+      query: async (query: string) => {
+        if (query.includes('query coins')) {
+          coinsCalls += 1;
+          return { coins: { nodes: [] } };
+        }
+        return balancesPage(100);
+      },
+    });
+    const page = (alias: string) =>
+      `${alias}: balances(filter: { owner: "${hex(9)}" }, first: 100) { nodes { utxos { utxoId } } }`;
+    const json = await gqlRaw(`{ ${page('a')} ${page('b')} ${page('c')} }`);
+    expect(coinsCalls).toBe(100);
+    expect(JSON.stringify(json.errors)).toContain(
+      'Requests are limited to 100 utxos lookups',
+    );
   });
 });
