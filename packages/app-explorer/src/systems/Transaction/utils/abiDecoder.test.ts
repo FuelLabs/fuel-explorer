@@ -155,6 +155,69 @@ describe('decodeOperationReceipts', () => {
     expect(calls).toEqual([]);
   });
 
+  it('decodes the call data the VM reads, not a look-alike copy placed before it', () => {
+    const fuels = require('fuels') as typeof import('fuels');
+    const coder = new fuels.TransactionCoder();
+    const [tx] = coder.decode(fuels.arrayify(cancelTx.rawPayload), 0);
+    if (tx.type !== fuels.TransactionType.Script)
+      throw new Error('not a script');
+    const data = fuels.arrayify(tx.scriptData);
+    const operations = JSON.parse(
+      JSON.stringify(cancelTx.operations),
+    ) as typeof cancelTx.operations;
+    const call = operations[0].receipts[0].item as {
+      param1: string;
+      param2: string;
+    };
+    const vmAddress =
+      fuels.calculateVmTxMemory({ maxInputs: 255 }) +
+      fuels.SCRIPT_FIXED_SIZE +
+      Math.ceil(fuels.arrayify(tx.script).length / 8) * 8;
+    const headerOffset = Number(call.param1) - vmAddress - 48;
+    const realCall = data.slice(headerOffset);
+
+    // Insert a copy of the call ahead of the real one. The real call moves by
+    // the copy's length, so its param1/param2 and header move too, and the
+    // copy carries the same header so a byte search would match it first.
+    const shift = realCall.length;
+    const param1 = new fuels.BN(call.param1).add(shift);
+    const param2 = new fuels.BN(call.param2).add(shift);
+    realCall.set(fuels.toBytes(param1.toHex(), 8), 32);
+    realCall.set(fuels.toBytes(param2.toHex(), 8), 40);
+    const copy = realCall.slice();
+    const orderId = fuels.arrayify(
+      '0x00000000000000610000028122ed170000000000000000000000000000000003',
+    );
+    for (let i = 0; i <= copy.length - 32; i++) {
+      if (orderId.every((b, j) => copy[i + j] === b)) copy[i + 31] = 0xff;
+    }
+    const forged = fuels.concat([data.slice(0, headerOffset), copy, realCall]);
+    call.param1 = param1.toString();
+    call.param2 = param2.toString();
+    const rawPayload = fuels.hexlify(
+      coder.encode({
+        ...tx,
+        scriptData: fuels.hexlify(forged),
+        scriptDataLength: new fuels.BN(forged.length),
+      } as never),
+    );
+
+    decodeOperationReceipts(operations, rawPayload, verified);
+    const calls: DecodedOperationReceipt[] = [];
+    const walk = (receipts?: unknown) => {
+      for (const r of (receipts as DecodedOperationReceipt[]) ?? []) {
+        if (r.decoded?.kind === 'call') calls.push(r);
+        walk(r.receipts);
+      }
+    };
+    for (const op of operations) walk(op.receipts);
+    expect(calls[1].decoded?.name).toBe('cancel_order');
+    expect(calls[1].decoded?.value).toEqual({
+      order_id:
+        '0x00000000000000610000028122ed170000000000000000000000000000000003',
+    });
+  });
+
   it('leaves receipts of unknown contracts raw', () => {
     const operations = JSON.parse(
       JSON.stringify(cancelTx.operations),
