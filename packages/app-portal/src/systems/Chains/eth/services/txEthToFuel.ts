@@ -381,8 +381,20 @@ export class TxEthToFuelService {
       ethDepositBlockHeight: receipt.blockNumber.toString(),
     };
 
+    // Any contract the transaction calls can emit logs with the same
+    // signatures, so only logs from the bridge's own contracts are read.
+    const bridgeSolidityContracts = await getBridgeSolidityContracts();
+
     // search for logs of MessageSent event
     for (let i = 0; i < receipt.logs.length; i++) {
+      if (
+        !isAddressEqual(
+          receipt.logs[i].address,
+          bridgeSolidityContracts.FuelMessagePortal,
+        )
+      ) {
+        continue;
+      }
       try {
         const messageSentEvent = decodeEventLog({
           abi: FUEL_MESSAGE_PORTAL.abi,
@@ -410,6 +422,7 @@ export class TxEthToFuelService {
             recipient: FuelAddress.fromString(tokenRecipient),
             receiptErc20Address: tokenAddress as HexAddress,
           };
+          break;
         }
       } catch (_) {
         /* empty */
@@ -419,6 +432,14 @@ export class TxEthToFuelService {
     // search for logs of Deposit event, for ERC-20 deposit operation
 
     for (let i = 0; i < receipt.logs.length; i++) {
+      if (
+        !isAddressEqual(
+          receipt.logs[i].address,
+          bridgeSolidityContracts.FuelERC20GatewayV4,
+        )
+      ) {
+        continue;
+      }
       try {
         const depositEvent = decodeEventLog({
           abi: FUEL_ERC_20_GATEWAY.abi,
@@ -450,6 +471,7 @@ export class TxEthToFuelService {
               decimals,
             },
           };
+          break;
         }
       } catch (_) {
         /* empty */
