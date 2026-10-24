@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql';
 import { TransactionEntity } from '~/domain/Transaction/TransactionEntity';
 import type {
   GQLBlock,
@@ -15,6 +16,7 @@ import {
 } from '../pagination';
 import { resolveHeight } from './blocks';
 
+const B256 = /^0x[0-9a-f]{64}$/;
 const FIRST_PAGE_CACHE_TTL_MS = 5_000;
 const FC_PAGE_TTL_BASE_MS = 30_000;
 const FC_PAGE_TTL_CAP_MS = 3_600_000;
@@ -513,153 +515,164 @@ export const transactionResolvers = {
       args: PageArgs & { owner: string; ownerType?: string | null },
       ctx: AppContext,
     ) {
-      const size = pageSize(args);
       const owner = args.owner.toLowerCase();
-      ctx.hot.hit('account', owner);
-      const pricing: Pricing = {
-        usd: await ctx.price.usd(),
-        baseAssetId: ctx.chain.baseAssetId,
-      };
-
-      // The explorer reads hasPreviousPage as "older exists" and hasNextPage as "newer exists".
-      if (args.before?.startsWith('fc:')) {
-        const page = await pageFromFuelCore(
-          ctx,
-          owner,
-          size,
-          { kind: 'older', before: args.before.slice(3) },
-          [],
-          pricing,
-        );
-        const total = page.moreInDirection
-          ? TX_COUNT_CAP
-          : Math.max(
-              ctx.index.countForAccount(owner, TX_COUNT_CAP),
-              page.items.length,
-            );
-        return connection(page.items, {
-          hasNextPage: true,
-          hasPreviousPage: page.moreInDirection,
-          ...(await accountCounts(ctx, owner, page.items, {
-            totalCount: total,
-            ...UNPLACED_COUNTS,
-          })),
-        });
-      }
-      if (args.after?.startsWith('fc:')) {
-        const page = await pageFromFuelCore(
-          ctx,
-          owner,
-          size,
-          { kind: 'newer', after: args.after.slice(3) },
-          [],
-          pricing,
-        );
-        const total = Math.max(
-          ctx.index.countForAccount(owner, TX_COUNT_CAP),
-          page.items.length,
-        );
-        return connection(page.items, {
-          hasNextPage: page.moreInDirection,
-          hasPreviousPage: true,
-          ...(await accountCounts(ctx, owner, page.items, {
-            totalCount: total,
-            ...UNPLACED_COUNTS,
-          })),
-        });
-      }
-
-      const refs = ctx.index.txsForAccount(owner, {
-        before: args.before ?? undefined,
-        after: args.after ?? undefined,
-        limit: size + 1,
-      });
-      // refs is newest-first, so an `after` page drops its first row, the one
-      // farthest from the cursor.
-      const indexPage = args.after ? refs.slice(-size) : refs.slice(0, size);
-      const items: ReturnType<typeof toTxListNode>[] = [];
-      for (const ref of indexPage) {
-        const block = await ctx.store.get(ref.height);
-        const tx = block?.transactions[ref.txIndex];
-        if (tx) items.push(toTxListNode(tx, ref.height, ref.txIndex, pricing));
-      }
-      let total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
-
-      // The index holds a recent window only; older history continues from
-      // fuel-core below the oldest index row. An `after` page with no rows
-      // means nothing newer yet, so it never goes to fuel-core.
-      let olderExists = refs.length > size;
-      if (!args.after && !olderExists) {
-        const fromCursor = args.before ? parseTxCursor(args.before) : null;
-        const oldest =
-          indexPage[indexPage.length - 1] ??
-          (fromCursor && Number.isFinite(fromCursor.height)
-            ? fromCursor
-            : null);
-        const page = await pageFromFuelCore(
-          ctx,
-          owner,
-          size,
-          {
-            kind: 'older',
-            before: oldest
-              ? fuelCoreCursor(oldest.height, oldest.txIndex)
-              : undefined,
-          },
-          items,
-          pricing,
-        );
-        if (page.items.length > items.length) {
-          total = page.moreInDirection
-            ? TX_COUNT_CAP
-            : Math.max(total, page.items.length);
-          return connection(page.items, {
-            hasNextPage: !!args.before,
-            hasPreviousPage: page.moreInDirection,
-            ...(await accountCounts(ctx, owner, page.items, {
-              totalCount: total,
-              ...UNPLACED_COUNTS,
-            })),
-          });
-        }
-        olderExists = page.moreInDirection;
-      }
-
-      if (items.length === 0) {
-        return connection(items, {
-          hasNextPage: !!args.before || (!!args.after && refs.length > size),
-          hasPreviousPage: args.after ? true : olderExists,
-          totalCount: 0,
-          ...UNPLACED_COUNTS,
-        });
-      }
-
-      // 1-based from the account's newest transaction; indexPage is
-      // newest-first, so its first row is the page's startCount.
-      const rankFromNewest = (ref: { height: number; txIndex: number }) =>
-        Math.min(
-          total,
-          ctx.index.newerCountForAccount(owner, ref, TX_COUNT_CAP) + 1,
-        );
-      const startCount = rankFromNewest(indexPage[0]);
-      const endCount = rankFromNewest(indexPage[indexPage.length - 1]);
-
-      return connection(items, {
-        hasNextPage: !!args.before || (!!args.after && refs.length > size),
-        hasPreviousPage: args.after ? true : olderExists,
-        // At the cap the index numbers already read "1000+", so the list,
-        // which costs 2.6 s for a busy account, buys nothing.
-        ...(total >= TX_COUNT_CAP
-          ? { totalCount: total, startCount, endCount }
-          : await accountCounts(ctx, owner, items, {
-              totalCount: total,
-              startCount,
-              endCount,
-            })),
-      });
+      if (!B256.test(owner)) throw new GraphQLError('Invalid owner address');
+      const result = await ownerTransactions({ ...args, owner }, ctx);
+      // Ranked only once history exists, so made-up owners never reach the
+      // persisted hot_keys table.
+      if (result.nodes.length > 0) ctx.hot.hit('account', owner);
+      return result;
     },
   },
 };
+
+// The owner is lowercased and validated by transactionsByOwner above.
+async function ownerTransactions(
+  args: PageArgs & { owner: string; ownerType?: string | null },
+  ctx: AppContext,
+) {
+  const size = pageSize(args);
+  const owner = args.owner;
+  const pricing: Pricing = {
+    usd: await ctx.price.usd(),
+    baseAssetId: ctx.chain.baseAssetId,
+  };
+
+  // The explorer reads hasPreviousPage as "older exists" and hasNextPage as "newer exists".
+  if (args.before?.startsWith('fc:')) {
+    const page = await pageFromFuelCore(
+      ctx,
+      owner,
+      size,
+      { kind: 'older', before: args.before.slice(3) },
+      [],
+      pricing,
+    );
+    const total = page.moreInDirection
+      ? TX_COUNT_CAP
+      : Math.max(
+          ctx.index.countForAccount(owner, TX_COUNT_CAP),
+          page.items.length,
+        );
+    return connection(page.items, {
+      hasNextPage: true,
+      hasPreviousPage: page.moreInDirection,
+      ...(await accountCounts(ctx, owner, page.items, {
+        totalCount: total,
+        ...UNPLACED_COUNTS,
+      })),
+    });
+  }
+  if (args.after?.startsWith('fc:')) {
+    const page = await pageFromFuelCore(
+      ctx,
+      owner,
+      size,
+      { kind: 'newer', after: args.after.slice(3) },
+      [],
+      pricing,
+    );
+    const total = Math.max(
+      ctx.index.countForAccount(owner, TX_COUNT_CAP),
+      page.items.length,
+    );
+    return connection(page.items, {
+      hasNextPage: page.moreInDirection,
+      hasPreviousPage: true,
+      ...(await accountCounts(ctx, owner, page.items, {
+        totalCount: total,
+        ...UNPLACED_COUNTS,
+      })),
+    });
+  }
+
+  const refs = ctx.index.txsForAccount(owner, {
+    before: args.before ?? undefined,
+    after: args.after ?? undefined,
+    limit: size + 1,
+  });
+  // refs is newest-first, so an `after` page drops its first row, the one
+  // farthest from the cursor.
+  const indexPage = args.after ? refs.slice(-size) : refs.slice(0, size);
+  const items: ReturnType<typeof toTxListNode>[] = [];
+  for (const ref of indexPage) {
+    const block = await ctx.store.get(ref.height);
+    const tx = block?.transactions[ref.txIndex];
+    if (tx) items.push(toTxListNode(tx, ref.height, ref.txIndex, pricing));
+  }
+  let total = ctx.index.countForAccount(owner, TX_COUNT_CAP);
+
+  // The index holds a recent window only; older history continues from
+  // fuel-core below the oldest index row. An `after` page with no rows
+  // means nothing newer yet, so it never goes to fuel-core.
+  let olderExists = refs.length > size;
+  if (!args.after && !olderExists) {
+    const fromCursor = args.before ? parseTxCursor(args.before) : null;
+    const oldest =
+      indexPage[indexPage.length - 1] ??
+      (fromCursor && Number.isFinite(fromCursor.height) ? fromCursor : null);
+    const page = await pageFromFuelCore(
+      ctx,
+      owner,
+      size,
+      {
+        kind: 'older',
+        before: oldest
+          ? fuelCoreCursor(oldest.height, oldest.txIndex)
+          : undefined,
+      },
+      items,
+      pricing,
+    );
+    if (page.items.length > items.length) {
+      total = page.moreInDirection
+        ? TX_COUNT_CAP
+        : Math.max(total, page.items.length);
+      return connection(page.items, {
+        hasNextPage: !!args.before,
+        hasPreviousPage: page.moreInDirection,
+        ...(await accountCounts(ctx, owner, page.items, {
+          totalCount: total,
+          ...UNPLACED_COUNTS,
+        })),
+      });
+    }
+    olderExists = page.moreInDirection;
+  }
+
+  if (items.length === 0) {
+    return connection(items, {
+      hasNextPage: !!args.before || (!!args.after && refs.length > size),
+      hasPreviousPage: args.after ? true : olderExists,
+      totalCount: 0,
+      ...UNPLACED_COUNTS,
+    });
+  }
+
+  // 1-based from the account's newest transaction; indexPage is
+  // newest-first, so its first row is the page's startCount.
+  const rankFromNewest = (ref: { height: number; txIndex: number }) =>
+    Math.min(
+      total,
+      ctx.index.newerCountForAccount(owner, ref, TX_COUNT_CAP) + 1,
+    );
+  const startCount = rankFromNewest(indexPage[0]);
+  const endCount = rankFromNewest(indexPage[indexPage.length - 1]);
+
+  return connection(items, {
+    hasNextPage: !!args.before || (!!args.after && refs.length > size),
+    hasPreviousPage: args.after ? true : olderExists,
+    // At the cap the index numbers already read "1000+", so the list,
+    // which costs 2.6 s for a busy account, buys nothing.
+    ...(total >= TX_COUNT_CAP
+      ? { totalCount: total, startCount, endCount }
+      : await accountCounts(ctx, owner, items, {
+          totalCount: total,
+          startCount,
+          endCount,
+        })),
+  });
+}
 
 // 1-based from the newest transaction in the retention window, capped at
 // TX_COUNT_CAP to stay in range with the UI's "1000+" total. `items` is
