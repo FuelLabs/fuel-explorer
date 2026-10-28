@@ -102,6 +102,7 @@ export function createApp(ctx: AppDeps) {
       dashboard: { build: () => buildBlocksDashboard(ctx) },
       assets: { get: (assetId) => buildAssetBody(assetId, ctx, nft) },
       ipfs: { get: (ref) => gateway.fetch(ref) },
+      rates: { get: () => ctx.price.rates() },
     })
       .then((handled) => {
         if (!handled) return yoga(req, res);
