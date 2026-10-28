@@ -2,7 +2,6 @@ import { promises as fsp, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
 import { Provider } from 'fuels';
-import { http, createPublicClient } from 'viem';
 import VerifiedAssets from '~/infra/cache/VerifiedAssets';
 import { Src7Reader } from './assets/Src7Reader';
 import { seedVerifiedAssets } from './assets/seedVerifiedAssets';
@@ -23,10 +22,11 @@ import { TipTracker } from './index/TipTracker';
 import { L1Index } from './l1/L1Index';
 import { L1Poller } from './l1/L1Poller';
 import { createL1Client } from './l1/createL1Client';
+import { createL1RpcClient } from './l1/l1RpcClient';
 import type { BridgeRouteDeps, StakingRouteDeps } from './rest/router';
 import { RpcBlockSource, withStatusBlock } from './rpc/RpcBlockSource';
 import { S3BlockSource, createS3Fetcher } from './s3/S3BlockSource';
-import { createApp } from './server';
+import { type AppDeps, createApp } from './server';
 import { StakingStore } from './staking/StakingStore';
 import { StakingAPY } from './staking/apy';
 import { FinalizationPeriods } from './staking/finalization';
@@ -223,7 +223,7 @@ async function main() {
   // built on top of it are expected to 503.
   let l1Index: L1Index | null = null;
   let l1Poller: L1Poller | null = null;
-  let l1Health: { enabled: boolean; cursors: () => Record<string, number> } = {
+  let l1Health: NonNullable<AppDeps['l1']> = {
     enabled: false,
     cursors: () => ({}),
   };
@@ -243,7 +243,10 @@ async function main() {
     // consumer that talks to L1 (L1Poller here, FinalizationPeriods below)
     // instead of each constructing its own -- FinalizationPeriods used to
     // rebuild one on every cache-miss call.
-    const l1Client = createPublicClient({ transport: http(cfg.ethRpcUrl) });
+    const { client: l1Client, health: l1Rpc } = createL1RpcClient(
+      cfg.ethRpcUrl,
+      cfg.ethRpcFallbackUrl,
+    );
     l1Poller = new L1Poller({
       index: idx,
       client: createL1Client(l1Client),
@@ -256,6 +259,7 @@ async function main() {
         Object.fromEntries(
           idx.contracts(cfg.fuelChain).map((c) => [c.name, c.block_height]),
         ),
+      rpc: () => l1Rpc.status(),
     };
     console.log(`l1 poller: enabled, chain=${cfg.fuelChain}`);
 
