@@ -91,15 +91,17 @@ railway variables --service api \
 # --max-old-space-size, so set it explicitly on a memory-limited service.
 
 # api: staking/bridge history ingestion. Without ETH_RPC_URL the L1 poller
-# stays disabled and /staking/* and /bridge/* return 503; the other four vars
+# stays disabled and /staking/* and /bridge/* return 503; the other vars
 # have defaults and stay optional even then.
-#   ETH_RPC_URL         - an Alchemy or Infura HTTPS URL with the key inside
+#   ETH_RPC_URL          - a QuickNode HTTPS URL with the key inside (one labeled endpoint per service)
+#   ETH_RPC_FALLBACK_URL - optional second RPC used while ETH_RPC_URL fails; /health reports l1.rpc
 #   FUEL_CHAIN          - mainnet or testnet (default: inferred from FUEL_PROVIDER's host)
 #   COSMOS_START_HEIGHT - sequencer block to start cosmos ingestion from (default: tip minus 200,000)
 #   COSMOS_REST_URL     - sequencer cosmos REST base (default: resolved from FUEL_PROVIDER's chain)
 #   COSMOS_INDEXER_URL  - sequencer indexer base for withdrawal proofs (default: resolved from FUEL_CHAIN)
 railway variables --service api \
-  --set "ETH_RPC_URL=<alchemy-or-infura-https-url-with-key>" \
+  --set "ETH_RPC_URL=<quicknode-https-url-with-key>" \
+  --set "ETH_RPC_FALLBACK_URL=<public-rpc-url>" \
   --set "FUEL_CHAIN=mainnet" \
   --set "COSMOS_START_HEIGHT=<sequencer-tip-minus-200000>" \
   --set "COSMOS_REST_URL=<sequencer-rest-url-override>" \
