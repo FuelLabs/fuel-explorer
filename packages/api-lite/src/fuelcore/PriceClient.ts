@@ -38,7 +38,7 @@ const COINGECKO_IDS: Record<string, string> = {
 // MOOR has no CoinGecko listing; CoinMarketCap prices it from its Fuel DEX pool.
 const MOOR_CANDLE_URL =
   'https://dapi.coinmarketcap.com/u-kline/v1/k-line/candles?platform=Fuel%20Network&address=0xa9d7987a3f2c2fb02b287c3a2ef619046e930848c6050d31efef48ad6d3bdee8&unit=usd&pm=p&interval=1h&limit=1';
-const CANDLE_CLOSE = 3;
+const CANDLE_CLOSE_INDEX = 3;
 
 const TIMEOUT_MS = 15_000;
 
@@ -80,15 +80,13 @@ export class PriceClient {
     return this.inflight;
   }
 
-  // Waits for a fetch only when there is no price yet to answer with.
   async usd(): Promise<number | null> {
     const refreshing = this.refresh();
     if (!this.prices.has(ETH_SYMBOL)) await refreshing;
     return this.prices.get(ETH_SYMBOL) ?? null;
   }
 
-  // Never waits: fuels-wallet times out GET /assets/:assetId after 2s. main.ts
-  // warms the prices at boot.
+  // Synchronous because fuels-wallet times out GET /assets/:assetId after 2s.
   rate(symbol: string): number | null {
     void this.refresh();
     return this.prices.get(symbol) ?? null;
@@ -130,7 +128,7 @@ export class PriceClient {
         return;
       }
       const json = (await res.json()) as { data?: number[][] };
-      this.remember('MOOR', json.data?.[0]?.[CANDLE_CLOSE]);
+      this.remember('MOOR', json.data?.[0]?.[CANDLE_CLOSE_INDEX]);
     } catch (e) {
       this.log(
         `PriceClient: coinmarketcap fetch failed: ${(e as Error).message}`,
