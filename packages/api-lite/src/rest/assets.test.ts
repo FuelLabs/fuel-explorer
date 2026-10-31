@@ -47,7 +47,9 @@ function ctx(
           : null;
       }),
     },
-    price: { usd: jest.fn(async () => 2500) },
+    price: {
+      rate: jest.fn((symbol: string) => (symbol === 'ETH' ? 2500 : null)),
+    },
   } as any;
 }
 
@@ -82,7 +84,27 @@ describe('buildAssetBody', () => {
     });
   });
 
-  it('leaves rate null for a verified non-ETH asset and reports its supply', async () => {
+  it('prices a verified asset by its registry symbol', async () => {
+    const c = ctx({
+      local: { [hex(1)]: { contractId: hex(10), subId: hex(100) } },
+    });
+    c.price.rate.mockImplementation((symbol: string) =>
+      symbol === 'USDC' ? 0.999 : null,
+    );
+    const body = await buildAssetBody(hex(1), c, noNft(), REGISTRY);
+    expect(body).toMatchObject({ symbol: 'USDC', rate: 0.999 });
+  });
+
+  it('never asks for a price for an asset outside the registry', async () => {
+    const c = ctx({
+      local: { [hex(2)]: { contractId: hex(20), subId: hex(200) } },
+    });
+    const body = await buildAssetBody(hex(2), c, noNft(), REGISTRY);
+    expect(body).not.toHaveProperty('rate');
+    expect(c.price.rate).not.toHaveBeenCalled();
+  });
+
+  it('leaves rate off a verified asset without a price and reports its supply', async () => {
     const c = ctx({
       local: { [hex(1)]: { contractId: hex(10), subId: hex(100) } },
       totalSupply: '5000000',
@@ -95,7 +117,6 @@ describe('buildAssetBody', () => {
       isNFT: false,
     });
     expect(body).not.toHaveProperty('rate');
-    expect(c.price.usd).not.toHaveBeenCalled();
   });
 
   it('flags an unverified single-supply contract asset as an NFT', async () => {
