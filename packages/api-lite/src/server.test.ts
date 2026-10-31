@@ -171,6 +171,54 @@ describe('createApp GraphQL request limits', () => {
     expect(JSON.stringify(json.errors)).not.toContain('Query depth limit');
   });
 
+  const aliasedQuery = (n: number) =>
+    `{ ${Array.from({ length: n }, (_, i) => `p${i}: predicate(address: "0x00") { address }`).join(' ')} }`;
+
+  it('allows 20 top-level fields in one request', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: aliasedQuery(20) }),
+    });
+    const json = await res.json();
+    expect(json.errors).toBeUndefined();
+    expect(Object.keys(json.data)).toHaveLength(20);
+  });
+
+  it('rejects 21 aliased top-level fields, including ones reached through a fragment', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: `${aliasedQuery(20).slice(0, -1)} ...Extra } fragment Extra on Query { p20: predicate(address: "0x00") { address } }`,
+      }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).toContain(
+      'Requests are limited to 20 top-level fields',
+    );
+    expect(json.data).toBeUndefined();
+  });
+
+  it('counts top-level fields across every operation of a batch', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const batch = Array.from({ length: 3 }, () => ({ query: aliasedQuery(8) }));
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(batch),
+    });
+    const json = await res.json();
+    const errors = json.map((r: { errors?: unknown }) =>
+      JSON.stringify(r.errors ?? null),
+    );
+    expect(
+      errors.filter((e: string) => e.includes('top-level fields')),
+    ).toHaveLength(1);
+  });
+
   it('still serves a normal explorer query under the depth and batching limits', async () => {
     const { yoga } = createApp(fakeCtx());
     const res = await yoga.fetch('http://x/graphql', {
