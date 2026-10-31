@@ -95,7 +95,15 @@ export async function resolveHeight(
   id?: string | null,
   height?: string | null,
 ): Promise<number | null> {
-  if (height != null) return Number(height);
+  if (height != null) {
+    const n = Number(height);
+    // Like search(), refuse heights no node has produced yet. Each one would
+    // miss the archive and queue an RPC load on the budget the tip tracker
+    // shares, and nothing cancels that load when the request times out.
+    const tip = Math.max(ctx.tip.fuelCoreTip, ctx.tip.servedTip);
+    if (!Number.isSafeInteger(n) || n < 0 || n > tip) return null;
+    return n;
+  }
   if (!id) return null;
   const local = ctx.index.heightForBlock(id);
   if (local != null) return local;
