@@ -202,6 +202,7 @@ async function main() {
     },
   });
   const price = new PriceClient({ apiKey: cfg.coingeckoApiKey });
+  void price.refresh();
 
   const cosmosIndex = new CosmosIndex(INDEX_DB_PATH);
   const cosmosRestBase =

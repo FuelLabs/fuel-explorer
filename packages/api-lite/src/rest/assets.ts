@@ -16,8 +16,7 @@ const NFT_METADATA_WAIT_MS = 1000;
 
 type AssetCtx = Pick<AppContext, 'chain' | 'index' | 'client' | 'price'>;
 
-// Response shape consumed by fuels-wallet. `rate` is only set for ETH, the one
-// price PriceClient fetches.
+// Response shape consumed by fuels-wallet.
 export async function buildAssetBody(
   assetId: string,
   ctx: AssetCtx,
@@ -42,10 +41,11 @@ export async function buildAssetBody(
     (decimals === null || decimals === 0) &&
     totalSupply === '1';
 
-  const isEth =
-    assetId.toLowerCase() === ctx.chain.baseAssetId.toLowerCase() ||
-    asset.symbol === 'ETH';
-  const rate = isEth ? await ctx.price.usd() : null;
+  // asset.symbol only comes from the verified-assets registry.
+  const isBaseAsset =
+    assetId.toLowerCase() === ctx.chain.baseAssetId.toLowerCase();
+  const symbol = isBaseAsset ? 'ETH' : (asset.symbol as string | null);
+  const rate = symbol ? ctx.price.rate(symbol) : null;
 
   const collection = collectionFor(contractId);
   const metadata =
