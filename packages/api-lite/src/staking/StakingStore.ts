@@ -33,6 +33,42 @@ const TIME_TO_SYNCHRONIZE_IN_SEQUENCER = 30;
 const TIME_TO_COMMIT_SEQUENCER_BLOCK_TO_L1 = 8;
 // A repair that outlasts this keeps running; the next read sees its result.
 const REPAIR_WAIT_MS = 1500;
+const WITHDRAW_REPORTED_EVENT =
+  'fuelsequencer.bridge.EventWithdrawToEthereumReported';
+
+// The withdrawals an L1 staking log carries, with their amounts. An
+// Authorize log can batch several.
+function withdrawsInLog(row: StakingLogEventRow): Array<{ amount?: string }> {
+  try {
+    const args = JSON.parse(row.decoded_args) as {
+      amount?: string;
+      data?: string;
+    };
+    if (row.signature === 'Withdraw(address,address,uint256)')
+      return [{ amount: amountOf(args.amount) }];
+    if (row.signature !== 'Authorize(address,bytes)') return [];
+    return decodeAuthorizeMessages(args.data ?? '0x')
+      .filter((m) => m.type === CosmosMsgType.MsgWithdrawToEthereum)
+      .map((m) => ({
+        amount: amountOf((m.data as { amount?: unknown }).amount),
+      }));
+  } catch {
+    return [];
+  }
+}
+
+// Amounts arrive as plain strings on L1 and as { amount, denom } from the
+// sequencer.
+function amountOf(value: unknown): string | undefined {
+  if (value == null) return undefined;
+  if (typeof value === 'object')
+    return amountOf((value as { amount?: unknown }).amount);
+  try {
+    return BigInt(String(value)).toString();
+  } catch {
+    return undefined;
+  }
+}
 
 export type StakingStoreDeps = {
   l1Index: Pick<
@@ -40,6 +76,7 @@ export type StakingStoreDeps = {
     | 'queryStakingEvents'
     | 'hasStakingEventBeyond'
     | 'stakingEventById'
+    | 'stakingEventsInBlock'
     | 'recentArgLogs'
     | 'firstArgLogAtOrAfter'
     | 'queryLogs'
@@ -156,6 +193,46 @@ export class StakingStore {
     return normalizeCosmosQueryResponse<T>(rows, preferredEventType);
   }
 
+  // Pairs the address's withdrawals in one L1 block with its sequencer
+  // reports, in order, each taking the first unclaimed report. When the
+  // reports carry amounts that line up with the L1 ones, a report only pairs
+  // with a withdrawal of the same amount, so a withdrawal the sequencer
+  // rejected leaves a hole instead of taking the next one's report. Without
+  // comparable amounts the pairing is by order alone.
+  private reportFor<T extends { event: { amount?: unknown } }>(
+    address: string,
+    event: SequencerEventItem,
+    withdrawIndexInLog: number,
+    reports: T[],
+  ): T | undefined {
+    const withdrawals: Array<{ amount?: string }> = [];
+    let self = -1;
+    for (const row of this.deps.l1Index.stakingEventsInBlock(
+      address,
+      event.block_height,
+    )) {
+      if (row._id === event._id) self = withdrawals.length + withdrawIndexInLog;
+      withdrawals.push(...withdrawsInLog(row));
+    }
+    if (self === -1) return reports[withdrawIndexInLog];
+
+    const reportAmounts = reports.map((r) => amountOf(r.event.amount));
+    const comparable = reportAmounts.some(
+      (a) => a !== undefined && withdrawals.some((w) => w.amount === a),
+    );
+    const claimed = new Set<number>();
+    for (let i = 0; i < withdrawals.length; i++) {
+      const k = reports.findIndex(
+        (_, j) =>
+          !claimed.has(j) &&
+          (!comparable || reportAmounts[j] === withdrawals[i].amount),
+      );
+      if (k !== -1) claimed.add(k);
+      if (i === self) return k === -1 ? undefined : reports[k];
+    }
+    return undefined;
+  }
+
   async createWithdrawHistory(
     address: string,
     event: SequencerEventItem,
@@ -168,6 +245,9 @@ export class StakingStore {
       lastCommittedBlock?: CommitInfo | null;
       contractTimeToFinalizeInMinutes?: number;
     },
+    // Which withdrawal this is among the ones the L1 log carries (an
+    // Authorize log can batch several).
+    withdrawIndexInLog = 0,
   ): Promise<WithdrawResponse> {
     const contractTimeToFinalizeInMinutes =
       shared?.contractTimeToFinalizeInMinutes ??
@@ -207,13 +287,29 @@ export class StakingStore {
       [
         {
           key: 'from',
-          type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
+          type: WITHDRAW_REPORTED_EVENT,
           value: `"${address.toLowerCase()}"`,
         },
       ],
     );
 
-    if (withdrawEvents.length === 0) {
+    // The query matches sequencer txs by sender, and a tx or block can hold
+    // several reports, so keep the sender's own reports and pair them with
+    // this block's withdrawals. Without the pairing every withdrawal in the
+    // block got the first report's nonce, and with it that withdrawal's
+    // proof and finalized status.
+    const reports = withdrawEvents.flatMap((tx) =>
+      tx.events
+        .filter(
+          (e) =>
+            e.type === WITHDRAW_REPORTED_EVENT &&
+            String(e.from).toLowerCase() === address.toLowerCase(),
+        )
+        .map((e) => ({ tx, event: e })),
+    );
+    const report = this.reportFor(address, event, withdrawIndexInLog, reports);
+
+    if (!report) {
       if (this.isSkipped(event.block_height)) {
         data.status = BaseStatusType.Skipped;
         data.statusInfo[BaseStatusType.Skipped] = {
@@ -228,7 +324,7 @@ export class StakingStore {
       shared?.lastCommittedBlock !== undefined
         ? shared.lastCommittedBlock
         : this.getLastCommittedBlock();
-    const withdrawSequencerTX = withdrawEvents[0];
+    const withdrawSequencerTX = report.tx;
 
     data.statusInfo[BaseStatusType.WaitingSync] = {
       ...data.statusInfo[BaseStatusType.WaitingSync],
@@ -239,8 +335,8 @@ export class StakingStore {
       },
     };
 
-    if (withdrawSequencerTX.event && 'nonce' in withdrawSequencerTX.event) {
-      data.nonce = (withdrawSequencerTX.event as WithdrawEvent).nonce;
+    if ('nonce' in report.event) {
+      data.nonce = report.event.nonce;
     }
 
     // Without a commit yet, the status can't advance past WaitingSync (there
@@ -688,6 +784,7 @@ export class StakingStore {
         return finalHistory;
     }
 
+    let withdrawIndexInLog = 0;
     for (const item of eventProcessingMap) {
       switch (item.type) {
         case CosmosMsgType.MsgDelegate:
@@ -712,7 +809,13 @@ export class StakingStore {
           break;
         case CosmosMsgType.MsgWithdrawToEthereum:
           finalHistory.push(
-            await this.createWithdrawHistory(address, event, item.data, shared),
+            await this.createWithdrawHistory(
+              address,
+              event,
+              item.data,
+              shared,
+              withdrawIndexInLog++,
+            ),
           );
           break;
       }

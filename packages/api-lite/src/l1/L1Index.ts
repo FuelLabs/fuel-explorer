@@ -313,6 +313,23 @@ export class L1Index {
     return row.found === 1;
   }
 
+  /** The address's staking logs in one L1 block, in log order. */
+  stakingEventsInBlock(
+    address: string,
+    blockHeight: number,
+  ): StakingLogEventRow[] {
+    const sql = `
+      SELECT l._id AS _id, l.tx_hash AS tx_hash, l.signature AS signature,
+        l.block_height AS block_height, l.decoded_args AS decoded_args, l.timestamp AS timestamp
+      FROM contract_l1_logs l
+      WHERE (${STAKING_MATCH_CONDITION}) AND l.block_height = @blockHeight
+      ORDER BY l.log_index ASC, l._id ASC
+    `;
+    return this.db
+      .prepare(sql)
+      .all({ address, blockHeight }) as StakingLogEventRow[];
+  }
+
   stakingEventById(id: number): StakingLogEventById | undefined {
     const sql = `
       SELECT l.tx_hash AS tx_hash, l.signature AS signature, l._id AS _id,
