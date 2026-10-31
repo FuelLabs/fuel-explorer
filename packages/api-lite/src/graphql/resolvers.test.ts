@@ -544,7 +544,7 @@ describe('resolvers', () => {
     expect(calls).toBe(1);
   });
 
-  it('records a hot hit for the account on every transactionsByOwner call', async () => {
+  it('records a hot hit for the account on every transactionsByOwner call that finds history', async () => {
     const { gql, hot } = await setup();
     expect(hot.hits('account', ACCOUNT.toLowerCase())).toBe(0);
     await gql(
@@ -553,6 +553,32 @@ describe('resolvers', () => {
     );
     hot.flush();
     expect(hot.hits('account', ACCOUNT.toLowerCase())).toBe(1);
+  });
+
+  it('records no hot hit for an owner without history', async () => {
+    const { gql, hot } = await setup();
+    await gql(
+      'query($o: Address!) { transactionsByOwner(owner: $o, first: 3) { nodes { id } } }',
+      { o: hex(1) },
+    );
+    hot.flush();
+    expect(hot.counts().accounts).toBe(0);
+  });
+
+  it('rejects an owner that is not a 32-byte hex address before doing any work', async () => {
+    const txsByOwner = jest.fn();
+    const { gql, hot } = await setup({ txsByOwner });
+    for (const o of ['0x1234', 'x'.repeat(5000), `${ACCOUNT}00`, 'fuel1abc']) {
+      await expect(
+        gql(
+          'query($o: Address!) { transactionsByOwner(owner: $o, first: 3) { nodes { id } } }',
+          { o },
+        ),
+      ).rejects.toThrow('Invalid owner address');
+    }
+    hot.flush();
+    expect(hot.counts().accounts).toBe(0);
+    expect(txsByOwner).not.toHaveBeenCalled();
   });
 
   it('records a hot hit for the block height and the tx id', async () => {

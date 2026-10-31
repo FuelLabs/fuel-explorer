@@ -17,6 +17,26 @@ describe('HotKeys', () => {
     hot.close();
   });
 
+  it('ignores keys longer than any real id', () => {
+    const hot = new HotKeys(':memory:');
+    hot.hit('account', `0x${'a'.repeat(200)}`);
+    hot.flush();
+    expect(hot.counts().accounts).toBe(0);
+    hot.close();
+  });
+
+  it('stops buffering new keys at 10,000 per kind between flushes but keeps counting known ones', () => {
+    const hot = new HotKeys(':memory:');
+    for (let i = 0; i < 10_050; i++) hot.hit('account', `0x${i}`);
+    hot.hit('account', '0x0');
+    hot.hit('tx', '0xbb');
+    hot.flush();
+    expect(hot.counts()).toEqual({ accounts: 10_000, txs: 1, blocks: 0 });
+    expect(hot.hits('account', '0x0')).toBe(2);
+    expect(hot.hits('account', '0x10049')).toBe(0);
+    hot.close();
+  });
+
   it('accumulates across multiple flushes for the same key', () => {
     const hot = new HotKeys(':memory:');
     hot.hit('tx', '0xbb');
