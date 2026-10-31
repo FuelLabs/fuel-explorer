@@ -1,6 +1,7 @@
 import { AnimatedDialog, VStack } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, FuelToken, TOKENS } from 'app-commons';
 import { AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useIsStakingContractPaused } from '~staking/hooks/useIsStakingContractPaused';
 import { ReviewWithdraw } from '~staking/systems/Staking/components/WithdrawNewDialog/ReviewWithdraw';
 import { WithdrawAmount } from '~staking/systems/Staking/components/WithdrawNewDialog/WithdrawAmount';
@@ -9,8 +10,10 @@ import { useWithdrawNewDialog } from '~staking/systems/Staking/hooks/useWithdraw
 import { LastPageWrapper } from '../PagesTransition/PagesTransition';
 import { FirstPageWrapper } from '../PagesTransition/PagesTransition';
 import { PausedContractDialogStakingContent } from '../PausedContractDialogStakingContent/PausedContractDialogStakingContent';
+import { StepIndicator } from '../StepIndicator/StepIndicator';
 
 export const WithdrawNewDialog = () => {
+  const { t } = useTranslation();
   const {
     amount,
     balance,
@@ -72,17 +75,31 @@ export const WithdrawNewDialog = () => {
           }
         >
           <VStack className="h-full" gap="7">
-            <AnimatePresence mode="wait" initial={false}>
-              {!isReviewPage ? (
-                <FirstPageWrapper>
-                  <AnimatedDialog.Title>Withdraw</AnimatedDialog.Title>
-                </FirstPageWrapper>
-              ) : (
-                <LastPageWrapper>
-                  <AnimatedDialog.Title>Review: Withdraw</AnimatedDialog.Title>
-                </LastPageWrapper>
-              )}
-            </AnimatePresence>
+            <div className="flex items-center justify-between gap-4">
+              <AnimatePresence mode="wait" initial={false}>
+                {!isReviewPage ? (
+                  <FirstPageWrapper>
+                    <AnimatedDialog.Title>
+                      {t('staking.dialog.withdraw')}
+                    </AnimatedDialog.Title>
+                  </FirstPageWrapper>
+                ) : (
+                  <LastPageWrapper>
+                    <AnimatedDialog.Title>
+                      {t('staking.dialog.review_withdraw')}
+                    </AnimatedDialog.Title>
+                  </LastPageWrapper>
+                )}
+              </AnimatePresence>
+              <StepIndicator
+                current={isReviewPage ? 1 : 0}
+                total={2}
+                label={t('staking.dialog.step_of', {
+                  current: (isReviewPage ? 1 : 0) + 1,
+                  total: 2,
+                })}
+              />
+            </div>
 
             <AnimatePresence mode="wait" initial={false}>
               {!isReviewPage ? (

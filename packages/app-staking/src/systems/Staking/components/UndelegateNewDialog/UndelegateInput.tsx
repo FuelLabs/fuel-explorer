@@ -8,6 +8,7 @@ import {
 import type { BN } from 'fuels';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 
 interface UndelegateInputProps {
@@ -29,6 +30,7 @@ export function UndelegateInput({
   handleChange,
   rates,
 }: UndelegateInputProps) {
+  const { t } = useTranslation();
   const onMax = useCallback(() => {
     if (stakedAmount) {
       handleChange(stakedAmount);
@@ -59,7 +61,7 @@ export function UndelegateInput({
         header={
           <InputAmountMax
             amount={stakedAmount}
-            label="Available"
+            label={t('staking.upgrade.available')}
             onMax={onMax}
           />
         }

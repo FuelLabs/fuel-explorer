@@ -28,6 +28,7 @@ import {
   type HexAddress,
   IS_FUEL_DEV_CHAIN,
   absoluteUrl,
+  formatDateTime,
   getBridgeSolidityContracts,
 } from 'app-commons';
 import { safeWriteContract } from 'app-commons/safeWriteContract';
@@ -558,7 +559,7 @@ export class TxFuelToEthService {
               });
             throw new Error(
               `Your withdrawal will exceed the contract's withdrawal limit of ${formattedLimitAmount} ${assetAmount.asset.symbol} for each period.
-              The current period ends on ${dayjs(Number(currentPeriodEnd) * 1000).format('DD/MM/YYYY [at] HH:mm:ss')}, after which the limit will be reset.
+              The current period ends on ${formatDateTime(Number(currentPeriodEnd) * 1000, 'long')}, after which the limit will be reset.
 
               Please try again after that time if your withdrawal amount is within the limit. If your withdrawal exceeds the total limit, please contact support via the Fuel Forum or Discord.`,
             );
@@ -600,7 +601,7 @@ export class TxFuelToEthService {
           if (currentPeriodAmount + bigIntAmount >= limitAmount) {
             throw new Error(
               `Your withdrawal will exceed the contract's withdrawal limit of ${formattedLimitAmount} ${assetAmount.asset.symbol} for each period. 
-                The current period ends on ${dayjs(Number(currentPeriodEnd) * 1000).format('YYYY-MM-DD [at] HH:mm:ss')}, after which the limit will be reset.
+                The current period ends on ${formatDateTime(Number(currentPeriodEnd) * 1000, 'long')}, after which the limit will be reset.
                 
                 Please try again after that time if your withdrawal amount is within the limit. If your withdrawal exceeds the total limit, please contact support via the Fuel Forum or Discord.`,
             );

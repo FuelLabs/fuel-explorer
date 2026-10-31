@@ -1,11 +1,14 @@
 import { VStack } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import { useContract } from '~/hooks/useApi';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
 import { useContractMetadata } from '~/systems/Transaction/hooks/useContractMetadata';
 import { MetadataAudits } from '../../Core/components/MetadataAudits/MetadataAudits';
 import { MetadataSourcecode } from '../../Core/components/MetadataSourcecode/MetadataSourcecode';
 
 export function ContractCode({ id }: { id: string }) {
+  const { t } = useTranslation();
   const {
     data: contract,
     isLoading: isContractLoading,
@@ -22,18 +25,19 @@ export function ContractCode({ id }: { id: string }) {
   if (isContractLoading) {
     return (
       <VStack gap="4">
-        <CodeBlock value="" title="Bytecode" height={600} isLoading={true} />
+        <CodeBlock
+          value=""
+          title={t('contract.bytecode')}
+          height={600}
+          isLoading={true}
+        />
       </VStack>
     );
   }
 
   // Show error state only for contract data (required)
   if (contractError) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-red-600">Failed to load contract data</p>
-      </div>
-    );
+    return <PageState tone="error" title={t('contract.error_code')} />;
   }
 
   // Always show bytecode, metadata is optional
@@ -55,7 +59,7 @@ export function ContractCode({ id }: { id: string }) {
       {/* Always show bytecode */}
       <CodeBlock
         value={contract?.bytecode || ''}
-        title="Bytecode"
+        title={t('contract.bytecode')}
         height={
           !isMetadataLoading && !metadataError && metadata?.source ? 200 : 600
         }

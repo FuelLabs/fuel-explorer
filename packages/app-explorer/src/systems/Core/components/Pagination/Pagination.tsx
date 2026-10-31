@@ -1,7 +1,8 @@
 import type { GQLPageInfo } from '@fuel-explorer/graphql/sdkProvider';
 import type { BaseProps } from '@fuels/ui';
-import { Button, ButtonGroup, HStack, cx } from '@fuels/ui';
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
+import { HStack, cx } from '@fuels/ui';
+import { IconArrowLeft, IconArrowRight } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 
 type PaginationProps = BaseProps<{
   nextCursor?: string | null;
@@ -10,6 +11,9 @@ type PaginationProps = BaseProps<{
   pageInfo?: Omit<GQLPageInfo, '__typename'>;
 }>;
 
+const ARROW =
+  'grid size-10 shrink-0 grow cursor-pointer place-items-center border-0 bg-transparent p-0 text-heading tablet:grow-0 fuel-hover-fill focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--fuel-focus)] disabled:cursor-not-allowed disabled:text-[var(--fuel-element-disabled)] disabled:hover:bg-transparent motion-reduce:transition-none';
+
 export function Pagination({
   onChange,
   prevCursor,
@@ -17,6 +21,8 @@ export function Pagination({
   pageInfo,
   ...props
 }: PaginationProps) {
+  const { t } = useTranslation();
+
   function format(num: number, digits: number) {
     const lookup = [
       { value: 1, symbol: '' },
@@ -44,39 +50,40 @@ export function Pagination({
       className={cx('w-full tablet:w-auto h-[40px]', props.className)}
     >
       {(pageInfo?.hasNextPage || pageInfo?.hasPreviousPage) && (
-        <ButtonGroup>
-          <Button
-            size="2"
-            variant="ghost"
-            color="gray"
+        <div className="fuel-appear flex w-full items-stretch border border-[var(--fuel-line)] bg-[var(--fuel-background)] tablet:w-auto">
+          <button
+            type="button"
+            aria-label={t('core.pagination.previous')}
             onClick={() => onChange?.(prevCursor ?? '', 'after')}
-            className="grow tablet:grow-0"
-            {...{ disabled: !pageInfo?.hasNextPage }}
+            disabled={!pageInfo?.hasNextPage}
+            className={ARROW}
           >
             <IconArrowLeft size={14} />
-          </Button>
+          </button>
           {pageInfo?.startCount &&
             pageInfo?.endCount &&
             pageInfo?.totalCount && (
-              <Button disabled>
-                {pageInfo.startCount} -{' '}
-                {Math.min(pageInfo.endCount, pageInfo.totalCount)} of{' '}
-                {pageInfo.totalCount >= 1000
-                  ? '1000+'
-                  : format(pageInfo.totalCount, 1)}
-              </Button>
+              <span className="fuel-label grid flex-1 place-items-center whitespace-nowrap border-[var(--fuel-line)] border-x border-y-0 border-solid px-4 tablet:flex-none">
+                {t('core.pagination.range', {
+                  start: pageInfo.startCount,
+                  end: Math.min(pageInfo.endCount, pageInfo.totalCount),
+                  total:
+                    pageInfo.totalCount >= 1000
+                      ? '1000+'
+                      : format(pageInfo.totalCount, 1),
+                })}
+              </span>
             )}
-          <Button
-            size="2"
-            variant="ghost"
-            color="gray"
+          <button
+            type="button"
+            aria-label={t('core.pagination.next')}
             onClick={() => onChange?.(nextCursor ?? '', 'before')}
-            className="grow tablet:grow-0"
-            {...{ disabled: !pageInfo?.hasPreviousPage }}
+            disabled={!pageInfo?.hasPreviousPage}
+            className={ARROW}
           >
             <IconArrowRight size={14} />
-          </Button>
-        </ButtonGroup>
+          </button>
+        </div>
       )}
     </HStack>
   );

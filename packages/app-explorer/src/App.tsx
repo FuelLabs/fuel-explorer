@@ -1,8 +1,6 @@
-import { LoadingBox } from '@fuels/ui';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { IS_EXPLORER_ONLY } from 'app-commons';
 import { Suspense, lazy } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 // Page Components
@@ -11,6 +9,7 @@ import { BlockPage } from './pages/BlockPage';
 import { BlocksPage } from './pages/BlocksPage';
 import ContractPage from './pages/ContractPage';
 import { EcosystemPageWrapper } from './pages/EcosystemPage';
+import { EcosystemProjectPage } from './pages/EcosystemProjectPage';
 import { HomePage } from './pages/HomePage';
 import TransactionLoadingPage from './pages/TransactionLoadingPage';
 import { TransactionPage } from './pages/TransactionPage';
@@ -27,9 +26,7 @@ import { StakingScreenLoader } from './systems/Staking/screens/StakingScreenLoad
 
 import { ErrorPageComponent } from './systems/Core/components/ErrorPage/ErrorPage';
 
-// Bridge and staking pages pull in wagmi, viem and connectkit.
-const BridgePage = lazy(() => import('./pages/BridgePage'));
-const BridgeHistoryPage = lazy(() => import('./pages/BridgeHistoryPage'));
+// Staking pages pull in wagmi, viem and connectkit.
 const StakingOnEthereumPage = lazy(
   () => import('./pages/StakingOnEthereumPage'),
 );
@@ -44,22 +41,8 @@ const OverlayDialog = lazy(() =>
 const portalRoutes = (
   <>
     <Route path="/bridge" element={<BridgeLayout />}>
-      <Route
-        index
-        element={
-          <Suspense fallback={<LoadingBox className="w-full h-[400px]" />}>
-            <BridgePage />
-          </Suspense>
-        }
-      />
-      <Route
-        path="history"
-        element={
-          <Suspense fallback={<LoadingBox className="w-full h-[400px]" />}>
-            <BridgeHistoryPage />
-          </Suspense>
-        }
-      />
+      <Route index />
+      <Route path="history" />
     </Route>
 
     <Route path="/staking" element={<StakingLayout />}>
@@ -99,7 +82,7 @@ const portalRoutes = (
       <Route
         path="on-fuel"
         element={
-          <Suspense fallback={<StakingScreenLoader />}>
+          <Suspense fallback={<StakingScreenLoader tab="fuel" />}>
             <StakingOnFuelPage />
           </Suspense>
         }
@@ -107,6 +90,7 @@ const portalRoutes = (
     </Route>
 
     <Route path="/ecosystem" element={<EcosystemPageWrapper />} />
+    <Route path="/ecosystem/:slug" element={<EcosystemProjectPage />} />
 
     <Route path="/upgrade" element={<UpgradePage />} />
   </>
@@ -115,22 +99,7 @@ const portalRoutes = (
 function App() {
   return (
     <>
-      <Helmet>
-        <title>Fuel Explorer</title>
-        <meta
-          name="description"
-          content="Fuel Ignition is a high-performance Ethereum layer-2 rollup powered by the FuelVM; built for home verification and scalable for all."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Fuel Explorer" />
-        <meta
-          property="og:description"
-          content="Fuel Ignition is a high-performance Ethereum layer-2 rollup powered by the FuelVM; built for home verification and scalable for all."
-        />
-        <meta property="og:image" content="/preview.png?v=ignition" />
-      </Helmet>
-
-      <Layout contentClassName="[&_.rt-ContainerInner]:flex-col [&_.rt-ContainerInner]:gap-10 bg-gray-3 dark:bg-gray-1">
+      <Layout>
         <TooltipProvider>
           <Routes>
             {/* Home route */}

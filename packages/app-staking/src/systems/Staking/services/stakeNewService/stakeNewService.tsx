@@ -1,4 +1,4 @@
-import { Link, toast } from '@fuels/ui';
+import { toast } from '@fuels/ui';
 import {
   CURRENT_NETWORK_CONTRACTS,
   FuelToken,
@@ -9,12 +9,13 @@ import {
 import { safeWriteContract } from 'app-commons/safeWriteContract';
 import type { BN } from 'fuels';
 import { bn } from 'fuels';
+import { getI18n } from 'react-i18next';
 import type { WalletClient } from 'viem';
 import type { PublicClient } from 'viem';
 import { type Address, erc20Abi } from 'viem';
 import { sequencerAbi } from '~staking/contracts/sequencer/sequencerAbi';
+import { ViewInExplorer } from '~staking/systems/Core/components/ViewInExplorer/ViewInExplorer';
 import { bigIntToBn, bnToBigInt } from '~staking/systems/Core/utils/bn';
-import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
 import { getTokenApprovalAmount } from '../../services/erc20';
 import { convertSequencerValidatorAddressToEthAddress } from '../../utils/convertSequencerValidatorAddressToEthAddress';
 import type { SubmitStakeNewInput } from './types';
@@ -134,17 +135,8 @@ export class StakeNewService {
 
     if (l1) {
       toast({
-        title: 'Stake request has been submitted',
-        description: (
-          <Link
-            href={getTransactionLink(l1, 'l1')}
-            target="_blank"
-            rel="noopener noreferrer"
-            color="green"
-          >
-            View on Etherscan
-          </Link>
-        ),
+        title: getI18n().t('staking.toast.stake_submitted'),
+        action: <ViewInExplorer hash={l1} layer="l1" />,
         variant: 'info',
         duration: 5_000,
       });
@@ -152,17 +144,8 @@ export class StakeNewService {
 
     if (sequencer) {
       toast({
-        title: 'Stake request has been submitted',
-        description: (
-          <Link
-            href={getTransactionLink(sequencer, 'l1')}
-            target="_blank"
-            rel="noopener noreferrer"
-            color="green"
-          >
-            View on Etherscan
-          </Link>
-        ),
+        title: getI18n().t('staking.toast.stake_submitted'),
+        action: <ViewInExplorer hash={sequencer} layer="l1" />,
         variant: 'info',
         duration: 5_000,
       });

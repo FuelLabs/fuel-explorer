@@ -1,4 +1,9 @@
-import { Text, VStack } from '@fuels/ui';
+import {
+  formatDateTime,
+  formatDateTimeTitle,
+  formatRelative,
+} from 'app-commons';
+import { useTranslation } from 'react-i18next';
 
 type BlockTimeItemProps = {
   time: Date;
@@ -6,23 +11,22 @@ type BlockTimeItemProps = {
 };
 
 export default function BlockTimeItem({ time, timeAgo }: BlockTimeItemProps) {
+  const { i18n } = useTranslation();
   const timeDate = new Date(time);
+  const valid = !Number.isNaN(timeDate.getTime());
 
-  const formattedTime = timeDate.toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  });
+  const formattedTime = formatDateTime(timeDate, 'medium', i18n.language);
+  const relative = valid
+    ? formatRelative(timeDate, Date.now(), i18n.language)
+    : timeAgo;
 
   return (
-    <VStack gap="0px">
-      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f]">{timeAgo}</Text>
-      <Text className="text-[0.7rem] p-0 m-0 text-[#9f9f9f] whitespace-nowrap">
-        {formattedTime}
-      </Text>
-    </VStack>
+    <div
+      className="flex flex-col text-[11px] text-[var(--fuel-element-low-em)] leading-[16px]"
+      title={valid ? formatDateTimeTitle(timeDate, i18n.language) : undefined}
+    >
+      <span>{relative}</span>
+      <span className="whitespace-nowrap">{formattedTime}</span>
+    </div>
   );
 }

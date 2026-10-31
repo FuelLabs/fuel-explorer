@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { Navigate, useLocation } from 'react-router-dom';
 import { StakingPage } from '~staking/index';
 
@@ -10,18 +9,7 @@ const StakingOnEthereumPage: React.FC = () => {
     return <Navigate to="/staking/on-ethereum/positions" replace />;
   }
 
-  return (
-    <>
-      <Helmet>
-        <title>Staking on Ethereum - Fuel Explorer</title>
-        <meta
-          name="description"
-          content="Stake your tokens on Ethereum for Fuel network"
-        />
-      </Helmet>
-      <StakingPage />
-    </>
-  );
+  return <StakingPage />;
 };
 
 export default StakingOnEthereumPage;

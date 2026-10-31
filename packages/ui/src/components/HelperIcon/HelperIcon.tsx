@@ -1,5 +1,7 @@
 import { Tooltip } from '@radix-ui/themes';
-import { IconHelpCircle } from '@tabler/icons-react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { IconHelpCircle } from '../Icons';
 
 import { tv } from 'tailwind-variants';
 import { createComponent } from '../../utils/component';
@@ -38,22 +40,38 @@ export const HelperIcon = createComponent<HelperIconProps, 'span'>({
       iconStroke,
       iconClassName,
       iconColor = 'text-icon',
-      iconAriaLabel: ariaLabel = 'Helper Icon',
+      iconAriaLabel,
       ...props
     },
   ) => {
+    const { t } = useTranslation();
+    const [open, setOpen] = useState(false);
+    const ariaLabel =
+      iconAriaLabel ??
+      t('ui.helper_icon.label', { defaultValue: 'More information' });
     return (
       <Comp {...props}>
         {children}
-        <Tooltip content={message}>
-          <Icon
+        <Tooltip content={message} open={open} onOpenChange={setOpen}>
+          {/* A button, so keyboard and touch users can open the hint too. */}
+          <button
+            type="button"
             aria-label={ariaLabel}
-            className={iconClassName}
-            color={iconColor}
-            icon={HelperIcon}
-            size={iconSize}
-            stroke={iconStroke}
-          />
+            className="fuel-hit relative inline-flex cursor-help items-center justify-center bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--fuel-focus)]"
+            onClick={(e) => {
+              e.preventDefault();
+              setOpen((prev) => !prev);
+            }}
+          >
+            <Icon
+              aria-hidden
+              className={iconClassName}
+              color={iconColor}
+              icon={HelperIcon}
+              size={iconSize}
+              stroke={iconStroke}
+            />
+          </button>
         </Tooltip>
       </Comp>
     );

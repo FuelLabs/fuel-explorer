@@ -4,7 +4,7 @@ import { tv } from 'tailwind-variants';
 export const ASSET_SIZE = 28;
 export const COLUMN_WIDTH = 200;
 export const CELL_PADDING = 'px-4 py-3';
-export const LIST_SEPARATOR_BORDER = 'border-[--gray-1]';
+export const LIST_SEPARATOR_BORDER = 'border-[var(--fuel-border)]';
 
 export const CELL_INITIAL = { opacity: 0, width: 0 };
 export const CELL_ANIMATE: AnimationProps['animate'] = {

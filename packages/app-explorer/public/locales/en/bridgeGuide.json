@@ -1,0 +1,20 @@
+{
+  "faq": {
+    "assets": {
+      "question": "Which assets can I bridge?",
+      "answer": "The asset selector lists every supported asset. ETH is selected by default."
+    },
+    "faster": {
+      "question": "Is there a faster route?",
+      "answer": "Partner bridges, like LayerSwap linked above the form, offer fast bridging to Fuel Ignition."
+    },
+    "history": {
+      "question": "Where do I see past transfers?",
+      "answer": "Open History at the top of the bridge panel. Pending and completed transfers are listed there."
+    },
+    "cancel": {
+      "question": "Can I cancel a transfer?",
+      "answer": "No. A transfer cannot be reversed once you sign it, so check both addresses and the amount first."
+    }
+  }
+}

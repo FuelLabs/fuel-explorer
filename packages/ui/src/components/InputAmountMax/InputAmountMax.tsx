@@ -1,5 +1,6 @@
 import type { BN } from 'fuels';
 import { useCallback, useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { InputAmountSimpleContext } from '../InputAmountSimple/InputAmountSimpleContext';
 import { Text } from '../Text';
 
@@ -14,12 +15,16 @@ export interface InputAmountMaxProps {
 
 export function InputAmountMax({
   amount,
-  label = 'Available',
+  label,
   onMax,
   decimals: propsDecimals,
   symbol: propsSymbol,
   disabled: propsDisabled,
 }: InputAmountMaxProps) {
+  const { t } = useTranslation();
+  const availableLabel =
+    label ?? t('core.amount.available', { defaultValue: 'Available' });
+  const maxLabel = t('core.amount.max_label', { defaultValue: 'Max' });
   // Try to get values from context, fall back to props
   const ctx = useContext(InputAmountSimpleContext);
   const decimals = propsDecimals ?? ctx?.decimals ?? 9;
@@ -52,49 +57,23 @@ export function InputAmountMax({
 
   return (
     <Text size="2" color="gray" className="inline-flex gap-1 w-full mb-5">
-      <span className="flex-shrink-0 text-gray-10">{label}:</span>{' '}
-      <span
-        style={{ color: 'var(--gray-12)' }}
-        className="whitespace-nowrap overflow-hidden text-ellipsis"
-      >
+      <span className="flex-shrink-0 text-[var(--fuel-element-low-em)]">
+        {availableLabel}:
+      </span>{' '}
+      <span className="whitespace-nowrap overflow-hidden text-ellipsis text-[var(--fuel-element-high-em)]">
         {formatted}
       </span>
-      <span style={{ color: 'var(--gray-12)' }} className="flex-shrink-0">
+      <span className="flex-shrink-0 text-[var(--fuel-element-high-em)]">
         {symbol}
       </span>
       <button
         type="button"
         onClick={handleMax}
         disabled={disabled}
-        tabIndex={-1}
-        style={{
-          all: 'unset',
-          display: 'inline-flex',
-          gap: '0.25rem',
-          flexShrink: 0,
-          alignItems: 'center',
-          fontFamily: 'sans-serif',
-          fontWeight: 500,
-          fontSize: '13px',
-          lineHeight: '20px',
-          marginLeft: '0.5rem',
-          color: 'var(--green-11)',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          opacity: disabled ? 0.4 : 1,
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={(e) => {
-          if (!disabled) {
-            e.currentTarget.style.color = 'var(--green-12)';
-            e.currentTarget.style.textDecoration = 'underline';
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = 'var(--green-11)';
-          e.currentTarget.style.textDecoration = 'none';
-        }}
+        aria-label={maxLabel}
+        className="fuel-hover-fill fuel-hit fuel-label relative ml-2 inline-flex flex-shrink-0 items-center border border-[var(--fuel-line)] px-2 text-[var(--fuel-element-high-em)] enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
       >
-        Max
+        {maxLabel}
       </button>
     </Text>
   );

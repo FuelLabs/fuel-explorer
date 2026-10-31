@@ -12,10 +12,7 @@ export default function BlockHashItem({
   return (
     <VStack>
       <HStack width={width} maxWidth={'1'}>
-        <Copyable
-          value={hashAddress}
-          className="font-mono text-gray-contrast w-full"
-        >
+        <Copyable value={hashAddress} className="w-full font-mono text-heading">
           <p className="overflow-hidden text-ellipsis whitespace-nowrap text-left">
             {hashAddress}
           </p>

@@ -1,5 +1,5 @@
-import { Skeleton } from '@fuels/ui';
-import { IconFileOff } from '@tabler/icons-react';
+import { LoadingBox } from '@fuels/ui';
+import { IconFileOff } from '@fuels/ui';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { shortAddress } from '~portal/systems/Core';
@@ -28,12 +28,18 @@ export const NFTImage = ({ assetId, image }: NFTImageProps) => {
 
   if (image && !fallback) {
     return (
-      <div className="w-full aspect-square rounded-[12px] overflow-hidden">
-        {isLoading && <Skeleton width="100%" height="100%" />}
+      <div className="relative aspect-square w-full overflow-hidden">
+        {/* The skeleton sits under the image, which fades in over it once loaded. */}
+        {isLoading && (
+          <div className="absolute inset-0">
+            <LoadingBox className="size-full" />
+          </div>
+        )}
         <img
-          className={clsx('w-full object-cover', {
-            isLoading: 'hidden',
-          })}
+          className={clsx(
+            'relative h-full w-full object-cover transition-opacity duration-300 motion-reduce:transition-none',
+            { 'opacity-0': isLoading },
+          )}
           ref={imgRef}
           src={image}
           alt={shortAddress(assetId)}
@@ -47,8 +53,8 @@ export const NFTImage = ({ assetId, image }: NFTImageProps) => {
   }
 
   return (
-    <div className="flex items-center justify-center rounded-[12px] w-[100%] aspect-square border border-[#7B7B7B]">
-      <IconFileOff color="gray" size={36} />
+    <div className="flex aspect-square w-[100%] items-center justify-center border border-[var(--fuel-border)]">
+      <IconFileOff className="text-[var(--fuel-element-low-em)]" size={36} />
     </div>
   );
 };

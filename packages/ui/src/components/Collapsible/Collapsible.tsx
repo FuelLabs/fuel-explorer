@@ -1,8 +1,15 @@
 import type { TextProps } from '@radix-ui/themes';
-import { IconChevronDown } from '@tabler/icons-react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  type TransitionEvent,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
+import { IconChevronDown } from '../Icons';
 
 import { createComponent, withNamespace } from '../../utils/component';
 import { cx } from '../../utils/css';
@@ -89,6 +96,7 @@ export const CollapsibleHeader = createComponent<
   render: (Root, { children, className, ...props }) => {
     const classes = styles();
     const { opened, setOpened, hideIcon } = useContext(ctx);
+    const { t } = useTranslation();
     return (
       <Root
         {...props}
@@ -105,6 +113,10 @@ export const CollapsibleHeader = createComponent<
             iconSize={20}
             iconColor="text-muted"
             variant="link"
+            aria-label={t('ui.collapsible.toggle', {
+              defaultValue: 'Show or hide details',
+            })}
+            aria-expanded={opened}
             className={classes.icon()}
             icon={IconChevronDown}
           />
@@ -113,6 +125,10 @@ export const CollapsibleHeader = createComponent<
     );
   },
 });
+
+// Same duration as .fuel-collapsible-panel's close transition in feedback.css.
+// Content stays mounted only long enough for that transition, then leaves the tree.
+const COLLAPSE_UNMOUNT_MS = 280;
 
 export const CollapsibleContent = createComponent<
   CollapsibleContentProps,
@@ -123,11 +139,51 @@ export const CollapsibleContent = createComponent<
   render: (Root, { children, className, ...props }) => {
     const { opened, variant } = useContext(ctx);
     const classes = styles({ variant });
-    return opened ? (
-      <Root {...props} className={classes.content({ variant, className })}>
-        {children}
-      </Root>
-    ) : null;
+    const [present, setPresent] = useState(opened);
+
+    if (opened && !present) {
+      setPresent(true);
+    }
+
+    useEffect(() => {
+      if (opened || !present) return;
+      const reduce = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+      const delay = reduce ? 0 : COLLAPSE_UNMOUNT_MS;
+      const timer = window.setTimeout(() => setPresent(false), delay);
+      return () => window.clearTimeout(timer);
+    }, [opened, present]);
+
+    const onTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+      if (
+        event.target !== event.currentTarget ||
+        event.propertyName !== 'grid-template-rows' ||
+        opened
+      ) {
+        return;
+      }
+      setPresent(false);
+    };
+
+    return (
+      <div
+        className="fuel-collapsible-panel"
+        data-state={opened ? 'opened' : 'closed'}
+        onTransitionEnd={onTransitionEnd}
+      >
+        <div className="min-h-0 overflow-hidden">
+          {present ? (
+            <Root
+              {...props}
+              className={classes.content({ variant, className })}
+            >
+              {children}
+            </Root>
+          ) : null}
+        </div>
+      </div>
+    );
   },
 });
 
@@ -164,23 +220,23 @@ export const Collapsible = withNamespace(CollapsibleRoot, {
 
 const styles = tv({
   slots: {
-    root: 'py-[10px]',
+    root: 'bg-transparent rounded-none py-[10px]',
     header:
       'group relative gap-4 cursor-pointer pr-9 flex flex-col justify-center tablet:items-center tablet:flex-row tablet:justify-start',
-    icon: 'transition-transform group-data-[state=opened]:-rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
-    content: 'mx-4 mb-2 border border-gray-7',
+    icon: 'transition-transform duration-200 motion-reduce:transition-none group-data-[state=opened]:rotate-180 cursor-pointer absolute right-3 top-[50%] mt-[-12px]',
+    content: 'mx-4 mb-2 border border-[var(--fuel-line)]',
     body: '',
-    title: 'flex items-center gap-2 text-sm font-medium',
+    title: 'fuel-label flex items-center gap-2',
   },
   variants: {
     variant: {
       surface: {
-        content: 'p-0 bg-gray-2 dark:bg-gray-1 rounded-sm',
+        content: 'p-0 bg-transparent rounded-none',
         body: 'px-3 py-3',
-        title: 'py-3 px-3 border-b border-gray-7',
+        title: 'py-3 px-3 border-b border-[var(--fuel-line)]',
       },
       ghost: {
-        content: 'p-3 rounded-sm',
+        content: 'p-3 rounded-none',
         body: 'pt-2',
       },
       classic: {},
