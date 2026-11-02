@@ -255,4 +255,38 @@ describe('TipTracker', () => {
       errors.mockRestore();
     }
   });
+
+  it('keeps fuelCoreTip moving while a long catch-up tick is running', async () => {
+    let tip = 100;
+    let release: () => void = () => {};
+    const store = {
+      getRange: (from: number, to: number) =>
+        new Promise((resolve) => {
+          release = () =>
+            resolve(
+              Array.from({ length: to - from + 1 }, (_, i) => ({
+                height: String(from + i),
+              })),
+            );
+        }),
+    } as any;
+    const t = new TipTracker({
+      client: { latestHeight: async () => tip },
+      store,
+      pollMs: 1000,
+    });
+    const catchUp = t.tick();
+    await new Promise((r) => setImmediate(r));
+    expect(t.fuelCoreTip).toBe(100);
+
+    tip = 130;
+    await t.tick();
+    await new Promise((r) => setImmediate(r));
+    expect(t.fuelCoreTip).toBe(130);
+    expect(t.servedTip).toBe(0);
+
+    release();
+    await catchUp;
+    expect(t.servedTip).toBe(100);
+  });
 });
