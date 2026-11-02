@@ -15,6 +15,10 @@ jobs:
     env:
       EXPLORER_URL: ${{ vars.API_LITE_EXPLORER_URL || 'https://explorer-production-f355.up.railway.app' }}
       MAX_LAG_BLOCKS: "120"
+      # The L1 poller calls every 30s, so 10 minutes is a sustained outage.
+      MAX_L1_PRIMARY_DOWN_SECONDS: "600"
+      MAX_L1_STALE_SECONDS: "600"
+      SLACK_WEBHOOK_URL: ${{ secrets.API_LITE_ALERTS_SLACK_WEBHOOK_URL }}
     steps:
       - name: Health and index lag
         run: |
@@ -29,3 +33,29 @@ jobs:
       - name: Charts endpoint
         run: |
           curl -fsS --max-time 20 "$EXPLORER_URL/api/charts" | jq -e '.statistics and .tps' > /dev/null
+      - name: L1 RPC (staking and bridge history)
+        run: |
+          body=$(curl -fsS --max-time 20 "$EXPLORER_URL/api/health")
+          echo "$body" | jq '.l1.rpc'
+          test "$(echo "$body" | jq -r '.l1.enabled // false')" = "true" || exit 0
+          fail=0
+          down=$(echo "$body" | jq -r '.l1.rpc.primary.downSeconds // 0')
+          if [ "$down" -gt "$MAX_L1_PRIMARY_DOWN_SECONDS" ]; then
+            echo "::error::L1 primary RPC failing for ${down}s ($(echo "$body" | jq -r '.l1.rpc.primary.lastError')), served by $(echo "$body" | jq -r '.l1.rpc.servedBy')"
+            fail=1
+          fi
+          last=$(echo "$body" | jq -r '.l1.rpc.lastSuccessAt // empty')
+          if [ -n "$last" ]; then
+            age=$(( $(date -u +%s) - $(date -u -d "$last" +%s) ))
+            if [ "$age" -gt "$MAX_L1_STALE_SECONDS" ]; then
+              echo "::error::No L1 RPC call has succeeded for ${age}s, staking and bridge history are frozen"
+              fail=1
+            fi
+          fi
+          exit $fail
+      - name: Notify Slack
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          jq -n --arg text ":rotating_light: api-lite uptime check failed: $run_url" '{text: $text}' \
+            | curl -fsS --max-time 20 -X POST -H 'content-type: application/json' -d @- "$SLACK_WEBHOOK_URL"
