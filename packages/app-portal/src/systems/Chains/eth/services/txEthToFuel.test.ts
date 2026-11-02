@@ -28,11 +28,16 @@ const word = (value: `0x${string}` | bigint) =>
     size: 32,
   }).slice(2);
 
-function messageSent(address: string, token: `0x${string}`, amount: bigint) {
+function messageSent(
+  address: string,
+  token: `0x${string}`,
+  amount: bigint,
+  nonce = NONCE,
+) {
   const topics = encodeEventTopics({
     abi: FUEL_MESSAGE_PORTAL.abi,
     eventName: 'MessageSent',
-    args: { sender: pad(GATEWAY), recipient: RECIPIENT, nonce: NONCE },
+    args: { sender: pad(GATEWAY), recipient: RECIPIENT, nonce },
   } as never);
   const payload = `0x${[
     word('0x01'),
@@ -109,5 +114,40 @@ describe('TxEthToFuelService.getReceiptsInfo', () => {
     } as never);
     expect(info.amount?.toString()).toBe('1');
     expect(info.receiptErc20Address?.toLowerCase()).toBe(TOKEN.toLowerCase());
+  });
+
+  it('pairs each message of a batched transaction with its own Deposit', async () => {
+    const logs = [
+      messageSent(PORTAL, TOKEN, 10n, 41n),
+      deposit(GATEWAY, TOKEN, 10n),
+      messageSent(PORTAL, TOKEN, 1n, NONCE),
+      deposit(GATEWAY, TOKEN, 1n),
+    ];
+    const first = await TxEthToFuelService.getReceiptsInfo({
+      ethTxId: `0x${'aa'.repeat(32)}`,
+      inputEthTxNonce: 41n,
+      ethPublicClient: client(logs),
+    } as never);
+    const second = await TxEthToFuelService.getReceiptsInfo({
+      ethTxId: `0x${'aa'.repeat(32)}`,
+      inputEthTxNonce: NONCE,
+      ethPublicClient: client(logs),
+    } as never);
+    expect(first.amount?.toString()).toBe('10');
+    expect(second.amount?.toString()).toBe('1');
+  });
+
+  it('leaves the amount from the message when its Deposit is missing', async () => {
+    const info = await TxEthToFuelService.getReceiptsInfo({
+      ethTxId: `0x${'aa'.repeat(32)}`,
+      inputEthTxNonce: NONCE,
+      ethPublicClient: client([
+        messageSent(PORTAL, TOKEN, 1n),
+        messageSent(PORTAL, TOKEN, 10n, 43n),
+        deposit(GATEWAY, TOKEN, 10n),
+      ]),
+    } as never);
+    expect(info.amount?.toString()).toBe('1');
+    expect(info.erc20Token).toBeUndefined();
   });
 });
