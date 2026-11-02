@@ -80,11 +80,11 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
     if (json.errors) throw new Error(JSON.stringify(json.errors));
     return json.data;
   };
-  const gqlRaw = async (query: string) => {
+  const gqlRaw = async (query: string, variables?: object) => {
     const res = await yoga.fetch('http://x/graphql', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables }),
     });
     return res.json();
   };
@@ -148,23 +148,48 @@ describe('Balance.utxos', () => {
     expect(coinsCalls).toBe(100);
   });
 
-  it('stops at 100 coins lookups per request when aliases ask for more', async () => {
+  const rejects = async (query: string, variables?: object) => {
     let coinsCalls = 0;
     const { gqlRaw } = await setup({
-      query: async (query: string) => {
-        if (query.includes('query coins')) {
+      query: async (q: string) => {
+        if (q.includes('query coins')) {
           coinsCalls += 1;
           return { coins: { nodes: [] } };
         }
         return balancesPage(100);
       },
     });
-    const page = (alias: string) =>
-      `${alias}: balances(filter: { owner: "${hex(9)}" }, first: 100) { nodes { utxos { utxoId } } }`;
-    const json = await gqlRaw(`{ ${page('a')} ${page('b')} ${page('c')} }`);
-    expect(coinsCalls).toBe(100);
-    expect(JSON.stringify(json.errors)).toContain(
+    const json = await gqlRaw(query, variables);
+    expect(json.errors).toHaveLength(1);
+    expect(json.errors[0].message).toBe(
       'Requests are limited to 100 utxos lookups',
+    );
+    expect(json.data).toBeUndefined();
+    expect(coinsCalls).toBe(0);
+  };
+
+  const owner = `filter: { owner: "${hex(9)}" }`;
+
+  it('rejects aliased balances pages before running any lookup', async () => {
+    const page = (alias: string) =>
+      `${alias}: balances(${owner}, first: 100) { nodes { utxos { utxoId } } }`;
+    await rejects(`{ ${page('a')} ${page('b')} }`);
+  });
+
+  it('rejects nested utxos aliases through a fragment with one error', async () => {
+    const aliases = Array.from(
+      { length: 50 },
+      (_, i) => `u${i}: utxos { utxoId }`,
+    ).join(' ');
+    await rejects(
+      `{ balances(${owner}, first: 10) { nodes { ...B } } } fragment B on Balance { ${aliases} }`,
+    );
+  });
+
+  it('counts a missing or variable page size as a full page', async () => {
+    await rejects(
+      `query($n: Int) { a: balances(${owner}, first: $n) { nodes { utxos { utxoId } } } b: balances(${owner}) { nodes { utxos { utxoId } } } }`,
+      { n: 100 },
     );
   });
 });
