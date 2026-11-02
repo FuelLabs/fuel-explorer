@@ -16,33 +16,26 @@ import type { Plugin } from 'graphql-yoga';
 // batch limit.
 const rootFieldsByRequest = new WeakMap<object, number>();
 
-function countRootFields(
+// Fields sharing a response key merge into one execution, so the count is of
+// distinct keys, however many fragments repeat them.
+function collectRootKeys(
   selectionSet: SelectionSetNode,
   fragments: Map<string, FragmentDefinitionNode>,
-  counted: Map<string, number>,
-): number {
-  let total = 0;
+  visited: Set<string>,
+  keys: Set<string>,
+): void {
   for (const selection of selectionSet.selections) {
     if (selection.kind === Kind.FIELD) {
-      total += 1;
+      keys.add(selection.alias?.value ?? selection.name.value);
     } else if (selection.kind === Kind.INLINE_FRAGMENT) {
-      total += countRootFields(selection.selectionSet, fragments, counted);
-    } else {
-      const name = selection.name.value;
-      let count = counted.get(name);
-      if (count === undefined) {
-        // Set first so a cycle counts as 0; NoFragmentCyclesRule reports it.
-        counted.set(name, 0);
-        const fragment = fragments.get(name);
-        count = fragment
-          ? countRootFields(fragment.selectionSet, fragments, counted)
-          : 0;
-        counted.set(name, count);
-      }
-      total += count;
+      collectRootKeys(selection.selectionSet, fragments, visited, keys);
+    } else if (!visited.has(selection.name.value)) {
+      visited.add(selection.name.value);
+      const fragment = fragments.get(selection.name.value);
+      if (fragment)
+        collectRootKeys(fragment.selectionSet, fragments, visited, keys);
     }
   }
-  return total;
 }
 
 function rootFieldCount(
@@ -55,7 +48,9 @@ function rootFieldCount(
       fragments.set(definition.name.value, definition);
     }
   }
-  return countRootFields(operation.selectionSet, fragments, new Map());
+  const keys = new Set<string>();
+  collectRootKeys(operation.selectionSet, fragments, new Set(), keys);
+  return keys.size;
 }
 
 export function useMaxRootFields(maxRootFields: number): Plugin {
