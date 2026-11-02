@@ -97,11 +97,10 @@ export async function resolveHeight(
 ): Promise<number | null> {
   if (height != null) {
     const n = Number(height);
-    // Like search(), refuse heights no node has produced yet. Each one would
-    // miss the archive and queue an RPC load on the budget the tip tracker
-    // shares, and nothing cancels that load when the request times out.
-    const tip = Math.max(ctx.tip.fuelCoreTip, ctx.tip.servedTip);
-    if (!Number.isSafeInteger(n) || n < 0 || n > tip) return null;
+    // Past the tip, a lookup queues an uncancellable RPC load on the tip budget.
+    const highestKnownHeight = Math.max(ctx.tip.fuelCoreTip, ctx.tip.servedTip);
+    if (!Number.isSafeInteger(n) || n < 0 || n > highestKnownHeight)
+      return null;
     return n;
   }
   if (!id) return null;
