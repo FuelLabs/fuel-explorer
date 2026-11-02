@@ -99,6 +99,7 @@ export const test = base.extend<{
     // launch browser
     const context = await chromium.launchPersistentContext('', {
       headless: false,
+      chromiumSandbox: !process.env.CI,
       args: browserArgs,
     });
 
