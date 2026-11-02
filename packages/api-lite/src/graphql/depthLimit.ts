@@ -8,9 +8,7 @@ import {
 } from 'graphql';
 import type { Plugin } from 'graphql-yoga';
 
-// Each fragment's depth is computed once per operation. Walking a fragment
-// again at every spread made the rule exponential: a chain where each fragment
-// spreads the next one twice is valid, shallow GraphQL that cost ~2^n visits.
+// Memoized per operation: re-walking a fragment at every spread is exponential.
 type FragmentDepths = {
   done: Map<string, number>;
   inProgress: Set<string>;
