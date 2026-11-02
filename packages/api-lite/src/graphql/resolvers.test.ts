@@ -228,7 +228,7 @@ async function setup(
     if (json.errors) throw new Error(JSON.stringify(json.errors));
     return json.data;
   };
-  return { gql, index, hot };
+  return { gql, index, hot, store };
 }
 
 describe('resolvers', () => {
@@ -246,6 +246,22 @@ describe('resolvers', () => {
     expect(byHash.block.height).toBe('100');
     const missing = await gql('{ block(height: "999") { id } }');
     expect(missing.block).toBeNull();
+  });
+
+  it('answers heights past the tip, negative or fractional with null before loading anything', async () => {
+    const { gql, store } = await setup();
+    const get = jest.spyOn(store, 'get');
+    for (const height of ['121', '1000000', '-1', '1.5', '1e30']) {
+      const d = await gql(`{ block(height: "${height}") { id } }`);
+      expect(d.block).toBeNull();
+    }
+    const txs = await gql(
+      '{ transactionsByBlockId(blockId: "121", first: 5) { nodes { id } } }',
+    );
+    expect(txs.transactionsByBlockId.nodes).toEqual([]);
+    expect(get).not.toHaveBeenCalled();
+    const atTip = await gql('{ block(height: "120") { height } }');
+    expect(atTip.block.height).toBe('120');
   });
 
   it('blocks pagination newest first', async () => {
