@@ -19,6 +19,7 @@ interface ImportMetaEnv {
   readonly VITE_ECOSYSTEM_PROJECTS_URL: string;
   readonly VITE_VERCEL_GIT_COMMIT_SHA: string;
   readonly VITE_IS_PUBLIC_PREVIEW: string;
+  readonly VITE_EXPLORER_ONLY: string;
   readonly VITE_STAKING_ENV: string;
   readonly VITE_L1_DISABLE_WITHDRAW: string;
   readonly VITE_SHOW_CLAIM_BUTTON: string;

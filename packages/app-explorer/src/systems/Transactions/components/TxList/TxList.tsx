@@ -1,6 +1,6 @@
 import { Alert, Button, Grid, cx } from '@fuels/ui';
 import { IconInfoCircle, IconLink } from '@tabler/icons-react';
-import { Routes as PortalRoutes } from 'app-commons';
+import { IS_EXPLORER_ONLY, Routes as PortalRoutes } from 'app-commons';
 import { memo } from 'react';
 import { Pagination } from '~/systems/Core/components/Pagination/Pagination';
 import { TxCard } from '../TxCard/TxCard';
@@ -42,7 +42,7 @@ function _TxList({
 
   return (
     <div className={cx('py-4 laptop:py-0', className)}>
-      {showBridgeWarning && !!transactions.length && (
+      {showBridgeWarning && !IS_EXPLORER_ONLY && !!transactions.length && (
         <Alert color="blue" className="mt-1 mb-6">
           <Alert.Icon>
             <IconInfoCircle size="md" />

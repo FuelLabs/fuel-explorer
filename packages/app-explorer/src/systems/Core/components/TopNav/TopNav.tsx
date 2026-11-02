@@ -1,5 +1,5 @@
 import { Box, Flex, Nav, useBreakpoints } from '@fuels/ui';
-import { isRoute } from 'app-commons';
+import { IS_EXPLORER_ONLY, isRoute } from 'app-commons';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -61,18 +61,22 @@ export function TopNav() {
       >
         Explorer
       </Nav.MenuItem>
-      <Nav.MenuItem isActive={isBridge} href={PortalRoutes.bridge()}>
-        Bridge
-      </Nav.MenuItem>
-      <Nav.MenuItem isActive={isStake} href={StakingRoutes.stakingL1()}>
-        Stake
-      </Nav.MenuItem>
-      <Nav.MenuItem
-        isActive={isEcosystemBridge}
-        href={PortalRoutes.ecosystem()}
-      >
-        Ecosystem
-      </Nav.MenuItem>
+      {!IS_EXPLORER_ONLY && (
+        <>
+          <Nav.MenuItem isActive={isBridge} href={PortalRoutes.bridge()}>
+            Bridge
+          </Nav.MenuItem>
+          <Nav.MenuItem isActive={isStake} href={StakingRoutes.stakingL1()}>
+            Stake
+          </Nav.MenuItem>
+          <Nav.MenuItem
+            isActive={isEcosystemBridge}
+            href={PortalRoutes.ecosystem()}
+          >
+            Ecosystem
+          </Nav.MenuItem>
+        </>
+      )}
     </>
   );
 
@@ -85,8 +89,12 @@ export function TopNav() {
         </Nav.Menu>
         <Nav.Menu>{!isEcosystemBridge && <SearchWidget />}</Nav.Menu>
         <Nav.Menu className={'items-center laptop:gap-2'}>
-          <NetworkSelector />
-          <Box className="border-r mr-[-12px] h-[40px] border-gray-3" />
+          {!IS_EXPLORER_ONLY && (
+            <>
+              <NetworkSelector />
+              <Box className="border-r mr-[-12px] h-[40px] border-gray-3" />
+            </>
+          )}
           <ConnectWallet theme={resolvedTheme} setTheme={setTheme} />
         </Nav.Menu>
       </Nav.Desktop>
@@ -94,7 +102,7 @@ export function TopNav() {
         <Nav.MobileContent>
           {logo}
           {!isEcosystemBridge && <SearchWidget />}
-          <NetworkSelector />
+          {!IS_EXPLORER_ONLY && <NetworkSelector />}
         </Nav.MobileContent>
         <Nav.Menu>
           <Flex className="w-full">

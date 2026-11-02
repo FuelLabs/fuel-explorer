@@ -17,15 +17,14 @@ import {
 import dayjs from 'dayjs';
 import { tv } from 'tailwind-variants';
 
-import { APP_COMMIT_HASH } from 'app-commons';
-import data from './data.json';
+import { APP_COMMIT_HASH, IS_EXPLORER_ONLY } from 'app-commons';
+import { type FooterLink, getFooterLinks } from './footerLinks';
+
+const links = getFooterLinks(IS_EXPLORER_ONLY);
 
 type FooterNavProps = {
   title: string;
-  links: {
-    href: string;
-    label: string;
-  }[];
+  links: FooterLink[];
 };
 
 function FooterNav({ title, links }: FooterNavProps) {
@@ -64,10 +63,10 @@ export function Footer() {
           <FuelLogo showLettering size={32} />
 
           <Box className={classes.navs()}>
-            <FooterNav title="FUEL" links={data.links.FUEL} />
-            <FooterNav title="Get Started" links={data.links.GetStarted} />
-            <FooterNav title="Build" links={data.links.Build} />
-            <FooterNav title="Environment" links={data.links.Environment} />
+            <FooterNav title="FUEL" links={links.FUEL} />
+            <FooterNav title="Get Started" links={links.GetStarted} />
+            <FooterNav title="Build" links={links.Build} />
+            <FooterNav title="Environment" links={links.Environment} />
           </Box>
         </Flex>
 

@@ -42,6 +42,8 @@ export const APP_COMMIT_HASH = String(
 export const NODE_ENV = 'development';
 
 export const IS_PREVIEW = getEnvVar('VITE_IS_PUBLIC_PREVIEW') === 'true';
+// Standalone explorer deployments: no bridge, staking, ecosystem or network switch.
+export const IS_EXPLORER_ONLY = getEnvVar('VITE_EXPLORER_ONLY') === 'true';
 export const IS_DEVELOPMENT = true;
 export const IS_TEST = false;
 

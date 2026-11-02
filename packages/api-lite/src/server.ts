@@ -10,6 +10,7 @@ import { buildBlocksDashboard } from './graphql/resolvers/analytics';
 import { buildCharts } from './graphql/resolvers/charts';
 import { buildSchema } from './graphql/schema';
 import type { Indexer } from './index/Indexer';
+import type { L1RpcStatus } from './l1/l1RpcClient';
 import { buildAssetBody } from './rest/assets';
 import { type RestRouterDeps, handleRestRequest } from './rest/router';
 
@@ -20,7 +21,11 @@ export type AppDeps = AppContext & {
   indexer?: Pick<Indexer, 'backfillPaused'>;
   blockSource?: 's3' | 'rpc';
   cosmos?: Pick<CosmosPoller, 'cursor' | 'tip' | 'tipAt'>;
-  l1?: { enabled: boolean; cursors: () => Record<string, number> };
+  l1?: {
+    enabled: boolean;
+    cursors: () => Record<string, number>;
+    rpc?: () => L1RpcStatus;
+  };
   staking?: RestRouterDeps['staking'];
   apy?: RestRouterDeps['apy'];
   bridge?: RestRouterDeps['bridge'];
@@ -71,7 +76,11 @@ export function createApp(ctx: AppDeps) {
         }
       : undefined,
     l1: ctx.l1
-      ? { enabled: ctx.l1.enabled, cursors: ctx.l1.cursors() }
+      ? {
+          enabled: ctx.l1.enabled,
+          cursors: ctx.l1.cursors(),
+          rpc: ctx.l1.rpc?.(),
+        }
       : undefined,
   });
   const server = createServer((req, res) => {
