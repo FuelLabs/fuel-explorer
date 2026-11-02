@@ -289,4 +289,26 @@ describe('TipTracker', () => {
     await catchUp;
     expect(t.servedTip).toBe(100);
   });
+
+  it('catches up on its own head read even when a later overlapping read fails', async () => {
+    const answers: Array<(v: number | Error) => void> = [];
+    const t = new TipTracker({
+      client: {
+        latestHeight: () =>
+          new Promise<number>((resolve, reject) => {
+            answers.push((v) => (v instanceof Error ? reject(v) : resolve(v)));
+          }),
+      },
+      store: rangeStore(() => true),
+      pollMs: 1000,
+    });
+    const catchUp = t.tick();
+    void t.tick();
+    answers[1](new Error('timeout'));
+    await new Promise((r) => setImmediate(r));
+    answers[0](100);
+    await catchUp;
+    expect(t.fuelCoreUp).toBe(false);
+    expect(t.servedTip).toBe(100);
+  });
 });

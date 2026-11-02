@@ -51,21 +51,26 @@ export class TipTracker {
     return this.opts.stallMs ?? DEFAULT_STALL_MS;
   }
 
-  // Reads finish out of order; one older than the last applied is dropped.
+  // Reads can finish out of order: the tip only moves forward, and up/down
+  // follows the latest read to finish.
   private async readHead(): Promise<boolean> {
     const read = ++this.headReads;
+    let latest: number;
     try {
-      const latest = await this.opts.client.latestHeight();
-      if (read < this.lastAppliedHeadRead) return this.fuelCoreUp;
-      this.lastAppliedHeadRead = read;
-      this.fuelCoreTip = latest;
-      this.fuelCoreUp = true;
+      latest = await this.opts.client.latestHeight();
     } catch {
-      if (read < this.lastAppliedHeadRead) return this.fuelCoreUp;
-      this.lastAppliedHeadRead = read;
-      this.fuelCoreUp = false;
+      if (read > this.lastAppliedHeadRead) {
+        this.lastAppliedHeadRead = read;
+        this.fuelCoreUp = false;
+      }
+      return false;
     }
-    return this.fuelCoreUp;
+    this.fuelCoreTip = Math.max(this.fuelCoreTip, latest);
+    if (read > this.lastAppliedHeadRead) {
+      this.lastAppliedHeadRead = read;
+      this.fuelCoreUp = true;
+    }
+    return true;
   }
 
   async tick(): Promise<void> {
