@@ -2,7 +2,11 @@ import { CosmosIndex } from '../cosmos/CosmosIndex';
 import { L1Index } from '../l1/L1Index';
 import { PaginatedParams } from './PaginatedParams';
 import { StakingStore } from './StakingStore';
-import { BaseStatusType, WithdrawStatusType } from './types';
+import {
+  BaseStatusType,
+  type WithdrawResponse,
+  WithdrawStatusType,
+} from './types';
 
 // EIP-55 checksummed test addresses (viem's getAddress rejects anything else).
 const ADDRESS = '0x821d65c4e8Bc11Cb146452F28a5eb0DFC25A1113';
@@ -567,22 +571,22 @@ describe('StakingStore withdraw flow', () => {
 
   const OTHER = '0x1111111111111111111111111111111111111111';
 
-  const withdrawLog = (logIndex: number, amount: string) => ({
+  const withdrawLog = (
+    logIndex: number,
+    amount: string,
+    recipient: string = RECIPIENT,
+  ) => ({
     contractHash: '0xBa0e6bF94580D49B5Aaaa54279198D424B23eCC3',
     blockHeight: 100,
     txHash: `0xwithdraw${logIndex}`,
     event: 'Withdraw',
     signature: 'Withdraw(address,address,uint256)',
     rawLog: '{}',
-    decodedArgs: JSON.stringify({
-      sender: ADDRESS,
-      recipient: RECIPIENT,
-      amount,
-    }),
+    decodedArgs: JSON.stringify({ sender: ADDRESS, recipient, amount }),
     decodedData: '{}',
     timestamp: '2020-01-01T00:00:00.000Z',
     logIndex,
-    args: { sender: ADDRESS, recipient: RECIPIENT, amount },
+    args: { sender: ADDRESS, recipient, amount },
   });
 
   const syncBlock100 = () =>
@@ -605,7 +609,11 @@ describe('StakingStore withdraw flow', () => {
 
   const reports = (
     txHash: string,
-    entries: Array<[string, string] | [string, string, string]>,
+    entries: Array<
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+    >,
   ) =>
     cosmosIndex.insertResponse(
       {
@@ -614,7 +622,7 @@ describe('StakingStore withdraw flow', () => {
         data: '{}',
         timestamp: '2020-01-01T00:05:30Z',
       },
-      entries.flatMap(([from, nonce, amount], index) => [
+      entries.flatMap(([from, nonce, amount, to], index) => [
         {
           type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
           key: 'from',
@@ -633,6 +641,16 @@ describe('StakingStore withdraw flow', () => {
                 type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
                 key: 'amount',
                 value: JSON.stringify({ amount, denom: 'fuel' }),
+                index,
+              },
+            ]
+          : []),
+        ...(to
+          ? [
+              {
+                type: 'fuelsequencer.bridge.EventWithdrawToEthereumReported',
+                key: 'to',
+                value: `"${to}"`,
                 index,
               },
             ]
@@ -723,6 +741,30 @@ describe('StakingStore withdraw flow', () => {
     expect(nonceByAmount(result.nodes)).toEqual({
       '111': { nonce: '21', status: BaseStatusType.WaitingSync },
       '222': { nonce: undefined, status: BaseStatusType.Skipped },
+    });
+  });
+
+  it('pairs same-amount withdrawals by recipient when the first one was rejected', async () => {
+    l1Index.insertLogs([
+      withdrawLog(0, '111', OTHER),
+      withdrawLog(1, '111', RECIPIENT),
+    ]);
+    syncBlock100();
+    reports('WITHDRAWTX', [[ADDRESS, '22', '111', RECIPIENT.toUpperCase()]]);
+    const store = makeStore(l1Index, cosmosIndex);
+    const result = await store.getEvents(
+      ADDRESS,
+      new PaginatedParams({ last: '10' }),
+    );
+    const byTxHash = Object.fromEntries(
+      (result.nodes as unknown as WithdrawResponse[]).map((n) => [
+        n.statusInfo[BaseStatusType.TransactionSent]?.ethTx?.txHash,
+        { nonce: n.nonce, status: n.status },
+      ]),
+    );
+    expect(byTxHash).toEqual({
+      '0xwithdraw0': { nonce: undefined, status: BaseStatusType.Skipped },
+      '0xwithdraw1': { nonce: '22', status: BaseStatusType.WaitingSync },
     });
   });
 
