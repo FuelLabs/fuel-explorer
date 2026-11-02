@@ -192,4 +192,12 @@ describe('Balance.utxos', () => {
       { n: 100 },
     );
   });
+
+  it('budgets the larger of first and last, and first: 0 as a full page', async () => {
+    const page = (alias: string, args: string) =>
+      `${alias}: balances(${owner}, ${args}) { nodes { utxos { utxoId } } }`;
+    await rejects(
+      `{ ${page('a', 'first: 0, last: 100')} ${page('b', 'first: 0')} }`,
+    );
+  });
 });

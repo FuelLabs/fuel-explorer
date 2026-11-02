@@ -26,11 +26,15 @@ type Walk = {
   fragmentCost: Map<string, number>;
 };
 
+// Worst case of what upstream may honor: the larger of first and last, and a
+// full page when neither is positive.
 function pageSize(args: Record<string, unknown>): number {
-  const page = args.first ?? args.last;
-  return typeof page === 'number'
-    ? Math.min(Math.max(page, 0), MAX_PAGE_SIZE)
-    : MAX_PAGE_SIZE;
+  const sizes = [args.first, args.last].filter(
+    (n): n is number => typeof n === 'number' && n > 0,
+  );
+  return sizes.length === 0
+    ? MAX_PAGE_SIZE
+    : Math.min(Math.max(...sizes), MAX_PAGE_SIZE);
 }
 
 function utxosLookups(
