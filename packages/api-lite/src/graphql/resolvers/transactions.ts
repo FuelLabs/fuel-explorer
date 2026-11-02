@@ -518,15 +518,14 @@ export const transactionResolvers = {
       const owner = args.owner.toLowerCase();
       if (!B256.test(owner)) throw new GraphQLError('Invalid owner address');
       const result = await ownerTransactions({ ...args, owner }, ctx);
-      // Ranked only once history exists, so made-up owners never reach the
-      // persisted hot_keys table.
+      // Only owners with history are ranked, keeping made-up keys out of hot_keys.
       if (result.nodes.length > 0) ctx.hot.hit('account', owner);
       return result;
     },
   },
 };
 
-// The owner is lowercased and validated by transactionsByOwner above.
+// `owner` arrives lowercased and validated.
 async function ownerTransactions(
   args: PageArgs & { owner: string; ownerType?: string | null },
   ctx: AppContext,

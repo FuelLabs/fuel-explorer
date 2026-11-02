@@ -18,9 +18,7 @@ const FLUSH_INTERVAL_MS = 5_000;
 const DECAY_PRUNE_THRESHOLD = 0.5;
 const DECAY_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const LAST_DECAY_META_KEY = 'last_decay';
-// Every key is request-supplied and persisted in the shared index.db, so a
-// key longer than any real id, or more distinct keys in one flush window than
-// real traffic produces, is dropped instead of buffered.
+// Keys come from requests and are persisted, so outsized or excess keys are dropped.
 const MAX_KEY_LENGTH = 128;
 const MAX_BUFFERED_KEYS_PER_KIND = 10_000;
 
