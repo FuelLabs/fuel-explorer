@@ -21,7 +21,8 @@ describe('PriceClient', () => {
     const c = new PriceClient({ fetchImpl: fn, ttlMs: 600_000 });
     await c.usd();
     await c.usd();
-    expect(calls()).toBe(1);
+    // One batched CoinGecko call plus the MOOR candle.
+    expect(calls()).toBe(2);
   });
 
   it('returns null and never throws when fetch fails', async () => {
@@ -74,8 +75,8 @@ describe('PriceClient', () => {
 
   it('sends the demo api key header when one is configured', async () => {
     let seenHeaders: Record<string, string> | undefined;
-    const f = (async (_url: string, init: any) => {
-      seenHeaders = init?.headers;
+    const f = (async (url: string, init: any) => {
+      if (url.includes('coingecko')) seenHeaders = init?.headers;
       return { ok: true, json: async () => ({ ethereum: { usd: 2500 } }) };
     }) as unknown as typeof fetch;
     await new PriceClient({ fetchImpl: f, apiKey: 'demo-key' }).usd();
@@ -91,6 +92,53 @@ describe('PriceClient', () => {
     })) as unknown as typeof fetch;
     const c = new PriceClient({ fetchImpl: f, log: (l) => lines.push(l) });
     expect(await c.usd()).toBeNull();
-    expect(lines).toEqual(['PriceClient: coingecko answered 429']);
+    expect(lines).toEqual([
+      'PriceClient: coingecko answered 429',
+      'PriceClient: coinmarketcap answered 429',
+    ]);
+  });
+
+  it('prices every symbol from one batched request', async () => {
+    const urls: string[] = [];
+    const f = (async (url: string) => {
+      urls.push(url);
+      return {
+        ok: true,
+        json: async () =>
+          url.includes('coingecko')
+            ? { ethereum: { usd: 2500 }, 'fuel-network': { usd: 0.0007 } }
+            : { data: [[0.03, 0.03, 0.02, 0.025, 7, 1, 1]] },
+      };
+    }) as unknown as typeof fetch;
+    const c = new PriceClient({ fetchImpl: f });
+    await c.refresh();
+    expect(urls.filter((u) => u.includes('coingecko'))).toHaveLength(1);
+    expect(c.rate('ETH')).toBe(2500);
+    expect(c.rate('FUEL')).toBe(0.0007);
+    expect(c.rate('MOOR')).toBe(0.025);
+    expect(c.rate('USDM')).toBeNull();
+  });
+
+  it('rate answers from memory while a slow fetch is still running', async () => {
+    let release = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const f = (async () => {
+      await gate;
+      return { ok: true, json: async () => ({ ethereum: { usd: 2500 } }) };
+    }) as unknown as typeof fetch;
+    const c = new PriceClient({ fetchImpl: f, log: () => {} });
+    expect(c.rate('ETH')).toBeNull();
+    release();
+    await c.refresh();
+    expect(c.rate('ETH')).toBe(2500);
+  });
+
+  it('runs one fetch at a time even with no ttl', async () => {
+    const { fn, calls } = fakeFetch(() => ({ ethereum: { usd: 2500 } }));
+    const c = new PriceClient({ fetchImpl: fn, ttlMs: 0 });
+    await Promise.all([c.refresh(), c.refresh()]);
+    expect(calls()).toBe(2);
   });
 });
