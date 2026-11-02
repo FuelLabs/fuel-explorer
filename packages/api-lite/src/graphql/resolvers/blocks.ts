@@ -95,7 +95,14 @@ export async function resolveHeight(
   id?: string | null,
   height?: string | null,
 ): Promise<number | null> {
-  if (height != null) return Number(height);
+  if (height != null) {
+    const n = Number(height);
+    // Past the tip, a lookup queues an uncancellable RPC load on the tip budget.
+    const highestKnownHeight = Math.max(ctx.tip.fuelCoreTip, ctx.tip.servedTip);
+    if (!Number.isSafeInteger(n) || n < 0 || n > highestKnownHeight)
+      return null;
+    return n;
+  }
   if (!id) return null;
   const local = ctx.index.heightForBlock(id);
   if (local != null) return local;
