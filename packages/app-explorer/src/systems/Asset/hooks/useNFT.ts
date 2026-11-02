@@ -16,6 +16,7 @@ type UseNFTParams = {
 type AssetBody = {
   name?: string;
   symbol?: string;
+  collection?: string;
   isNFT?: boolean;
 };
 
@@ -29,7 +30,8 @@ const queryFn = async (assetId: string): Promise<UseNFTData> => {
     if (!asset.isNFT) return NOT_NFT;
     return {
       name: asset.name ?? null,
-      symbol: asset.symbol ?? null,
+      // Collection NFTs often have a name and collection but no symbol.
+      symbol: asset.symbol ?? asset.collection ?? asset.name ?? null,
       nft: true,
     };
   } catch (error) {
