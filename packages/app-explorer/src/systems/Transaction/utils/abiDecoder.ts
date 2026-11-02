@@ -160,10 +160,8 @@ function argsToObject(abi: JsonAbi, functionName: string, args: unknown[]) {
   );
 }
 
-// Same script data layout fuels reads in `getContractCalls`. The VM reads the
-// selector at param1 and the arguments at param2, so decoding starts there.
-// Searching the script data for the first matching call header instead let a
-// script carry a look-alike copy with other arguments ahead of the real one.
+// Layout as in fuels' `getContractCalls`; the VM reads the selector at param1
+// and the arguments at param2, so decoding starts there.
 function decodeScriptCall(
   node: ReceiptNode,
   script: ScriptData,
