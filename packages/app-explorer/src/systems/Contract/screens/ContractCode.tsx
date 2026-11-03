@@ -1,9 +1,8 @@
 import { VStack } from '@fuels/ui';
 import { useTranslation } from 'react-i18next';
-import { useContract } from '~/hooks/useApi';
+import { useContract, useContractMetadata } from '~/hooks/useApi';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 import { PageState } from '~/systems/Core/components/PageState/PageState';
-import { useContractMetadata } from '~/systems/Transaction/hooks/useContractMetadata';
 import { MetadataAudits } from '../../Core/components/MetadataAudits/MetadataAudits';
 import { MetadataSourcecode } from '../../Core/components/MetadataSourcecode/MetadataSourcecode';
 
