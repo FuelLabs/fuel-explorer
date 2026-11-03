@@ -132,7 +132,7 @@ export function TxScreenSimple({
                       key={w}
                       className="relative ml-4 border-l border-[var(--fuel-line)] py-3"
                     >
-                      <div className="ml-8 flex items-center gap-2 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
+                      <div className="ml-[27px] flex items-center gap-2 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
                         <LoadingBox className="h-6 w-20" />
                         <LoadingBox className={`h-6 ${w}`} />
                       </div>
@@ -184,7 +184,7 @@ export function TxScreenSimple({
                       key={assetSent.assetId}
                     >
                       <TxSquare className="absolute top-[22px] -left-[4.5px]" />
-                      <div className="ml-8 flex items-center gap-2 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
+                      <div className="ml-[27px] flex items-center gap-2 mobile:max-tablet:flex-col mobile:max-tablet:items-start">
                         <TxChip>{t('tx.transfer')}</TxChip>
                         <div className="flex flex-wrap items-baseline gap-x-2">
                           <Amount
@@ -235,7 +235,7 @@ export function TxScreenSimple({
             ))}
           />
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-[var(--fuel-border)] pt-3 pl-12">
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-[var(--fuel-border)] pt-3 pl-11">
             <LoadingWrapper
               isLoading={isLoading}
               loadingEl={<LoadingBox className="h-4 w-5" />}

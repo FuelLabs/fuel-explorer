@@ -29,6 +29,7 @@ interface ImportMetaEnv {
 
   // Feature Flags
   readonly VITE_IS_PUBLIC_PREVIEW: string;
+  readonly VITE_EXPLORER_ONLY: string;
   readonly VITE_SHOW_CONVERT_BUTTON: string;
   readonly VITE_SHOW_CLAIM_BUTTON: string;
 

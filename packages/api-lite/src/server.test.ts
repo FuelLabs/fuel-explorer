@@ -171,6 +171,89 @@ describe('createApp GraphQL request limits', () => {
     expect(JSON.stringify(json.errors)).not.toContain('Query depth limit');
   });
 
+  it('validates a chain of fragments that each spread the next one twice in linear time', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const n = 30;
+    const fragments = Array.from({ length: n }, (_, i) =>
+      i < n - 1
+        ? `fragment F${i} on Query { __typename ...F${i + 1} ...F${i + 1} }`
+        : `fragment F${i} on Query { __typename }`,
+    ).join(' ');
+    const started = Date.now();
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: `query Q { ...F0 } ${fragments}` }),
+    });
+    const json = await res.json();
+    expect(Date.now() - started).toBeLessThan(1000);
+    expect(json.errors).toBeUndefined();
+    expect(json.data).toEqual({ __typename: 'Query' });
+  });
+
+  it('still counts depth through fragment spreads', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: `{ ...Deep } fragment Deep on Query { ${'a { '.repeat(16)}x${' }'.repeat(16)} }`,
+      }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).toContain(
+      'Query depth limit of 15 exceeded',
+    );
+  });
+
+  const aliasedQuery = (n: number) =>
+    `{ ${Array.from({ length: n }, (_, i) => `p${i}: predicate(address: "0x00") { address }`).join(' ')} }`;
+
+  it('allows 20 top-level fields in one request', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: aliasedQuery(20) }),
+    });
+    const json = await res.json();
+    expect(json.errors).toBeUndefined();
+    expect(Object.keys(json.data)).toHaveLength(20);
+  });
+
+  it('rejects 21 aliased top-level fields, including ones reached through a fragment', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: `${aliasedQuery(20).slice(0, -1)} ...Extra } fragment Extra on Query { p20: predicate(address: "0x00") { address } }`,
+      }),
+    });
+    const json = await res.json();
+    expect(JSON.stringify(json.errors)).toContain(
+      'Requests are limited to 20 top-level fields',
+    );
+    expect(json.data).toBeUndefined();
+  });
+
+  it('counts top-level fields across every operation of a batch', async () => {
+    const { yoga } = createApp(fakeCtx());
+    const batch = Array.from({ length: 3 }, () => ({ query: aliasedQuery(8) }));
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(batch),
+    });
+    const json = await res.json();
+    const errors = json.map((r: { errors?: unknown }) =>
+      JSON.stringify(r.errors ?? null),
+    );
+    expect(
+      errors.filter((e: string) => e.includes('top-level fields')),
+    ).toHaveLength(1);
+  });
+
   it('still serves a normal explorer query under the depth and batching limits', async () => {
     const { yoga } = createApp(fakeCtx());
     const res = await yoga.fetch('http://x/graphql', {

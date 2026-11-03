@@ -1,4 +1,4 @@
-import { Routes as PortalRoutes } from 'app-commons';
+import { IS_EXPLORER_ONLY, Routes as PortalRoutes } from 'app-commons';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { TxNotice } from '~/systems/Transaction/component/TxNotice/TxNotice';
@@ -6,6 +6,8 @@ import { TxNotice } from '~/systems/Transaction/component/TxNotice/TxNotice';
 export function BridgeNotice({ className }: { className?: string }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  if (IS_EXPLORER_ONLY) return null;
 
   return (
     <TxNotice className={className}>

@@ -8,8 +8,11 @@ import type { AppContext } from './graphql/context';
 import { useMaxDepth } from './graphql/depthLimit';
 import { buildBlocksDashboard } from './graphql/resolvers/analytics';
 import { buildCharts } from './graphql/resolvers/charts';
+import { useMaxRootFields } from './graphql/rootFieldLimit';
 import { buildSchema } from './graphql/schema';
+import { useUtxosBudget } from './graphql/utxosBudget';
 import type { Indexer } from './index/Indexer';
+import type { L1RpcStatus } from './l1/l1RpcClient';
 import { buildAssetBody } from './rest/assets';
 import { type RestRouterDeps, handleRestRequest } from './rest/router';
 
@@ -20,7 +23,11 @@ export type AppDeps = AppContext & {
   indexer?: Pick<Indexer, 'backfillPaused'>;
   blockSource?: 's3' | 'rpc';
   cosmos?: Pick<CosmosPoller, 'cursor' | 'tip' | 'tipAt'>;
-  l1?: { enabled: boolean; cursors: () => Record<string, number> };
+  l1?: {
+    enabled: boolean;
+    cursors: () => Record<string, number>;
+    rpc?: () => L1RpcStatus;
+  };
   staking?: RestRouterDeps['staking'];
   apy?: RestRouterDeps['apy'];
   bridge?: RestRouterDeps['bridge'];
@@ -40,7 +47,12 @@ export function createApp(ctx: AppDeps) {
     schema: buildSchema(),
     graphqlEndpoint: '/graphql',
     batching: { limit: 10 },
-    plugins: [useMaxDepth(15)],
+    plugins: [
+      useMaxDepth(15),
+      useMaxRootFields(20),
+      // One full balances page (first: 100), the most the explorer asks for.
+      useUtxosBudget(100),
+    ],
     // yoga's default maskError only touches errors that aren't already an
     // intentional GraphQLError (pageSize's validation error, "Either id or
     // height must be provided", etc. pass through unchanged in both modes).
@@ -71,7 +83,11 @@ export function createApp(ctx: AppDeps) {
         }
       : undefined,
     l1: ctx.l1
-      ? { enabled: ctx.l1.enabled, cursors: ctx.l1.cursors() }
+      ? {
+          enabled: ctx.l1.enabled,
+          cursors: ctx.l1.cursors(),
+          rpc: ctx.l1.rpc?.(),
+        }
       : undefined,
   });
   const server = createServer((req, res) => {
@@ -93,6 +109,7 @@ export function createApp(ctx: AppDeps) {
       dashboard: { build: () => buildBlocksDashboard(ctx) },
       assets: { get: (assetId) => buildAssetBody(assetId, ctx, nft) },
       ipfs: { get: (ref) => gateway.fetch(ref) },
+      rates: { get: () => ctx.price.rates() },
     })
       .then((handled) => {
         if (!handled) return yoga(req, res);
