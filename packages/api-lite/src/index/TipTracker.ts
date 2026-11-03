@@ -30,6 +30,9 @@ export class TipTracker {
   // abandoned tick cannot clear the flag belonging to a newer one.
   private active: { id: number; startedAt: number } | null = null;
   private nextId = 1;
+  private headReads = 0;
+  private lastAppliedHeadRead = 0;
+  private headReadInFlight = false;
 
   constructor(private readonly opts: Opts) {
     this.servedTip = opts.initialServedTip ?? 0;
@@ -48,10 +51,42 @@ export class TipTracker {
     return this.opts.stallMs ?? DEFAULT_STALL_MS;
   }
 
+  // Reads can finish out of order: the tip only moves forward, and up/down
+  // follows the latest read to finish.
+  private async readHead(): Promise<boolean> {
+    const read = ++this.headReads;
+    let latest: number;
+    try {
+      latest = await this.opts.client.latestHeight();
+    } catch {
+      if (read > this.lastAppliedHeadRead) {
+        this.lastAppliedHeadRead = read;
+        this.fuelCoreUp = false;
+      }
+      return false;
+    }
+    this.fuelCoreTip = Math.max(this.fuelCoreTip, latest);
+    if (read > this.lastAppliedHeadRead) {
+      this.lastAppliedHeadRead = read;
+      this.fuelCoreUp = true;
+    }
+    return true;
+  }
+
   async tick(): Promise<void> {
     if (this.active) {
       const stalledFor = Date.now() - this.active.startedAt;
-      if (stalledFor < this.stallMs) return;
+      if (stalledFor < this.stallMs) {
+        // A catch-up tick can run for many polls; fuelCoreTip bounds height
+        // lookups, so it keeps moving meanwhile.
+        if (!this.headReadInFlight) {
+          this.headReadInFlight = true;
+          void this.readHead().finally(() => {
+            this.headReadInFlight = false;
+          });
+        }
+        return;
+      }
       // A tick that never settles would otherwise wedge the tracker for the
       // life of the process: no error, no recovery, just a tip that stops
       // advancing while health keeps reporting the last good values. Give up
@@ -67,15 +102,8 @@ export class TipTracker {
     // followed by this check so a late tick reads nothing and writes nothing.
     const abandoned = () => this.active?.id !== id;
     try {
-      try {
-        const latest = await this.opts.client.latestHeight();
-        if (abandoned()) return;
-        this.fuelCoreTip = latest;
-        this.fuelCoreUp = true;
-      } catch {
-        this.fuelCoreUp = false;
-        return;
-      }
+      const up = await this.readHead();
+      if (abandoned() || !up) return;
       const batchSize = this.opts.batch ?? 20;
       try {
         for (
