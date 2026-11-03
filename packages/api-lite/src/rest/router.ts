@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { IpfsBusyError, type IpfsFile } from '../assets/IpfsGateway';
 import type { BridgeStore } from '../bridge/BridgeStore';
 import { ValidationError } from '../errors';
+import type { AssetRate } from '../fuelcore/PriceClient';
 import { PaginatedParams } from '../staking/PaginatedParams';
 import type { StakingStore } from '../staking/StakingStore';
 import { getValidAddress } from '../staking/addresses';
@@ -58,6 +59,7 @@ export type RestRouterDeps = {
   dashboard: DashboardRouteDeps;
   assets: AssetsRouteDeps;
   ipfs: IpfsRouteDeps;
+  rates: { get: () => Promise<AssetRate[]> };
 };
 
 function sendJson(
@@ -140,6 +142,17 @@ export async function handleRestRequest(
     } catch (err) {
       console.error('buildCharts failed', err);
       sendJson(res, 500, { error: 'charts unavailable' });
+    }
+    return true;
+  }
+
+  if (path === '/assets_rate') {
+    try {
+      const body = await deps.rates.get();
+      sendJson(res, 200, body, { 'cache-control': 'public, max-age=60' });
+    } catch (err) {
+      console.error('assets_rate failed', err);
+      sendJson(res, 500, { error: 'rates unavailable' });
     }
     return true;
   }

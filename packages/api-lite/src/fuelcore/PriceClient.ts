@@ -1,6 +1,10 @@
 const COINGECKO_URL = 'https://api.coingecko.com/api/v3/simple/price';
 
 const ETH_SYMBOL = 'ETH';
+// The `/assets_rate` symbols the staking app reads.
+const STAKING_RATE_SYMBOLS = [ETH_SYMBOL, 'FUEL'];
+
+export type AssetRate = { symbol: string; rate: number };
 
 // Keyed by verified-assets symbol. Verify a new id against the token's address
 // in CoinGecko's coin list: delisted ids still answer with a stale price.
@@ -84,6 +88,15 @@ export class PriceClient {
     const refreshing = this.refresh();
     if (!this.prices.has(ETH_SYMBOL)) await refreshing;
     return this.prices.get(ETH_SYMBOL) ?? null;
+  }
+
+  // A symbol whose price has never loaded is left out.
+  async rates(): Promise<AssetRate[]> {
+    await this.refresh();
+    return STAKING_RATE_SYMBOLS.flatMap((symbol) => {
+      const rate = this.prices.get(symbol);
+      return rate === undefined ? [] : [{ symbol, rate }];
+    });
   }
 
   // Synchronous because fuels-wallet times out GET /assets/:assetId after 2s.

@@ -1,7 +1,6 @@
 import { VStack } from '@fuels/ui';
-import { useContract } from '~/hooks/useApi';
+import { useContract, useContractMetadata } from '~/hooks/useApi';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
-import { useContractMetadata } from '~/systems/Transaction/hooks/useContractMetadata';
 import { MetadataAudits } from '../../Core/components/MetadataAudits/MetadataAudits';
 import { MetadataSourcecode } from '../../Core/components/MetadataSourcecode/MetadataSourcecode';
 
