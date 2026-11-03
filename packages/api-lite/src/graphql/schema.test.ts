@@ -148,6 +148,35 @@ describe('Balance.utxos', () => {
     expect(coinsCalls).toBe(100);
   });
 
+  const servesOnePage = async (query: string) => {
+    let coinsCalls = 0;
+    const { gqlRaw } = await setup({
+      query: async (q: string) => {
+        if (q.includes('query coins')) {
+          coinsCalls += 1;
+          return { coins: { nodes: [] } };
+        }
+        return balancesPage(100);
+      },
+    });
+    const json = await gqlRaw(query);
+    expect(json.errors).toBeUndefined();
+    expect(coinsCalls).toBe(100);
+  };
+
+  it('budgets utxos selected twice on the same balance once, as GraphQL runs it once', async () => {
+    await servesOnePage(
+      `{ balances(filter: { owner: "${hex(9)}" }, first: 100) { nodes { ...A ...B } } } fragment A on Balance { utxos { utxoId } } fragment B on Balance { utxos { amount } }`,
+    );
+  });
+
+  it('budgets a balances page selected twice under one response key once', async () => {
+    const page = `balances(filter: { owner: "${hex(9)}" }, first: 100) { nodes { utxos { utxoId } } }`;
+    await servesOnePage(
+      `{ ...A ...B } fragment A on Query { ${page} } fragment B on Query { ${page} }`,
+    );
+  });
+
   const rejects = async (query: string, variables?: object) => {
     let coinsCalls = 0;
     const { gqlRaw } = await setup({
