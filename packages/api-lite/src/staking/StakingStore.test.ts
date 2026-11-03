@@ -374,7 +374,13 @@ describe('StakingStore undelegate with an index gap', () => {
       repairEthBlockSync,
     });
 
-    const event = await store.getEvent(unbondEventId());
+    // Between the unbond and its completion_time.
+    const now = jest
+      .spyOn(Date, 'now')
+      .mockReturnValue(Date.parse('2026-09-30T00:00:00Z'));
+    const event = await store.getEvent(unbondEventId()).finally(() => {
+      now.mockRestore();
+    });
 
     expect(repairEthBlockSync).toHaveBeenCalledTimes(1);
     expect(event.status).toBe('WaitingUnbonding');
