@@ -1,4 +1,5 @@
 import {
+  type FieldNode,
   type FragmentDefinitionNode,
   GraphQLError,
   type GraphQLNamedType,
@@ -24,7 +25,8 @@ type Walk = {
   schema: GraphQLSchema;
   fragments: Map<string, FragmentDefinitionNode>;
   variables: Record<string, unknown>;
-  fragmentCost: Map<string, number>;
+  nodeIds: Map<SelectionSetNode, number>;
+  costs: Map<string, number>;
 };
 
 // Worst case of what upstream may honor: the larger of first and last, and a
@@ -38,58 +40,92 @@ function pageSize(args: Record<string, unknown>): number {
     : Math.min(Math.max(...sizes), MAX_PAGE_SIZE);
 }
 
+// Fields sharing a response key on the same type run once, like execution's
+// field collection; each fragment is expanded once per merged group.
+function collectFields(
+  selectionSets: readonly SelectionSetNode[],
+  parent: GraphQLNamedType | undefined,
+  walk: Walk,
+): Map<string, { type: GraphQLNamedType | undefined; nodes: FieldNode[] }> {
+  const groups = new Map<
+    string,
+    { type: GraphQLNamedType | undefined; nodes: FieldNode[] }
+  >();
+  const visited = new Set<string>();
+  const visit = (set: SelectionSetNode, type: GraphQLNamedType | undefined) => {
+    for (const selection of set.selections) {
+      if (selection.kind === Kind.FIELD) {
+        const key = `${type?.name}.${selection.alias?.value ?? selection.name.value}`;
+        const group = groups.get(key) ?? { type, nodes: [] };
+        group.nodes.push(selection);
+        groups.set(key, group);
+      } else if (selection.kind === Kind.INLINE_FRAGMENT) {
+        const condition = selection.typeCondition
+          ? walk.schema.getType(selection.typeCondition.name.value)
+          : type;
+        visit(selection.selectionSet, condition ?? undefined);
+      } else if (!visited.has(selection.name.value)) {
+        visited.add(selection.name.value);
+        const fragment = walk.fragments.get(selection.name.value);
+        if (fragment) {
+          visit(
+            fragment.selectionSet,
+            walk.schema.getType(fragment.typeCondition.name.value) ?? undefined,
+          );
+        }
+      }
+    }
+  };
+  for (const set of selectionSets) visit(set, parent);
+  return groups;
+}
+
+function nodeId(set: SelectionSetNode, walk: Walk): number {
+  let id = walk.nodeIds.get(set);
+  if (id === undefined) {
+    id = walk.nodeIds.size;
+    walk.nodeIds.set(set, id);
+  }
+  return id;
+}
+
 function utxosLookups(
-  selectionSet: SelectionSetNode,
+  selectionSets: readonly SelectionSetNode[],
   parent: GraphQLNamedType | undefined,
   walk: Walk,
 ): number {
+  // The same merged selection is reached again through repeated fragments.
+  const memoKey = `${parent?.name}:${selectionSets.map((set) => nodeId(set, walk)).join(',')}`;
+  const memo = walk.costs.get(memoKey);
+  if (memo !== undefined) return memo;
+  walk.costs.set(memoKey, 0);
   let total = 0;
-  for (const selection of selectionSet.selections) {
-    if (selection.kind === Kind.INLINE_FRAGMENT) {
-      const type = selection.typeCondition
-        ? walk.schema.getType(selection.typeCondition.name.value)
-        : parent;
-      total += utxosLookups(selection.selectionSet, type ?? undefined, walk);
-      continue;
-    }
-    if (selection.kind === Kind.FRAGMENT_SPREAD) {
-      const name = selection.name.value;
-      let cost = walk.fragmentCost.get(name);
-      if (cost === undefined) {
-        // Set first so a cycle counts as 0; NoFragmentCyclesRule reports it.
-        walk.fragmentCost.set(name, 0);
-        const fragment = walk.fragments.get(name);
-        cost = fragment
-          ? utxosLookups(
-              fragment.selectionSet,
-              walk.schema.getType(fragment.typeCondition.name.value) ??
-                undefined,
-              walk,
-            )
-          : 0;
-        walk.fragmentCost.set(name, cost);
-      }
-      total += cost;
-      continue;
-    }
-    if (!isObjectType(parent) && !isInterfaceType(parent)) continue;
-    const field = parent.getFields()[selection.name.value];
+  for (const { type, nodes } of collectFields(
+    selectionSets,
+    parent,
+    walk,
+  ).values()) {
+    if (!isObjectType(type) && !isInterfaceType(type)) continue;
+    const field = type.getFields()[nodes[0].name.value];
     if (!field) continue;
-    if (parent.name === 'Balance' && field.name === 'utxos') {
+    if (type.name === 'Balance' && field.name === 'utxos') {
       total += 1;
       continue;
     }
-    if (!selection.selectionSet) continue;
+    const children = nodes.flatMap((node) =>
+      node.selectionSet ? [node.selectionSet] : [],
+    );
+    if (children.length === 0) continue;
     const paginated = field.args.some(
       (arg) => arg.name === 'first' || arg.name === 'last',
     );
     const multiplier = paginated
-      ? pageSize(getArgumentValues(field, selection, walk.variables))
+      ? pageSize(getArgumentValues(field, nodes[0], walk.variables))
       : 1;
     total +=
-      multiplier *
-      utxosLookups(selection.selectionSet, getNamedType(field.type), walk);
+      multiplier * utxosLookups(children, getNamedType(field.type), walk);
   }
+  walk.costs.set(memoKey, total);
   return total;
 }
 
@@ -113,13 +149,14 @@ export function useUtxosBudget(maxLookups: number): Plugin {
       // Execution reports invalid variables without running any resolver.
       if (coerced.errors) return;
       const lookups = utxosLookups(
-        operation.selectionSet,
+        [operation.selectionSet],
         args.schema.getRootType(operation.operation) ?? undefined,
         {
           schema: args.schema,
           fragments,
           variables: coerced.coerced,
-          fragmentCost: new Map(),
+          nodeIds: new Map(),
+          costs: new Map(),
         },
       );
       const request = (args.contextValue as { request?: object }).request;
