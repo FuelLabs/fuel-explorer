@@ -18,6 +18,9 @@ const FLUSH_INTERVAL_MS = 5_000;
 const DECAY_PRUNE_THRESHOLD = 0.5;
 const DECAY_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const LAST_DECAY_META_KEY = 'last_decay';
+// Keys come from requests and are persisted, so outsized or excess keys are dropped.
+const MAX_KEY_LENGTH = 128;
+const MAX_BUFFERED_KEYS_PER_KIND = 10_000;
 
 export class HotKeys {
   private readonly db: Database.Database;
@@ -77,12 +80,16 @@ export class HotKeys {
 
   /** Records one hit for `kind`/`key`, buffered in memory until the next flush(). */
   hit(kind: HotKind, key: string): void {
+    if (key.length > MAX_KEY_LENGTH) return;
     let byKey = this.buffer.get(kind);
     if (!byKey) {
       byKey = new Map();
       this.buffer.set(kind, byKey);
     }
-    byKey.set(key, (byKey.get(key) ?? 0) + 1);
+    const pending = byKey.get(key);
+    if (pending === undefined && byKey.size >= MAX_BUFFERED_KEYS_PER_KIND)
+      return;
+    byKey.set(key, (pending ?? 0) + 1);
   }
 
   /**
