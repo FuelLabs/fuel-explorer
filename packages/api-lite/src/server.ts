@@ -8,7 +8,9 @@ import type { AppContext } from './graphql/context';
 import { useMaxDepth } from './graphql/depthLimit';
 import { buildBlocksDashboard } from './graphql/resolvers/analytics';
 import { buildCharts } from './graphql/resolvers/charts';
+import { useMaxRootFields } from './graphql/rootFieldLimit';
 import { buildSchema } from './graphql/schema';
+import { useUtxosBudget } from './graphql/utxosBudget';
 import type { Indexer } from './index/Indexer';
 import type { L1RpcStatus } from './l1/l1RpcClient';
 import { buildAssetBody } from './rest/assets';
@@ -45,7 +47,12 @@ export function createApp(ctx: AppDeps) {
     schema: buildSchema(),
     graphqlEndpoint: '/graphql',
     batching: { limit: 10 },
-    plugins: [useMaxDepth(15)],
+    plugins: [
+      useMaxDepth(15),
+      useMaxRootFields(20),
+      // One full balances page (first: 100), the most the explorer asks for.
+      useUtxosBudget(100),
+    ],
     // yoga's default maskError only touches errors that aren't already an
     // intentional GraphQLError (pageSize's validation error, "Either id or
     // height must be provided", etc. pass through unchanged in both modes).
