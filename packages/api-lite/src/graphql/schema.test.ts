@@ -193,6 +193,15 @@ describe('Balance.utxos', () => {
     );
   });
 
+  it('applies variable defaults before budgeting', async () => {
+    const page = (alias: string) =>
+      `${alias}: balances(filter: $f, first: 100) { nodes { utxos { utxoId } } }`;
+    await rejects(
+      `query($f: BalanceFilterInput! = { owner: "${hex(9)}" }) { ${page('a')} ${page('b')} }`,
+      {},
+    );
+  });
+
   it('budgets the larger of first and last, and first: 0 as a full page', async () => {
     const page = (alias: string, args: string) =>
       `${alias}: balances(${owner}, ${args}) { nodes { utxos { utxoId } } }`;

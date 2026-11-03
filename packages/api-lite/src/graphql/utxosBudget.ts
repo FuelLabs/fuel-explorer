@@ -8,6 +8,7 @@ import {
   getArgumentValues,
   getNamedType,
   getOperationAST,
+  getVariableValues,
   isInterfaceType,
   isObjectType,
 } from 'graphql';
@@ -103,22 +104,24 @@ export function useUtxosBudget(maxLookups: number): Plugin {
           fragments.set(definition.name.value, definition);
         }
       }
-      let lookups: number;
-      try {
-        lookups = utxosLookups(
-          operation.selectionSet,
-          args.schema.getRootType(operation.operation) ?? undefined,
-          {
-            schema: args.schema,
-            fragments,
-            variables: args.variableValues ?? {},
-            fragmentCost: new Map(),
-          },
-        );
-      } catch {
-        // Invalid argument values; execution reports them.
-        return;
-      }
+      // Coerced as execute will see them, defaults included.
+      const coerced = getVariableValues(
+        args.schema,
+        operation.variableDefinitions ?? [],
+        args.variableValues ?? {},
+      );
+      // Execution reports invalid variables without running any resolver.
+      if (coerced.errors) return;
+      const lookups = utxosLookups(
+        operation.selectionSet,
+        args.schema.getRootType(operation.operation) ?? undefined,
+        {
+          schema: args.schema,
+          fragments,
+          variables: coerced.coerced,
+          fragmentCost: new Map(),
+        },
+      );
       const request = (args.contextValue as { request?: object }).request;
       const total =
         (request ? (lookupsByRequest.get(request) ?? 0) : 0) + lookups;
