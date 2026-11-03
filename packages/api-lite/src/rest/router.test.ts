@@ -31,10 +31,33 @@ function disabledDeps(): RestRouterDeps {
     dashboard: { build: jest.fn().mockResolvedValue({ nodes: [] }) },
     assets: { get: jest.fn().mockResolvedValue(null) },
     ipfs: { get: jest.fn().mockResolvedValue(null) },
+    rates: { get: jest.fn().mockResolvedValue([]) },
   };
 }
 
 describe('handleRestRequest', () => {
+  it('serves /assets_rate with a 60s cache header', async () => {
+    const { res, calls } = fakeRes();
+    const rates = [
+      { symbol: 'ETH', rate: 2500 },
+      { symbol: 'FUEL', rate: 0.01 },
+    ];
+    const handled = await handleRestRequest(
+      fakeReq('GET', '/assets_rate'),
+      res,
+      {
+        ...disabledDeps(),
+        rates: { get: jest.fn().mockResolvedValue(rates) },
+      },
+    );
+    expect(handled).toBe(true);
+    expect(calls.status).toBe(200);
+    expect(calls.headers).toMatchObject({
+      'cache-control': 'public, max-age=60',
+    });
+    expect(JSON.parse(calls.body as string)).toEqual(rates);
+  });
+
   it('falls through (returns false) for non-GET requests', async () => {
     const { res } = fakeRes();
     const handled = await handleRestRequest(
