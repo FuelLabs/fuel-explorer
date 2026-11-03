@@ -1,9 +1,10 @@
 // Use a test fixture to set the context so tests have access to the wallet extension.
-import type { BrowserContext, Page } from '@playwright/test';
+import type { BrowserContext } from '@playwright/test';
 import { test as base, chromium, expect } from '@playwright/test';
 import { ETH_MNEMONIC, ETH_WALLET_PASSWORD } from '../mocks';
 // Static import on purpose: a dynamic import() here makes Node 22 load a second
 // (ESM) copy of the module, so the instance set here is not the one tests read.
+import { importMetaMaskWallet } from '../utils/importMetaMaskWallet';
 import { setMetaMask } from '../utils/metamask';
 
 import fs from 'node:fs';
@@ -13,31 +14,6 @@ import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
 
 const FUEL_WALLET_VERSION = '0.57.1';
-
-// MetaMask 13 splits the phrase into one field per word as each space is
-// typed, so typing it whole drops letters while focus moves between fields.
-async function importMetaMaskWallet(page: Page, mnemonic: string) {
-  const [first, ...rest] = mnemonic.split(' ');
-  await page.getByTestId('onboarding-import-wallet').click();
-  await page.getByTestId('onboarding-import-with-srp-button').click();
-  await page
-    .getByTestId('srp-input-import__srp-note')
-    .pressSequentially(`${first} `);
-  for (const [i, word] of rest.entries()) {
-    const field = page.getByTestId(`import-srp__srp-word-${i + 1}`);
-    await field.fill(word);
-    if (i < rest.length - 1) await field.press('Space');
-  }
-  await page.getByTestId('import-srp-confirm').click();
-  await page.getByTestId('create-password-new-input').fill(ETH_WALLET_PASSWORD);
-  await page
-    .getByTestId('create-password-confirm-input')
-    .fill(ETH_WALLET_PASSWORD);
-  await page.getByTestId('create-password-terms').click();
-  await page.getByTestId('create-password-submit').click();
-  await page.locator('#metametrics-opt-in').click();
-  await page.getByTestId('metametrics-i-agree').click();
-}
 
 async function importPlaywrightUtils() {
   return await import('@fuels/playwright-utils');
@@ -152,7 +128,7 @@ export const test = base.extend<{
       metamaskId,
     );
     setMetaMask(metamask);
-    await importMetaMaskWallet(metamaskPage, ETH_MNEMONIC);
+    await importMetaMaskWallet(metamaskPage, ETH_MNEMONIC, ETH_WALLET_PASSWORD);
     try {
       await metamask.switchNetwork('localhost');
     } catch (_) {
