@@ -1038,6 +1038,10 @@
       "title": "Ecosystem · Fuel Explorer",
       "description": "Apps, wallets and infrastructure built on Fuel."
     },
+    "ecosystem_project": {
+      "title": "{{project}} · Ecosystem · Fuel Explorer",
+      "description": "{{project}}, built on Fuel."
+    },
     "blocks": {
       "title": "Blocks · Fuel Explorer",
       "description": "Recent blocks on Fuel Ignition."

@@ -55,6 +55,15 @@ const RULES: Rule[] = [
     },
   },
   {
+    test: /^\/ecosystem\/([0-9A-Za-z-]+)(?:\/|$)/,
+    meta: (match) => ({
+      key: 'ecosystem_project',
+      params: { project: match[1] },
+      title: `${match[1]} · Ecosystem · Fuel Explorer`,
+      description: `${match[1]}, built on Fuel.`,
+    }),
+  },
+  {
     test: /^\/ecosystem(?:\/|$)/,
     meta: {
       key: 'ecosystem',

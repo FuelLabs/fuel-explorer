@@ -1017,6 +1017,10 @@
       "title": "エコシステム · Fuel Explorer",
       "description": "Fuel上に構築されたアプリ、ウォレット、インフラ。"
     },
+    "ecosystem_project": {
+      "title": "{{project}} · エコシステム · Fuel Explorer",
+      "description": "Fuel上に構築された{{project}}。"
+    },
     "blocks": {
       "title": "ブロック · Fuel Explorer",
       "description": "Fuel Ignitionの最新ブロック。"

@@ -1017,6 +1017,10 @@
       "title": "에코시스템 · Fuel Explorer",
       "description": "Fuel 기반의 앱, 지갑, 인프라."
     },
+    "ecosystem_project": {
+      "title": "{{project}} · 에코시스템 · Fuel Explorer",
+      "description": "Fuel 기반의 {{project}}."
+    },
     "blocks": {
       "title": "블록 · Fuel Explorer",
       "description": "Fuel Ignition의 최근 블록."

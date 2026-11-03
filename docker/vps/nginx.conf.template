@@ -37,6 +37,7 @@ map $request_uri $page_title {
     "~^/bridge(?:[/?]|$)" "Bridge · Fuel Explorer";
     "~^/staking/on-ethereum(?:[/?]|$)" "Stake on Ethereum · Fuel Explorer";
     "~^/staking(?:[/?]|$)" "Stake · Fuel Explorer";
+    "~^/ecosystem/([0-9A-Za-z-]+)(?:[/?]|$)" "$1 · Ecosystem · Fuel Explorer";
     "~^/ecosystem(?:[/?]|$)" "Ecosystem · Fuel Explorer";
     "~^/blocks(?:[/?]|$)" "Blocks · Fuel Explorer";
     "~^/block/([0-9A-Za-z]+)(?:[/?]|$)" "Block $1 · Fuel Explorer";
@@ -52,6 +53,7 @@ map $request_uri $page_description {
     "~^/bridge(?:[/?]|$)" "Move assets between Ethereum and Fuel Ignition.";
     "~^/staking/on-ethereum(?:[/?]|$)" "Stake FUEL on Ethereum and track positions, validators and transactions.";
     "~^/staking(?:[/?]|$)" "Delegate FUEL to validators, or liquid stake through The Rig.";
+    "~^/ecosystem/([0-9A-Za-z-]+)(?:[/?]|$)" "$1, built on Fuel.";
     "~^/ecosystem(?:[/?]|$)" "Apps, wallets and infrastructure built on Fuel.";
     "~^/blocks(?:[/?]|$)" "Recent blocks on Fuel Ignition.";
     "~^/block/([0-9A-Za-z]+)(?:[/?]|$)" "Block $1 on Fuel Ignition.";

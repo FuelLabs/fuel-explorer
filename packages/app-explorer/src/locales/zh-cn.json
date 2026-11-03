@@ -1017,6 +1017,10 @@
       "title": "生态系统 · Fuel Explorer",
       "description": "基于 Fuel 构建的应用、钱包和基础设施。"
     },
+    "ecosystem_project": {
+      "title": "{{project}} · 生态系统 · Fuel Explorer",
+      "description": "基于 Fuel 构建的 {{project}}。"
+    },
     "blocks": {
       "title": "区块 · Fuel Explorer",
       "description": "Fuel Ignition 的最新区块。"

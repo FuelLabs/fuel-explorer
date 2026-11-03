@@ -24,6 +24,14 @@ describe('matchPageMeta', () => {
     expect(matchPageMeta('/Bridge').key).toBe('home');
   });
 
+  it('names the project on an ecosystem project page', () => {
+    const project = matchPageMeta('/ecosystem/mira-dex');
+    expect(project.key).toBe('ecosystem_project');
+    expect(project.params).toEqual({ project: 'mira-dex' });
+    expect(project.title).toBe('mira-dex · Ecosystem · Fuel Explorer');
+    expect(matchPageMeta('/ecosystem').key).toBe('ecosystem');
+  });
+
   it('ignores the query string', () => {
     expect(matchPageMeta('/ecosystem?tag=defi').key).toBe('ecosystem');
   });
