@@ -5,11 +5,13 @@ import {
   shortAddress,
   useBreakpoints,
 } from '@fuels/ui';
-import { forwardRef } from 'react';
+import { Fragment, forwardRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { cx } from '../../../utils/cx';
 
+import { type SearchHit, hitsFromResult } from '../recentSearches';
 import { styles as searchStyles } from '../styles';
 import { styles } from './styles';
 import type { SearchDropdownProps } from './types';
@@ -26,240 +28,142 @@ export const SearchResultDropdown = forwardRef<
       onOpenChange,
       width,
       onSelectItem,
+      recents,
+      onClearRecents,
+      keepOpenWithin,
       isFocused,
       loading,
       error,
+      id,
     },
     ref,
   ) => {
     const navigate = useNavigate();
-
-    function onClick(href: string | undefined) {
-      onSelectItem?.();
-      if (href) {
-        navigate(href);
-      }
-    }
+    const { t } = useTranslation();
     const classes = styles();
     const searchClasses = searchStyles();
     const { isMobile } = useBreakpoints();
     const trimL = isMobile ? 15 : 20;
     const trimR = isMobile ? 13 : 18;
 
-    const hasResult =
-      !!searchResult &&
-      (!!searchResult.account ||
-        !!searchResult.block ||
-        !!searchResult.contract ||
-        !!searchResult.transaction ||
-        !!searchResult.predicate);
+    const hits = hitsFromResult(searchResult, searchValue);
+    const showRecents =
+      !loading && !error && !searchValue && recents.length > 0;
 
+    function pick(hit: SearchHit) {
+      onSelectItem(hit);
+      navigate(hit.href);
+    }
+
+    // A plain click is handled by the item; a modified click (new tab, new
+    // window) is left to the link's own href.
+    const isModified = (event: React.MouseEvent) =>
+      event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+    const row = (hit: SearchHit, trailing?: React.ReactNode) => (
+      <Dropdown.Item
+        key={`${hit.kind}-${hit.value}`}
+        className={classes.dropdownItem()}
+        onClick={(event) => {
+          if (!isModified(event)) pick(hit);
+        }}
+      >
+        <Link
+          className={classes.resultLink()}
+          to={hit.href}
+          onClick={(event) => {
+            if (!isModified(event)) event.preventDefault();
+          }}
+        >
+          <span title={hit.value} className="truncate">
+            {shortAddress(hit.value, trimL, trimR)}
+          </span>
+        </Link>
+        {trailing}
+      </Dropdown.Item>
+    );
+
+    let body: React.ReactNode;
+    if (error) {
+      body = (
+        <div role="status" className={classes.errorContainer()}>
+          <p className={classes.errorTitle()}>{t('common.search_error')}</p>
+        </div>
+      );
+    } else if (loading) {
+      body = (
+        <div role="status" className={classes.loadingContainer()}>
+          <Spinner size={20} color="brand" aria-hidden />
+          <span className="sr-only">{t('common.search_loading')}</span>
+        </div>
+      );
+    } else if (showRecents) {
+      body = (
+        <>
+          <Dropdown.Label className={classes.dropdownLabel()}>
+            {t('common.recent_searches')}
+          </Dropdown.Label>
+          {recents.map((hit) =>
+            row(
+              hit,
+              <span className={classes.recentKind()}>
+                {t(`common.search_kind.${hit.kind}`)}
+              </span>,
+            ),
+          )}
+          <Dropdown.Separator className={classes.dropdownSeparator()} />
+          <Dropdown.Item
+            className={classes.clearRecent()}
+            onClick={onClearRecents}
+          >
+            {t('common.clear_recent')}
+          </Dropdown.Item>
+        </>
+      );
+    } else if (hits.length) {
+      body = hits.map((hit, index) => (
+        <Fragment key={`${hit.kind}-${hit.value}`}>
+          {index > 0 && (
+            <Dropdown.Separator className={classes.dropdownSeparator()} />
+          )}
+          <Dropdown.Label className={classes.dropdownLabel()}>
+            {t(`common.search_kind.${hit.kind}`)}
+          </Dropdown.Label>
+          {row(hit)}
+        </Fragment>
+      ));
+    } else {
+      body = (
+        <div role="status" className={classes.emptyContainer()}>
+          <p className={classes.emptyTitle()}>{t('common.no_results')}</p>
+          <p className={classes.emptyHint()}>{t('common.no_results_hint')}</p>
+        </div>
+      );
+    }
+
+    // Non-modal, so the field keeps focus while the panel is open.
     return (
-      <Dropdown open={openDropdown} onOpenChange={onOpenChange}>
+      <Dropdown open={openDropdown} onOpenChange={onOpenChange} modal={false}>
         <Dropdown.Trigger>
           <Box className="w-full" />
         </Dropdown.Trigger>
         <Dropdown.Content
           ref={ref}
+          id={id}
           style={{ width }}
+          onCloseAutoFocus={(event) => event.preventDefault()}
+          onInteractOutside={(event) => {
+            const target = event.target as Node | null;
+            if (target && keepOpenWithin?.current?.contains(target)) {
+              event.preventDefault();
+            }
+          }}
           data-active={isFocused || openDropdown}
           className={cx(
             classes.dropdownContent(openDropdown),
             searchClasses.searchSize(),
           )}
         >
-          {error ? (
-            <div className={classes.errorContainer()}>
-              <p className={classes.errorTitle()}>
-                Something went wrong while fetching the results.
-              </p>
-            </div>
-          ) : loading ? (
-            <div className={classes.loadingContainer()}>
-              <Spinner size={20} color="brand" aria-label="loading" />
-            </div>
-          ) : hasResult ? (
-            <>
-              {searchResult?.account && (
-                <>
-                  <Dropdown.Separator className={classes.dropdownSeparator()} />
-                  <Dropdown.Label className={classes.dropdownLabel()}>
-                    Account
-                  </Dropdown.Label>
-                  <Dropdown.Item
-                    className={classes.dropdownItem()}
-                    onClick={() =>
-                      searchResult.account?.address &&
-                      onClick(`/account/${searchResult.account.address}/assets`)
-                    }
-                  >
-                    <Link
-                      className={classes.resultLink()}
-                      to={`/account/${searchResult.account.address}/assets`}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(
-                        searchResult.account.address || '',
-                        trimL,
-                        trimR,
-                      )}
-                    </Link>
-                  </Dropdown.Item>
-                </>
-              )}
-              {searchResult?.block && (
-                <>
-                  {searchResult.block.id?.toLowerCase() ===
-                    searchValue?.toLowerCase() && (
-                    <>
-                      <Dropdown.Label className={classes.dropdownLabel()}>
-                        Block Hash
-                      </Dropdown.Label>
-                      <Dropdown.Item
-                        className={classes.dropdownItem()}
-                        onClick={() =>
-                          searchResult.block?.id &&
-                          onClick(`/block/${searchResult.block.id}/simple`)
-                        }
-                      >
-                        <Link
-                          className={classes.resultLink()}
-                          to={`/block/${searchResult.block.id}/simple`}
-                          onClick={onSelectItem}
-                        >
-                          {shortAddress(
-                            searchResult.block.id || '',
-                            trimL,
-                            trimR,
-                          )}
-                        </Link>
-                      </Dropdown.Item>
-                    </>
-                  )}
-                  {searchResult.block.height === searchValue && (
-                    <>
-                      <Dropdown.Label className={classes.dropdownLabel()}>
-                        Block Height
-                      </Dropdown.Label>
-                      <Dropdown.Item
-                        className={classes.dropdownItem()}
-                        onClick={() =>
-                          searchResult.block?.height &&
-                          onClick(`/block/${searchResult.block?.height}/simple`)
-                        }
-                      >
-                        <Link
-                          className={classes.resultLink()}
-                          to={`/block/${searchResult.block?.height}/simple`}
-                          onClick={onSelectItem}
-                        >
-                          {shortAddress(
-                            searchResult.block.height || '',
-                            trimL,
-                            trimR,
-                          )}
-                        </Link>
-                      </Dropdown.Item>
-                    </>
-                  )}
-                </>
-              )}
-              {searchResult?.contract && (
-                <>
-                  <Dropdown.Separator className={classes.dropdownSeparator()} />
-                  <Dropdown.Label className={classes.dropdownLabel()}>
-                    Contract
-                  </Dropdown.Label>
-                  <Dropdown.Item
-                    className={classes.dropdownItem()}
-                    onClick={() =>
-                      searchResult.contract?.id &&
-                      onClick(`/contract/${searchResult.contract.id}`)
-                    }
-                  >
-                    <Link
-                      className={classes.resultLink()}
-                      to={`/contract/${searchResult.contract.id}`}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(
-                        searchResult.contract.id || '',
-                        trimL,
-                        trimR,
-                      )}
-                    </Link>
-                  </Dropdown.Item>
-                </>
-              )}
-              {searchResult?.transaction && (
-                <>
-                  <Dropdown.Separator className={classes.dropdownSeparator()} />
-                  <Dropdown.Label className={classes.dropdownLabel()}>
-                    Transaction
-                  </Dropdown.Label>
-                  <Dropdown.Item
-                    className={classes.dropdownItem()}
-                    onClick={() =>
-                      searchResult.transaction?.id &&
-                      onClick(`/tx/${searchResult.transaction.id}`)
-                    }
-                  >
-                    <Link
-                      className={classes.resultLink()}
-                      to={`/tx/${searchResult.transaction.id}`}
-                      onClick={onSelectItem}
-                    >
-                      {shortAddress(
-                        searchResult.transaction.id || '',
-                        trimL,
-                        trimR,
-                      )}
-                    </Link>
-                  </Dropdown.Item>
-                </>
-              )}
-              {searchResult?.predicate && (
-                <>
-                  <Dropdown.Separator className={classes.dropdownSeparator()} />
-                  <Dropdown.Label className={classes.dropdownLabel()}>
-                    Account
-                  </Dropdown.Label>
-                  <Dropdown.Item className={classes.dropdownItem()}>
-                    <div className={classes.resultLink()}>
-                      {shortAddress(
-                        searchResult.predicate.address || '',
-                        trimL,
-                        trimR,
-                      )}
-                    </div>
-                  </Dropdown.Item>
-                </>
-              )}
-            </>
-          ) : (
-            <div style={{ padding: '1rem', textAlign: 'center' }}>
-              <p
-                style={{
-                  margin: '0 0 0.5rem 0',
-                  fontWeight: '500',
-                  color: '#666',
-                }}
-              >
-                No results found
-              </p>
-              <p
-                style={{
-                  margin: '0',
-                  fontSize: '0.85rem',
-                  color: '#999',
-                  lineHeight: '1.4',
-                }}
-              >
-                Try searching for a block hash, transaction ID, contract
-                address, account address, or predicate address
-              </p>
-            </div>
-          )}
+          {body}
         </Dropdown.Content>
       </Dropdown>
     );

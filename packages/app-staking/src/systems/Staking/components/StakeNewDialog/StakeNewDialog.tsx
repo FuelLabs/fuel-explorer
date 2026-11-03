@@ -1,6 +1,7 @@
 import { AnimatedDialog, VStack } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, FuelToken, TOKENS } from 'app-commons';
 import { AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useIsStakingContractPaused } from '~staking/hooks/useIsStakingContractPaused';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
 import { ReviewStake } from '~staking/systems/Staking/components/StakeNewDialog/ReviewStake';
@@ -15,10 +16,12 @@ import {
 } from '../PagesTransition/PagesTransition';
 import { FirstPageWrapper } from '../PagesTransition/PagesTransition';
 import { PausedContractDialogStakingContent } from '../PausedContractDialogStakingContent/PausedContractDialogStakingContent';
+import { StepIndicator } from '../StepIndicator/StepIndicator';
 
 export const StakeNewDialog = ({
   validator: validatorInput,
 }: { validator: SequencerValidatorAddress }) => {
+  const { t } = useTranslation();
   const {
     amount,
     totalBalance,
@@ -96,21 +99,42 @@ export const StakeNewDialog = ({
           }
         >
           <VStack className="h-full" gap="7">
-            <AnimatePresence mode="wait" initial={false}>
-              {isReviewPage ? (
-                <MiddlePageWrapper direction={navigationDirection}>
-                  <AnimatedDialog.Title>Review: Stake</AnimatedDialog.Title>
-                </MiddlePageWrapper>
-              ) : isApprovalPage ? (
-                <LastPageWrapper>
-                  <AnimatedDialog.Title>Approval</AnimatedDialog.Title>
-                </LastPageWrapper>
-              ) : (
-                <FirstPageWrapper>
-                  <AnimatedDialog.Title>Stake</AnimatedDialog.Title>
-                </FirstPageWrapper>
-              )}
-            </AnimatePresence>
+            <div className="flex items-center justify-between gap-4">
+              <AnimatePresence mode="wait" initial={false}>
+                {isReviewPage ? (
+                  <MiddlePageWrapper direction={navigationDirection}>
+                    <AnimatedDialog.Title>
+                      {t('staking.dialog.review_stake')}
+                    </AnimatedDialog.Title>
+                  </MiddlePageWrapper>
+                ) : isApprovalPage ? (
+                  <LastPageWrapper>
+                    <AnimatedDialog.Title>
+                      {t('staking.dialog.approval')}
+                    </AnimatedDialog.Title>
+                  </LastPageWrapper>
+                ) : (
+                  <FirstPageWrapper>
+                    <AnimatedDialog.Title>
+                      {t('staking.dialog.stake')}
+                    </AnimatedDialog.Title>
+                  </FirstPageWrapper>
+                )}
+              </AnimatePresence>
+              <StepIndicator
+                current={isReviewPage ? 1 : isApprovalPage ? 2 : 0}
+                total={
+                  needsApproval || isApprovalPage || isApprovalCompleted ? 3 : 2
+                }
+                label={t('staking.dialog.step_of', {
+                  current: (isReviewPage ? 1 : isApprovalPage ? 2 : 0) + 1,
+                  total:
+                    needsApproval || isApprovalPage || isApprovalCompleted
+                      ? 3
+                      : 2,
+                })}
+              />
+            </div>
 
             <AnimatePresence mode="wait" initial={false}>
               {isReviewPage ? (

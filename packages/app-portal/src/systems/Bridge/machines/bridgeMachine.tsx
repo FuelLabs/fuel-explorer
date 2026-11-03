@@ -1,6 +1,7 @@
 import { toast } from '@fuels/ui';
 import type { Account, Address, Asset, NetworkFuel, Provider } from 'fuels';
 import type { BN } from 'fuels';
+import { getI18n } from 'react-i18next';
 import type { InterpreterFrom, StateFrom } from 'xstate';
 import { assign, createMachine } from 'xstate';
 import { type FromToNetworks, isFuelChain } from '~portal/systems/Chains';
@@ -262,10 +263,17 @@ export const bridgeMachine = createMachine(
       }),
       notifyTxStarted: (ctx) => {
         const isDeposit = isFuelChain(ctx.toNetwork);
+        const i18n = getI18n();
+        const english = `${
+          isDeposit ? 'Deposit' : 'Withdraw'
+        } successfully initiated. You may now close the popup.`;
         toast.success(
-          `${
-            isDeposit ? 'Deposit' : 'Withdraw'
-          } successfully initiated. You may now close the popup.`,
+          i18n?.t(
+            isDeposit
+              ? 'portal.bridge_toast.deposit_started'
+              : 'portal.bridge_toast.withdraw_started',
+            { defaultValue: english },
+          ) ?? english,
           {
             duration: 5000,
           },
@@ -299,7 +307,11 @@ export const bridgeMachine = createMachine(
           } catch (error: any) {
             if (error.details) {
               if (error.details.includes('User denied transaction')) {
-                throw new Error('User rejected the transaction');
+                throw new Error(
+                  getI18n()?.t('portal.bridge_toast.user_rejected', {
+                    defaultValue: 'User rejected the transaction',
+                  }) ?? 'User rejected the transaction',
+                );
               }
             }
             if (error instanceof WarningToast) {

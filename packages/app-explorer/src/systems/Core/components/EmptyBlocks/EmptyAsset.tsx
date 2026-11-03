@@ -1,11 +1,15 @@
+import { useTranslation } from 'react-i18next';
 import { EmptyCard } from '../EmptyCard/EmptyCard';
 
 export function EmptyAssets({ entity }: { entity: string }) {
+  const { t } = useTranslation();
   return (
     <EmptyCard>
-      <EmptyCard.Title>No Assets</EmptyCard.Title>
+      <EmptyCard.Title>{t('core.empty.assets_title')}</EmptyCard.Title>
       <EmptyCard.Description>
-        This {entity} does not have any asset.
+        {t('core.empty.assets_description', {
+          entity: t(`core.entity.${entity}`, { defaultValue: entity }),
+        })}
       </EmptyCard.Description>
     </EmptyCard>
   );

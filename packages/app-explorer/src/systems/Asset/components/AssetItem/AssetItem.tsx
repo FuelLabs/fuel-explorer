@@ -2,7 +2,6 @@ import type { GQLAsset } from '@fuel-explorer/graphql';
 import type { HStackProps } from '@fuels/ui';
 import {
   Address,
-  Badge,
   Box,
   Copyable,
   Flex,
@@ -13,8 +12,9 @@ import {
   Text,
   Tooltip,
 } from '@fuels/ui';
-import { IconAlertOctagon } from '@tabler/icons-react';
+import { IconAlertOctagon } from '@fuels/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { Routes } from '~/routes';
@@ -22,6 +22,7 @@ import { TxContractIcon } from '~/systems/Transaction/component/TxContractIcon/T
 import { TxIcon } from '~/systems/Transaction/component/TxIcon/TxIcon';
 import type { TxIconType } from '~/systems/Transaction/types';
 import { useNFT } from '../../hooks/useNFT';
+import { AssetNftTag } from './AssetNftTag';
 
 const ICON_SIZE = 38;
 
@@ -42,6 +43,7 @@ export function AssetItem({
   asset,
   ...props
 }: AssetItemProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const isMintedAssetsRoute = location.pathname.includes('minted-assets');
   const { data: nft } = useNFT({
@@ -89,7 +91,7 @@ export function AssetItem({
           regularEl={
             <HStack gap="1" className="items-center min-w-0">
               {prefix && (
-                <Text className="font-normal text-sm text-secondary font-mono">
+                <Text className="font-normal text-sm text-[var(--fuel-element-low-em)] font-mono">
                   {prefix}
                 </Text>
               )}
@@ -107,39 +109,38 @@ export function AssetItem({
                     </Link>
                   )}
                   {(!asset.contractId || isMintedAssetsRoute) && (
-                    <Text className="font-normal text-sm text-primary font-mono">
+                    <Text className="font-normal text-sm text-heading font-mono">
                       {name}
                     </Text>
                   )}
                   {asset?.icon && (
-                    <Tooltip content="Verified Asset">
+                    <Tooltip content={t('asset.verified')}>
                       <div className="mx-1">
-                        <IconRosetteDiscountCheck size={18} color="#0084C2" />
+                        <IconRosetteDiscountCheck
+                          size={18}
+                          className="text-[var(--fuel-brand-text)]"
+                        />
                       </div>
                     </Tooltip>
                   )}
                   {asset?.suspicious && (
-                    <Tooltip content="This asset is flagged as suspicious. It may be mimicking another asset. Proceed with caution.">
-                      <div className="mx-1">
-                        <IconAlertOctagon size={16} color="orange" />
-                      </div>
+                    <Tooltip content={t('asset.suspicious')}>
+                      <span className="mx-1 inline-flex items-center gap-1 text-xs text-[var(--fuel-danger-text)]">
+                        <IconAlertOctagon size={16} aria-hidden />
+                        {t('asset.suspicious_badge')}
+                      </span>
                     </Tooltip>
                   )}
-                  {nft?.nft && (
-                    <Badge variant="ghost" color="green" size="1">
-                      NFT
-                    </Badge>
-                  )}
+                  {nft?.nft && <AssetNftTag />}
                   <Copyable value={asset.assetId || ''} iconSize={16} />
                 </>
               ) : (
                 <>
-                  <Address value={assetId} className="text-gray-11 font-mono">
-                    {nft?.nft && (
-                      <Badge variant="ghost" color="green" size="1">
-                        NFT
-                      </Badge>
-                    )}
+                  <Address
+                    value={assetId}
+                    className="text-[var(--fuel-element-low-em)] font-mono"
+                  >
+                    {nft?.nft && <AssetNftTag />}
                   </Address>
                 </>
               )}

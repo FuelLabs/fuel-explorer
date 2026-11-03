@@ -40,9 +40,9 @@ export async function fetchStakingWithFallback<T>({
               endpointType === 'SECURE' &&
               'SECURE' in data[system]
             ) {
-              return data[system][endpointType as 'SECURE'];
+              return (data[system] as Record<string, string>)[endpointType];
             }
-            return data[system][endpointType as 'REST'];
+            return (data[system] as Record<string, string>)[endpointType];
           }),
         )
       : // Should not retry outside Mainnet

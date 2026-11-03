@@ -1,12 +1,41 @@
+/* Default badge: a flat label chip. The color prop only tints the text. */
+.rt-Badge {
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--fuel-border);
+  color: var(--fuel-element-mid-em);
+}
+
+.rt-Badge:where([data-accent-color]) {
+  background-color: transparent;
+  color: var(--fuel-element-mid-em);
+}
+
+.rt-Badge:where([data-accent-color="green"], [data-accent-color="grass"]) {
+  color: var(--fuel-brand-text);
+}
+
+.rt-Badge:where([data-accent-color="red"]) {
+  color: var(--fuel-danger-text);
+}
+
+.rt-Badge:where(
+    [data-accent-color="orange"],
+    [data-accent-color="amber"],
+    [data-accent-color="yellow"]
+  ) {
+  color: var(--fuel-warning-text);
+}
+
 [data-accent-color="gray"].rt-Badge:where(.rt-variant-solid) {
-  background-color: var(--gray-4);
-  color: var(--gray-12);
+  background-color: var(--fuel-muted);
+  color: var(--fuel-element-high-em);
 }
 
 @media all {
   .rt-Badge:where(.rt-r-size-3) {
     font-size: var(--font-size-2);
     padding: var(--space-2) var(--space-4);
-    border-radius: max(var(--radius-4), var(--radius-full));
+    border-radius: 0;
   }
 }

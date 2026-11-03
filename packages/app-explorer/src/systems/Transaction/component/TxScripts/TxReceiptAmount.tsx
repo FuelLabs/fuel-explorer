@@ -36,7 +36,7 @@ export function TxReceiptAmount({
         iconSize={16}
         assetId={assetId}
         value={amount}
-        className="text-primary text-base"
+        className="text-heading text-base"
         decimals={decimals}
       />
     </VStack>

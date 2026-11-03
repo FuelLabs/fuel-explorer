@@ -73,3 +73,38 @@ jobs:
           version: 1.9.4
       # Add `--reporter=github` flag once on a version, where it works.
       - run: biome ci .  --diagnostic-level=error
+
+  unit-tests:
+    name: Unit Tests
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    permissions:
+      contents: read
+    runs-on: warp-ubuntu-latest-x64-4x
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 22.23.4
+          pnpm-version: 9.10.0
+      - name: Run jest
+        run: pnpm --filter @fuels/ui --filter app-commons --filter app-explorer --filter app-staking --parallel test
+
+  type-check:
+    name: Type Check
+    if: ${{ github.head_ref != 'changeset-release/master' }}
+    permissions:
+      contents: read
+    runs-on: warp-ubuntu-latest-x64-4x
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FuelLabs/github-actions/setups/node@master
+        with:
+          node-version: 22.23.4
+          pnpm-version: 9.10.0
+      # The xstate *.typegen.ts files are gitignored, so generate them first.
+      - name: xstate typegen
+        run: pnpm --filter app-portal --filter app-staking xstate:typegen
+      # These packages type-check cleanly. app-explorer (about 60 errors) is
+      # not gated yet.
+      - name: tsc
+        run: pnpm --filter @fuels/ui --filter app-commons --filter app-portal --filter app-staking --parallel ts:check

@@ -9,7 +9,7 @@ export const styles = tv({
       'data-[size="lg"]:w-[44px]',
     ],
     iconWritten: [
-      'rounded-full bg-gray-6 items-center justify-center text-heading',
+      'rounded-full bg-[var(--fuel-muted)] items-center justify-center text-heading',
       'data-[size="xs"]:w-[24px] data-[size="xs"]:h-[24px]',
       'data-[size="sm"]:w-[32px] data-[size="sm"]:h-[32px]',
       'data-[size="md"]:w-[36px] data-[size="md"]:h-[36px]',

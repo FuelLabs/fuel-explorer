@@ -7,18 +7,19 @@
   "scripts": {
     "build": "tsc",
     "xstate:typegen": "xstate typegen 'src/**/*.ts?(x)'",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "tsc --noEmit",
+    "test": "jest --verbose --passWithNoTests"
   },
   "peerDependencies": {
     "@fuels/ui": "workspace:*",
-    "@tabler/icons-react": "2.46.0",
     "@tanstack/query-sync-storage-persister": "5.56.2",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",
     "app-commons": "workspace:*",
     "framer-motion": "11.0.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-i18next": "17.0.15",
     "tailwind-variants": "0.1.20",
     "viem": "2.20.1",
     "wagmi": "2.12.7"
@@ -37,14 +38,14 @@
   },
   "devDependencies": {
     "@fuels/ui": "workspace:*",
-    "@tabler/icons-react": "2.46.0",
     "@tanstack/query-sync-storage-persister": "5.56.2",
     "@tanstack/react-query": "5.56.2",
     "@tanstack/react-query-devtools": "5.56.2",
     "@tanstack/react-query-persist-client": "5.56.2",
+    "@types/jest": "29.5.12",
     "@types/node": "20.11.6",
-    "@types/react": "18.2.54",
-    "@types/react-dom": "18.2.22",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
     "@xstate/cli": "0.5.17",
     "app-commons": "workspace:*",
     "app-portal": "workspace:*",
@@ -54,12 +55,14 @@
     "framer-motion": "11.0.3",
     "geist": "1.2.1",
     "process": "0.11.10",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-i18next": "17.0.15",
     "tailwind-variants": "0.1.20",
     "typescript": "5.4.5",
     "util": "^0.12.5",
     "viem": "2.20.1",
+    "vite": "^6.0.0",
     "wagmi": "2.12.7"
   }
 }

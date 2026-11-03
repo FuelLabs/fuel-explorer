@@ -3,6 +3,7 @@ import { InputAmountMax, InputAmountSimple, InputAmountToken } from '@fuels/ui';
 import type { BN } from 'fuels';
 import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 
 interface StakeInputProps {
@@ -24,6 +25,7 @@ export function StakeInput({
   handleChange,
   rates,
 }: StakeInputProps) {
+  const { t } = useTranslation();
   const onMax = useCallback(() => {
     if (balance) {
       handleChange(balance);
@@ -52,7 +54,11 @@ export function StakeInput({
         onChange={handleAmountChange}
         error={!!error}
         header={
-          <InputAmountMax amount={balance} label="Available" onMax={onMax} />
+          <InputAmountMax
+            amount={balance}
+            label={t('staking.upgrade.available')}
+            onMax={onMax}
+          />
         }
         startAdornment={<InputAmountToken />}
         rates={rates}

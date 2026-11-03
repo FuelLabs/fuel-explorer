@@ -1,17 +1,13 @@
-import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
-import utc from 'dayjs/plugin/utc';
+import { useTranslation } from 'react-i18next';
 import { CodeBlock } from '~/systems/Core/components/CodeBlock/CodeBlock';
 import type { MetadataAudit } from '~portal/systems/Ecosystem/types';
-
-dayjs.extend(utc);
-dayjs.extend(advancedFormat);
 
 type MetadataAuditsProps = {
   audits: MetadataAudit[];
 };
 
 export function MetadataAudits({ audits }: MetadataAuditsProps) {
+  const { i18n } = useTranslation();
   if (!audits.length) {
     return null;
   }
@@ -21,7 +17,14 @@ export function MetadataAudits({ audits }: MetadataAuditsProps) {
       <ul className="list-disc pl-3">
         {audits.map((audit) => (
           <li key={audit.auditor}>
-            {audit.auditor} - {dayjs.utc(audit.date).format('MMM Do, YYYY')} -{' '}
+            {audit.auditor} -{' '}
+            {new Intl.DateTimeFormat(i18n.language, {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+              timeZone: 'UTC',
+            }).format(new Date(audit.date))}{' '}
+            -{' '}
             <a
               href={audit.url}
               target="_blank"

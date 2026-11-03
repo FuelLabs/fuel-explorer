@@ -1,5 +1,7 @@
+import { LoadingBox } from '@fuels/ui';
 import { Suspense, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Routes } from '~/routes';
 import { AccountAssetsLoader } from '~/systems/Account/components/AccountAssets/AccountAssetsLoader';
@@ -13,6 +15,7 @@ import { AccountTransactionsSync } from '~/systems/Account/screens/AccountTransa
 const _REVALIDATE_INTERVAL = 10;
 
 export function AccountPage() {
+  const { t } = useTranslation();
   const { id, tab } = useParams<{ id: string; tab?: string }>();
   const navigate = useNavigate();
 
@@ -40,7 +43,7 @@ export function AccountPage() {
       return (
         <>
           <Helmet>
-            <title>Account Assets {id} - Fuel Explorer</title>
+            <title>{t('meta.account_assets', { id })}</title>
           </Helmet>
           <AccountHeader />
           <Suspense fallback={<AccountAssetsLoader />}>
@@ -52,7 +55,7 @@ export function AccountPage() {
       return (
         <>
           <Helmet>
-            <title>Account Transactions {id} - Fuel Explorer</title>
+            <title>{t('meta.account_transactions', { id })}</title>
           </Helmet>
           <AccountHeader />
           <Suspense fallback={<AccountTransactionsLoader />}>
@@ -64,7 +67,7 @@ export function AccountPage() {
       return (
         <>
           <Helmet>
-            <title>Account NFTs {id} - Fuel Explorer</title>
+            <title>{t('meta.account_nfts', { id })}</title>
           </Helmet>
           <AccountHeader />
           <Suspense fallback={<AccountNftsLoader />}>
@@ -76,7 +79,7 @@ export function AccountPage() {
       return (
         <>
           <Helmet>
-            <title>Account Predicate {id} - Fuel Explorer</title>
+            <title>{t('meta.account_predicate', { id })}</title>
           </Helmet>
           <AccountHeader />
           <AccountPredicateSync id={id} />
@@ -91,13 +94,11 @@ export function AccountPage() {
 // Placeholder component for transactions loader
 function AccountTransactionsLoader() {
   return (
-    <div className="animate-pulse">
-      <div className="h-8 bg-gray-200 rounded w-1/4 mb-4" />
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-16 bg-gray-200 rounded" />
-        ))}
-      </div>
+    <div className="flex flex-col gap-4">
+      <LoadingBox className="h-8 w-1/4" />
+      {[1, 2, 3].map((i) => (
+        <LoadingBox key={i} className="h-16 w-full" />
+      ))}
     </div>
   );
 }

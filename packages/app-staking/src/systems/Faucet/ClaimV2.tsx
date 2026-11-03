@@ -2,9 +2,11 @@ import { Button, toast } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS, IS_FUEL_MAINNET_CHAIN } from 'app-commons';
 import { usePausedContract } from 'app-commons/usePausedContract';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useClaimFuelV2 } from '~staking/systems/Staking/hooks/useClaimFuelV2';
 
 export const ClaimV2Button = () => {
+  const { t } = useTranslation();
   const { data: pausers = [] } = usePausedContract({
     conditions: [CURRENT_NETWORK_CONTRACTS.FUEL_VESTING],
   });
@@ -17,24 +19,24 @@ export const ClaimV2Button = () => {
   useEffect(() => {
     if (error) {
       toast({
-        title: 'Error to claim Fuel token',
+        title: t('staking.faucet.error'),
         variant: 'error',
         description: error.message,
       });
     }
-  }, [error]);
+  }, [error, t]);
 
   if (IS_FUEL_MAINNET_CHAIN) return null;
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       color="gray"
       onClick={claimReward}
       isLoading={isClaiming}
       disabled={isPaused}
     >
-      Faucet Fuel Token
+      {t('staking.faucet.button')}
     </Button>
   );
 };

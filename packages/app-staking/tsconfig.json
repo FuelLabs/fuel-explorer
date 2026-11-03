@@ -8,7 +8,8 @@
     "tsBuildInfoFile": "./node_modules/.cache/app-staking.tsBuildInfo",
     "isolatedModules": true,
     "jsx": "preserve",
-    "types": ["vite/client", "@types/react", "@types/react-dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vite/client", "@types/react", "@types/react-dom", "jest"],
     "paths": {
       "app-commons": ["../app-commons/src"],
       "app-commons/*": ["../app-commons/src/*"],

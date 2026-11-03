@@ -1,70 +1,68 @@
-import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
-import { HStack, Progress, Text, VStack } from '@fuels/ui';
-import {
-  IconCircleCheck,
-  IconHourglassEmpty,
-  IconX,
-} from '@tabler/icons-react';
-import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useETA } from '~staking/systems/Staking/hooks/useETA';
 import type { StakingEvent } from '../../types/l1/events';
+import {
+  StatusMarker,
+  type StatusMarkerKind,
+} from '../StatusMarker/StatusMarker';
+import { type EventStatus, eventStatus } from './constants';
 
 interface TransactionHistoryItemStatusProps {
   event: StakingEvent;
 }
 
+const MARKER: Record<EventStatus, StatusMarkerKind> = {
+  completed: 'done',
+  action: 'action',
+  failed: 'error',
+  progress: 'pending',
+};
+
+const LABEL: Record<EventStatus, string> = {
+  completed: 'staking.history.status_completed',
+  action: 'staking.history.status_action',
+  failed: 'staking.history.status_failed',
+  progress: 'staking.history.status_progress',
+};
+
 export const TransactionHistoryItemStatus = ({
   event,
 }: TransactionHistoryItemStatusProps) => {
-  const startDate = event.statusInfo?.TransactionSent?.ethTx.timestamp;
-  const endDate: string | undefined = event.timestampToFinish;
-  const isCompleted = event.status === GQLWithdrawStatusType.Finalized;
-  const isWaitingForAction =
-    event.status === GQLWithdrawStatusType.ReadyToProcessWithdraw;
-  const isSkipped = event.status === GQLWithdrawStatusType.Skipped;
+  const { t } = useTranslation();
+  const status = eventStatus(event);
+  const isInProgress = status === 'progress';
 
   const { eta, progress } = useETA({
-    startDate,
-    endDate,
+    startDate: event.statusInfo?.TransactionSent?.ethTx.timestamp,
+    endDate: event.timestampToFinish,
   });
 
-  const label = useMemo<string>(() => {
-    if (isCompleted) return 'Completed';
-    if (isWaitingForAction) return 'Action needed';
-    if (isSkipped) return 'Failed';
-    return 'In Progress';
-  }, [isCompleted, isWaitingForAction, isSkipped]);
-  const isInProgress = label === 'In Progress';
-
   return (
-    <VStack gap="1">
-      <HStack gap="1" align="center">
-        {isCompleted && (
-          <IconCircleCheck size={20} color="var(--brand-11)" className="mr-1" />
-        )}
-        {isWaitingForAction && (
-          <IconHourglassEmpty
-            size={20}
-            color="var(--blue-11)"
-            className="mr-1"
-          />
-        )}
-        {isSkipped && (
-          <IconX size={20} color="var(--red-11)" className="mr-1" />
-        )}
-        <Text className="text-sm">{label}</Text>
+    <div className="flex min-w-0 flex-col gap-2">
+      <span className="flex items-center gap-2">
+        <StatusMarker kind={MARKER[status]} />
+        <span className="fuel-label text-[var(--fuel-element-mid-em)]">
+          {t(LABEL[status])}
+        </span>
         {isInProgress && eta && (
-          <Text className="text-sm text-muted">(~{eta} left)</Text>
+          <span className="fuel-label">
+            {t('staking.board.time_left', { eta })}
+          </span>
         )}
-      </HStack>
-      {isInProgress && (
-        <Progress
-          color="yellow"
-          value={progress}
-          className="w-full max-w-[150px]"
-          size="1"
-        />
+      </span>
+      {isInProgress && typeof progress === 'number' && (
+        <span
+          aria-hidden
+          className="block h-[2px] w-full max-w-[150px] bg-[var(--fuel-line)]"
+        >
+          <span
+            className="block h-full origin-left bg-[var(--fuel-primary)] transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+            style={{
+              transform: `scaleX(${Math.min(100, Math.max(0, progress)) / 100})`,
+            }}
+          />
+        </span>
       )}
-    </VStack>
+    </div>
   );
 };

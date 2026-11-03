@@ -1,11 +1,13 @@
 import { useNamedQuery } from '@fuels/react';
 import { getBridgeSolidityContracts } from 'app-commons';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 import type { PublicClient } from 'viem';
 import { usePublicClient } from 'wagmi';
 import { EthConnectorService, distanceToNow } from '~portal/systems/Chains';
 
 export function useWithdrawDelay() {
+  const { i18n } = useTranslation();
   const publicClient = usePublicClient() as PublicClient;
 
   const { fuelChainState } = useNamedQuery('fuelChainState', {
@@ -23,7 +25,7 @@ export function useWithdrawDelay() {
   });
 
   return useNamedQuery('timeToWithdrawFormatted', {
-    queryKey: ['fuel', 'bridge', 'withdraw', 'formatted'],
+    queryKey: ['fuel', 'bridge', 'withdraw', 'formatted', i18n.language],
     queryFn: async () => {
       const [blocksPerCommitInterval, timeToFinalize] = (await Promise.all([
         fuelChainState?.read.BLOCKS_PER_COMMIT_INTERVAL(),

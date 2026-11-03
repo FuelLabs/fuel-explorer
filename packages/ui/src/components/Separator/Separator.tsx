@@ -11,7 +11,7 @@ export const Separator = createComponent<SeparatorProps, typeof RadixSeparator>(
     baseElement: RadixSeparator,
     defaultProps: {
       orientation: 'horizontal',
-      className: 'border-gray-5',
+      className: 'border-[var(--fuel-line)]',
     },
   },
 );

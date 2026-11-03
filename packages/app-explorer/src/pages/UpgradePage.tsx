@@ -1,6 +1,7 @@
-import { Button, HStack, Link } from '@fuels/ui';
-import { PageTitle } from 'app-commons';
+import { Button, Link } from '@fuels/ui';
 import { type ReactNode, Suspense, lazy } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ToolPageHeader } from '~/systems/Core/components/ToolPage/ToolPageHeader';
 import { Routes } from '~staking/routes';
 import { AccountButton } from '~staking/systems/Core/components/AccountButton/AccountButton';
 import { ConversionToolLoader } from '~staking/systems/Staking/pages/ConversionToolLoader';
@@ -11,33 +12,25 @@ const ConversionTool = lazy(
 
 type UpgradePageProps = { children?: ReactNode };
 const UpgradePage = ({ children }: UpgradePageProps) => {
+  const { t } = useTranslation();
   return (
     <div>
-      <PageTitle
-        title="Token Manager"
-        subtitle="Manage your contributor grant and Fuel token release schedules."
-      >
-        <HStack
-          gap="2"
-          justify={{
-            initial: 'start',
-            md: 'end',
-          }}
-          wrap="wrap"
-          flexGrow="1"
-          flexShrink="0"
-          className="mb-4"
-        >
-          <HStack gap="2">
+      <ToolPageHeader
+        title={t('core.upgrade.title')}
+        actions={
+          <>
             <Link href={Routes.stakingL1()}>
-              <Button variant="outline" color="gray">
-                Stake your Fuel Tokens
+              <Button variant="ghost" color="gray">
+                {t('core.upgrade.stake_tokens')}
               </Button>
             </Link>
-          </HStack>
-          <AccountButton showConnectButton={true} />
-        </HStack>
-      </PageTitle>
+            <AccountButton showConnectButton={true} />
+          </>
+        }
+      />
+      <p className="m-0 px-6 pb-6 text-[16px] text-[var(--fuel-element-low-em)] leading-[20px] tracking-[-0.32px] tablet:px-10">
+        {t('core.upgrade.subtitle')}
+      </p>
       <Suspense fallback={<ConversionToolLoader />}>
         <ConversionTool />
       </Suspense>

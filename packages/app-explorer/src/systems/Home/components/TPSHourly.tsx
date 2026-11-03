@@ -1,6 +1,7 @@
-import { HStack, RoundedContainer } from '@fuels/ui';
+import { AnimatedNumber, HStack, RoundedContainer } from '@fuels/ui';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Bar,
   CartesianGrid,
@@ -19,6 +20,7 @@ export interface TPSHourlyProps {
 }
 
 export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
+  const { t } = useTranslation();
   const { chartData, currentHourAvg } = useMemo(() => {
     if (!Array.isArray(tpsPerMinute) || tpsPerMinute.length === 0) {
       return { chartData: [], currentHourAvg: 0 };
@@ -59,137 +61,120 @@ export const TPSHourly = ({ tpsPerMinute, peakTps = 0 }: TPSHourlyProps) => {
   }, [tpsPerMinute]);
 
   return (
-    <RoundedContainer className="py-4 px-5 h-full flex flex-col overflow-hidden">
-      <div className="flex flex-col flex-1 min-h-0 space-y-[16px]">
+    <RoundedContainer className="py-4 px-5 h-full flex flex-col">
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden space-y-[16px]">
         <div className="flex items-center justify-between">
-          <span className="text-[15px] leading-[24px] text-heading font-semibold">
-            Hourly TPS
-          </span>
-          <span className="text-[13px] leading-[20px] text-muted">24h</span>
+          <h2 className="fuel-label m-0">{t('home.hourly_tps')}</h2>
+          <span className="fuel-label">{t('common.window_24h')}</span>
         </div>
         <HStack className="items-baseline gap-3" gap={'0'}>
           <HStack className="items-baseline" gap={'0'}>
-            <h2 className="text-[27px] lg:text-[32px] leading-[36px] text-heading font-bold">
-              {currentHourAvg.toFixed(2)}
-            </h2>
+            <p className="fuel-stat m-0">
+              <AnimatedNumber
+                value={currentHourAvg}
+                format={(v) => v.toFixed(2)}
+              />
+            </p>
             <div className="text-[12px] leading-[12px] text-heading ml-1">
-              TX/s
+              {t('home.tx_per_second')}
             </div>
           </HStack>
           {peakTps > 0 && (
             <span className="text-[12px] text-muted">
-              Peak:{' '}
-              <span className="text-[#FF6B6B] font-semibold">
+              {t('home.peak')}{' '}
+              <span className="text-heading font-medium">
                 {peakTps.toFixed(2)}
               </span>{' '}
-              TX/s
+              {t('home.tx_per_second')}
             </span>
           )}
         </HStack>
-        <ResponsiveContainer width="100%" className="flex-1 min-h-0">
-          <ComposedChart
-            data={chartData}
-            margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 0"
-              stroke="#333"
-              vertical={true}
-              horizontal={false}
-            />
-            <XAxis
-              dataKey="time"
-              tick={{ className: 'fill-heading', fontSize: '10px' }}
-              interval={Math.max(0, Math.floor(chartData.length / 6) - 1)}
-            />
-            <XAxis dataKey="time" xAxisId="overlay" hide />
-            <YAxis
-              hide
-              domain={[
-                0,
-                (max: number) =>
-                  peakTps > 0 ? Math.max(max, peakTps * 1.1) : max,
-              ]}
-            />
-            <Tooltip
-              content={({ active, payload, label }) => {
-                if (!active || !payload?.length) return null;
-                const data = payload[0].payload;
-                return (
-                  <div
-                    style={{
-                      backgroundColor: 'var(--gray-1)',
-                      border: '1px solid var(--gray-2)',
-                      borderRadius: '8px',
-                      padding: '8px 12px',
-                      fontSize: '12px',
-                    }}
-                  >
+        <div className="h-[136px] laptop:h-auto laptop:flex-1 laptop:min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart
+              data={chartData}
+              margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 0"
+                stroke="var(--fuel-grid-line)"
+                vertical={true}
+                horizontal={false}
+              />
+              <XAxis
+                dataKey="time"
+                tick={{ className: 'fill-heading', fontSize: '12px' }}
+                interval={Math.max(0, Math.floor(chartData.length / 6) - 1)}
+              />
+              <XAxis dataKey="time" xAxisId="overlay" hide />
+              <YAxis
+                hide
+                domain={[
+                  0,
+                  (max: number) =>
+                    peakTps > 0 ? Math.max(max, peakTps * 1.1) : max,
+                ]}
+              />
+              <Tooltip
+                content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  const data = payload[0].payload;
+                  return (
                     <div
                       style={{
-                        color: 'var(--gray-12)',
-                        fontWeight: 'bold',
-                        marginBottom: 4,
+                        backgroundColor: 'var(--fuel-background)',
+                        border: '1px solid var(--fuel-line)',
+                        borderRadius: 0,
+                        padding: '8px 12px',
+                        fontSize: '12px',
                       }}
                     >
-                      {label}
-                    </div>
-                    <div style={{ color: '#00F58C' }}>
-                      Peak TPS: {data.max.toFixed(2)} TX/s
-                    </div>
-                    <div style={{ color: 'var(--gray-12)' }}>
-                      Avg TPS: {data.avg.toFixed(2)} TX/s
-                    </div>
-                    {peakTps > 0 && (
                       <div
                         style={{
-                          color: '#FF6B6B',
-                          marginTop: 2,
-                          fontSize: '11px',
+                          color: 'var(--fuel-element-high-em)',
+                          fontWeight: 'bold',
+                          marginBottom: 4,
                         }}
                       >
-                        Day Peak: {peakTps.toFixed(2)} TX/s
+                        {label}
                       </div>
-                    )}
-                  </div>
-                );
-              }}
-              cursor={{ strokeWidth: 0.1, radius: 10 }}
-            />
-            {peakTps > 0 && (
-              <ReferenceLine
-                y={peakTps}
-                stroke="#FF6B6B"
-                strokeDasharray="5 3"
-                label={{
-                  value: `Peak: ${peakTps.toFixed(2)}`,
-                  position: 'right',
-                  fill: '#FF6B6B',
-                  fontSize: 10,
+                      <div style={{ color: 'var(--fuel-brand-text)' }}>
+                        {t('home.peak_tps')}: {data.max.toFixed(2)}{' '}
+                        {t('home.tx_per_second')}
+                      </div>
+                      <div style={{ color: 'var(--fuel-element-high-em)' }}>
+                        {t('home.avg_tps')}: {data.avg.toFixed(2)}{' '}
+                        {t('home.tx_per_second')}
+                      </div>
+                    </div>
+                  );
                 }}
+                cursor={{ strokeWidth: 0.1, radius: 10 }}
               />
-            )}
-            <Bar
-              dataKey="max"
-              radius={[10, 10, 10, 10]}
-              barSize={5}
-              fill="#00F58C"
-            />
-            <Bar
-              dataKey="avg"
-              radius={[10, 10, 10, 10]}
-              barSize={5}
-              xAxisId="overlay"
-            >
-              {chartData.map((_, index) => (
-                <Cell
-                  key={`avg-${index}`}
-                  className="text-[rgb(180,180,180)] dark:text-[rgb(223,223,223)] fill-current"
+              {peakTps > 0 && (
+                <ReferenceLine
+                  y={peakTps}
+                  stroke="var(--fuel-element-low-em)"
+                  strokeDasharray="5 3"
                 />
-              ))}
-            </Bar>
-          </ComposedChart>
-        </ResponsiveContainer>
+              )}
+              <Bar
+                dataKey="max"
+                radius={0}
+                barSize={5}
+                fill="var(--fuel-primary)"
+              />
+              <Bar dataKey="avg" radius={0} barSize={5} xAxisId="overlay">
+                {chartData.map((_, index) => (
+                  <Cell
+                    key={`avg-${index}`}
+                    fill="var(--fuel-element-low-em)"
+                  />
+                ))}
+              </Bar>
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </RoundedContainer>
   );

@@ -1,4 +1,5 @@
 import { Toast } from '@fuels/ui';
+import { useTranslation } from 'react-i18next';
 import type { Address } from 'viem';
 import type { PendingTransactionL1 } from '~staking/systems/Core/hooks/usePendingTransactions';
 import { getTransactionLink } from '../../utils/getTransactionLink';
@@ -9,9 +10,10 @@ type ViewInExplorerProps = {
 };
 
 export function ViewInExplorer({ hash, layer = 'l1' }: ViewInExplorerProps) {
+  const { t } = useTranslation();
   return (
     <Toast.Action
-      altText="View"
+      altText={t('staking.toast.view_explorer')}
       onClick={() => {
         window.open(
           getTransactionLink(hash, layer),
@@ -20,7 +22,7 @@ export function ViewInExplorer({ hash, layer = 'l1' }: ViewInExplorerProps) {
         );
       }}
     >
-      View in explorer
+      {t('staking.toast.view_explorer')}
     </Toast.Action>
   );
 }

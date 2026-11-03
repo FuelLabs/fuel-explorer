@@ -1,5 +1,6 @@
 import { Address } from '@fuels/ui';
 import { PageTitle } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import { ViewMode } from '~/systems/Core/components/ViewMode/ViewMode';
 import { ViewModes } from '~/systems/Core/components/ViewMode/constants';
 
@@ -18,10 +19,11 @@ export function TxHeader({
   isSimpleDisabled?: boolean;
   isSimple?: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <PageTitle
-      title="Transaction Details"
-      className={`${className} flex-col tablet:flex-row tablet:justify-between tablet:items-center gap-4 tablet:gap-0`}
+      title={t('tx.details_title')}
+      className={`${className} flex-col tablet:flex-row tablet:justify-between tablet:items-center gap-4 tablet:gap-0 px-[17px]`}
       subtitle={
         isSimple ? null : (
           <>

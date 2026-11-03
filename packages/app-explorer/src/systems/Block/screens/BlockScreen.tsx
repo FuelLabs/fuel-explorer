@@ -1,14 +1,18 @@
-import { VStack } from '@fuels/ui';
+import { Button, VStack } from '@fuels/ui';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import type { GQLBlocksQuery } from '@fuel-explorer/graphql';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { StaleNotice } from '~/systems/Core/components/PageState/StaleNotice';
 import { getBlocks } from '../actions/get-blocks';
 import BlocksTable from '../components/BlocksTable';
 import { BlocksTableLoader } from '../components/BlocksTableLoader';
 import { Hero } from '../components/Hero';
 
 export const BlocksScreen = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -20,6 +24,7 @@ export const BlocksScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
   const [_loading, setLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const limit = 10;
 
   const fetchBlockData = async (
@@ -27,6 +32,7 @@ export const BlocksScreen = () => {
     dir: 'after' | 'before' = 'after',
   ) => {
     setLoading(true);
+    setHasError(false);
     try {
       const result = await getBlocks({ cursor, dir });
       const blockData = result.blocks;
@@ -36,6 +42,8 @@ export const BlocksScreen = () => {
         const endCursor = Number(blockData.pageInfo.endCursor);
         setTotalPages(Math.ceil(endCursor / limit));
       }
+    } catch {
+      setHasError(true);
     } finally {
       setLoading(false);
     }
@@ -96,7 +104,23 @@ export const BlocksScreen = () => {
   return (
     <VStack>
       <Hero />
-      {!data ? (
+      {hasError && data && (
+        <StaleNotice
+          message={t('core.stale_data')}
+          onRetry={() => fetchBlockData(currentCursor, dir)}
+        />
+      )}
+      {hasError && !data ? (
+        <PageState
+          title={t('block.list_error_title')}
+          description={t('block.list_error_description')}
+          action={
+            <Button onClick={() => fetchBlockData(currentCursor, dir)}>
+              {t('core.retry')}
+            </Button>
+          }
+        />
+      ) : !data ? (
         <BlocksTableLoader />
       ) : (
         data && (
