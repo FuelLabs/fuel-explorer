@@ -80,7 +80,15 @@ async function setup(clientOverrides: Record<string, unknown> = {}) {
     if (json.errors) throw new Error(JSON.stringify(json.errors));
     return json.data;
   };
-  return { gql };
+  const gqlRaw = async (query: string, variables?: object) => {
+    const res = await yoga.fetch('http://x/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query, variables }),
+    });
+    return res.json();
+  };
+  return { gql, gqlRaw };
 }
 
 describe('Balance.utxos', () => {
@@ -110,5 +118,95 @@ describe('Balance.utxos', () => {
       first: 2500,
     });
     expect(seenQuery).toContain('coins');
+  });
+
+  const balancesPage = (count: number) => ({
+    balances: {
+      nodes: Array.from({ length: count }, (_, i) => ({
+        amount: '1',
+        assetId: hex(i + 1),
+        owner: hex(9),
+      })),
+    },
+  });
+
+  it('serves utxos for a full 100-balance page, the most the explorer requests', async () => {
+    let coinsCalls = 0;
+    const { gql } = await setup({
+      query: async (query: string) => {
+        if (query.includes('query coins')) {
+          coinsCalls += 1;
+          return { coins: { nodes: [] } };
+        }
+        return balancesPage(100);
+      },
+    });
+    const d = await gql(
+      `{ balances(filter: { owner: "${hex(9)}" }, first: 100) { nodes { utxos { utxoId } } } }`,
+    );
+    expect(d.balances.nodes).toHaveLength(100);
+    expect(coinsCalls).toBe(100);
+  });
+
+  const rejects = async (query: string, variables?: object) => {
+    let coinsCalls = 0;
+    const { gqlRaw } = await setup({
+      query: async (q: string) => {
+        if (q.includes('query coins')) {
+          coinsCalls += 1;
+          return { coins: { nodes: [] } };
+        }
+        return balancesPage(100);
+      },
+    });
+    const json = await gqlRaw(query, variables);
+    expect(json.errors).toHaveLength(1);
+    expect(json.errors[0].message).toBe(
+      'Requests are limited to 100 utxos lookups',
+    );
+    expect(json.data).toBeUndefined();
+    expect(coinsCalls).toBe(0);
+  };
+
+  const owner = `filter: { owner: "${hex(9)}" }`;
+
+  it('rejects aliased balances pages before running any lookup', async () => {
+    const page = (alias: string) =>
+      `${alias}: balances(${owner}, first: 100) { nodes { utxos { utxoId } } }`;
+    await rejects(`{ ${page('a')} ${page('b')} }`);
+  });
+
+  it('rejects nested utxos aliases through a fragment with one error', async () => {
+    const aliases = Array.from(
+      { length: 50 },
+      (_, i) => `u${i}: utxos { utxoId }`,
+    ).join(' ');
+    await rejects(
+      `{ balances(${owner}, first: 10) { nodes { ...B } } } fragment B on Balance { ${aliases} }`,
+    );
+  });
+
+  it('counts a missing or variable page size as a full page', async () => {
+    await rejects(
+      `query($n: Int) { a: balances(${owner}, first: $n) { nodes { utxos { utxoId } } } b: balances(${owner}) { nodes { utxos { utxoId } } } }`,
+      { n: 100 },
+    );
+  });
+
+  it('applies variable defaults before budgeting', async () => {
+    const page = (alias: string) =>
+      `${alias}: balances(filter: $f, first: 100) { nodes { utxos { utxoId } } }`;
+    await rejects(
+      `query($f: BalanceFilterInput! = { owner: "${hex(9)}" }) { ${page('a')} ${page('b')} }`,
+      {},
+    );
+  });
+
+  it('budgets the larger of first and last, and first: 0 as a full page', async () => {
+    const page = (alias: string, args: string) =>
+      `${alias}: balances(${owner}, ${args}) { nodes { utxos { utxoId } } }`;
+    await rejects(
+      `{ ${page('a', 'first: 0, last: 100')} ${page('b', 'first: 0')} }`,
+    );
   });
 });
