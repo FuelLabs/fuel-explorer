@@ -110,7 +110,15 @@ export const test = base.extend<{
     const metamaskPage = await context.newPage();
     await metamaskPage.goto(`chrome-extension://${metamaskId}/home.html`);
     await importMetaMaskWallet(metamaskPage, ETH_MNEMONIC, ETH_WALLET_PASSWORD);
-    setMetaMask(context, metamaskId);
+    for (const openPage of context.pages()) {
+      if (
+        openPage !== metamaskPage &&
+        openPage.url().startsWith(`chrome-extension://${metamaskId}/`)
+      ) {
+        await openPage.close();
+      }
+    }
+    setMetaMask(metamaskPage, metamaskId, ETH_WALLET_PASSWORD);
     // Set context to playwright
     await use(context);
   },

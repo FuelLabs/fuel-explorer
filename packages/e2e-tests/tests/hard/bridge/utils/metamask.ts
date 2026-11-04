@@ -1,13 +1,13 @@
-import type { BrowserContext, Page } from '@playwright/test';
-
-const PROMPT_TIMEOUT = 60_000;
+const PROMPT_TIMEOUT = 120_000;
 const OPTIONAL_PROMPT_TIMEOUT = 30_000;
-const SUBMIT_TIMEOUT = 10_000;
+const POLL_INTERVAL = 500;
+const RELOAD_INTERVAL = 45_000;
 
-let metaMask: { context: BrowserContext; extensionId: string } | null = null;
+let metaMask: { tab: Page; extensionId: string; password: string } | null =
+  null;
 
-export function setMetaMask(context: BrowserContext, extensionId: string) {
-  metaMask = { context, extensionId };
+export function setMetaMask(tab: Page, extensionId: string, password: string) {
+  metaMask = { tab, extensionId, password };
 }
 
 function requireMetaMask() {
@@ -15,26 +15,47 @@ function requireMetaMask() {
   return metaMask;
 }
 
-// MetaMask 13 does not reliably open its own popup window under automation, so
-// pending requests are opened in a tab of our own.
-async function openPrompt(): Promise<Page> {
-  const { context, extensionId } = requireMetaMask();
-  const page = await context.newPage();
-  await page.goto(`chrome-extension://${extensionId}/notification.html`);
-  return page;
-}
-
+// MetaMask shows a request in its popup or, when it opens none, in its own
+// tab once that tab reloads the prompt page. Either may sit behind the unlock
+// screen.
 async function clickInPrompt(testId: string, timeout = PROMPT_TIMEOUT) {
-  const page = await openPrompt();
-  try {
-    await page.getByTestId(testId).click({ timeout });
-    // Closing the tab while MetaMask is still submitting cancels the request.
-    await page
-      .waitForEvent('close', { timeout: SUBMIT_TIMEOUT })
-      .catch(() => {});
-  } finally {
-    if (!page.isClosed()) await page.close();
+  const { tab, extensionId, password } = requireMetaMask();
+  const deadline = Date.now() + timeout;
+  let nextReload = Date.now() + RELOAD_INTERVAL;
+  while (Date.now() < deadline) {
+    const pages = tab
+      .context()
+      .pages()
+      .filter(
+        (page) =>
+          !page.isClosed() &&
+          page.url().startsWith(`chrome-extension://${extensionId}/`),
+      );
+    for (const page of pages) {
+      try {
+        const unlock = page.getByTestId('unlock-password');
+        if (await unlock.isVisible()) {
+          await unlock.fill(password);
+          await page.getByTestId('unlock-submit').click();
+          continue;
+        }
+        const button = page.getByTestId(testId);
+        if ((await button.isVisible()) && (await button.isEnabled())) {
+          await button.click();
+          return;
+        }
+      } catch (error) {
+        // MetaMask closes its popup once a request is answered.
+        if (!page.isClosed()) throw error;
+      }
+    }
+    if (Date.now() > nextReload) {
+      await tab.goto(`chrome-extension://${extensionId}/notification.html`);
+      nextReload = Date.now() + RELOAD_INTERVAL;
+    }
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
   }
+  throw new Error(`MetaMask did not show ${testId} within ${timeout} ms`);
 }
 
 export async function connectToDapp() {
