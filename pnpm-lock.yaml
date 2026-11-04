@@ -782,8 +782,8 @@ importers:
   packages/e2e-tests:
     devDependencies:
       '@fuels/playwright-utils':
-        specifier: 0.57.1
-        version: 0.57.1(@playwright/test@1.64.1)(fuels@0.103.0(vitest@4.1.9(@types/node@20.19.10)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.16.0)(yaml@2.8.1)))
+        specifier: 0.63.2
+        version: 0.63.2(@playwright/test@1.64.1)(fuels@0.103.0(vitest@4.1.9(@types/node@20.19.10)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.16.0)(yaml@2.8.1)))
       '@synthetixio/synpress':
         specifier: 4.1.2
         version: 4.1.2(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.6)(@playwright/test@1.64.1)(@swc/core@1.13.3(@swc/helpers@0.5.17))(bufferutil@4.0.9)(ethers@6.11.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(playwright-core@1.64.1)(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.4.1(@swc/helpers@0.5.17))(@types/node@20.19.10)(typescript@5.4.5))(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.23.8)
@@ -2787,11 +2787,11 @@ packages:
   '@fuels/local-storage@0.23.0':
     resolution: {integrity: sha512-/5kj3ww+AETRqtDM4IYZ0L525dd0ZXrSIVBVEuHQU16112EBZYBYnrGAq2fgJAE7MzLowEhBx2aa8iWvq+m/0g==}
 
-  '@fuels/playwright-utils@0.57.1':
-    resolution: {integrity: sha512-x182m0K4Cj4QB513G5ys2DSIRw5qqTb6/aU/47UF1fZEKQr2WSRHCpJ+MoAeXWjhM9kYlBlP5W7K8BbBVNt5qA==}
+  '@fuels/playwright-utils@0.63.2':
+    resolution: {integrity: sha512-6aMiXFU/uBpohttxNaWLR2lm2FzR20AXVJqNJ5dRIJGtoAWq196AKha1HnIX5EoKdEaf3kiKK95lUOzr+wo8VQ==}
     peerDependencies:
       '@playwright/test': '>=1.46.1'
-      fuels: '>=0.100.6'
+      fuels: 0.103.0
 
   '@fuels/react-xstore@0.23.0':
     resolution: {integrity: sha512-MJdHDiGL1/X9mjSUhRWpO1IvHK+0K1DATEBtmKyY0zW75zZx5v2t46uYlbG4DwqCJsFHuwMkswe2M/2NaMwrcg==}
@@ -6585,9 +6585,9 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  adm-zip@0.5.16:
-    resolution: {integrity: sha512-TGw5yVi4saajsSEgz25grObGHEUaDrniwvA2qwSC060KfqGPdglhvPMA2lPIoxs3PQIItj2iag35fONcQqgUaQ==}
-    engines: {node: '>=12.0'}
+  adm-zip@0.6.1:
+    resolution: {integrity: sha512-Xwrja8nx9e5o2N1my4DsKCeKpdrnACyr1wtbPxBDgGzKzKyE9kRtBFA8mWldI+RVlD7CBZNWY/wQ2+ydwOR6kQ==}
+    engines: {node: '>=14.0'}
 
   aes-js@3.0.0:
     resolution: {integrity: sha512-H7wUZRn8WpTq9jocdxQ2c8x2sKo9ZVmzfRE13GiNJXfp7NcKYEdvl3vspKjXox6RIG2VtaRe4JFvxG4rqp2Zuw==}
@@ -15143,10 +15143,10 @@ snapshots:
 
   '@fuels/local-storage@0.23.0': {}
 
-  '@fuels/playwright-utils@0.57.1(@playwright/test@1.64.1)(fuels@0.103.0(vitest@4.1.9(@types/node@20.19.10)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.16.0)(yaml@2.8.1)))':
+  '@fuels/playwright-utils@0.63.2(@playwright/test@1.64.1)(fuels@0.103.0(vitest@4.1.9(@types/node@20.19.10)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.16.0)(yaml@2.8.1)))':
     dependencies:
       '@playwright/test': 1.64.1
-      adm-zip: 0.5.16
+      adm-zip: 0.6.1
       fuels: 0.103.0(vitest@4.1.9(@types/node@20.19.10)(jiti@2.5.1)(jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(tsx@4.16.0)(yaml@2.8.1))
 
   '@fuels/react-xstore@0.23.0(@babel/core@7.28.0)(@babel/template@7.27.2)(@types/react@18.2.54)(@types/ws@8.18.1)(@xstate/react@3.2.2(@types/react@18.2.54)(react@18.2.0)(xstate@4.38.3))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(xstate@4.38.3)':
@@ -21426,7 +21426,7 @@ snapshots:
 
   acorn@8.15.0: {}
 
-  adm-zip@0.5.16: {}
+  adm-zip@0.6.1: {}
 
   aes-js@3.0.0: {}
 

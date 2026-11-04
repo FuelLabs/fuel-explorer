@@ -25,4 +25,5 @@ export async function importMetaMaskWallet(
   await page.getByTestId('create-password-submit').click();
   await page.locator('#metametrics-opt-in').click();
   await page.getByTestId('metametrics-i-agree').click();
+  await page.getByTestId('onboarding-complete-done').click();
 }

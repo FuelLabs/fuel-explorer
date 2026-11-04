@@ -13,7 +13,7 @@ import path from 'node:path';
 import { getExtensionsData } from './utils/getExtensionsData';
 import { waitForExtensions } from './utils/waitForExtenssions';
 
-const FUEL_WALLET_VERSION = '0.57.1';
+const FUEL_WALLET_VERSION = '0.63.2';
 
 async function importPlaywrightUtils() {
   return await import('@fuels/playwright-utils');
@@ -25,11 +25,6 @@ export const test = base.extend<{
   debugPort: number;
 }>({
   context: async ({ context: _ }, use) => {
-    // required for synpress
-    (global as any).expect = expect;
-
-    // required for synpress as it shares same expect instance as playwright
-    // await setExpectInstance(expect);
     // dynamically import fuel-playwright-utils
     const utils = await importPlaywrightUtils();
     const fuelPathExtension = await utils.downloadFuel(FUEL_WALLET_VERSION);
@@ -110,30 +105,12 @@ export const test = base.extend<{
     const extensions = await getExtensionsData(context);
     // Wait for Fuel Wallet to load
     await waitForExtensions(context, extensions);
-    // Setup MetaMask using Synpress v4 MetaMask class
-    const synpressPW: any = await import('@synthetixio/synpress/playwright');
-    const extensionsData: any = extensions as any;
-    const metamaskId =
-      extensionsData.metamask?.id ||
-      Object.values(extensionsData).find((e: any) => e?.id && e?.version && e)
-        ?.id;
+    const metamaskId = (extensions as Record<string, { id: string }>).metamask
+      ?.id;
     const metamaskPage = await context.newPage();
     await metamaskPage.goto(`chrome-extension://${metamaskId}/home.html`);
-    const MetaMaskCtor =
-      synpressPW?.MetaMask || synpressPW?.default || synpressPW;
-    const metamask = new MetaMaskCtor(
-      context,
-      metamaskPage,
-      ETH_WALLET_PASSWORD,
-      metamaskId,
-    );
-    setMetaMask(metamask);
     await importMetaMaskWallet(metamaskPage, ETH_MNEMONIC, ETH_WALLET_PASSWORD);
-    try {
-      await metamask.switchNetwork('localhost');
-    } catch (_) {
-      // ignore if network already set or not required
-    }
+    setMetaMask(context, metamaskId);
     // Set context to playwright
     await use(context);
   },

@@ -2,7 +2,7 @@
   "name": "e2e-tests",
   "private": true,
   "devDependencies": {
-    "@fuels/playwright-utils": "0.57.1",
+    "@fuels/playwright-utils": "0.63.2",
     "@synthetixio/synpress": "4.1.2",
     "app-commons": "workspace:*",
     "fuels": "0.103.0",

@@ -1,82 +1,66 @@
-let metaMaskInstance: any | null = null;
+import type { BrowserContext, Page } from '@playwright/test';
 
-export function setMetaMask(instance: any) {
-  metaMaskInstance = instance;
+const PROMPT_TIMEOUT = 60_000;
+const OPTIONAL_PROMPT_TIMEOUT = 30_000;
+const SUBMIT_TIMEOUT = 10_000;
+
+let metaMask: { context: BrowserContext; extensionId: string } | null = null;
+
+export function setMetaMask(context: BrowserContext, extensionId: string) {
+  metaMask = { context, extensionId };
 }
 
-function requireMM() {
-  if (!metaMaskInstance) throw new Error('MetaMask instance not set');
-  return metaMaskInstance as any;
+function requireMetaMask() {
+  if (!metaMask) throw new Error('MetaMask is not set up');
+  return metaMask;
 }
 
-export async function confirmTransaction() {
-  return requireMM().confirmTransaction();
+// MetaMask 13 does not reliably open its own popup window under automation, so
+// pending requests are opened in a tab of our own.
+async function openPrompt(): Promise<Page> {
+  const { context, extensionId } = requireMetaMask();
+  const page = await context.newPage();
+  await page.goto(`chrome-extension://${extensionId}/notification.html`);
+  return page;
 }
 
-export async function confirmPermissionToSpend(options?: {
-  spendLimit?: 'max' | number;
-}) {
-  return requireMM().approveTokenPermission(options);
-}
-
-export async function approveTokenPermission() {
-  return requireMM().approveTokenPermission();
-}
-
-export async function rejectPermissionToSpend() {
-  return requireMM().rejectTokenPermission();
-}
-
-export async function acceptAccess(options?: { switchNetwork?: boolean }) {
-  return requireMM().acceptAccess(options);
+async function clickInPrompt(testId: string, timeout = PROMPT_TIMEOUT) {
+  const page = await openPrompt();
+  try {
+    await page.getByTestId(testId).click({ timeout });
+    // Closing the tab while MetaMask is still submitting cancels the request.
+    await page
+      .waitForEvent('close', { timeout: SUBMIT_TIMEOUT })
+      .catch(() => {});
+  } finally {
+    if (!page.isClosed()) await page.close();
+  }
 }
 
 export async function connectToDapp() {
-  const mm = requireMM();
-  if (typeof mm.connectToDapp === 'function') {
-    return mm.connectToDapp();
-  }
-  return mm.acceptAccess();
+  await clickInPrompt('confirm-btn');
 }
 
-// Optional pass-through helpers (used by callers if available in current synpress version)
-export async function approveAddAndSwitchNetwork() {
-  const mm = requireMM();
-  if (typeof mm.approveAddAndSwitchNetwork === 'function') {
-    return mm.approveAddAndSwitchNetwork();
-  }
-  return mm.acceptAccess({ switchNetwork: true });
-}
 export async function approveNewNetwork() {
-  const mm = requireMM();
-  if (typeof mm.approveNewNetwork === 'function') {
-    return mm.approveNewNetwork();
-  }
-  return mm.acceptAccess({ switchNetwork: true });
+  await clickInPrompt('confirmation-submit-button', OPTIONAL_PROMPT_TIMEOUT);
 }
 
 export async function approveSwitchNetwork() {
-  const mm = requireMM();
-  if (typeof mm.approveSwitchNetwork === 'function') {
-    return mm.approveSwitchNetwork();
-  }
-  return mm.acceptAccess({ switchNetwork: true });
+  await clickInPrompt('confirmation-submit-button', OPTIONAL_PROMPT_TIMEOUT);
 }
 
-export async function approveAddNetwork() {
-  return requireMM().approveAddNetwork?.();
+export async function confirmTransaction() {
+  await clickInPrompt('confirm-footer-button');
 }
 
-// Default export: a typed-ish proxy to forward any property/method to the instance
-const metamask = new Proxy(
-  {},
-  {
-    get(_target, prop: string) {
-      const mm = requireMM();
-      const value = (mm as any)[prop];
-      return typeof value === 'function' ? value.bind(mm) : value;
-    },
-  },
-) as any;
+export async function confirmPermissionToSpend() {
+  await clickInPrompt('confirm-footer-button');
+}
 
-export default metamask;
+export default {
+  connectToDapp,
+  approveNewNetwork,
+  approveSwitchNetwork,
+  confirmTransaction,
+  confirmPermissionToSpend,
+};
