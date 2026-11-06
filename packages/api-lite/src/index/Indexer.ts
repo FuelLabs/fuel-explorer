@@ -152,20 +152,23 @@ export class Indexer {
   async retention(): Promise<number> {
     if (this.sweeping) return 0;
     this.sweeping = true;
+    const started = performance.now();
     try {
       let floor = this.floorHeight();
       let deleted = await this.deleteBelowChunked(floor);
-      let dropped = this.opts.index.dropExpiredPartitions(floor);
+      let dropped = await this.opts.index.dropExpiredPartitions(floor);
       while (this.opts.index.fileBytes() > this.opts.maxBytes) {
         const oldestEnd = this.opts.index.oldestPartitionEnd();
         const r = this.opts.index.range();
         if (oldestEnd == null || r.to == null || oldestEnd + 1 >= r.to) break;
         floor = Math.max(floor, oldestEnd + 1);
         deleted += await this.deleteBelowChunked(floor);
-        dropped += this.opts.index.dropExpiredPartitions(floor);
+        dropped += await this.opts.index.dropExpiredPartitions(floor);
       }
       if (dropped > 0)
-        this.opts.onLog?.(`retention: dropped ${dropped} tx partitions`);
+        this.opts.onLog?.(
+          `retention: dropped ${dropped} tx partitions in ${Math.round(performance.now() - started)}ms`,
+        );
       return deleted;
     } finally {
       this.sweeping = false;

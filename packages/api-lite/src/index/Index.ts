@@ -24,6 +24,10 @@ CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 const DEFAULT_BUCKET_BLOCKS = 86_400;
 const LEGACY_RANGE_KEY = 'legacy_tx_range';
 const BUCKET_BLOCKS_KEY = 'bucket_blocks';
+// Rows per DELETE while emptying an expired partition; small enough that one
+// statement stays well under a second on a slow volume.
+const DEFAULT_DRAIN_CHUNK_ROWS = 200;
+const yieldToEventLoop = () => new Promise<void>((r) => setImmediate(r));
 
 type Partition = {
   txs: string;
@@ -98,13 +102,18 @@ export class Index {
   private readonly path: string;
   private readonly stmts;
   private bucketBlocks: number;
+  private readonly drainChunkRows: number;
   // Newest first (by `end`), the order account history is read in.
   private partitions: Partition[] = [];
   private readonly partitionStmts = new Map<string, PartitionStmts>();
 
-  constructor(path: string, opts: { bucketBlocks?: number } = {}) {
+  constructor(
+    path: string,
+    opts: { bucketBlocks?: number; drainChunkRows?: number } = {},
+  ) {
     this.path = path;
     this.bucketBlocks = opts.bucketBlocks ?? DEFAULT_BUCKET_BLOCKS;
+    this.drainChunkRows = opts.drainChunkRows ?? DEFAULT_DRAIN_CHUNK_ROWS;
     this.db = new Database(path);
     logSlowStatements(this.db, 'index');
     if (path !== ':memory:') {
@@ -342,19 +351,38 @@ export class Index {
     return oldest ? oldest.end : null;
   }
 
-  // Drops every partition whose heights all lie below `floor`. Freed pages
-  // stay on the freelist for the next partition's inserts, so the file does
-  // not shrink and no vacuum runs.
-  dropExpiredPartitions(floor: number): number {
+  // Drops every partition whose heights all lie below `floor`. A single DROP
+  // TABLE of a full day's partition ran 478-510s on mainnet's volume
+  // (2026-11-04 and 11-05), all of it on the event loop, so each table is
+  // first emptied in small DELETEs with `pause()` between them and the DROP
+  // only frees what is left. Freed pages stay on the freelist for the next
+  // partition's inserts, so the file does not shrink and no vacuum runs.
+  async dropExpiredPartitions(
+    floor: number,
+    pause: () => Promise<void> = yieldToEventLoop,
+  ): Promise<number> {
     const expired = this.partitions.filter((p) => p.end < floor);
+    // Readers stop seeing a partition before it is half-emptied.
+    this.partitions = this.partitions.filter((p) => p.end >= floor);
     for (const p of expired) {
+      for (const [table, key] of [
+        [p.txs, 'height, tx_index'],
+        [p.accounts, 'account, height, tx_index'],
+      ]) {
+        const del = this.db.prepare(
+          `DELETE FROM ${table} WHERE (${key}) IN (SELECT ${key} FROM ${table} LIMIT ?)`,
+        );
+        while (del.run(this.drainChunkRows).changes > 0) await pause();
+      }
       this.db.transaction(() => {
         this.db.exec(`DROP TABLE ${p.txs}; DROP TABLE ${p.accounts}`);
         if (p.legacy) this.stmts.metaDel.run(LEGACY_RANGE_KEY);
       })();
       this.partitionStmts.delete(p.txs);
+      // A write below the floor during a pause re-adds the partition through
+      // partitionFor; its table is gone now, so it has to go again.
+      this.partitions = this.partitions.filter((x) => x.txs !== p.txs);
     }
-    this.partitions = this.partitions.filter((p) => p.end >= floor);
     return expired.length;
   }
 

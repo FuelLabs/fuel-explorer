@@ -288,7 +288,7 @@ describe('Index', () => {
     expect(idx.deleteRange(0, 10)).toBe(0);
   });
 
-  it('deleteBelow prunes blocks and dropExpiredPartitions prunes txs/tx_accounts, never assets, contracts or predicates', () => {
+  it('deleteBelow prunes blocks and dropExpiredPartitions prunes txs/tx_accounts, never assets, contracts or predicates', async () => {
     idx.close();
     idx = new Index(':memory:', { bucketBlocks: 1 });
     idx.writeBlock(
@@ -306,7 +306,7 @@ describe('Index', () => {
     expect(idx.deleteBelow(11)).toBeGreaterThan(0);
     expect(idx.heightForBlock(hex(1010))).toBeNull();
     expect(idx.heightForTx(hex(1))).toEqual({ height: 10, txIndex: 0 });
-    expect(idx.dropExpiredPartitions(11)).toBe(1);
+    expect(await idx.dropExpiredPartitions(11)).toBe(1);
     expect(idx.heightForTx(hex(1))).toBeNull();
     expect(idx.heightForTx(hex(2))).toEqual({ height: 11, txIndex: 0 });
     expect(idx.accountExists(hex(5))).toBe(true);
@@ -412,27 +412,64 @@ describe('Index', () => {
     expect(idx.newerTxCount({ height: 5, txIndex: 1 }, 1)).toBe(1);
   });
 
-  it('dropExpiredPartitions drops only partitions entirely below the floor', () => {
+  it('dropExpiredPartitions drops only partitions entirely below the floor', async () => {
     idx.close();
     idx = new Index(':memory:', { bucketBlocks: 10 });
     for (const h of [5, 15, 25]) idx.writeBlock(block(h, [{ id: hex(h) }]));
     expect(idx.oldestPartitionEnd()).toBe(9);
-    expect(idx.dropExpiredPartitions(9)).toBe(0);
-    expect(idx.dropExpiredPartitions(19)).toBe(1);
+    expect(await idx.dropExpiredPartitions(9)).toBe(0);
+    expect(await idx.dropExpiredPartitions(19)).toBe(1);
     expect(idx.partitionRanges()).toEqual([
       { start: 20, end: 29 },
       { start: 10, end: 19 },
     ]);
     expect(idx.heightForTx(hex(5))).toBeNull();
     expect(idx.heightForTx(hex(15))).toEqual({ height: 15, txIndex: 0 });
-    expect(idx.dropExpiredPartitions(1000)).toBe(2);
+    expect(await idx.dropExpiredPartitions(1000)).toBe(2);
     expect(idx.partitionRanges()).toEqual([]);
     expect(idx.oldestPartitionEnd()).toBeNull();
     idx.writeBlock(block(35, [{ id: hex(35) }]));
     expect(idx.heightForTx(hex(35))).toEqual({ height: 35, txIndex: 0 });
   });
 
-  it('serves a pre-partition txs/tx_accounts pair as one partition and drops it once expired', () => {
+  it('dropExpiredPartitions empties a partition in chunks, pausing between them, and hides it from readers first', async () => {
+    idx.close();
+    idx = new Index(':memory:', { bucketBlocks: 100, drainChunkRows: 4 });
+    const a = hex(77);
+    for (let h = 0; h < 10; h++)
+      idx.writeBlock(block(h, [{ id: hex(h + 1), accounts: [a] }]));
+    idx.writeBlock(block(150, [{ id: hex(500), accounts: [a] }]));
+    const seen: number[] = [];
+    const pause = async () => {
+      seen.push(idx.countForAccount(a, 1001));
+    };
+    expect(await idx.dropExpiredPartitions(100, pause)).toBe(1);
+    // 10 txs rows and 10 tx_accounts rows at 4 per DELETE: 3 chunks each.
+    expect(seen).toEqual([1, 1, 1, 1, 1, 1]);
+    expect(idx.partitionRanges()).toEqual([{ start: 100, end: 199 }]);
+    expect(idx.heightForTx(hex(1))).toBeNull();
+    expect(idx.txsForAccount(a, { limit: 10 })).toEqual([
+      { height: 150, txIndex: 0 },
+    ]);
+  });
+
+  it('dropExpiredPartitions forgets a partition re-created by a write during a pause', async () => {
+    idx.close();
+    idx = new Index(':memory:', { bucketBlocks: 100, drainChunkRows: 4 });
+    for (let h = 0; h < 10; h++) idx.writeBlock(block(h, [{ id: hex(h + 1) }]));
+    let wrote = false;
+    const pause = async () => {
+      if (wrote) return;
+      wrote = true;
+      idx.writeBlock(block(50, [{ id: hex(50) }]));
+    };
+    await idx.dropExpiredPartitions(100, pause);
+    expect(idx.partitionRanges()).toEqual([]);
+    idx.writeBlock(block(60, [{ id: hex(60) }]));
+    expect(idx.heightForTx(hex(60))).toEqual({ height: 60, txIndex: 0 });
+  });
+
+  it('serves a pre-partition txs/tx_accounts pair as one partition and drops it once expired', async () => {
     idx.close();
     const dir = mkdtempSync(join(tmpdir(), 'index-legacy-'));
     const path = join(dir, 'index.db');
@@ -475,7 +512,7 @@ describe('Index', () => {
         { start: 12, end: 14 },
         { start: 0, end: 9 },
       ]);
-      expect(idx.dropExpiredPartitions(15)).toBe(2);
+      expect(await idx.dropExpiredPartitions(15)).toBe(2);
       expect(idx.heightForTx(hex(13))).toBeNull();
       expect(idx.heightForTx(hex(21))).toEqual({ height: 21, txIndex: 0 });
       idx.close();
