@@ -8,7 +8,9 @@ export type AssetRate = { symbol: string; rate: number };
 
 // Keyed by verified-assets symbol. Verify a new id against the token's address
 // in CoinGecko's coin list: delisted ids still answer with a stale price.
-const COINGECKO_IDS: Record<string, string> = {
+// AssetDetailsClient reuses this map for o2's market Info tab, so a symbol
+// added here also gets GET /assets/:symbol/details.
+export const COINGECKO_IDS: Record<string, string> = {
   [ETH_SYMBOL]: 'ethereum',
   FUEL: 'fuel-network',
   WETH: 'weth',

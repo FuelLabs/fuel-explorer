@@ -11,6 +11,7 @@ import { loadConfig } from './config';
 import { CosmosIndex } from './cosmos/CosmosIndex';
 import { CosmosPoller, defaultCosmosRestUrl } from './cosmos/CosmosPoller';
 import { decodeBlock } from './decoder/block';
+import { AssetDetailsClient } from './fuelcore/AssetDetailsClient';
 import { FuelCoreClient } from './fuelcore/FuelCoreClient';
 import { PriceClient } from './fuelcore/PriceClient';
 import { FallbackHeights } from './hot/FallbackHeights';
@@ -202,6 +203,7 @@ async function main() {
     },
   });
   const price = new PriceClient({ apiKey: cfg.coingeckoApiKey });
+  const assetDetails = new AssetDetailsClient({ apiKey: cfg.coingeckoApiKey });
   void price.refresh();
 
   const cosmosIndex = new CosmosIndex(INDEX_DB_PATH);
@@ -293,6 +295,7 @@ async function main() {
     client,
     chain: { chainId: params.chainId, baseAssetId: params.baseAssetId },
     price,
+    assetDetails,
     hot,
     fallbackHeights,
     indexer,
