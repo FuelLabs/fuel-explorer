@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { IpfsBusyError } from '../assets/IpfsGateway';
 import { ValidationError } from '../errors';
+import { AssetDetailsUnavailableError } from '../fuelcore/AssetDetailsClient';
 import { type RestRouterDeps, handleRestRequest } from './router';
 
 function fakeReq(method: string, url: string): IncomingMessage {
@@ -30,6 +31,7 @@ function disabledDeps(): RestRouterDeps {
     charts: { build: jest.fn().mockResolvedValue({ statistics: {}, tps: [] }) },
     dashboard: { build: jest.fn().mockResolvedValue({ nodes: [] }) },
     assets: { get: jest.fn().mockResolvedValue(null) },
+    assetDetails: { get: jest.fn().mockResolvedValue(null) },
     ipfs: { get: jest.fn().mockResolvedValue(null) },
     rates: { get: jest.fn().mockResolvedValue([]) },
   };
@@ -823,6 +825,85 @@ describe('handleRestRequest', () => {
     expect(calls.status).toBe(404);
     expect(JSON.parse(calls.body as string)).toEqual({
       error: 'not available',
+    });
+  });
+
+  describe('GET /assets/:symbol/details', () => {
+    const details = {
+      market_cap: 1,
+      circulating_supply: 2,
+      total_supply: 3,
+      max_supply: 4,
+      fully_diluted_valuation: 5,
+      description: 'Ether',
+      links: {
+        homepage: ['https://ethereum.org'],
+        whitepaper: '',
+        github: [],
+        reddit: '',
+        twitter: 'ethereum',
+        official_forum: [],
+      },
+      block_time_in_minutes: 0,
+      hashing_algorithm: '',
+      genesis_date: '',
+    };
+
+    it('returns the details with a 5 minute public cache header', async () => {
+      const { res, calls } = fakeRes();
+      const deps = disabledDeps();
+      deps.assetDetails.get = jest.fn().mockResolvedValue(details);
+      const handled = await handleRestRequest(
+        fakeReq('GET', '/assets/ETH/details'),
+        res,
+        deps,
+      );
+      expect(handled).toBe(true);
+      expect(deps.assetDetails.get).toHaveBeenCalledWith('ETH');
+      expect(deps.assets.get).not.toHaveBeenCalled();
+      expect(calls.status).toBe(200);
+      expect(calls.headers).toMatchObject({
+        'cache-control': 'public, max-age=300',
+        'access-control-allow-origin': '*',
+      });
+      expect(JSON.parse(calls.body ?? '')).toEqual(details);
+    });
+
+    it('returns 404 json for an asset without details', async () => {
+      const { res, calls } = fakeRes();
+      await handleRestRequest(
+        fakeReq('GET', '/assets/NOPE/details'),
+        res,
+        disabledDeps(),
+      );
+      expect(calls.status).toBe(404);
+      expect(JSON.parse(calls.body ?? '')).toEqual({
+        message: 'Asset not found',
+      });
+    });
+
+    it('returns an uncached 502 when the upstream is unavailable', async () => {
+      const { res, calls } = fakeRes();
+      const deps = disabledDeps();
+      deps.assetDetails.get = jest
+        .fn()
+        .mockRejectedValue(new AssetDetailsUnavailableError('429'));
+      await handleRestRequest(fakeReq('GET', '/assets/ETH/details'), res, deps);
+      expect(calls.status).toBe(502);
+      expect(calls.headers).toMatchObject({ 'cache-control': 'no-store' });
+      expect(JSON.parse(calls.body ?? '')).toEqual({
+        error: 'upstream unavailable',
+      });
+    });
+
+    it('returns 400 for a validation error', async () => {
+      const { res, calls } = fakeRes();
+      const deps = disabledDeps();
+      deps.assetDetails.get = jest
+        .fn()
+        .mockRejectedValue(new ValidationError('Invalid asset symbol'));
+      await handleRestRequest(fakeReq('GET', '/assets/%E0/details'), res, deps);
+      expect(calls.status).toBe(400);
     });
   });
 });

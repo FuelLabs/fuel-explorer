@@ -2,6 +2,10 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { IpfsBusyError, type IpfsFile } from '../assets/IpfsGateway';
 import type { BridgeStore } from '../bridge/BridgeStore';
 import { ValidationError } from '../errors';
+import {
+  type AssetDetails,
+  AssetDetailsUnavailableError,
+} from '../fuelcore/AssetDetailsClient';
 import type { AssetRate } from '../fuelcore/PriceClient';
 import { PaginatedParams } from '../staking/PaginatedParams';
 import type { StakingStore } from '../staking/StakingStore';
@@ -44,6 +48,10 @@ export type AssetsRouteDeps = {
   get: (assetId: string) => Promise<Record<string, unknown> | null>;
 };
 
+export type AssetDetailsRouteDeps = {
+  get: (symbolOrAssetId: string) => Promise<AssetDetails | null>;
+};
+
 export type IpfsRouteDeps = {
   get: (ref: string) => Promise<IpfsFile | null>;
 };
@@ -58,6 +66,7 @@ export type RestRouterDeps = {
   charts: ChartsRouteDeps;
   dashboard: DashboardRouteDeps;
   assets: AssetsRouteDeps;
+  assetDetails: AssetDetailsRouteDeps;
   ipfs: IpfsRouteDeps;
   rates: { get: () => Promise<AssetRate[]> };
 };
@@ -95,6 +104,7 @@ function sendError(res: ServerResponse, err: unknown, context: string): void {
 
 const EVENT_PATH_RE = /^\/staking\/events\/([^/]+)$/;
 const ASSET_PATH_RE = /^\/assets\/([^/]+)$/;
+const ASSET_DETAILS_PATH_RE = /^\/assets\/([^/]+)\/details$/;
 
 // A missing from_block is 0.
 function parseFromBlock(raw: string | null): number {
@@ -165,6 +175,30 @@ export async function handleRestRequest(
     } catch (err) {
       console.error('buildBlocksDashboard failed', err);
       sendJson(res, 500, { error: 'dashboard unavailable' });
+    }
+    return true;
+  }
+
+  const detailsMatch = path.match(ASSET_DETAILS_PATH_RE);
+  if (detailsMatch) {
+    try {
+      const body = await deps.assetDetails.get(detailsMatch[1]);
+      if (!body) {
+        sendJson(res, 404, { message: 'Asset not found' });
+        return true;
+      }
+      sendJson(res, 200, body, { 'cache-control': 'public, max-age=300' });
+    } catch (err) {
+      if (err instanceof AssetDetailsUnavailableError) {
+        sendJson(
+          res,
+          502,
+          { error: 'upstream unavailable' },
+          { 'cache-control': 'no-store' },
+        );
+      } else {
+        sendError(res, err, 'assets/details');
+      }
     }
     return true;
   }

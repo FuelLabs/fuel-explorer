@@ -4,6 +4,7 @@ import { IpfsGateway } from './assets/IpfsGateway';
 import { NftMetadata } from './assets/NftMetadata';
 import type { Src7Reader } from './assets/Src7Reader';
 import type { CosmosPoller } from './cosmos/CosmosPoller';
+import { AssetDetailsClient } from './fuelcore/AssetDetailsClient';
 import type { AppContext } from './graphql/context';
 import { useMaxDepth } from './graphql/depthLimit';
 import { buildBlocksDashboard } from './graphql/resolvers/analytics';
@@ -13,6 +14,7 @@ import { buildSchema } from './graphql/schema';
 import { useUtxosBudget } from './graphql/utxosBudget';
 import type { Indexer } from './index/Indexer';
 import type { L1RpcStatus } from './l1/l1RpcClient';
+import { buildAssetDetails } from './rest/assetDetails';
 import { buildAssetBody } from './rest/assets';
 import { type RestRouterDeps, handleRestRequest } from './rest/router';
 
@@ -33,6 +35,7 @@ export type AppDeps = AppContext & {
   bridge?: RestRouterDeps['bridge'];
   publicUrl?: string;
   src7?: Pick<Src7Reader, 'read'>;
+  assetDetails?: Pick<AssetDetailsClient, 'get'>;
 };
 
 export function createApp(ctx: AppDeps) {
@@ -43,6 +46,7 @@ export function createApp(ctx: AppDeps) {
     src7: ctx.src7,
   });
   const gqlCtx: AppContext = { ...ctx, nft };
+  const assetDetails = ctx.assetDetails ?? new AssetDetailsClient();
   const yoga = createYoga<AppContext>({
     schema: buildSchema(),
     graphqlEndpoint: '/graphql',
@@ -108,6 +112,7 @@ export function createApp(ctx: AppDeps) {
       charts: { build: () => buildCharts(ctx) },
       dashboard: { build: () => buildBlocksDashboard(ctx) },
       assets: { get: (assetId) => buildAssetBody(assetId, ctx, nft) },
+      assetDetails: { get: (ref) => buildAssetDetails(ref, ctx, assetDetails) },
       ipfs: { get: (ref) => gateway.fetch(ref) },
       rates: { get: () => ctx.price.rates() },
     })

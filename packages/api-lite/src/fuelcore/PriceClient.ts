@@ -8,7 +8,8 @@ export type AssetRate = { symbol: string; rate: number };
 
 // Keyed by verified-assets symbol. Verify a new id against the token's address
 // in CoinGecko's coin list: delisted ids still answer with a stale price.
-const COINGECKO_IDS: Record<string, string> = {
+// Also gates GET /assets/:symbol/details (AssetDetailsClient).
+export const COINGECKO_IDS: Record<string, string> = {
   [ETH_SYMBOL]: 'ethereum',
   FUEL: 'fuel-network',
   WETH: 'weth',
@@ -37,6 +38,12 @@ const COINGECKO_IDS: Record<string, string> = {
   ENA: 'ethena',
   PYUSD: 'paypal-usd',
   WLD: 'worldcoin-wld',
+  wBTC: 'wrapped-bitcoin',
+  LIT: 'lighter',
+  HYPE: 'hyperliquid',
+  VVV: 'venice-token',
+  BNB: 'binancecoin',
+  SOL: 'solana',
 };
 
 // MOOR has no CoinGecko listing; CoinMarketCap prices it from its Fuel DEX pool.
