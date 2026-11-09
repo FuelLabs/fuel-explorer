@@ -79,6 +79,8 @@ const config: PlaywrightTestConfig = defineConfig({
     },
   ],
   use: {
+    // GitHub's Ubuntu runners block the user namespaces the sandbox needs.
+    launchOptions: { chromiumSandbox: !process.env.CI },
     baseURL: `http://127.0.0.1:${PORT}/`,
     headless: true,
     video: 'retain-on-failure',
