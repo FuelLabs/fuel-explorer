@@ -38,6 +38,12 @@ export const COINGECKO_IDS: Record<string, string> = {
   ENA: 'ethena',
   PYUSD: 'paypal-usd',
   WLD: 'worldcoin-wld',
+  wBTC: 'wrapped-bitcoin',
+  LIT: 'lighter',
+  HYPE: 'hyperliquid',
+  VVV: 'venice-token',
+  BNB: 'binancecoin',
+  SOL: 'solana',
 };
 
 // MOOR has no CoinGecko listing; CoinMarketCap prices it from its Fuel DEX pool.

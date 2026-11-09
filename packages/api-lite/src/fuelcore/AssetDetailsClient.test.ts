@@ -102,6 +102,78 @@ describe('AssetDetailsClient', () => {
     expect(urls).toHaveLength(0);
   });
 
+  it('serves every base and quote symbol of the o2 markets', async () => {
+    const { fn, urls } = fakeFetch(ok);
+    const c = new AssetDetailsClient({ fetchImpl: fn });
+    const mainnet = [
+      'AAVE',
+      'BNB',
+      'ENA',
+      'ETH',
+      'FUEL',
+      'HYPE',
+      'LINK',
+      'LIT',
+      'ONDO',
+      'PYUSD',
+      'UNI',
+      'USDC',
+      'USDT',
+      'VVV',
+      'WLD',
+      'XAUT',
+      'wBTC',
+    ];
+    for (const symbol of mainnet) {
+      expect(await c.get(symbol)).not.toBeNull();
+    }
+    expect(urls).toHaveLength(mainnet.length);
+  });
+
+  it('maps testnet faucet symbols to the real coin', async () => {
+    const { fn, urls } = fakeFetch(ok);
+    const c = new AssetDetailsClient({ fetchImpl: fn });
+    const faucet = [
+      'fAAVE',
+      'fBNB',
+      'fENA',
+      'fETH',
+      'fFUEL',
+      'fHYPE',
+      'fLINK',
+      'fLIT',
+      'fONDO',
+      'fPYUSD',
+      'fSOL',
+      'fUNI',
+      'fUSDC',
+      'fUSDT',
+      'fVVV',
+      'fWLD',
+      'fXAUT',
+      'fwBTC',
+    ];
+    for (const symbol of faucet) {
+      expect(await c.get(symbol)).not.toBeNull();
+    }
+    const ids = urls.map((u) => new URL(u).pathname.split('/').pop());
+    expect(ids).toContain('ethereum');
+    expect(ids).toContain('wrapped-bitcoin');
+    expect(ids).toContain('solana');
+  });
+
+  it('does not strip the prefix from symbols that are not faucet aliases', async () => {
+    const { fn, urls } = fakeFetch(ok);
+    const c = new AssetDetailsClient({ fetchImpl: fn });
+    expect(await c.get('fMOOR')).toBeNull();
+    expect(await c.get('f')).toBeNull();
+    expect(await c.get('f__proto__')).toBeNull();
+    await c.get('FBTC');
+    expect(urls.map((u) => new URL(u).pathname.split('/').pop())).toEqual([
+      'ignition-fbtc',
+    ]);
+  });
+
   it('sends the demo api key and a timeout signal', async () => {
     let init: any;
     const fn = (async (_url: string, i: any) => {

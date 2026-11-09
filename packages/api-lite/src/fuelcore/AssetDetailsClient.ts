@@ -52,6 +52,21 @@ function toDetails(raw: any): AssetDetails {
   };
 }
 
+// o2 testnet's faucet tokens prefix the real symbol with `f` (fETH, fwBTC).
+const TESTNET_FAUCET_PREFIX = 'f';
+
+function coingeckoIdFor(symbol: string): string | undefined {
+  if (Object.hasOwn(COINGECKO_IDS, symbol)) return COINGECKO_IDS[symbol];
+  const unprefixed = symbol.slice(TESTNET_FAUCET_PREFIX.length);
+  if (
+    symbol.startsWith(TESTNET_FAUCET_PREFIX) &&
+    Object.hasOwn(COINGECKO_IDS, unprefixed)
+  ) {
+    return COINGECKO_IDS[unprefixed];
+  }
+  return undefined;
+}
+
 export class AssetDetailsUnavailableError extends Error {}
 
 type Opts = {
@@ -89,8 +104,8 @@ export class AssetDetailsClient {
 
   // null when unlisted; on CoinGecko failure serves a stale entry, else throws.
   async get(symbol: string): Promise<AssetDetails | null> {
-    if (!Object.hasOwn(COINGECKO_IDS, symbol)) return null;
-    const id = COINGECKO_IDS[symbol];
+    const id = coingeckoIdFor(symbol);
+    if (!id) return null;
 
     const cached = this.cache.get(id);
     const now = this.now();
