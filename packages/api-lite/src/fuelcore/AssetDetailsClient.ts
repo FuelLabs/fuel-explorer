@@ -4,11 +4,10 @@ const COINGECKO_COINS_URL = 'https://api.coingecko.com/api/v3/coins';
 const QUERY =
   'localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
 const TIMEOUT_MS = 15_000;
+const CACHE_TTL_MS = 600_000;
+const FAILURE_BACKOFF_MS = 60_000;
 
-// The o2 web app's market Info tab (packages/web-services/src/services/assets/
-// getAssetInfo.ts in o2) reads this shape from GET /assets/:symbol/details.
-// It is the shape the Postgres indexer served before #700, so keep every
-// field and its zero/empty default as is.
+// o2's market Info tab parses this shape; keep every field and its zero/empty default.
 export type AssetDetails = {
   market_cap: number;
   circulating_supply: number;
@@ -58,8 +57,7 @@ export class AssetDetailsUnavailableError extends Error {}
 type Opts = {
   fetchImpl?: typeof fetch;
   ttlMs?: number;
-  // After a failed fetch with nothing cached, callers get an error without a
-  // new request for this long, so a CoinGecko outage or 429 isn't hammered.
+  // How long a failed id is not refetched, so an outage or 429 isn't hammered.
   failureBackoffMs?: number;
   apiKey?: string;
   log?: (line: string) => void;
@@ -68,9 +66,7 @@ type Opts = {
 
 type Entry = { value: AssetDetails; fetchedAt: number };
 
-// Serves o2's market Info tab (market cap, supply, description, asset links).
-// Only symbols in COINGECKO_IDS ever reach CoinGecko, so request paths can't
-// fan out upstream and the cache holds at most one entry per mapped symbol.
+// Only symbols in COINGECKO_IDS reach CoinGecko, so request paths can't fan out upstream.
 export class AssetDetailsClient {
   private readonly cache = new Map<string, Entry>();
   private readonly failedAt = new Map<string, number>();
@@ -84,16 +80,14 @@ export class AssetDetailsClient {
 
   constructor(opts: Opts = {}) {
     this.fetchImpl = opts.fetchImpl ?? fetch;
-    this.ttlMs = opts.ttlMs ?? 600_000;
-    this.failureBackoffMs = opts.failureBackoffMs ?? 60_000;
+    this.ttlMs = opts.ttlMs ?? CACHE_TTL_MS;
+    this.failureBackoffMs = opts.failureBackoffMs ?? FAILURE_BACKOFF_MS;
     this.apiKey = opts.apiKey;
     this.log = opts.log ?? console.error;
     this.now = opts.now ?? Date.now;
   }
 
-  // null for a symbol with no CoinGecko listing. Throws
-  // AssetDetailsUnavailableError when CoinGecko fails and nothing is cached;
-  // a stale entry is served instead of an error.
+  // null when unlisted; on CoinGecko failure serves a stale entry, else throws.
   async get(symbol: string): Promise<AssetDetails | null> {
     if (!Object.hasOwn(COINGECKO_IDS, symbol)) return null;
     const id = COINGECKO_IDS[symbol];

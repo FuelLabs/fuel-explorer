@@ -48,7 +48,6 @@ export type AssetsRouteDeps = {
   get: (assetId: string) => Promise<Record<string, unknown> | null>;
 };
 
-// Used by the o2 web app's market Info tab; see AssetDetailsClient.
 export type AssetDetailsRouteDeps = {
   get: (symbolOrAssetId: string) => Promise<AssetDetails | null>;
 };
@@ -180,9 +179,6 @@ export async function handleRestRequest(
     return true;
   }
 
-  // The o2 web app's market Info tab reads this route (market cap, supply,
-  // description, website/whitepaper/GitHub/Reddit/X links). The Postgres
-  // indexer served it until #700; o2 shows skeletons forever when it 404s.
   const detailsMatch = path.match(ASSET_DETAILS_PATH_RE);
   if (detailsMatch) {
     try {

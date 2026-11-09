@@ -828,7 +828,6 @@ describe('handleRestRequest', () => {
     });
   });
 
-  // o2's market Info tab reads GET /assets/:symbol/details.
   describe('GET /assets/:symbol/details', () => {
     const details = {
       market_cap: 1,

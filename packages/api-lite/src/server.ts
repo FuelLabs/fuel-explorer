@@ -35,7 +35,6 @@ export type AppDeps = AppContext & {
   bridge?: RestRouterDeps['bridge'];
   publicUrl?: string;
   src7?: Pick<Src7Reader, 'read'>;
-  // Backs GET /assets/:symbol/details for o2's market Info tab.
   assetDetails?: Pick<AssetDetailsClient, 'get'>;
 };
 

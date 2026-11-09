@@ -9,9 +9,6 @@ import {
 
 const ASSET_ID_RE = /^0x[0-9a-fA-F]{64}$/;
 
-// o2's market Info tab calls GET /assets/:symbol/details with a symbol
-// (`ETH`, `USDC`). A b256 asset id is accepted too and resolved to its
-// verified-assets symbol; the base asset is ETH.
 export async function buildAssetDetails(
   rawRef: string,
   ctx: Pick<AppContext, 'chain'>,
