@@ -1,0 +1,42 @@
+{
+  "breadcrumb": "生态",
+  "suite_badge": "Fuel Suite",
+  "about": "关于 {{name}}",
+  "facts": {
+    "category": "分类",
+    "collection": "合集",
+    "network": "网络",
+    "links": "链接"
+  },
+  "collection": {
+    "suite": "Fuel Suite",
+    "community": "社区",
+    "official": "官方"
+  },
+  "network_fuel": "Fuel",
+  "not_listed": "未列出",
+  "on_x": "{{name}} 的 X",
+  "on_github": "{{name}} 的 GitHub",
+  "on_discord": "{{name}} 的 Discord",
+  "ways_to_use": "使用方式",
+  "open_on": "在 {{host}} 打开",
+  "more_in": "更多{{category}}项目",
+  "see_all": "查看全部",
+  "not_found": {
+    "title": "未找到项目",
+    "back": "返回生态"
+  },
+  "load_error": {
+    "title": "无法加载项目",
+    "body": "项目列表暂时不可用。请稍后再试。"
+  },
+  "context": {
+    "defi": "{{name}} 是 Fuel 不断壮大的链上金融生态的一部分，应用借助 Fuel 执行层实现快速响应的市场和高效结算。",
+    "ai": "{{name}} 探索智能链上应用如何利用 Fuel 的并行执行和专用虚拟机。",
+    "wallets": "{{name}} 帮助用户访问应用和管理资产，同时与更广泛的 Fuel 生态保持连接。",
+    "infrastructure": "{{name}} 为 Fuel 上的应用、开发者和网络参与者提供基础设施支持。",
+    "tooling": "{{name}} 为开发者提供在 Fuel 上开发、理解和运营应用的实用工具。",
+    "security": "{{name}} 为在 Fuel 上构建和运营应用的团队提供专业安全支持。",
+    "more": "{{name}} 是 Fuel 上线的项目之一。"
+  }
+}

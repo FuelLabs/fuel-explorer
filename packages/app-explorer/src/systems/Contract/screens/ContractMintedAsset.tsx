@@ -1,5 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useContractMintedAssets } from '~/hooks/useApi';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { TxDim } from '~/systems/Transaction/component/TxNotice/TxNotice';
 import { ContractMintedAssetList } from '../components/ContractMintedAssetList';
 import { ContractMintedAssetsLoader } from '../components/ContractMintedAssetsLoader';
 
@@ -14,6 +17,7 @@ export function ContractMintedAssets({
   cursor,
   dir = 'after',
 }: ContractMintedAssetProps) {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const _cursor = searchParams.get('cursor') ?? cursor;
   const _dir = (searchParams.get('dir') ?? dir) as 'after' | 'before';
@@ -28,19 +32,17 @@ export function ContractMintedAssets({
     direction: _dir,
   });
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return <ContractMintedAssetsLoader />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-red-600">Failed to load minted assets</p>
-      </div>
-    );
+    return <PageState tone="error" title={t('contract.error_minted')} />;
   }
 
   return (
-    <ContractMintedAssetList contractId={id} mintedAssets={mintedAssets} />
+    <TxDim busy={isFetching}>
+      <ContractMintedAssetList contractId={id} mintedAssets={mintedAssets} />
+    </TxDim>
   );
 }

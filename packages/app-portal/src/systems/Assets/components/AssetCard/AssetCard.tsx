@@ -1,12 +1,7 @@
-import {
-  Asset,
-  CardList,
-  Flex,
-  IconButton,
-  Text,
-  useBreakpoints,
-} from '@fuels/ui';
-import { IconCoin } from '@tabler/icons-react';
+import { Asset, CardList, Flex, IconButton, useBreakpoints } from '@fuels/ui';
+import { IconCoin } from '@fuels/ui';
+import type { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import type { FilteredAsset } from '~portal/systems/Assets/types';
 
@@ -21,6 +16,7 @@ type AssetCardProps = {
   isFaucetLoading?: boolean;
   isRemoveDisabled?: boolean;
   removeToolTip?: string;
+  style?: CSSProperties;
 };
 
 export const AssetCard = ({
@@ -32,7 +28,9 @@ export const AssetCard = ({
   onRemove: _onRemove,
   onAddToWallet,
   external,
+  style,
 }: AssetCardProps) => {
+  const { t } = useTranslation();
   const classes = styles();
   const { isMobile } = useBreakpoints();
 
@@ -50,6 +48,7 @@ export const AssetCard = ({
   return (
     <CardList.Item
       onClick={onClick}
+      style={style}
       className={classes.cardItem({ disabled: !hasBalance })}
     >
       <Flex justify="between" flexGrow="1" align="center">
@@ -57,50 +56,45 @@ export const AssetCard = ({
           <Asset asset={asset} iconSize={isMobile ? 30 : 38}>
             <Asset.Icon />
           </Asset>
-          <Flex direction="column" gap="0">
-            <Text
+          <Flex direction="column" gap="1">
+            <span
               className={classes.assetName()}
-              aria-label={`${asset.symbol} name`}
-              size={{
-                initial: '2',
-                lg: '3',
-              }}
+              aria-label={t('portal.assets.name_label', {
+                symbol: asset.symbol,
+              })}
             >
-              {asset.name || 'Unnamed'}
-            </Text>
-            <Text
+              {asset.name || t('portal.assets.unnamed')}
+            </span>
+            <span
               className={classes.assetSymbol()}
-              aria-label={`${asset.symbol} symbol`}
-              size={{
-                initial: '2',
-                lg: '3',
-              }}
+              aria-label={t('portal.assets.symbol_label', {
+                symbol: asset.symbol,
+              })}
             >
               {asset.symbol}
-            </Text>
+            </span>
           </Flex>
         </Flex>
         <Flex gap="3" align="center">
           {hasBalance && (
-            <Text
+            <span
               data-showing-faucet={shouldShowFaucet}
               data-showing-add-to-wallet={showAddToWallet}
-              className="font-mono"
-              weight="medium"
-              size={{
-                initial: '3',
-                lg: '4',
-              }}
-              color="gray"
-              aria-label={`${asset.symbol} balance`}
+              className="fuel-stat-sm"
+              aria-label={t('portal.assets.balance_label', {
+                symbol: asset.symbol,
+              })}
             >
               {asset.balance !== '0.000' ? asset.balance : '-'}
-            </Text>
+            </span>
           )}
           {shouldShowFaucet && (
             <IconButton
-              aria-label={`Faucet ${asset.symbol}`}
-              variant="link"
+              aria-label={t('portal.assets.faucet_label', {
+                symbol: asset.symbol,
+              })}
+              variant="ghost"
+              color="gray"
               icon={IconCoin}
               isLoading={isFaucetLoading}
               onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -117,16 +111,16 @@ export const AssetCard = ({
 
 const styles = tv({
   slots: {
-    assetWrapper: 'w-full',
-    assetName: 'text-heading',
-    assetSymbol: 'text-secondary',
-    cardItem: 'p-3 gap-6 items-center fuel-[HStack]:justify-between flex-1',
-    actionIcon: 'p-[2px] m-[2px] text-heading',
+    assetName: 'text-base leading-5 text-heading',
+    assetSymbol: 'fuel-label !leading-4',
+    cardItem:
+      'fuel-appear flex-1 items-center gap-6 p-3 [animation-delay:var(--fuel-enter-delay,0ms)] fuel-[HStack]:justify-between',
+    actionIcon: 'm-[2px] p-[2px] text-heading',
   },
   variants: {
     disabled: {
       true: {
-        cardItem: 'bg-gray-1',
+        cardItem: 'bg-[var(--fuel-muted)]',
       },
     },
   },

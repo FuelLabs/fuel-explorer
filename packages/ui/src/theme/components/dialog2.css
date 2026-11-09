@@ -1,17 +1,5 @@
-:root {
-  --animated-dialog-transform-closed: translateY(100%);
-  --animated-dialog-transform-open: translateY(0%);
-}
-
-@media (min-width: 1024px) {
-  :root {
-    --animated-dialog-transform-closed: scale(0.8);
-    --animated-dialog-transform-open: scale(1);
-  }
-}
-
 .fuel-AnimatedDialogOverlay {
-  background-color: var(--color-overlay);
+  background-color: var(--fuel-scrim);
   position: fixed;
   top: 0;
   left: 0;
@@ -26,35 +14,13 @@
   overflow: clip;
   margin-bottom: 0;
   width: 100%;
+  background-color: var(--fuel-background);
+  border: 1px solid var(--fuel-line);
+  box-shadow: none;
 }
 
 .fuel-AnimatedDialogContent:focus {
   outline: 0;
-}
-
-.fuel-AnimatedDialogContent
-  .rt-BaseButton.rt-IconButton:where(.rt-variant-soft) {
-  border-radius: 999px;
-}
-
-.dark
-  .fuel-AnimatedDialogContent
-  .rt-BaseButton.rt-IconButton:where(.rt-variant-soft) {
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-.light .fuel-AnimatedDialogContent {
-  background-color: #ffffff;
-}
-
-.dark .fuel-AnimatedDialogContent {
-  background-color: var(--gray-1);
-}
-
-.fuel-AnimatedDialogContent {
-  box-shadow: none;
 }
 
 /**
@@ -67,8 +33,8 @@
 @media all {
   .fuel-AnimatedDialogContent {
     padding: var(--space-5);
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
   }
 }
 
@@ -85,8 +51,8 @@
 
   .fuel-AnimatedDialogContent {
     padding: var(--space-8);
-    border-bottom-left-radius: 28px;
-    border-bottom-right-radius: 28px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
     max-width: 544px;
   }
 }

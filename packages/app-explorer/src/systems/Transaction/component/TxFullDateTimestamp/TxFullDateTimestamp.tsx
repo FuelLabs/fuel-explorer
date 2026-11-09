@@ -1,21 +1,14 @@
-import { createDayjs } from 'app-commons';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { formatDateTimeTitle } from 'app-commons';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function _TxFullDateTimestamp({
   timeStamp, // Unix epoch
 }: { timeStamp: number | null | undefined }) {
+  const { i18n } = useTranslation();
   if (!timeStamp) return null;
 
-  const dayjs = createDayjs();
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
-  const formattedDate = dayjs
-    .unix(timeStamp)
-    .format('DD MMM YYYY - hh:mm:ss A');
-
-  return <>{formattedDate}</>;
+  return <>{formatDateTimeTitle(timeStamp * 1000, i18n.language)}</>;
 }
 
 export const TxFullDateTimestamp = memo(_TxFullDateTimestamp);

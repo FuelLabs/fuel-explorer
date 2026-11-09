@@ -2,9 +2,9 @@ import { useAsset } from '~portal/systems/Assets/hooks/useAsset';
 import { shortAddress } from '~portal/systems/Core';
 import { useOverlay } from '~portal/systems/Overlay';
 
-import { Button, Dialog, HStack, VStack } from '@fuels/ui';
-import { IconX } from '@tabler/icons-react';
+import { Button, Dialog, VStack } from '@fuels/ui';
 import { useFuelAsset } from 'app-commons';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { useAssets } from '~portal/systems/Assets/hooks';
 import {
@@ -15,7 +15,8 @@ import { BridgeTxProgress } from '~portal/systems/Bridge/components/BridgeTxProg
 import { useFuelAccountConnection } from '../../fuel';
 import { DEPOSIT_DURATION_MINUTES, useTxEthToFuel } from '../hooks';
 
-export function TxEthToFuelDialog({ onClose }: { onClose: () => void }) {
+export function TxEthToFuelDialog() {
+  const { t } = useTranslation();
   const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { hasAsset, external } = useFuelAccountConnection();
@@ -36,8 +37,8 @@ export function TxEthToFuelDialog({ onClose }: { onClose: () => void }) {
     fromAddress,
     toAddress,
   } = useTxEthToFuel({
-    id: metadata.txId,
-    messageSentEventNonce: metadata.messageSentEventNonce,
+    id: metadata?.txId,
+    messageSentEventNonce: metadata?.messageSentEventNonce,
   });
   const fuelAsset = useFuelAsset(asset);
   const { handlers: assetsHandlers } = useAssets();
@@ -52,14 +53,10 @@ export function TxEthToFuelDialog({ onClose }: { onClose: () => void }) {
   return (
     <VStack className="max-w-md">
       <div>
-        <HStack justify="between" className="w-full">
-          <Dialog.Title className="mb-0 justify-between">Deposit</Dialog.Title>
-          <IconX
-            className="cursor-pointer text-white"
-            onClick={onClose}
-            size={20}
-          />
-        </HStack>
+        <Dialog.Title className="mb-0 pr-10">
+          {t('portal.bridge.deposit')}
+        </Dialog.Title>
+        <Dialog.CloseButton aria-label={t('portal.dialog.close')} />
         <BridgeTxProgress
           initial={date}
           duration={DEPOSIT_DURATION_MINUTES}
@@ -68,7 +65,7 @@ export function TxEthToFuelDialog({ onClose }: { onClose: () => void }) {
       </div>
       <BridgeSteps steps={steps} />
       <BridgeTxOverview
-        transactionId={shortAddress(metadata.txId)}
+        transactionId={shortAddress(metadata?.txId)}
         date={date}
         isDeposit={true}
         asset={asset}
@@ -90,7 +87,7 @@ export function TxEthToFuelDialog({ onClose }: { onClose: () => void }) {
           isLoading={status?.isConfirmTransactionLoading}
           onClick={handlers.relayMessageToFuel}
         >
-          Confirm Transaction
+          {t('portal.dialog.confirm_transaction')}
         </Button>
       )}
     </VStack>

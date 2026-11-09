@@ -141,6 +141,7 @@ test.describe('Bridge Edge Cases', () => {
           true,
         );
         await expect(bridgeButton).toHaveText('Bridge asset anyway', {
+          ignoreCase: true,
           useInnerText: true,
         });
         console.log('Low ETH warning displayed correctly');

@@ -1,4 +1,4 @@
-import { Skeleton } from '@fuels/ui';
+import { LoadingBox } from '@fuels/ui';
 import { getProjectImage } from 'app-commons';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
@@ -36,22 +36,14 @@ export function MetadataLogo({
   if (image && !imageFallback) {
     return (
       <div>
-        {isImageLoading && (
-          <Skeleton
-            height={`${size}px`}
-            width={`${size}px`}
-            className="rounded"
-          />
-        )}
+        {isImageLoading && <LoadingBox style={{ height: size, width: size }} />}
         <img
           ref={imgRef}
           src={getProjectImage(image)}
           alt={name}
           width={size}
           height={size}
-          className={clsx('rounded', {
-            hidden: isImageLoading,
-          })}
+          className={clsx({ hidden: isImageLoading })}
           onLoad={() => setIsImageLoading(false)}
           onError={() => {
             setImageFallback(true);
@@ -61,5 +53,5 @@ export function MetadataLogo({
     );
   }
 
-  return <TxIcon type={type} status="Submitted" radius="large" />;
+  return <TxIcon type={type} status="Submitted" radius="none" />;
 }

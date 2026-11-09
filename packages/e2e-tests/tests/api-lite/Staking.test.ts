@@ -12,7 +12,10 @@ test.describe('Staking page (api-lite)', () => {
   test('renders the Fuel staking tab', async ({ page }) => {
     await page.goto('/staking');
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Stake' }),
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Help secure the Fuel network',
+      }),
     ).toBeVisible();
     await page.waitForLoadState('networkidle');
     await expect(page.getByText(ERROR_TEXT)).toHaveCount(0);
@@ -23,7 +26,10 @@ test.describe('Staking page (api-lite)', () => {
   }) => {
     await page.goto('/staking/on-ethereum');
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Stake' }),
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Help secure the Fuel network',
+      }),
     ).toBeVisible();
     await page.waitForLoadState('networkidle');
     await expect(page.getByText(ERROR_TEXT)).toHaveCount(0);

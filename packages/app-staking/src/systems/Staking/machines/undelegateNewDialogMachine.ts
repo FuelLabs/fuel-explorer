@@ -63,7 +63,7 @@ type UndelegateNewDialogServices = {
     data: HexAddress;
   };
   getFinalizationPeriod: {
-    data: string;
+    data: string | undefined;
   };
 };
 

@@ -1,21 +1,30 @@
-import { HStack, Heading, Theme, VStack } from '@fuels/ui';
-import { IconChevronRight } from '@tabler/icons-react';
+import { IconChevronRight } from '@fuels/ui';
+import { PageTitle } from 'app-commons';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 export function Hero() {
+  const { t } = useTranslation();
   return (
-    <Theme>
-      <VStack className="gap-0 px-[0.85rem]">
-        <Heading as="h1" className="m-0 p-0 font-mono">
-          Blocks
-        </Heading>
-        <HStack align={'center'} className="mb-3">
-          <a href="/" className="text-[#9f9f9f]  r">
-            <p className="m-0 text-[14px]">Home</p>
-          </a>
-          <IconChevronRight color="#9f9f9f" size={20} />
-          <p className="m-0">View All Blocks</p>
-        </HStack>
-      </VStack>
-    </Theme>
+    <PageTitle
+      title={t('block.blocks_title')}
+      subtitle={
+        <nav
+          aria-label={t('block.breadcrumb_label')}
+          className="flex items-center gap-1 text-[14px] text-[var(--fuel-element-low-em)]"
+        >
+          <Link
+            to="/"
+            className="text-[var(--fuel-element-low-em)] no-underline transition-colors duration-150 hover:text-heading motion-reduce:transition-none"
+          >
+            {t('block.breadcrumb_home')}
+          </Link>
+          <IconChevronRight size={16} aria-hidden />
+          <span className="text-heading">
+            {t('block.breadcrumb_all_blocks')}
+          </span>
+        </nav>
+      }
+    />
   );
 }

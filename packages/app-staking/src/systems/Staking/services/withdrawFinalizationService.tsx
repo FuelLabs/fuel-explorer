@@ -1,5 +1,5 @@
 import { GQLWithdrawStatusType } from '@fuel-explorer/graphql/sdk';
-import { Link, toast } from '@fuels/ui';
+import { toast } from '@fuels/ui';
 import type { QueryClient } from '@tanstack/react-query';
 import {
   CURRENT_NETWORK_CONTRACTS,
@@ -7,10 +7,11 @@ import {
   STAKING_ENV,
 } from 'app-commons';
 import { safeWriteContract } from 'app-commons/safeWriteContract';
+import { getI18n } from 'react-i18next';
 import type { PublicClient, WalletClient } from 'viem';
 import { fuelStreamXAbiMainnet } from '~staking/contracts/stream/fuelStreamXAbiMainnet';
 import { fuelStreamXAbiTestnet } from '~staking/contracts/stream/fuelStreamXAbiTestnet';
-import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
+import { ViewInExplorer } from '~staking/systems/Core/components/ViewInExplorer/ViewInExplorer';
 import { QUERY_KEYS } from '~staking/systems/Core/utils/query';
 import type { StakingEventWithProof } from '~staking/systems/Staking/types/l1/events';
 
@@ -132,17 +133,8 @@ export class withdrawFinalizationService {
    */
   static async showSuccessToast(txHash: `0x${string}`) {
     toast({
-      title: 'Transaction to finalize withdrawal has been submitted',
-      description: (
-        <Link
-          href={getTransactionLink(txHash, 'l1')}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="green"
-        >
-          View on Etherscan
-        </Link>
-      ),
+      title: getI18n().t('staking.toast.finalize_submitted'),
+      action: <ViewInExplorer hash={txHash} layer="l1" />,
       variant: 'info',
       duration: 5_000,
     });

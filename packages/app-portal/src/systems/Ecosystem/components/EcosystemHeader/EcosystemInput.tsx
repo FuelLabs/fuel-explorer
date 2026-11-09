@@ -1,5 +1,5 @@
 import { Input } from '@fuels/ui';
-import { IconSearch } from '@tabler/icons-react';
+import { IconSearch } from '@fuels/ui';
 import { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { tv } from 'tailwind-variants';

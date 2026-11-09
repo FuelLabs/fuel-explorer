@@ -2,18 +2,19 @@ import { tv } from 'tailwind-variants';
 
 export const heroStyles = tv({
   slots: {
-    root: 'overflow-clip relative w-full border-border bg-gray-3 dark:bg-gray-1',
-    container: [
-      'z-20 relative py-8 pt-6 px-8 items-center tablet:pt-16 tablet:px-10',
-      '[&_.rt-ContainerInner]:tablet:max-laptop:bg-opacity-60 [&_.rt-ContainerInner]:tablet:max-laptop:rounded-lg [&_.rt-ContainerInner]:tablet:max-laptop:shadow-2xl',
-      '[&_.rt-ContainerInner]:desktop:max-w-[1600px]',
-    ],
+    root: 'relative w-full bg-[var(--fuel-background)]',
+    container: 'relative pb-10',
     input: 'w-full tablet:w-[400px]',
-    title: [
-      'text-2xl leading-snug text-heading justify-center',
-      'tablet:text-left tablet:text-4xl tablet:justify-start',
-    ],
     subtitle: ['text-base mb-8 justify-center'],
-    searchWrapper: ['grid gap-5 grid-cols-12 laptop:h-[624px]'],
+    // The rows are fixed (not content-sized) so a taller tile or app list can
+    // never push the cells past the frame. 147:147:163:163 is the split the
+    // content used to settle on.
+    // Vertical corner lines stay 24px clear of the pinned nav at every width.
+    searchWrapper: [
+      'grid-cols-12 laptop:h-[532px]',
+      '[--fuel-corner-reach-y:0px] laptop:[--fuel-corner-reach-y:24px]',
+      'desktop:[--fuel-corner-reach-y:40px]',
+      'laptop:grid-rows-[minmax(0,147fr)_minmax(0,147fr)_minmax(0,163fr)_minmax(0,163fr)]',
+    ],
   },
 });

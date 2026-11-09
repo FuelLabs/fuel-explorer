@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { useAccountBalances } from '~/hooks/useApi';
+import { PageState } from '~/systems/Core/components/PageState/PageState';
+import { TxDim } from '~/systems/Transaction/component/TxNotice/TxNotice';
 import { AccountAssets } from '../components/AccountAssets/AccountAssets';
 import { AccountAssetsLoader } from '../components/AccountAssets/AccountAssetsLoader';
 
@@ -7,6 +10,7 @@ type AccountAssetsProps = {
 };
 
 export function AccountAssetsSync({ id }: AccountAssetsProps) {
+  const { t } = useTranslation();
   const {
     data: balances,
     isLoading,
@@ -14,19 +18,24 @@ export function AccountAssetsSync({ id }: AccountAssetsProps) {
     error,
   } = useAccountBalances(id);
 
-  if (isLoading || isFetching) {
+  // The loader shows on the first load only. A refetch keeps the rows and dims them.
+  if (isLoading) {
     return <AccountAssetsLoader />;
   }
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="text-red-500">
-          Error loading account balances: {error.message}
-        </div>
-      </div>
+      <PageState
+        tone="error"
+        title={t('account.error_balances')}
+        description={error.message}
+      />
     );
   }
 
-  return <AccountAssets balances={balances || []} id={id} />;
+  return (
+    <TxDim busy={isFetching}>
+      <AccountAssets balances={balances || []} id={id} />
+    </TxDim>
+  );
 }

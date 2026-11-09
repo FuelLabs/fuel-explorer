@@ -4,6 +4,7 @@ import { BN } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import type { SequencerValidatorAddress } from '~staking/systems/Core/utils/address';
+import { truncateToIntegerString } from '~staking/systems/Core/utils/bn';
 import {
   claimRewardNewMachine,
   claimRewardNewMachineSelectors,
@@ -30,7 +31,7 @@ export function useClaimRewardNewDialog({
     return (
       rewardsData?.reduce((acc, curr) => {
         // Cosmos API returns decimal strings - truncate to integer for BN
-        const integerAmount = Math.floor(Number(curr.amount ?? 0)).toString();
+        const integerAmount = truncateToIntegerString(curr.amount);
         return acc.add(new BN(integerAmount));
       }, new BN(0)) ?? null
     );

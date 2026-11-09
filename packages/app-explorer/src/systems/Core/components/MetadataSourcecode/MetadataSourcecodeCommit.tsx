@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@fuels/ui';
-import { IconExternalLink } from '@tabler/icons-react';
+import { IconExternalLink } from '@fuels/ui';
 
 type MetadataSourcecodeCommitProps = {
   url: string;

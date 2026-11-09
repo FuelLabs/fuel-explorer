@@ -49,7 +49,30 @@ export type PredicateMetadata = {
   audits: MetadataAudit[];
 };
 
+export type ProjectCategory =
+  | 'DeFi'
+  | 'AI'
+  | 'Wallets'
+  | 'Data & Infrastructure'
+  | 'Tooling'
+  | 'Security';
+
+export type ProjectProduct = {
+  name: string;
+  tagline: string;
+  description: string;
+  url?: string;
+};
+
 export type Project = {
+  slug?: string;
+  category?: ProjectCategory;
+  /** suite: Fuel Suite app, official: other Fuel Labs project. */
+  collection?: 'suite' | 'official' | 'community';
+  isFlagship?: boolean;
+  tagline?: string;
+  about?: string[];
+  products?: ProjectProduct[];
   isFuelSeason?: boolean;
   points?: number;
   order?: number;
