@@ -5,7 +5,11 @@ import { useAccountDelegations } from './useAccountDelegations';
 
 export function useStakedBalanceL1() {
   const { address } = useAccount();
-  const { data: delegations } = useAccountDelegations({ address });
+  const {
+    data: delegations,
+    isPending,
+    isError,
+  } = useAccountDelegations({ address });
   const totalStaked = useMemo(() => {
     const delegationsResponse = delegations?.delegation_responses || [];
     return delegationsResponse.reduce((acc, delegation) => {
@@ -15,5 +19,8 @@ export function useStakedBalanceL1() {
 
   return {
     total: totalStaked,
+    // A wallet that is not connected never loads, so callers check that first.
+    isPending,
+    isError,
   };
 }

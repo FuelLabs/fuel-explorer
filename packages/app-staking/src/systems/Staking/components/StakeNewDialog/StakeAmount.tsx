@@ -1,8 +1,9 @@
-import { Button, Text, VStack } from '@fuels/ui';
+import { Button, IconArrowRight, VStack } from '@fuels/ui';
 import { type Option, SearchableSelect } from '@fuels/ui';
 import type { BN } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import type { UseControllerReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { AnimatedError } from '~staking/systems/Core/components/AnimatedError/AnimatedError';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import type { Validator } from '~staking/systems/Staking/types/validators';
@@ -42,6 +43,7 @@ export function StakeAmount({
   validatorController,
   validatorData,
 }: StakeAmountProps) {
+  const { t } = useTranslation();
   const validatorOptions = useMemo(() => {
     return (
       validators?.map((validator) => ({
@@ -81,9 +83,9 @@ export function StakeAmount({
     <form className="flex flex-col flex-1 gap-8">
       <VStack gap="8" justify="center" className="flex-1">
         <VStack gap="0">
-          <Text className="font-medium text-gray-12 mb-1">
-            How much would you like to stake?
-          </Text>
+          <span className="fuel-label mb-2">
+            {t('staking.dialog.how_much_stake')}
+          </span>
           <StakeInput
             amount={amount}
             balance={totalBalance}
@@ -95,12 +97,12 @@ export function StakeAmount({
           />
         </VStack>
         <VStack gap="2">
-          <Text className="font-medium text-[0.9375rem] text-gray-12 leading-[24px] mt-2">
-            To which validator?
-          </Text>
+          <span className="fuel-label mt-2">
+            {t('staking.dialog.to_which_validator')}
+          </span>
           <SearchableSelect
-            placeholder="Search or select validator"
-            className="font-medium text-[0.9375rem] leading-[24px]"
+            placeholder={t('staking.dialog.search_validator')}
+            className="text-[16px] font-medium leading-[24px]"
             value=""
             options={validatorOptions}
             onChange={validatorController.field.onChange}
@@ -114,16 +116,15 @@ export function StakeAmount({
       </VStack>
 
       <Button
-        variant="solid"
-        color="green"
-        size="4"
-        className="w-full font-medium text-[0.8125rem] leading-[20px]"
+        size="3"
+        className="w-full"
         disabled={!isReady || !amount?.gt(0) || !!errorMsg}
         onClick={goToReview}
         type="button"
         isLoading={isGettingReviewDetails}
+        rightIcon={errorMsg ? undefined : IconArrowRight}
       >
-        {errorMsg ? errorMsg : 'Review →'}
+        {errorMsg ? errorMsg : t('staking.dialog.review')}
       </Button>
     </form>
   );

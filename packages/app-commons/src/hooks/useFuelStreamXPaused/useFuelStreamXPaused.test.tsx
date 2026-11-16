@@ -1,5 +1,5 @@
+import { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 import { useReadContract } from 'wagmi';
 import {
   BRIDGE_PAUSED_MESSAGE,
@@ -20,7 +20,9 @@ jest.mock('@fuels/ui', () => {
   );
   Alert.Icon = ({ children }: { children: React.ReactNode }) => children;
   Alert.Text = ({ children }: { children: React.ReactNode }) => children;
-  return { Alert };
+  const FrameCorners = () => null;
+  const Square = () => null;
+  return { Alert, FrameCorners, Square };
 });
 
 const mockedUseReadContract = useReadContract as jest.Mock;

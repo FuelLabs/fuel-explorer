@@ -10,14 +10,15 @@ export const styles = tv({
     ],
     item: ['overflow-hidden rounded-none not-first:mt-1'],
     trigger: [
-      'group bg-card-bg rounded-md transition-colors px-4 flex text-lg font-medium',
-      'w-full h-[45px] items-center justify-between border border-border',
-      'focus:outline-none text-heading hover:text-accent',
-      'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent',
+      'group fuel-hover-fill bg-transparent transition-colors px-4 flex text-lg font-medium',
+      'w-full h-[45px] items-center justify-between border border-[var(--fuel-line)]',
+      'focus:outline-none text-heading',
+      'focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-1',
+      'focus-visible:outline-[var(--fuel-focus)]',
     ],
     header: 'flex',
     icon: [
-      'transition-transform text-icon group-hover:rotate-180 group-data-[state=open]:rotate-180',
+      'transition-transform duration-200 text-icon group-data-[state=open]:rotate-180 motion-reduce:transition-none',
     ],
   },
 });

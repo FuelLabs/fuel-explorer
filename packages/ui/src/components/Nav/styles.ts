@@ -9,38 +9,46 @@ export const styles = tv({
     ],
     menuItem: [
       'flex items-center',
-      'relative h-auto',
-      'data-[active=true]:text-brand hover:text-brand',
+      'relative h-auto min-h-11 py-3 tablet:min-h-0 tablet:py-0',
+      'font-mono font-medium text-[14px] leading-none uppercase tracking-[0.05em]',
+      'text-muted transition-colors duration-300',
+      'data-[active=true]:text-heading hover:text-heading',
+      // In the mobile menu a square marks the current page. Every item keeps
+      // the slot so the labels stay in one column.
+      'gap-3 md:gap-0 before:size-2 before:shrink-0 before:border before:border-transparent before:content-[""] md:before:hidden',
+      'data-[active=true]:before:border-[var(--fuel-square-border)] data-[active=true]:before:bg-[var(--fuel-square)]',
     ],
     navConnection: 'items-center',
     navNetwork: 'h-8',
     spacer: 'flex-1 opacity-0',
     themeToggle: [
-      'relative cursor-pointer flex items-center px-2 w-12 h-8 rounded-full border-border',
-      'bg-gray-3 select-none',
+      'relative cursor-pointer flex items-center justify-center w-11 h-11 border border-border',
+      'fuel-hover-fill bg-transparent select-none',
     ],
+    // The page dims behind the open mobile menu. It sits under the sticky nav (z-30).
+    backdrop: 'md:hidden fixed inset-0 z-20 bg-black/50',
+    mobileMenu:
+      'max-h-[calc(100dvh-var(--nav-height))] overflow-y-auto border-b border-[var(--fuel-line)]',
     themeToggleIcon: [
-      'absolute opacity-100 transition-all duration-200 text-icon transform',
-      'aria-[label=Sun]:right-2',
-      'aria-[label=Moon]:left-2',
-      'aria-[label=Moon]:transform',
-      'aria-[label=Moon]:opacity-0',
-      'aria-[label=Sun]:opacity-100',
-      'aria-[label=Sun]:-translate-x-0',
-      'aria-[label=Moon]:translate-x-full',
-      'dark:aria-[label=Sun]:transform',
-      'dark:aria-[label=Sun]:opacity-0',
-      'dark:aria-[label=Moon]:opacity-100',
-      'dark:aria-[label=Moon]:translate-x-0',
-      'dark:aria-[label=Sun]:-translate-x-full',
+      'absolute transition-opacity duration-300 text-icon',
+      'aria-[label=Sun]:opacity-100 aria-[label=Moon]:opacity-0',
+      'dark:aria-[label=Sun]:opacity-0 dark:aria-[label=Moon]:opacity-100',
     ],
     desktop: [
       'hidden md:flex justify-between flex-row items-center',
       'md:px-8 min-h-[var(--nav-height)]',
     ],
-    desktopWrapper: ['border-b border-border min-h-[var(--nav-height)]'],
+    // Hidden below md, where the mobile nav takes over; otherwise its empty
+    // bar sits above the mobile nav.
+    desktopWrapper: [
+      'hidden md:block sticky top-0 z-30',
+      'bg-[var(--fuel-background)]',
+      'fuel-grid-divider min-h-[var(--nav-height)]',
+    ],
     mobileWrapper: [
-      'pl-3 pr-2 border-b border-border min-h-[var(--nav-height)]',
+      'sticky top-0 z-30',
+      'bg-[var(--fuel-background)]',
+      'pl-3 pr-2 fuel-grid-divider min-h-[var(--nav-height)]',
     ],
     mobile: ['md:hidden flex-col fuel-[NavLogo]:flex-1'],
     mobileContent: [

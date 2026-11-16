@@ -2,9 +2,13 @@ import { Button } from '@fuels/ui';
 import { useModal } from 'connectkit';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccount, useDisconnect } from 'wagmi';
+import { useRiseMotion } from '../../utils/motion';
 
 export const ConnectWallet = () => {
+  const { t } = useTranslation();
+  const rise = useRiseMotion();
   const { setOpen } = useModal();
 
   const [firstWagmiStatus, setFirstWagmiStatus] = useState(true);
@@ -24,30 +28,20 @@ export const ConnectWallet = () => {
   return (
     <AnimatePresence initial={false} mode="popLayout">
       {address ? (
-        <motion.div
-          key="dropdown"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-        >
+        <motion.div key="dropdown" {...rise}>
           <Button
-            variant="outline"
+            variant="ghost"
             size="1"
-            color="red"
+            color="gray"
             onClick={() => disconnect()}
           >
-            Disconnect
+            {t('staking.account.disconnect')}
           </Button>
         </motion.div>
       ) : (
-        <motion.div
-          key="button"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-        >
+        <motion.div key="button" {...rise}>
           <Button size="1" onClick={() => setOpen(true)} isLoading={isLoading}>
-            Connect Wallet
+            {t('staking.account.connect_wallet')}
           </Button>
         </motion.div>
       )}

@@ -1,6 +1,7 @@
 import { HStack, IconButton } from '@fuels/ui';
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight } from '@fuels/ui';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import type { Pagination } from '~staking/systems/Core/types/pagination';
 import { styles } from './styles';
 
@@ -14,6 +15,7 @@ export function AnimatedPagination({
   isFetching,
   enabled,
 }: Props) {
+  const { t } = useTranslation();
   const classes = styles();
 
   return (
@@ -31,7 +33,7 @@ export function AnimatedPagination({
             className={classes.paginationContainer()}
           >
             <IconButton
-              aria-label="Previous page"
+              aria-label={t('staking.pagination.previous')}
               variant="ghost"
               size="1"
               icon={IconArrowLeft}
@@ -41,7 +43,7 @@ export function AnimatedPagination({
               className={classes.paginationButton()}
             />
             <IconButton
-              aria-label="Next page"
+              aria-label={t('staking.pagination.next')}
               variant="ghost"
               size="1"
               icon={IconArrowRight}

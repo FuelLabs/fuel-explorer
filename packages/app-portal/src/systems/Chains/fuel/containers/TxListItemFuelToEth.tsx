@@ -1,16 +1,28 @@
 import { useAsset } from '~portal/systems/Assets';
-import { BridgeTxItem } from '~portal/systems/Bridge/components';
+import {
+  BRIDGE_STEP_ID,
+  BridgeTxItem,
+} from '~portal/systems/Bridge/components';
 
 import { Asset, Flex, FuelLogo, Spinner, Text } from '@fuels/ui';
+import type { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import { tv } from 'tailwind-variants';
 import { ActionRequiredBadge } from '../components';
 import { useTxFuelToEth } from '../hooks';
 
 type TxListItemFuelToEthProps = {
   txHash: string;
+  className?: string;
+  style?: CSSProperties;
 };
 
-export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
+export const TxListItemFuelToEth = ({
+  txHash,
+  className,
+  style,
+}: TxListItemFuelToEthProps) => {
+  const { t } = useTranslation();
   const classes = styles();
   const { asset: ethAsset } = useAsset();
   const { steps, handlers, asset, date, status, amount, isLoadingTxResult } =
@@ -22,19 +34,25 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
 
   function getStatusComponent() {
     if (status?.isReceiveDone) {
-      return <Text className={classes.settledText()}>Settled</Text>;
+      return (
+        <Text className={classes.settledText()}>
+          {t('portal.history.settled')}
+        </Text>
+      );
     }
 
     if (bridgeTxStatus?.isLoading) {
       return (
         <Flex align="center" gap="1">
           <Spinner size={14} />
-          <Text className={classes.loadingText()}>Processing</Text>
+          <Text className={classes.loadingText()}>
+            {t('portal.history.processing')}
+          </Text>
         </Flex>
       );
     }
 
-    if (bridgeTxStatus?.name === 'Confirm transaction') {
+    if (bridgeTxStatus?.id === BRIDGE_STEP_ID.confirmTransaction) {
       return <ActionRequiredBadge />;
     }
 
@@ -50,6 +68,8 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
       txId={txHash}
       amount={amount}
       isLoading={isLoadingTxResult}
+      className={className}
+      style={style}
       toLogo={
         <Asset asset={ethAsset} iconSize={18}>
           <Asset.Icon />
@@ -62,7 +82,7 @@ export const TxListItemFuelToEth = ({ txHash }: TxListItemFuelToEthProps) => {
 
 const styles = tv({
   slots: {
-    settledText: 'text-xs text-muted text-right',
-    loadingText: 'text-xs',
+    settledText: 'fuel-label text-right',
+    loadingText: 'fuel-label',
   },
 });

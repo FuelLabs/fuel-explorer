@@ -1,6 +1,7 @@
 import { AnimatedDialog, Stepper, VStack } from '@fuels/ui';
 import clsx from 'clsx';
 import type { BN } from 'fuels';
+import { useTranslation } from 'react-i18next';
 import type { Address } from 'viem';
 import { StepAllowance } from '~staking/systems/Conversion/components/ConvertDialog/StepAllowance/StepAllowance';
 import { StepConvert } from '~staking/systems/Conversion/components/ConvertDialog/StepConvert/StepConvert';
@@ -26,6 +27,7 @@ export const ConvertDialogContent = ({
   balance,
   isContractPaused,
 }: ConvertDialogContentProps) => {
+  const { t } = useTranslation();
   const { step, data, handlers } = useConversionMachine();
   const responsiveDialogStyle = responsiveDialogStyles();
 
@@ -35,21 +37,23 @@ export const ConvertDialogContent = ({
       aria-describedby="Convert"
       className={clsx(
         responsiveDialogStyle.content({ sizing: 'auto' }),
-        'h-[440px] min-h-[440px]',
+        'h-[440px] tablet:min-h-[440px]',
       )}
     >
       <div className="flex flex-col h-full flex-grow-0 max-h-[100%]">
-        <AnimatedDialog.Title>Upgrade V1 to FUEL token</AnimatedDialog.Title>
+        <AnimatedDialog.Title>
+          {t('staking.upgrade.dialog_title')}
+        </AnimatedDialog.Title>
 
         <VStack pt="3" gap="0" className="flex flex-1 mt-4">
           <Stepper step={step}>
             <Stepper.Item>
               <Stepper.ItemIcon />
-              Allowance
+              {t('staking.upgrade.step_allowance')}
             </Stepper.Item>
             <Stepper.Item>
               <Stepper.ItemIcon />
-              Upgrade
+              {t('staking.upgrade.step_upgrade')}
             </Stepper.Item>
           </Stepper>
 

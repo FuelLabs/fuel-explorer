@@ -1,10 +1,11 @@
-import { Link, toast } from '@fuels/ui';
+import { toast } from '@fuels/ui';
 import { CURRENT_NETWORK_CONTRACTS } from 'app-commons';
 import { safeWriteContract } from 'app-commons/safeWriteContract';
+import { getI18n } from 'react-i18next';
 import type { WalletClient } from 'viem';
 import type { PublicClient } from 'viem';
 import { sequencerAbi } from '~staking/contracts/sequencer/sequencerAbi';
-import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
+import { ViewInExplorer } from '~staking/systems/Core/components/ViewInExplorer/ViewInExplorer';
 import { convertSequencerValidatorAddressToEthAddress } from '../../utils/convertSequencerValidatorAddressToEthAddress';
 import type { SubmitClaimRewardNewDialogInput } from './types';
 
@@ -64,17 +65,8 @@ export class ClaimRewardNewService {
    */
   static showSuccessToast(txHash: `0x${string}`): void {
     toast({
-      title: 'Claim Reward transaction has been submitted',
-      description: (
-        <Link
-          href={getTransactionLink(txHash, 'l1')}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="green"
-        >
-          View on Etherscan
-        </Link>
-      ),
+      title: getI18n().t('staking.toast.claim_reward_submitted'),
+      action: <ViewInExplorer hash={txHash} layer="l1" />,
       variant: 'info',
       duration: 5_000,
     });

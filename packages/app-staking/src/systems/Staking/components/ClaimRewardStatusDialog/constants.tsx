@@ -1,32 +1,18 @@
 import { ClaimStatus } from '../../machines/claimRewardStatusDialogMachine';
+import { SyncFailedDescription } from '../StatusItem/SyncFailedDescription';
 
 export const CLAIM_STEPS = [
   {
     status: ClaimStatus.TransactionSent,
-    label: 'Transaction Sent',
+    label: 'staking.status.step_sent',
   },
   {
     status: ClaimStatus.WaitingSync,
-    label: 'Waiting for Synchronization',
+    label: 'staking.status.step_waiting_sync',
   },
   {
     status: ClaimStatus.Skipped,
-    label: 'Synchronization Failed',
-    description: (
-      <>
-        Likely due to the balance not being available at the moment of
-        synchronization. If you believe the sync should have been successful,
-        please contact Fuel support on{' '}
-        <a
-          href="https://discord.com/invite/xfpK4Pe"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline"
-        >
-          Discord
-        </a>
-        .
-      </>
-    ),
+    label: 'staking.status.step_sync_failed',
+    description: <SyncFailedDescription />,
   },
 ];

@@ -5,7 +5,7 @@ import {
   IconBrandX,
   IconChevronDown,
   IconExternalLink,
-} from '@tabler/icons-react';
+} from '@fuels/ui';
 import { getUrlHostName } from 'app-commons';
 import { MetadataLogo } from '~/systems/Core/components/MetadataLogo/MetadataLogo';
 import type {

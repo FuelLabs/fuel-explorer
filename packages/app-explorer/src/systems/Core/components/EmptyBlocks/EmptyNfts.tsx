@@ -1,11 +1,15 @@
+import { useTranslation } from 'react-i18next';
 import { EmptyCard } from '../EmptyCard/EmptyCard';
 
 export function EmptyNfts({ entity }: { entity: string }) {
+  const { t } = useTranslation();
   return (
     <EmptyCard>
-      <EmptyCard.Title>No NFTs</EmptyCard.Title>
+      <EmptyCard.Title>{t('core.empty.nfts_title')}</EmptyCard.Title>
       <EmptyCard.Description>
-        This {entity} does not have any nft.
+        {t('core.empty.nfts_description', {
+          entity: t(`core.entity.${entity}`, { defaultValue: entity }),
+        })}
       </EmptyCard.Description>
     </EmptyCard>
   );

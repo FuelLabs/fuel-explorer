@@ -2,6 +2,7 @@ import type { GQLBalanceItemFragment } from '@fuel-explorer/graphql';
 import { useIsConnected, useWallet } from '@fuels/react';
 import { Button, Dialog } from '@fuels/ui';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useFuelNetworksConfig } from '~portal/systems/Settings/providers/FuelConnectProvider/constants';
 import { SendTransactionDialogContent } from './SendTransactionDialogContent';
@@ -15,6 +16,7 @@ export function SendTransactionDialog({
   balances,
   accountAddress,
 }: SendTransactionDialogProps) {
+  const { t } = useTranslation();
   const { isConnected } = useIsConnected();
   const { wallet } = useWallet();
 
@@ -42,7 +44,7 @@ export function SendTransactionDialog({
   return (
     <Dialog>
       <Dialog.Trigger>
-        <Button>Send Transaction</Button>
+        <Button>{t('account.send_transaction')}</Button>
       </Dialog.Trigger>
 
       <SendTransactionDialogContent balances={balances} />

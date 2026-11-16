@@ -20,23 +20,23 @@ export const RegularInfoSection = ({
 }: RegularInfoSectionProps) => {
   return (
     <Box className="flex flex-col gap-2">
-      <Text weight="medium" className="text-gray-10 text-sm">
-        {header}
-      </Text>
+      <span className="fuel-label">{header}</span>
       <HStack gap="2" align="center">
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={loadingEl || <LoadingBox className="w-36 h-5" />}
+          loadingEl={
+            loadingEl || <LoadingBox className="w-36 h-5 !rounded-none" />
+          }
           regularEl={
             <>
               {icon || null}
               <HStack gap="1" align="center">
-                <Text weight="medium" className="text-heading text-base">
+                <Text weight="medium" className="text-heading text-[16px]">
                   {text}
                 </Text>
                 <Text
                   weight="medium"
-                  className="text-gray-10 text-sm leading-tight"
+                  className="text-[14px] leading-tight text-[var(--fuel-element-low-em)]"
                 >
                   {textSupport}
                 </Text>

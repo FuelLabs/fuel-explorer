@@ -1,5 +1,5 @@
-import { IconChevronRight } from '@tabler/icons-react';
 import { Children } from 'react';
+import { IconChevronRight } from '../Icons';
 
 import { tv } from 'tailwind-variants';
 import { createComponent, withNamespace } from '../../utils/component';

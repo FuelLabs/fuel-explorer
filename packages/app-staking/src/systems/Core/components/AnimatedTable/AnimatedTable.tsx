@@ -1,5 +1,4 @@
-import { Card, HStack, Tooltip } from '@fuels/ui';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { HStack, HelperIcon, IconInfoCircle } from '@fuels/ui';
 import { AnimatePresence, type AnimationProps, motion } from 'framer-motion';
 import type React from 'react';
 import { memo } from 'react';
@@ -12,7 +11,7 @@ import {
 
 export type Cell = {
   id: string;
-  tooltip?: React.ReactNode;
+  tooltip?: string;
   title: string;
   className?: string;
   animate?: AnimationProps['animate'];
@@ -37,21 +36,16 @@ function _AnimatedTable({ children, headerCells }: AnimatedTableProps) {
                   animate={animate}
                   exit={CELL_EXIT}
                   transition={CELL_TRANSITION}
-                  className={`${className} text-gray-11`}
+                  className={`${className} fuel-label`}
                 >
                   {title}
 
                   {tooltip && (
-                    <Tooltip
-                      content={tooltip}
-                      delayDuration={0}
-                      className="text-center"
-                    >
-                      <IconInfoCircle
-                        size={12}
-                        className="hidden tablet:block"
-                      />
-                    </Tooltip>
+                    <HelperIcon
+                      message={tooltip}
+                      icon={IconInfoCircle}
+                      iconSize={12}
+                    />
                   )}
                 </motion.div>
               ),
@@ -59,9 +53,7 @@ function _AnimatedTable({ children, headerCells }: AnimatedTableProps) {
           </AnimatePresence>
         </HStack>
       </div>
-      <Card className="border-none p-0 [&:before]:inset-0 [&:before]:bg-transparent [&:after]:inset-0 [&:after]:shadow-none gap-0 bg-gray-3 rounded-b-none">
-        {children}
-      </Card>
+      <div className="border-t border-[var(--fuel-line)]">{children}</div>
     </div>
   );
 }

@@ -5,8 +5,18 @@ import type {
   MarketMetadata,
 } from './abiDecoder';
 
+// A translatable string. `key` is the i18n key, `params` fill its {{vars}} and
+// `en` is the English result, used as the default and in tests.
+export type Msg = {
+  key: string;
+  en: string;
+  params?: Record<string, Msg | string | number>;
+  capitalize?: boolean;
+};
+
 export type ActivityPart =
   | { text: string }
+  | { msg: Msg }
   | { amount: string; assetId?: string; symbol?: string; decimals?: number }
   | { address: string }
   | { code: string };
@@ -28,7 +38,7 @@ export type ActivityKind =
 
 export type ActivityAction = {
   kind: ActivityKind;
-  label: string;
+  label: Msg;
   parts: ActivityPart[];
   contractId: string;
   contractName?: string;
@@ -36,7 +46,7 @@ export type ActivityAction = {
 };
 
 export type TxActivity = {
-  headline: string;
+  headline: Msg;
   // The transaction reverted: the actions were attempted, none took effect.
   failed: boolean;
   project?: string;
@@ -46,6 +56,30 @@ export type TxActivity = {
 };
 
 type Value = Record<string, any>;
+
+const en = (value: Msg | string | number) =>
+  typeof value === 'object' ? value.en : String(value);
+
+function m(
+  key: string,
+  template: string,
+  params?: Msg['params'],
+  capitalize?: boolean,
+): Msg {
+  const result = template.replace(/\{\{(\w+)\}\}/g, (_, name) =>
+    en(params?.[name] ?? ''),
+  );
+  return { key, en: result, params, capitalize };
+}
+
+const msg = (
+  key: string,
+  template: string,
+  params?: Msg['params'],
+): ActivityPart => ({ msg: m(key, template, params) });
+
+const counted = (key: string, n: number, one: string, other: string) =>
+  m(key, n === 1 ? one : other, { count: n });
 
 const text = (t: string): ActivityPart => ({ text: t });
 const code = (c: string): ActivityPart => ({ code: c });
@@ -103,19 +137,42 @@ function feeParts(base: string, quote: string, ctx: Context) {
   const parts: ActivityPart[] = [];
   if (!isZero(base)) parts.push(baseAmount(base, ctx));
   if (!isZero(quote)) {
-    if (parts.length) parts.push(text(' and '));
+    if (parts.length) parts.push(msg('tx.activity.part.and', ' and '));
     parts.push(quoteAmount(quote, ctx));
   }
   return parts;
 }
 
-const ORDER_TYPE_LABEL: Record<string, string> = {
-  Limit: 'Limit',
-  Spot: 'Limit',
-  PostOnly: 'Post-only',
-  FillOrKill: 'Fill-or-kill',
-  Market: 'Market',
-  BoundedMarket: 'Market',
+const ORDER_TYPE_KEY: Record<string, [string, string]> = {
+  Limit: ['limit', 'Limit'],
+  Spot: ['limit', 'Limit'],
+  PostOnly: ['post_only', 'Post-only'],
+  FillOrKill: ['fill_or_kill', 'Fill-or-kill'],
+  Market: ['market', 'Market'],
+  BoundedMarket: ['market', 'Market'],
+};
+
+const orderTypeMsg = (type: string): Msg | string => {
+  const known = ORDER_TYPE_KEY[type];
+  return known ? m(`tx.activity.order_type.${known[0]}`, known[1]) : type;
+};
+
+const SIDE_EN: Record<string, string> = { buy: 'buy', sell: 'sell' };
+
+// The side as a lowercase word, or the raw value when it is unknown.
+const sideMsg = (side: string): Msg | string => {
+  const lower = side.toLowerCase();
+  return SIDE_EN[lower] ? m(`tx.activity.side.${lower}`, SIDE_EN[lower]) : side;
+};
+
+const sideCapMsg = (side: string): Msg | string => {
+  const lower = side.toLowerCase();
+  return SIDE_EN[lower]
+    ? m(
+        `tx.activity.side_cap.${lower}`,
+        `${lower.charAt(0).toUpperCase()}${lower.slice(1)}`,
+      )
+    : side;
 };
 
 // A trigger closing a buy takes profit above the entry price; one closing
@@ -129,20 +186,28 @@ function triggerKind(
   return above === (side === 'Sell') ? 'takeProfit' : 'stopLoss';
 }
 
-const TRIGGER_LABEL: Partial<Record<ActivityKind, string>> = {
-  takeProfit: 'Take profit',
-  stopLoss: 'Stop loss',
-  trigger: 'Trigger order',
+const TRIGGER_LABEL: Partial<Record<ActivityKind, Msg>> = {
+  takeProfit: m('tx.activity.label.take_profit', 'Take profit'),
+  stopLoss: m('tx.activity.label.stop_loss', 'Stop loss'),
+  trigger: m('tx.activity.label.trigger_order', 'Trigger order'),
 };
 
-const EJECTION_TEXT: Record<string, string> = {
-  CanceledByTheUser: 'was cancelled by the trader',
-  ForceCanceled: 'was force cancelled',
-  SiblingOrderActivated: 'was cancelled because its paired order triggered',
-  NotEnoughFunds: 'was removed for lack of funds',
-  EjectedByAdmin: 'was removed by an admin',
-  ParentOrderCanceled: 'was cancelled with its parent order',
+const EJECTION_TEXT: Record<string, [string, string]> = {
+  CanceledByTheUser: ['cancelled_by_user', 'was cancelled by the trader'],
+  ForceCanceled: ['force_canceled', 'was force cancelled'],
+  SiblingOrderActivated: [
+    'sibling_activated',
+    'was cancelled because its paired order triggered',
+  ],
+  NotEnoughFunds: ['not_enough_funds', 'was removed for lack of funds'],
+  EjectedByAdmin: ['ejected_by_admin', 'was removed by an admin'],
+  ParentOrderCanceled: [
+    'parent_canceled',
+    'was cancelled with its parent order',
+  ],
 };
+
+const REMOVED = ['removed', 'was removed'] as const;
 
 // Events without a describer are internal bookkeeping and stay hidden.
 const DESCRIBERS: Record<
@@ -153,18 +218,23 @@ const DESCRIBERS: Record<
   ) => Pick<ActivityAction, 'kind' | 'label' | 'parts'> | null
 > = {
   OrderCreatedEvent: (v, ctx) => {
-    const side = variantName(v.order_side).toLowerCase();
+    const side = variantName(v.order_side);
     const type = variantName(v.order_type);
     const isMarket = type === 'Market' || type === 'BoundedMarket';
     // For market orders the price is a per-unit limit, not a total.
-    const priceWord = isMarket ? ' with a limit price of ' : ' at ';
+    const priceWord = isMarket
+      ? msg('tx.activity.part.with_limit_price', ' with a limit price of ')
+      : msg('tx.activity.part.at', ' at ');
     return {
       kind: 'place',
-      label: 'Order placed',
+      label: m('tx.activity.label.order_placed', 'Order placed'),
       parts: [
-        text(`${ORDER_TYPE_LABEL[type] ?? type} ${side} `),
+        msg('tx.activity.part.place_head', '{{type}} {{side}} ', {
+          type: orderTypeMsg(type),
+          side: sideMsg(side),
+        }),
         baseAmount(v.quantity, ctx),
-        text(priceWord),
+        priceWord,
         quoteAmount(v.price, ctx),
       ],
     };
@@ -172,51 +242,68 @@ const DESCRIBERS: Record<
   OrderMatchedEvent: (v, ctx) => {
     const takerSide = ctx.createdOrders[v.match_id?.taker_id]?.side;
     const verb =
-      takerSide === 'Buy' ? 'Bought ' : takerSide === 'Sell' ? 'Sold ' : '';
+      takerSide === 'Buy'
+        ? msg('tx.activity.part.bought', 'Bought ')
+        : takerSide === 'Sell'
+          ? msg('tx.activity.part.sold', 'Sold ')
+          : text('');
     return {
       kind: 'fill',
-      label: 'Filled',
+      label: m('tx.activity.label.filled', 'Filled'),
       parts: [
-        text(verb),
+        verb,
         baseAmount(v.quantity, ctx),
-        text(' at '),
+        msg('tx.activity.part.at', ' at '),
         quoteAmount(v.price, ctx),
       ],
     };
   },
   OrderCancelledEvent: (v) => ({
     kind: 'cancel',
-    label: 'Order cancelled',
-    parts: [text('Order '), code(shortId(v.order_id))],
+    label: m('tx.activity.label.order_cancelled', 'Order cancelled'),
+    parts: [msg('tx.activity.part.order', 'Order '), code(shortId(v.order_id))],
   }),
   OrderCancelledInternalEvent: (v) => ({
     kind: 'cancel',
-    label: 'Order cancelled',
-    parts: [text('Order '), code(shortId(v.order_id)), text(' by the market')],
+    label: m('tx.activity.label.order_cancelled', 'Order cancelled'),
+    parts: [
+      msg('tx.activity.part.order', 'Order '),
+      code(shortId(v.order_id)),
+      msg('tx.activity.part.by_market', ' by the market'),
+    ],
   }),
   ExpireMakerEvent: (v) => ({
     kind: 'stop',
-    label: 'Order expired',
-    parts: [text('Resting order '), code(shortId(v.order_id))],
+    label: m('tx.activity.label.order_expired', 'Order expired'),
+    parts: [
+      msg('tx.activity.part.resting_order', 'Resting order '),
+      code(shortId(v.order_id)),
+    ],
   }),
   OrderTooSmallEvent: (v) => ({
     kind: 'stop',
-    label: 'Order removed',
-    parts: [code(shortId(v.order_id)), text(' is below the minimum size')],
+    label: m('tx.activity.label.order_removed', 'Order removed'),
+    parts: [
+      code(shortId(v.order_id)),
+      msg('tx.activity.part.below_minimum', ' is below the minimum size'),
+    ],
   }),
   OrderOutOfGasEvent: (v) => ({
     kind: 'stop',
-    label: 'Order stopped',
-    parts: [code(shortId(v.order_id)), text(' ran out of gas while matching')],
+    label: m('tx.activity.label.order_stopped', 'Order stopped'),
+    parts: [
+      code(shortId(v.order_id)),
+      msg('tx.activity.part.out_of_gas', ' ran out of gas while matching'),
+    ],
   }),
   OrderHaltedEvent: (v, ctx) => ({
     kind: 'stop',
-    label: 'Order stopped',
+    label: m('tx.activity.label.order_stopped', 'Order stopped'),
     parts: [
       code(shortId(v.order_id)),
-      text(' stopped with '),
+      msg('tx.activity.part.stopped_with', ' stopped with '),
       baseAmount(v.remaining_quantity, ctx),
-      text(' unfilled'),
+      msg('tx.activity.part.unfilled', ' unfilled'),
     ],
   }),
   TriggerOrderCreatedEvent: (v, ctx) => {
@@ -232,17 +319,19 @@ const DESCRIBERS: Record<
         : (kind === 'takeProfit') === (side === 'Sell');
     return {
       kind,
-      label: TRIGGER_LABEL[kind],
+      label: TRIGGER_LABEL[kind] as Msg,
       parts: [
-        text(`${side} `),
+        msg('tx.activity.part.side_prefix', '{{side}} ', {
+          side: sideCapMsg(side),
+        }),
         ...(parentId
-          ? [text('the filled amount')]
+          ? [msg('tx.activity.part.filled_amount', 'the filled amount')]
           : [baseAmount(v.quantity?.Quantity, ctx)]),
-        text(
-          rises === undefined
-            ? ' when the price reaches '
-            : ` when the price ${rises ? 'rises' : 'falls'} to `,
-        ),
+        rises === undefined
+          ? msg('tx.activity.part.when_reaches', ' when the price reaches ')
+          : rises
+            ? msg('tx.activity.part.when_rises', ' when the price rises to ')
+            : msg('tx.activity.part.when_falls', ' when the price falls to '),
         quoteAmount(v.trigger_price, ctx),
       ],
     };
@@ -250,17 +339,26 @@ const DESCRIBERS: Record<
   TriggerOrderEjectedEvent: (v) => {
     const reason = variantName(v.reason);
     const id = code(shortId(v.order_id));
+    const ejection = EJECTION_TEXT[reason] ?? REMOVED;
     if (reason === 'Activated') {
       return {
         kind: 'triggered',
-        label: 'Triggered',
-        parts: [text('Trigger order '), id, text(' reached its price')],
+        label: m('tx.activity.label.triggered', 'Triggered'),
+        parts: [
+          msg('tx.activity.part.trigger_order', 'Trigger order '),
+          id,
+          msg('tx.activity.part.reached_price', ' reached its price'),
+        ],
       };
     }
     return {
       kind: 'cancel',
-      label: 'Trigger cancelled',
-      parts: [id, text(` ${EJECTION_TEXT[reason] ?? 'was removed'}`)],
+      label: m('tx.activity.label.trigger_cancelled', 'Trigger cancelled'),
+      parts: [
+        id,
+        text(' '),
+        msg(`tx.activity.ejection.${ejection[0]}`, ejection[1]),
+      ],
     };
   },
   FeesCollectedEvent: (v, ctx) => {
@@ -269,8 +367,11 @@ const DESCRIBERS: Record<
     return parts.length
       ? {
           kind: 'fee',
-          label: 'Fees',
-          parts: [...parts, text(' collected by the market')],
+          label: m('tx.activity.label.fees', 'Fees'),
+          parts: [
+            ...parts,
+            msg('tx.activity.part.fees_collected', ' collected by the market'),
+          ],
         }
       : null;
   },
@@ -280,20 +381,29 @@ const DESCRIBERS: Record<
     // Anyone can settle any trader, so name the trader unless it is the actor.
     const to: ActivityPart[] =
       trader && trader !== ctx.actor
-        ? [text(' moved to '), { address: trader }]
-        : [text(' moved to the trade account')];
+        ? [msg('tx.activity.part.moved_to', ' moved to '), { address: trader }]
+        : [
+            msg(
+              'tx.activity.part.moved_to_trade_account',
+              ' moved to the trade account',
+            ),
+          ];
     return parts.length
-      ? { kind: 'settle', label: 'Settled', parts: [...parts, ...to] }
+      ? {
+          kind: 'settle',
+          label: m('tx.activity.label.settled', 'Settled'),
+          parts: [...parts, ...to],
+        }
       : null;
   },
   WithdrawEvent: (v) => {
     const to = identityAddress(v.to);
     return {
       kind: 'withdraw',
-      label: 'Withdrawn',
+      label: m('tx.activity.label.withdrawn', 'Withdrawn'),
       parts: [
         { amount: v.amount, assetId: v.asset_id?.bits },
-        ...(to ? [text(' to '), { address: to }] : []),
+        ...(to ? [msg('tx.activity.part.to', ' to '), { address: to }] : []),
       ],
     };
   },
@@ -301,22 +411,26 @@ const DESCRIBERS: Record<
     const key = identityAddress(v.session?.session_id);
     return {
       kind: 'session',
-      label: 'Session key added',
-      parts: key ? [text('Key '), { address: key }] : [],
+      label: m('tx.activity.label.session_added', 'Session key added'),
+      parts: key ? [msg('tx.activity.part.key', 'Key '), { address: key }] : [],
     };
   },
   SessionRevokedEvent: (v) => {
     const key = identityAddress(v.session_id);
     return {
       kind: 'session',
-      label: 'Session key revoked',
-      parts: key ? [text('Key '), { address: key }] : [],
+      label: m('tx.activity.label.session_revoked', 'Session key revoked'),
+      parts: key ? [msg('tx.activity.part.key', 'Key '), { address: key }] : [],
     };
   },
   FailedToValidateEvent: (v) => ({
     kind: 'stop',
-    label: 'Rejected',
-    parts: [text(String(v.reason ?? 'Validation failed'))],
+    label: m('tx.activity.label.rejected', 'Rejected'),
+    parts: [
+      v.reason
+        ? text(String(v.reason))
+        : msg('tx.activity.part.validation_failed', 'Validation failed'),
+    ],
   }),
 };
 
@@ -327,73 +441,181 @@ const SESSION_CALL_EVENTS = [
 
 // Each phrase is [past tense, base form], so a reverted transaction can say
 // what it tried to do instead of what it did.
-type Phrase = [string, string];
+type Phrase = [Msg, Msg];
 
 function headline(
   actions: ActivityAction[],
   project: string | undefined,
   failed: boolean,
-) {
+): Msg {
   const count = (kind: ActivityKind) =>
     actions.filter((a) => a.kind === kind).length;
-  const plural = (n: number, word: string) =>
-    `${n} ${word}${n === 1 ? '' : 's'}`;
-  const phrase = (past: string, base: string, rest: string): Phrase => [
-    `${past} ${rest}`,
-    `${base} ${rest}`,
+  const phrase = (
+    id: string,
+    past: string,
+    base: string,
+    rest: Msg,
+  ): Phrase => [
+    m(`tx.activity.phrase.${id}_past`, `${past} {{rest}}`, { rest }),
+    m(`tx.activity.phrase.${id}_base`, `${base} {{rest}}`, { rest }),
   ];
+  const orders = (n: number) =>
+    counted('tx.activity.noun.order', n, '{{count}} order', '{{count}} orders');
   const protection = [
-    count('takeProfit') && 'take profit',
-    count('stopLoss') && 'stop loss',
-  ].filter(Boolean) as string[];
-  const withProtection = protection.length
-    ? ` with ${protection.join(' and ')}`
-    : '';
+    count('takeProfit') && m('tx.activity.noun.take_profit', 'take profit'),
+    count('stopLoss') && m('tx.activity.noun.stop_loss', 'stop loss'),
+  ].filter(Boolean) as Msg[];
+  const protectionList = protection.length ? list(protection) : undefined;
   // An order created by a trigger is part of the trigger, not a new order.
   const placed = Math.max(count('place') - count('triggered'), 0);
   const phrases = [
     count('triggered') &&
-      phrase('triggered', 'trigger', plural(count('triggered'), 'order')),
+      phrase('triggered', 'triggered', 'trigger', orders(count('triggered'))),
     placed &&
-      phrase('placed', 'place', `${plural(placed, 'order')}${withProtection}`),
-    !placed &&
-      protection.length &&
-      phrase('set', 'set', protection.join(' and ')),
+      phrase(
+        'placed',
+        'placed',
+        'place',
+        protectionList
+          ? m(
+              'tx.activity.noun.order_with_protection',
+              '{{orders}} with {{protection}}',
+              {
+                orders: orders(placed),
+                protection: protectionList,
+              },
+            )
+          : orders(placed),
+      ),
+    !placed && protectionList && phrase('set', 'set', 'set', protectionList),
     count('trigger') &&
-      phrase('placed', 'place', plural(count('trigger'), 'trigger order')),
+      phrase(
+        'placed',
+        'placed',
+        'place',
+        counted(
+          'tx.activity.noun.trigger_order',
+          count('trigger'),
+          '{{count}} trigger order',
+          '{{count}} trigger orders',
+        ),
+      ),
     count('cancel') &&
-      phrase('cancelled', 'cancel', plural(count('cancel'), 'order')),
-    count('fill') && phrase('filled', 'fill', plural(count('fill'), 'trade')),
+      phrase('cancelled', 'cancelled', 'cancel', orders(count('cancel'))),
+    count('fill') &&
+      phrase(
+        'filled',
+        'filled',
+        'fill',
+        counted(
+          'tx.activity.noun.trade',
+          count('fill'),
+          '{{count}} trade',
+          '{{count}} trades',
+        ),
+      ),
     count('withdraw') &&
-      phrase('withdrew', 'withdraw', plural(count('withdraw'), 'asset')),
-    count('session') && phrase('changed', 'change', 'a session key'),
+      phrase(
+        'withdrew',
+        'withdrew',
+        'withdraw',
+        counted(
+          'tx.activity.noun.asset',
+          count('withdraw'),
+          '{{count}} asset',
+          '{{count}} assets',
+        ),
+      ),
+    count('session') &&
+      phrase(
+        'changed',
+        'changed',
+        'change',
+        m('tx.activity.noun.session_key', 'a session key'),
+      ),
   ].filter(Boolean) as Phrase[];
 
   const markets = [
     ...new Set(actions.filter((a) => a.market).map((a) => a.market as string)),
   ];
-  const where = markets.length === 1 ? ` on ${markets[0]}` : '';
+  const where =
+    markets.length === 1
+      ? m('tx.activity.headline.on_market', ' on {{market}}', {
+          market: markets[0],
+        })
+      : '';
   const otherContracts = new Set(
     actions.filter((a) => a.kind === 'call').map((a) => a.contractId),
   ).size;
 
   if (!phrases.length) {
-    const target = project ?? 'a contract';
+    const target: Msg | string =
+      project ?? m('tx.activity.headline.a_contract', 'a contract');
     return failed
-      ? `Failed to interact with ${target}`
-      : `Interacted with ${target}`;
+      ? m(
+          'tx.activity.headline.failed_interact',
+          'Failed to interact with {{target}}',
+          { target },
+        )
+      : m('tx.activity.headline.interacted', 'Interacted with {{target}}', {
+          target,
+        });
   }
-  const list = (items: string[]) =>
-    items.length === 1
-      ? items[0]
-      : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
-  const words = phrases.map(([past, base]) => (failed ? base : past));
-  const sentence = `${failed ? 'failed to ' : ''}${list(words)}${where}${
-    otherContracts
-      ? `, plus calls to ${plural(otherContracts, 'other contract')}`
-      : ''
-  }`;
-  return `${sentence.charAt(0).toUpperCase()}${sentence.slice(1)}`;
+  const plus = otherContracts
+    ? counted(
+        'tx.activity.headline.plus_calls',
+        otherContracts,
+        ', plus calls to {{count}} other contract',
+        ', plus calls to {{count}} other contracts',
+      )
+    : '';
+  const words = list(phrases.map(([past, base]) => (failed ? base : past)));
+  const key = failed ? 'failed_sentence' : 'sentence';
+  const template = failed
+    ? 'failed to {{list}}{{where}}{{plus}}'
+    : '{{list}}{{where}}{{plus}}';
+  const sentence = m(`tx.activity.headline.${key}`, template, {
+    list: words,
+    where,
+    plus,
+  });
+  return {
+    ...sentence,
+    en: `${sentence.en.charAt(0).toUpperCase()}${sentence.en.slice(1)}`,
+    capitalize: true,
+  };
+}
+
+function list(items: Msg[]): Msg {
+  if (items.length === 1) return items[0];
+  const head = items
+    .slice(0, -1)
+    .reduce((acc, item) =>
+      m('tx.activity.list_comma', '{{a}}, {{b}}', { a: acc, b: item }),
+    );
+  return m('tx.activity.list_and', '{{head}} and {{last}}', {
+    head,
+    last: items[items.length - 1],
+  });
+}
+
+// Resolves a message with the given translate function.
+export function resolveMsg(
+  message: Msg,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): string {
+  const params: Record<string, unknown> = {};
+  for (const [name, value] of Object.entries(message.params ?? {})) {
+    params[name] = typeof value === 'object' ? resolveMsg(value, t) : value;
+  }
+  const result = t(message.key, {
+    ...params,
+    defaultValue: message.en,
+    interpolation: { escapeValue: false },
+  });
+  return message.capitalize
+    ? `${result.charAt(0).toUpperCase()}${result.slice(1)}`
+    : result;
 }
 
 export function buildTxActivity(
@@ -431,7 +653,7 @@ export function buildTxActivity(
       if (!known && d.contractId !== actor?.address) {
         actions.push({
           kind: 'call',
-          label: 'Called',
+          label: m('tx.activity.label.called', 'Called'),
           parts: [code(d.name)],
           contractId: d.contractId,
           contractName: d.contractName,

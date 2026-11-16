@@ -74,7 +74,13 @@ export function TxScreenLoader({
         />
       </div>
 
-      {renderContent()}
+      {/* A new key per mode and per resolved status, so the swap rises in instead of flashing. */}
+      <div
+        key={`${mode}-${shouldRedirect ? 'resolved' : 'pending'}`}
+        className="fuel-rise"
+      >
+        {renderContent()}
+      </div>
     </>
   );
 }

@@ -15,7 +15,7 @@ export function ButtonReview({ submitData, isLoading }: ButtonReviewProps) {
       isLoading={isLoading}
       disabled={submitData.disabled}
       size="3"
-      className="text-[13px] w-full h-[44px] rounded-[10px]"
+      className="text-[13px] w-full h-[44px]"
     >
       {submitData.label}
     </Button>

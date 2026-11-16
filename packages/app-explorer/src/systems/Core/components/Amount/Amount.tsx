@@ -1,6 +1,6 @@
 import type { BaseProps } from '@fuels/ui';
 import { Icon, Text, useBreakpoints } from '@fuels/ui';
-import { IconCoins } from '@tabler/icons-react';
+import { IconCoins } from '@fuels/ui';
 import type { BN } from 'fuels';
 import { bn } from 'fuels';
 

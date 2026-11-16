@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { ConnectProvider } from '~portal/systems/Settings/providers/ConnectProvi
 import { FuelConnectProvider } from '~portal/systems/Settings/providers/FuelConnectProvider/FuelConnectProvider';
 import { StoreProvider } from '~portal/systems/Store';
 import App from './App.tsx';
+import { i18nReady } from './i18n';
 
 // Import CSS - index.css has everything we need
 import './index.css';
@@ -45,24 +46,29 @@ const queryClient = new QueryClient({
   },
 });
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <StoreProvider>
-          <ThemeProvider>
-            <ConnectProvider>
-              <FuelConnectProviderWithTheme>
-                <BrowserRouter>
-                  <ErrorBoundary>
-                    <App />
-                  </ErrorBoundary>
-                </BrowserRouter>
-              </FuelConnectProviderWithTheme>
-            </ConnectProvider>
-          </ThemeProvider>
-        </StoreProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-  </React.StrictMode>,
+i18nReady.then(() =>
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <StoreProvider>
+            <ThemeProvider>
+              <ConnectProvider>
+                <FuelConnectProviderWithTheme>
+                  <BrowserRouter>
+                    <ErrorBoundary>
+                      {/* i18n suspends until its resources are ready. */}
+                      <Suspense fallback={null}>
+                        <App />
+                      </Suspense>
+                    </ErrorBoundary>
+                  </BrowserRouter>
+                </FuelConnectProviderWithTheme>
+              </ConnectProvider>
+            </ThemeProvider>
+          </StoreProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
+    </React.StrictMode>,
+  ),
 );

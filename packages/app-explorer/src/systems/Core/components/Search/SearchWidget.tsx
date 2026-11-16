@@ -18,7 +18,7 @@ export const SearchWidget = ({ autoFocus }: SearchWidgetProps) => {
 
   return (
     <SearchContext.Provider value={{ dropdownRef }}>
-      <Flex className="items-center gap-0 laptop:gap-4 justify-center flex-1 self-start">
+      <Flex className="items-center gap-0 md:gap-4 justify-center flex-1 self-start">
         <SearchForm className={classes.searchSize()} autoFocus={autoFocus} />
       </Flex>
     </SearchContext.Provider>

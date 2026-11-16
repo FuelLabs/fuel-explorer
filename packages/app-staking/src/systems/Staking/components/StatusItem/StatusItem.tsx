@@ -1,24 +1,28 @@
 import {
   Address as AddressUi,
-  Box,
-  HStack,
+  IconCheck,
   LoadingBox,
   LoadingWrapper,
-  Spinner,
-  Text,
 } from '@fuels/ui';
-import { IconCheck, IconCircleMinus, IconX } from '@tabler/icons-react';
-
+import { motion, useReducedMotion } from 'framer-motion';
 import { memo } from 'react';
-import { tv } from 'tailwind-variants';
+import { useTranslation } from 'react-i18next';
 import { formatETA } from '~staking/systems/Core/utils/eta';
 import { getTransactionLink } from '~staking/systems/Core/utils/getTransactionLink';
+import { EASE_OUT } from '~staking/systems/Core/utils/motion';
+import {
+  StatusMarker,
+  type StatusMarkerKind,
+} from '../StatusMarker/StatusMarker';
 import type { StakingStatusDialogStepProps } from './types';
 
-const completedIcon = <IconCheck size={18} className="text-gray-9" />;
-const loadingIcon = <Spinner size={18} color="current" />;
-const errorIcon = <IconCircleMinus size={18} className="text-red-8" />;
-const canceledIcon = <IconX size={18} className="text-red-8" />;
+const MARKER_LABEL: Record<StatusMarkerKind, string> = {
+  done: 'staking.status.step_done',
+  active: 'staking.status.step_active',
+  action: 'staking.status.step_active',
+  error: 'staking.status.step_failed',
+  pending: 'staking.status.step_pending',
+};
 
 export const StatusItem = memo(function StatusItem({
   step,
@@ -32,56 +36,84 @@ export const StatusItem = memo(function StatusItem({
   isActionNeeded,
   isProcessing,
 }: StakingStatusDialogStepProps) {
+  const { t } = useTranslation();
+  const reduced = useReducedMotion();
   const formattedEta = formatETA(eta);
-  const styles = responsiveDialogStyles({ active: isCurrent });
 
   const isError = !!statusInfo?.Error?.error;
   const isSkipped = !!statusInfo?.Skipped;
 
+  let marker: StatusMarkerKind = 'pending';
+  if (isCurrent && (isError || isSkipped)) marker = 'error';
+  else if (isCompleted) marker = 'done';
+  else if (isCurrent || isProcessing) marker = 'active';
+
   return (
-    <HStack
-      gap="0"
-      align="center"
-      justify="between"
-      className={styles.wrapper()}
+    <div
+      aria-current={isCurrent ? 'step' : undefined}
+      className={`relative flex w-full items-start justify-between gap-3 py-3 pl-4 pr-1 ${
+        isCurrent ? 'text-heading' : 'text-[var(--fuel-element-low-em)]'
+      }`}
     >
-      <HStack gap="2" align="start" className="flex-1 min-w-0">
-        <Box className="w-6 pt-0.5 flex-shrink-0">
+      <span
+        aria-hidden
+        className={`absolute inset-y-0 left-0 w-px origin-top bg-[var(--fuel-primary)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+          isCurrent ? 'scale-y-100' : 'scale-y-0'
+        }`}
+      />
+      <div className="flex min-w-0 flex-1 items-start gap-3">
+        <span className="flex h-[18px] shrink-0 items-center">
           <LoadingWrapper
             isLoading={isLoading}
-            loadingEl={<LoadingBox className="w-5 h-5" />}
+            loadingEl={<LoadingBox className="size-2 !rounded-none" />}
             regularEl={
               <>
-                {isCompleted && completedIcon}
-                {isProcessing && !isSkipped && loadingIcon}
-                {isCurrent && isError && errorIcon}
-                {isCurrent && isSkipped && canceledIcon}
+                <StatusMarker kind={marker} />
+                <span className="sr-only">{t(MARKER_LABEL[marker])}</span>
               </>
             }
           />
-        </Box>
+        </span>
         <LoadingWrapper
           isLoading={isLoading}
-          loadingEl={<LoadingBox className="w-40 h-5" />}
+          loadingEl={<LoadingBox className="h-5 w-40 !rounded-none" />}
           regularEl={
-            <div className="flex flex-col gap-1 min-w-0">
-              <Text className={styles.label()}>{step.label}</Text>
+            <div className="flex min-w-0 flex-col gap-1">
+              <span className="flex items-center gap-2">
+                <span
+                  className={`text-[14px] leading-[18px] ${
+                    isCurrent ? 'font-medium' : ''
+                  }`}
+                >
+                  {t(step.label)}
+                </span>
+                {isCompleted && (
+                  <motion.span
+                    initial={{ scale: reduced ? 1 : 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.2, ease: EASE_OUT }}
+                    className="flex text-[var(--fuel-brand-text)]"
+                  >
+                    <IconCheck size={14} />
+                  </motion.span>
+                )}
+              </span>
               {isCurrent && step.description && (
-                <Text className={styles.description()}>{step.description}</Text>
+                <span className="break-words text-[12px] leading-[18px] text-[var(--fuel-element-low-em)]">
+                  {step.description}
+                </span>
               )}
             </div>
           }
         />
-      </HStack>
+      </div>
       <LoadingWrapper
         isLoading={isLoading}
         loadingEl={null}
         regularEl={
-          <HStack gap="2" align="center" justify="end">
+          <div className="fuel-appear flex items-center justify-end gap-2">
             {isCurrent && formattedEta && (
-              <Text size="1" className={styles.labelAction()}>
-                {formattedEta}
-              </Text>
+              <span className="fuel-label">{formattedEta}</span>
             )}
             {txHash && (
               <AddressUi
@@ -95,28 +127,13 @@ export const StatusItem = memo(function StatusItem({
               />
             )}
             {isActionNeeded && !isContractPaused && (
-              <Text className={styles.labelAction()}>Action needed</Text>
+              <span className="fuel-label text-[var(--fuel-element-high-em)]">
+                {t('staking.board.action_needed')}
+              </span>
             )}
-          </HStack>
+          </div>
         }
       />
-    </HStack>
+    </div>
   );
-});
-
-export const responsiveDialogStyles = tv({
-  slots: {
-    wrapper: 'py-2.5 px-1 text-gray-9 w-full',
-    label: 'text-sm',
-    description: 'text-xs text-gray-10 leading-relaxed break-words',
-    labelAction: 'text-xs font-medium',
-  },
-  variants: {
-    active: {
-      true: {
-        wrapper: 'text-heading bg-gray-4 rounded-sm px-2.5',
-        label: 'font-semibold',
-      },
-    },
-  },
 });

@@ -1,5 +1,6 @@
-import { Button, Text, VStack } from '@fuels/ui';
+import { Button, IconArrowRight, VStack } from '@fuels/ui';
 import type { BN } from 'fuels';
+import { useTranslation } from 'react-i18next';
 import type { AssetRate } from '~staking/systems/Core/services/AssetsRateService';
 import { WithdrawInput } from './WithdrawInput';
 
@@ -28,13 +29,14 @@ export function WithdrawAmount({
   isGettingReviewDetails,
   rates,
 }: WithdrawAmountProps) {
+  const { t } = useTranslation();
   return (
     <form className="flex flex-col flex-1 gap-8">
       <VStack gap="8" justify="center" className="flex-1">
         <VStack gap="0">
-          <Text className="font-medium text-gray-12 mb-1">
-            How much would you like to withdraw?
-          </Text>
+          <span className="fuel-label mb-2">
+            {t('staking.dialog.how_much_withdraw')}
+          </span>
           <WithdrawInput
             amount={amount}
             balance={balance}
@@ -48,16 +50,15 @@ export function WithdrawAmount({
       </VStack>
 
       <Button
-        variant="solid"
-        color="green"
-        size="4"
-        className="w-full font-medium text-[0.8125rem] leading-[20px]"
+        size="3"
+        className="w-full"
         disabled={!isReady || !amount?.gt(0) || !!errorMsg}
         onClick={goToReview}
         type="button"
         isLoading={isGettingReviewDetails}
+        rightIcon={errorMsg ? undefined : IconArrowRight}
       >
-        {errorMsg ? errorMsg : 'Review →'}
+        {errorMsg ? errorMsg : t('staking.dialog.review')}
       </Button>
     </form>
   );
