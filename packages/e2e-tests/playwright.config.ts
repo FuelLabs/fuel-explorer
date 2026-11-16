@@ -36,6 +36,8 @@ const config: PlaywrightTestConfig = defineConfig({
     timeout: 60_000 * 10,
   },
   use: {
+    // GitHub's Ubuntu runners block the user namespaces the sandbox needs.
+    launchOptions: { chromiumSandbox: !process.env.CI },
     baseURL: `http://127.0.0.1:${PORT}/`,
     permissions: ['clipboard-read', 'clipboard-write'],
     headless: false,
