@@ -46,7 +46,7 @@ const doc = (name: string) => {
   return d;
 };
 
-const MAX_PAGE_SIZE = 100;
+export const MAX_PAGE_SIZE = 100;
 
 // Clamps `first`/`last` before forwarding so a caller cannot turn api-lite into
 // an amplifier against the shared upstream mainnet node.

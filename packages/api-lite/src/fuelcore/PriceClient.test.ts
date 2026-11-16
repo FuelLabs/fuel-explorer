@@ -141,4 +141,24 @@ describe('PriceClient', () => {
     await Promise.all([c.refresh(), c.refresh()]);
     expect(calls()).toBe(2);
   });
+
+  it('rates returns ETH and FUEL from one refresh', async () => {
+    const { fn, calls } = fakeFetch(() => ({
+      ethereum: { usd: 2500 },
+      'fuel-network': { usd: 0.01 },
+    }));
+    const c = new PriceClient({ fetchImpl: fn });
+    expect(await c.rates()).toEqual([
+      { symbol: 'ETH', rate: 2500 },
+      { symbol: 'FUEL', rate: 0.01 },
+    ]);
+    expect(await c.usd()).toBe(2500);
+    expect(calls()).toBe(2);
+  });
+
+  it('rates leaves out a symbol whose price never loaded', async () => {
+    const { fn } = fakeFetch(() => ({ ethereum: { usd: 2500 } }));
+    const c = new PriceClient({ fetchImpl: fn });
+    expect(await c.rates()).toEqual([{ symbol: 'ETH', rate: 2500 }]);
+  });
 });
