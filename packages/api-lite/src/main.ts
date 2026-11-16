@@ -34,6 +34,7 @@ import { FinalizationPeriods } from './staking/finalization';
 import { WithdrawProofCache, defaultCosmosIndexerUrl } from './staking/proof';
 import { BlockStore } from './store/BlockStore';
 import { DecodeWorkerPool } from './store/DecodeWorkerPool';
+import { startWatchdog } from './watchdog';
 
 const CHAIN_PARAMS_RETRY_MAX_DELAY_MS = 30_000;
 const PAUSE_BACKFILL_LAG_BLOCKS = 100;
@@ -45,6 +46,9 @@ const HEALTH_LOG_INTERVAL_MS = 60 * 1000;
 const HOT_DECAY_INTERVAL_MS = 60 * 60 * 1000;
 const DISK_PROBE_INTERVAL_MS = 15 * 1000;
 const SLOW_DISK_PROBE_MS = 1000;
+// Normal worst-case loop stalls are ~1.5s and BlockStore gives up on a load
+// after 30s, so a minute without a tick means the process is wedged.
+const WATCHDOG_STALL_MS = 60 * 1000;
 // Retries forever instead of exiting, so a fuel-core outage at boot doesn't
 // crash-loop the container; once up, cached blocks can still be served while
 // this keeps retrying in the background.
@@ -310,6 +314,7 @@ async function main() {
   });
   swapHandler(appServer.listeners('request')[0] as RequestHandler);
   console.log(`api-lite listening on ${cfg.port}`);
+  startWatchdog({ stallMs: WATCHDOG_STALL_MS });
 
   tip.start();
   indexer.start();
